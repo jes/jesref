@@ -4,7 +4,7 @@ Workshop & LinuxCNC reference.
 
 ## What's included?
 
- - (TODO) Tap drill size chart
+ - Tap drill size chart
  - (TODO) Visual thread pitch checker
  - (TODO) Simple G-code reference
  - (TODO) Simple G-code generator (circles, rectangles, straight lines, peck drilling)
