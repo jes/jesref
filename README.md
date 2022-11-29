@@ -11,7 +11,7 @@ Workshop & LinuxCNC reference.
  - (TODO) Involute gear reference & formulae
  - (TODO) Common belt/pulley size reference
  - (TODO) Belt length calculator
- - (TODO) Feeds & speeds calculator
+ - Feeds & speeds calculator by [Brian Turner](https://github.com/brturn/feeds-and-speeds), distributed under GPLv3
 
 ## Install
 
