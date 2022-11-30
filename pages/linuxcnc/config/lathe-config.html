@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Lathe Configuration</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Lathe Configuration</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:lathe-configuration">1. Default Plane</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>When LinuxCNC&#8217;s interpreter was first written, it was designed for mills.
+That is why the default plane is XY (G17). A normal lathe only uses the
+XZ plane (G18). To change the default plane place the following line in
+the .ini file in the RS274NGC section.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>RS274NGC_STARTUP_CODE = G18</code></pre>
+</div></div>
+<div class="paragraph"><p>The above can be overwritten in a g code program so always set important things
+in the preamble of the g code file.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ini_settings">2. INI Settings</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The following .ini settings are needed for lathe mode in Axis in addition to
+or replacing normal settings in the .ini file.  These historical settings use
+identity kinematics (trivkins) and <em>three</em> joints (0,1,2) corresponding to
+coordinates x,y,z.  The joint 1 for the unused y axis is required but not used
+in these historical configurations.  Simulated lathe configs may use these
+historical settings.
+Gmoccapy also uses the mentioned settings, but does offer additional settings,
+check the <a href="../gui/gmoccapy.html#cha:gmoccapy">gmoccapy</a> Section for details.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = axis
+LATHE = 1
+...
+
+[KINS]
+KINEMATICS = trivkins
+JOINTS = 3
+
+[TRAJ]
+COORDINATES = X Z
+...
+
+[JOINT_0]
+...
+[JOINT_2]
+...
+[AXIS_X]
+...
+[AXIS_Z]
+...</code></pre>
+</div></div>
+<div class="paragraph"><p>With joints_axes incorporation, a simpler configuration can be made with just
+the two required joints by specifying trivkins with the <em>coordinates=</em>
+parameter:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = axis
+LATHE = 1
+...
+
+[KINS]
+KINEMATICS = trivkins coordinates=xz
+JOINTS = 2
+
+[TRAJ]
+COORDINATES = X Z
+...
+
+[JOINT_0]
+...
+[JOINT_1]
+...
+[AXIS_X]
+...
+[AXIS_Z]
+...</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

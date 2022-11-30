@@ -1,0 +1,209 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:22 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>funct</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">funct</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#Sintaxis">Sintaxis</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_atomic -
+subconjunto de C11 &lt;stdatomic.h&gt;</p>
+
+<h2>Sintaxis
+<a name="Sintaxis"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#include
+&lt;rtapi_atomic.h&gt;</p> </td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">enum memory_order {...};</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define atomic_store(obj,
+desired)...</p> </td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define
+atomic_store_explicit(obj, desired, order)...</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define atomic_load(obj)...</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define
+atomic_load_explicit(obj, order)...</p></td>
+<td width="8%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>volatile
+A*</b> <i>obj</i></p>
+
+<p style="margin-left:22%;">Un puntero a un objeto
+vol&Atilde;&iexcl;til que es el destino del almacenamiento o
+la fuente de la carga. El puntero debe tener un tipo y una
+alineaci&Atilde;&sup3;n apropiados, tal que la
+operaci&Atilde;&sup3;n de almacenamiento o carga subyacente
+en s&Atilde; sea at&Atilde;&sup3;mica; como m&Atilde;- nimo,
+se puede suponer que un &quot;int&quot; correctamente
+alineado es de ese tipo. Un tama&Atilde;&plusmn;o o
+alineaci&Atilde;&sup3;n incorrecto son errores no
+diagnosticados.</p>
+
+
+<p style="margin-left:11%;"><b>C&nbsp;fR</b><i>desired</i></p>
+
+<p style="margin-left:22%;">El valor que se
+almacenar&Atilde;&iexcl; en el objeto. &quot;*obj =
+desired&quot; debe estar bien formado.</p>
+
+<p style="margin-left:11%;"><b>memory_order</b> order</p>
+
+<p style="margin-left:22%;">La sem&Atilde;&iexcl;ntica
+requerida de orden de memoria.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Este encabezado
+proporciona al menos el subconjunto de &lt;stdatomic.h&gt;
+de C11 dado anteriormente. Cuando existe un requisito de
+orden para m&Atilde;&ordm;ltiples valores le&Atilde;dos o
+escritos en &Atilde;&iexcl;reas de memoria compartida RTAPI
+por otros hilos, incluidos los valores de pines y
+par&Atilde;&iexcl;metros HAL, estas funciones (o macros
+similares a funciones) son la &Atilde;&ordm;nica forma de
+garantizar que se cumpla el requisito de orden. De lo
+contrario, de acuerdo con las reglas espec&Atilde;ficas de
+la arquitectura, las cargas y almacenamientos se pueden
+reordenar desde su orden normal del c&Atilde;&sup3;digo
+fuente.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Por ejemplo,
+para dejar un mensaje en un &Atilde;&iexcl;rea de memoria
+compartida desde un hilo y recuperarlo desde otro, el
+escritor debe usar un almacenamiento at&Atilde;&sup3;mico
+para la variable &quot;message is complete&quot;, y el
+lector debe usar una carga at&Atilde;&sup3;mica cuando
+verifique esa variable:</p>
+
+<p style="margin-left:22%; margin-top: 1em">// productor
+<br>
+*mensaje = 42; <br>
+atomic_store_explicit(message_ready, 1,
+memory_order_release);</p>
+
+<p style="margin-left:22%; margin-top: 1em">// consumidor
+<br>
+while(atomic_load_explicit(message_ready,
+memory_order_acquire) == 0) sched_yield(); <br>
+printf (&quot;el mensaje era %d\n&quot;, *message); //debe
+imprimir 42</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde cualquier c&Atilde;&sup3;digo.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>atomic_load</b>
+y <b>atomic_load_explicit</b> devuelve el valor
+se&Atilde;&plusmn;alado por el argumento <i>obj.</i></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>atomic_store</b>
+y <b>atomic_store_explicit</b> No tienen valor de
+retorno.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;stdatomic.h&gt;</b>
+(C11), <b>&lt;rtapi_bitops.h&gt;</b>(para otras operaciones
+de memoria at&Atilde;&sup3;mica compatibles con rtapi)</p>
+<hr>
+</body>
+</html>

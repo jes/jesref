@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Ejemplos Halui</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Ejemplos Halui</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:halui-examples"><p>Para que funcionen los ejemplos de Halui, debe agregar la siguiente línea a la
+sección [HAL] del archivo ini.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>HALUI = halui</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:halui-remote-start">1. Arranque remoto</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para conectar un botón de inicio de programa remoto a LinuxCNC, utilice los
+pines <code>halui.program.run</code> y <code>halui.mode.auto</code>.
+Debe asegurarse de que se puede ejecutar utilizando el
+pin <code>halui.mode.is-auto</code>. Esto se hace con un componente <code>and2</code>.
+La siguiente figura muestra cómo son las conexiones.
+Cuando se presiona el botón de ejecución remota, se conecta tanto a
+<code>halui.mode.auto</code> como a <code>and2.0.in0</code>. Si está habilitado el
+modo automático, el pin <code>halui.mode.is-auto</code> será true.
+Si ambas entradas al componente <code>and2.0</code> son true,
+<code>and2.0.out</code> se activara e iniciará el programa a traves de <code>halui.program.run</code>.</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="images/remote-start.png" alt="Ejemplo de arranque remoto" />
+</div>
+<div class="title">Figura 1. Ejemplo de arranque remoto</div>
+</div>
+<div class="paragraph"><p>Los comandos hal necesarios para lograr lo anterior son:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>net program-start-btn halui.mode.auto and2.0.in0 &lt;= &lt;su pin de entrada&gt;
+net program-run-ok and2.0.in1 &lt;= halui.mode.is-auto
+net remote-program-run halui.program.run &lt;= and2.0.out</code></pre>
+</div></div>
+<div class="paragraph"><p>Observe que en la primera línea hay dos pines de lectura; esto se puede dividir
+en dos líneas como estas:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>net program-start-btn halui.mode.auto &lt;= &lt;su pin de entrada&gt;
+net program-start-btn and2.0.in0</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pausar_y_reanudar">2. Pausar y Reanudar</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Este ejemplo fue desarrollado para permitir que LinuxCNC mueva un
+eje rotativo a una señal de una máquina externa.
+La coordinación entre los dos sistemas será
+proporcionada por dos componentes de Halui:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+halui.program.is-paused
+</p>
+</li>
+<li>
+<p>
+halui.program.resume
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>En su archivo hal personalizado, agregue las
+dos líneas siguientes, que se conectarán a su E/S para activar
+la pausa del programa o para reanudar cuando el
+sistema externo requiera que LinuxCNC continúe.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>net ispaused halui.program.is-paused =&gt; "su pin de salida"
+net resume halui.program.resume &lt;= "su pin de entrada"</code></pre>
+</div></div>
+<div class="paragraph"><p>Sus pines de entrada y salida están conectados a los pines
+del otro controlador. Pueden ser pines de puerto paralelo
+o cualquier otro pin de E/S al que tenga acceso.</p></div>
+<div class="paragraph"><p>Este sistema funciona de la siguiente manera. Cuando se
+encuentra un M0 en el código G, la señal <code>halui.program.is-paused</code>
+se hace true. Esto activa su pin de salida para que
+el controlador externo sepa que LinuxCNC está en pausa.</p></div>
+<div class="paragraph"><p>Para reanudar el programa gcode en LinuxCNC, cuando el controlador externo
+esté listo, hará que su salida sea true. Esto indicará
+LinuxCNC que debería reanudar la ejecución de Gcode.</p></div>
+<div class="paragraph"><p>Dificultades en el tiempo</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La señal de retorno de entrada "resume" no debe ser
+   más larga que el tiempo requerido para obtener el código g
+   corriendo de nuevo.
+</p>
+</li>
+<li>
+<p>
+La salida "is-paused" ya no debería estar activa
+   para cuando termina la señal de "resume".
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Estos problemas de tiempo podrían evitarse utilizando
+ClassicLadder para activar la salida "is-paused" a través de un
+temporizador monoestable para entregar un pulso de salida estrecho.
+El pulso "reanudar" también podría recibirse a través de un temporizador monoestable.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

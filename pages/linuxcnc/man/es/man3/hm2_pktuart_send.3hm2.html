@@ -1,0 +1,141 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_pktuart_send</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_pktuart_send</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_pktuart_send
+- escribe datos en PktUART Hostmot2</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_uart_send(char *name,
+unsigned char data[], rtapi_u8 *num_frames, rtapi_u16
+frame_sizes[])</p> </td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_pktuart_send</b>
+escribe &quot;num_frames&quot; de datos en la PktUART
+&quot;name&quot; desde el b&Atilde;&ordm;fer
+&quot;data&quot; con tama&Atilde;&plusmn;os de trama
+preestablecidos en la matriz &quot;frame_sizes[]&quot;. La
+matriz &quot;frame_sizes[]&quot; no debe tener
+m&Atilde;&iexcl;s de 16 elementos ya que este es la
+m&Atilde;&iexcl;s alta cantidad de tramas que se pueden
+enviar en llamadas &quot;modo
+r&Atilde;&iexcl;faga&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Tenga en cuenta
+que PktUART MaxFrameSize tiene codificados 1024 bytes en
+hostmot2.vhd.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&quot;name&quot;
+es una cadena &Atilde;&ordm;nica dada a cada PktUART durante
+la configuraci&Atilde;&sup3;n de hostmot2. Los nombres de
+los canales disponibles se imprimen en la salida
+est&Atilde;&iexcl;ndar durante la carga del controlador y
+toman la forma: hm2_ &lt;nombre de la
+tarjeta&gt;.&lt;&Atilde;ndice de la
+tarjeta&gt;.pktuart.&lt;&Atilde;ndice&gt; . Por ejemplo
+hm2_5i25.0.pktuart.0.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+funci&Atilde;&sup3;n env&Atilde;a un n&Atilde;&ordm;mero
+variable de paquetes PktUART (menos o igual a 16) desde el
+canal especificado. Debe usarse dentro de un componente HAL
+en tiempo real registrado con el controlador principal
+hostmot2 utilizando la funci&Atilde;&sup3;n
+hm2_pktuart_setup en el c&Atilde;&sup3;digo de
+configuraci&Atilde;&sup3;n.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve el
+n&Atilde;&ordm;mero de bytes enviados en caso de
+&Atilde;&copy;xito y c&Atilde;&sup3;digos de error negativos
+en caso de error.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&quot;num_frames&quot;,
+cuyo puntero se pasa por valor, se establece en el
+n&Atilde;&ordm;mero de datagramas enviados.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+c&Atilde;&sup3;digos de error negativos son: <b><br>
+-1 - error de lectura/escritura de bajo nivel <br>
+-EINVAL: cualquier error de configuraci&Atilde;&sup3;n de
+PktUART por instancia <br>
+-HM2_PKTUART_TxSCFIFOError - Tx Send Count FIFO Error</b>
+<br>
+Los valores num&Atilde;&copy;ricos de los
+c&Atilde;&sup3;digos de error HM2_PKTUART_ se definen <br>
+en src/hal/drivers/mesa-hostmot2/pktuart_errno.h.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>man
+hm2_pktuart_setup, man hm2_pktuart_read</b> <br>
+Consulte src/hal/drivers/mesa_pktgyro_test.comp para ver un
+ejemplo de <br>
+ uso.</p>
+<hr>
+</body>
+</html>

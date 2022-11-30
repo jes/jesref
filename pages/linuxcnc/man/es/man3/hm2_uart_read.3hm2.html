@@ -1,0 +1,112 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_uart_read</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_uart_read</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_uart_read -
+lee datos de un b&Atilde;&ordm;fer UART Hostmot2</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="77%">
+
+
+<p style="margin-top: 1em">int hm2_uart_read(char *name,
+unsigned char *data)</p></td>
+<td width="12%">
+</td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_uart_read</b>
+lee datos desde la UART &quot;name&quot;. &quot;name&quot;
+es una cadena &Atilde;&ordm;nica dada a cada UART durante la
+configuraci&Atilde;&sup3;n de hostmot2. Los nombres de los
+canales disponibles se imprimen en la salida
+est&Atilde;&iexcl;ndar durante la carga del controlador y
+toman la forma: hm2_&lt;nombre de la
+tarjeta&gt;.&lt;&Atilde;ndice de la
+tarjeta&gt;.uart.&lt;&Atilde;ndice&gt; Por ejemplo,
+hm2_5i23.0.uart.0</p>
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+funci&Atilde;&sup3;n lee un n&Atilde;&ordm;mero variable de
+bytes del canal especificado. Debe usarse dentro de un
+componente HAL de tiempo real registrado con el controlador
+principal hostmot2 que utiliza la funci&Atilde;&sup3;n
+hm2_uart_set_read_function en el codigo de
+configuraci&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Tenga en cuenta
+que el FIFO de recepci&Atilde;&sup3;n de UART tiene solo 16
+bytes de profundidad (el FIFO de transmisi&Atilde;&sup3;n
+tiene 64 bytes) y &quot;data&quot; debe tener al menos eso o
+se producir&Atilde;&iexcl; un caos grande o indefinido.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve el
+n&Atilde;&ordm;mero de bytes le&Atilde;dos en caso de
+&Atilde;&copy;xito y -1 en caso de error.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">man
+hm2_uart_setup, man hm2_uart_send Vea src/hal/drivers
+mesa_uart.comp para un ejemplo de uso.</p>
+<hr>
+</body>
+</html>

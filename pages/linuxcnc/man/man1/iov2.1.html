@@ -1,0 +1,289 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:35 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>IOCONTROL - IOV2</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">IOCONTROL - IOV2</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#Pins">Pins</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">iov2 -
+interacts with HAL or G-code in userspace</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[EMCIO] <br>
+EMCIO = iov2</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">I/O control
+handles I/O tasks like coolant, toolchange, e-stop and lube.
+The signals are turned on and off in userspace with G-code
+or in the case of e-stop in hal. <br>
+I/O Control V2 (iov2) adds more toolchager support for
+communication with the toolchanger.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Whether
+<b>io</b> or <b>iov2</b> is used can be chosen in the
+[EMCIO] section of the INI file.</p>
+
+<h2>Pins
+<a name="Pins"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Basic pins
+<br>
+iocontrol.0.coolant-flood</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when flood
+coolant is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.coolant-mist</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when mist
+coolant is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.emc-enable-in</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven
+FALSE when an external estop condition exists.</p>
+
+<p style="margin-left:11%;"><b>iocontrol.0.lube</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when lube is
+requested. This pin gets driven True when the controller
+comes out of E-stop, and when the &quot;Lube On&quot;
+command gets sent to the controller. It gets driven False
+when the controller goes into E-stop, and when the
+&quot;Lube Off&quot; command gets sent to the
+controller.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.lube_level</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven
+FALSE when lubrication tank is empty.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-change</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when a tool
+change is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-changed</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven TRUE
+when a tool change is completed.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-number</b></p>
+
+<p style="margin-left:22%;">(s32, Out) Current tool
+number</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prep-number</b></p>
+
+<p style="margin-left:22%;">(s32, Out) The number of the
+next tool, from the RS274NGC T-word</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prep-pocket</b></p>
+
+<p style="margin-left:22%;">(s32, Out) This is the pocket
+number (location in the tool storage mechanism) of the tool
+requested by the most recent T-word.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prepare</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when a
+T<i>n</i> tool prepare is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prepared</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven TRUE
+when a tool prepare is completed.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.user-enable-out</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) FALSE when an
+internal estop condition exists</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.user-request-enable</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when the user
+has requested that estop be cleared</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Additional
+IO v2 pins <br>
+iocontrol.0.emc-abort</b></p>
+
+<p style="margin-left:22%;">(BIT,OUT) Signals
+emc-originated abort to toolchanger.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.emc-abort-ack</b></p>
+
+<p style="margin-left:22%;">(BIT,IN) Acknowledge line from
+toolchanger for previous signal, or jumpered to
+abort-tool-change if not used in toolchanger. NB: after
+signaling an emc-abort, iov2 will block until emc-abort-ack
+is raised.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.emc-reason</b></p>
+
+<p style="margin-left:22%;">(S32,OUT) Convey cause for
+EMC-originated abort to toolchanger. Usage: UI
+informational. Valid during emc-abort True.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.start-change</b></p>
+
+<p style="margin-left:22%;">(BIT,OUT) Asserted at the very
+beginning of an M6 operation, before any spindle-off,
+quill-up, or move-to-toolchange-position oeprations are
+executed.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.start-change-ack</b></p>
+
+<p style="margin-left:22%;">(BIT,IN) Acknowledgment line
+for start-change.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.toolchanger-fault</b></p>
+
+<p style="margin-left:22%;">(BIT,IN) Toolchanger signals
+fault. This line is contionuously monitored. A fault toogles
+a flag in iocontrol which is reflected in the
+toolchanger-faulted pin.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.toolchanger-fault-ack</b></p>
+
+<p style="margin-left:22%;">(BIT,OUT) Handshake line for
+above signal. will be set by iov2 after above fault line
+True is recognized and deasserted when toolchanger-fault
+drops. Toolchanger is free to interpret the ack; reading the
+-ack lines assures fault has been received and acted
+upon.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.toolchanger-reason</b></p>
+
+<p style="margin-left:22%;">(S32,IN) Convey reason code for
+toolchanger-originated fault to iov2. Usage</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.toolchanger-faulted</b></p>
+
+<p style="margin-left:22%;">(BIT,OUT) Signals
+toolchanger-notify line has toggled and
+toolchanger-reason-code was in the fault range. Next M6 will
+abort.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.toolchanger-clear-fault</b></p>
+
+<p style="margin-left:22%;">(BIT,IN) Resets TC fault
+condition. Deasserts toolchanger-faulted if
+toolchanger-notify is line False. Usage. UI - e.g. clear
+fault condition button.</p>
+
+<p style="margin-left:11%;"><b>iocontrol.0.state</b></p>
+
+<p style="margin-left:22%;">(S32,OUT) Debugging pin
+reflecting internal state</p>
+
+<p style="margin-left:11%; margin-top: 1em">See
+<a href="http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ToolchangerProtocolProposal">http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ToolchangerProtocolProposal</a>
+for additional information.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="io.1.html"><b>io</b>(1),</a>
+<a href="iocontrol.1.html"><b>iocontrol</b>(1),</a>
+<a href="linuxcnc.1.html"><b>LinuxCNC(1)</b>,</a></p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs at
+<a href="https://github.com/LinuxCNC/linuxcnc/issues">https://github.com/LinuxCNC/linuxcnc/issues</a></p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Derived from a
+work by Fred Proctor &amp; Will Shackleford. <br>
+Rework &amp; adding v2 protocol support by Michael
+Haberler.</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2011 Michael Haberler. <br>
+This is free software; see the source for copying
+conditions. There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<hr>
+</body>
+</html>

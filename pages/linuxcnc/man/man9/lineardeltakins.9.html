@@ -1,0 +1,119 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:47 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LINEARDELTAKINS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">LINEARDELTAKINS</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#KINEMATICS">KINEMATICS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#NOTES">NOTES</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">lineardeltakins
+- Kinematics for a linear delta robot</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="34%">
+
+
+<p style="margin-top: 1em"><b>loadrt
+lineardeltakins</b></p> </td>
+<td width="55%">
+</td></tr>
+</table>
+
+<h2>KINEMATICS
+<a name="KINEMATICS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The kinematics
+model is appropriate for a rostock/kossel-style design with
+three joints arranged in an equilateral triangle. (0,0) is
+always the center of the working volume. Joint 0 is at (0,R)
+and subsequent joints are 120 degrees clockwise (note that
+joint 0 is not at zero radians). The length of the arm is
+L.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Joints 0-2 are
+the linear carriages. Axes ABC and UVW are passed through
+unchanged in joints 3-8, so that e.g., A can still be used
+to control an extruder.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lineardeltakins.R</b>
+float in</p>
+
+<p style="margin-left:22%;">Effective diameter of the
+platform.</p>
+
+<p style="margin-left:22%; margin-top: 1em">R is different
+than the distance from the center of the table to the center
+of the belt/smooth rod/extrusion that the joints ride on. In
+RepRap delta parlance, R is DELTA_RADIUS which is computed
+as</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">DELTA_SMOOTH_ROD_OFFSET
+- DELTA_EFFECTOR_OFFSET - DELTA_CARRIAGE_OFFSET.</p>
+
+<p style="margin-left:11%;"><b>lineardeltakins.L</b> float
+in</p>
+
+<p style="margin-left:22%;">Length of the rod connecting
+the carriage to the effector. In RepRap delta parlance, L is
+DELTA_DIAGONAL_ROD</p>
+
+<h2>NOTES
+<a name="NOTES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The R and L
+values can be adjusted while LinuxCNC is running. However,
+doing so while in coordinated mode will lead to a step
+change in joint position, which generally will trigger a
+following error if in joint mode with machine on.</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph"><p>This page is for step and direction timing of stepper drives.</p></div>
+<div class="paragraph"><p>Please add to this list using the stepconf wizard format and in nanoseconds so
+it will be uniform.</p></div>
+<div class="paragraph"><p>Some boards have know issues see the troubleshooting hardware page  <a id="Hardware_Problems"></a></p></div>
+<div class="paragraph"><p>If your unsure about your drive timing start high like 10000 for each and test.
+remember that signal conditioning and opto-isolation can increase timing
+requirements. That&#8217;s why you need to know the timings for a driver board, not
+just the step translator chip that is contains.</p></div>
+<div class="paragraph"><p>Also notice that some controllers step on the falling edge some on the rising
+edge. This matters as it will change the timing and will be hard to trace.
+make sure LinuxCNC follows what the controller expects.</p></div>
+<div class="paragraph"><p>Note 1 if an asterisk precedes the name then the values are not confirmed. If
+you can confirm the values please do&#8230;</p></div>
+<div class="paragraph"><p>Times listed are in nanoseconds (ns). Multiply microseconds (us) by 1000 to get
+nanoseconds (ns)</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<thead>
+<tr>
+<th align="left" valign="top">Manufacturer</th>
+<th align="left" valign="top">Model</th>
+<th align="left" valign="top">Step Time</th>
+<th align="left" valign="top">Step Space</th>
+<th align="left" valign="top">Direction Hold</th>
+<th align="left" valign="top">Direction Setup</th>
+<th align="left" valign="top">Steps on</th>
+<th align="left" valign="top">Spec Sheet</th>
+<th align="left" valign="top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Chinese Blue Boards</p></td>
+<td align="left" valign="top"><p class="table">TB6560 CNC Stepper Motor Driver Controller Board</p></td>
+<td align="left" valign="top"><p class="table">150000</p></td>
+<td align="left" valign="top"><p class="table">150000</p></td>
+<td align="left" valign="top"><p class="table">150000</p></td>
+<td align="left" valign="top"><p class="table">150000</p></td>
+<td align="left" valign="top"><p class="table">Falling Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://hyu68.com/cp8.htm">http://hyu68.com/cp8.htm</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">201</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">4000</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Falling Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g201-rev-16.html">http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g201-rev-16.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">202</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">4500</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Falling Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g202-rev-15.html">http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g202-rev-15.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">203v</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g203v-rev-7.html">http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g203v-rev-7.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">201x</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">3000</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Falling Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g201-rev-16.html">http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g201-rev-16.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">212</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">4000</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Falling Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g212-rev-15.html">http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g212-rev-15.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">213v</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g213v-rev-7.html">http://www.geckodrive.com/support/motor-control-manuals/stepper-drives/g213v-rev-7.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">320</p></td>
+<td align="left" valign="top"><p class="table">3500</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/dc-servo-drives/g320-rev-7.html">http://www.geckodrive.com/support/motor-control-manuals/dc-servo-drives/g320-rev-7.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Gecko</p></td>
+<td align="left" valign="top"><p class="table">320x</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.geckodrive.com/support/motor-control-manuals/dc-servo-drives/g320x-rev-10.html">http://www.geckodrive.com/support/motor-control-manuals/dc-servo-drives/g320x-rev-10.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Granite Devices</p></td>
+<td align="left" valign="top"><p class="table">VSD-E/XE Evolution</p></td>
+<td align="left" valign="top"><p class="table">125</p></td>
+<td align="left" valign="top"><p class="table">125</p></td>
+<td align="left" valign="top"><p class="table">125</p></td>
+<td align="left" valign="top"><p class="table">125</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://granitedevices.fi/assets/files/vsd-e_160_manual.pdf">http://granitedevices.fi/assets/files/vsd-e_160_manual.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Granite Devices</p></td>
+<td align="left" valign="top"><p class="table">VSD-E/XE DualDC</p></td>
+<td align="left" valign="top"><p class="table">150</p></td>
+<td align="left" valign="top"><p class="table">1850</p></td>
+<td align="left" valign="top"><p class="table">150</p></td>
+<td align="left" valign="top"><p class="table">800</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://granitedevices.fi/assets/files/vsd-e_160_dualdc_manual.pdf">http://granitedevices.fi/assets/files/vsd-e_160_dualdc_manual.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">JVL</p></td>
+<td align="left" valign="top"><p class="table">SMD41</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.jvl.dk/files/pdf/lb043gb.pdf">http://www.jvl.dk/files/pdf/lb043gb.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">JVL</p></td>
+<td align="left" valign="top"><p class="table">SMD42</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.jvl.dk/files/pdf/lb043gb.pdf">http://www.jvl.dk/files/pdf/lb043gb.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Linistepper Open Source</p></td>
+<td align="left" valign="top"><p class="table">RULMS1</p></td>
+<td align="left" valign="top"><p class="table">30000</p></td>
+<td align="left" valign="top"><p class="table">100000</p></td>
+<td align="left" valign="top"><p class="table">4000</p></td>
+<td align="left" valign="top"><p class="table">4000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.piclist.com/techref/io/stepper/linistep/index.htm">http://www.piclist.com/techref/io/stepper/linistep/index.htm</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Linistepper Open Source</p></td>
+<td align="left" valign="top"><p class="table">THB6064</p></td>
+<td align="left" valign="top"><p class="table">2300</p></td>
+<td align="left" valign="top"><p class="table">2300</p></td>
+<td align="left" valign="top"><p class="table">4600</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.piclist.com/techref/io/stepper/THB6064/index.htm">http://www.piclist.com/techref/io/stepper/THB6064/index.htm</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">*Motion Control</p></td>
+<td align="left" valign="top"><p class="table">MSD542</p></td>
+<td align="left" valign="top"><p class="table">&gt;1500</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.motioncontrolproducts.com/c2/uploads/msd542%20datasheet.pdf">http://www.motioncontrolproducts.com/c2/uploads/msd542%20datasheet.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Parker</p></td>
+<td align="left" valign="top"><p class="table">OEM750</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">300</p></td>
+<td align="left" valign="top"><p class="table">0</p></td>
+<td align="left" valign="top"><p class="table">200000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.compumotor.com/manuals/OEM750/OEM750_Entire_Rev_B.pdf">http://www.compumotor.com/manuals/OEM750/OEM750_Entire_Rev_B.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">ST</p></td>
+<td align="left" valign="top"><p class="table">L297</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">4000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.st.com/stonline/books/pdf/docs/1334.pdf">http://www.st.com/stonline/books/pdf/docs/1334.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Xylotex</p></td>
+<td align="left" valign="top"><p class="table">XS-3525/8S-3</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.xylotex.com/XS3525V202.pdf">http://www.xylotex.com/XS3525V202.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Xylotex</p></td>
+<td align="left" valign="top"><p class="table">XS-3525/8S-4</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.xylotex.com/XS3525V400.pdf">http://www.xylotex.com/XS3525V400.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Lin Engineering</p></td>
+<td align="left" valign="top"><p class="table">Silverpak 17D/DE</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.linengineering.com/site/products/pdf/SilverPak17D_DE-manual.pdf">http://www.linengineering.com/site/products/pdf/SilverPak17D_DE-manual.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Hobbycnc</p></td>
+<td align="left" valign="top"><p class="table">Pro Chopper Board</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.hobbycnc.com/products/hobbycnc-pro-chopper-driver-board-kits/">http://www.hobbycnc.com/products/hobbycnc-pro-chopper-driver-board-kits/</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">*Routout</p></td>
+<td align="left" valign="top"><p class="table">2.5amp Stepper Driver</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.routoutcnc.com/2-5ampdriver.pdf">http://www.routoutcnc.com/2-5ampdriver.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">*Intelligent Motion System</p></td>
+<td align="left" valign="top"><p class="table">IM483</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.imshome.com/im483.html">http://www.imshome.com/im483.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Keling</p></td>
+<td align="left" valign="top"><p class="table">4030</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www">http://www</a>.</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Keling</p></td>
+<td align="left" valign="top"><p class="table">6852</p></td>
+<td align="left" valign="top"><p class="table">1750</p></td>
+<td align="left" valign="top"><p class="table">1750</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.kelinginc.net/kL-6852.pdf">http://www.kelinginc.net/kL-6852.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Sherline</p></td>
+<td align="left" valign="top"><p class="table">8760</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">6000</p></td>
+<td align="left" valign="top"><p class="table">24000</p></td>
+<td align="left" valign="top"><p class="table">24000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.sherline.com/">http://www.sherline.com/</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Burkhard Lewetz</p></td>
+<td align="left" valign="top"><p class="table">Step3S</p></td>
+<td align="left" valign="top"><p class="table">6000</p></td>
+<td align="left" valign="top"><p class="table">15000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.lewetz.de/download/ibstep3se.pdf">http://www.lewetz.de/download/ibstep3se.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Parker Compumotor</p></td>
+<td align="left" valign="top"><p class="table">Zeta 4</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">?(200)</p></td>
+<td align="left" valign="top"><p class="table">?(200)</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.compumotor.com/manuals/ZETA/ZETA_Rev_A_Entire.pdf">http://www.compumotor.com/manuals/ZETA/ZETA_Rev_A_Entire.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">www.cncdrive.com</p></td>
+<td align="left" valign="top"><p class="table">Dugong</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.cncdrive.com/content/dugong.htm">http://www.cncdrive.com/content/dugong.htm</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">www.cncdrive.com</p></td>
+<td align="left" valign="top"><p class="table">DG2S-08020</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://cncdrive.com/DG2S_08020.html">http://cncdrive.com/DG2S_08020.html</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Wantai Motors</p></td>
+<td align="left" valign="top"><p class="table">DQ542MA</p></td>
+<td align="left" valign="top"><p class="table">5050</p></td>
+<td align="left" valign="top"><p class="table">5050</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">500</p></td>
+<td align="left" valign="top"><p class="table">?</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.wantmotor.com/ProductsView.asp?id=257&amp;pid=82">http://www.wantmotor.com/ProductsView.asp?id=257&amp;pid=82</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital DM422 40V 2.2A</p></td>
+<td align="left" valign="top"><p class="table">7500</p></td>
+<td align="left" valign="top"><p class="table">7500</p></td>
+<td align="left" valign="top"><p class="table">20000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DM422m.pdf">http://leadshineusa.com/UploadFile/Down/DM422m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital DM556 50V 5.6A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DM556m.pdf">http://leadshineusa.com/UploadFile/Down/DM556m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital DM856 80V 7.0A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DM856m.pdf">http://leadshineusa.com/UploadFile/Down/DM856m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital DM870 80V 7.0A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DM870m.pdf">http://leadshineusa.com/UploadFile/Down/DM870m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital DM1182 150VAC 8.2A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshine.com/UploadFile/Down/DM1182m.pdf">http://leadshine.com/UploadFile/Down/DM1182m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital EM402 40V 2.2A</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshine.com/UploadFile/Down/EM402d_P.pdf">http://leadshine.com/UploadFile/Down/EM402d_P.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital EM503 50V 4.2A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshine.com/UploadFile/Down/EM503d_P.pdf">http://leadshine.com/UploadFile/Down/EM503d_P.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital EM705 70V 7.0A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshine.com/UploadFile/Down/EM705d_P.pdf">http://leadshine.com/UploadFile/Down/EM705d_P.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Digital EM806 80V 8.2A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshine.com/UploadFile/Down/EM806d_P.pdf">http://leadshine.com/UploadFile/Down/EM806d_P.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Analog M415B 40V 1.5A</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">8000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/M415Bm.pdf">http://leadshineusa.com/UploadFile/Down/M415Bm.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Analog M542 50V 4.2A</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">8000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/M542V2m.pdf">http://leadshineusa.com/UploadFile/Down/M542V2m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Analog M752 75V 5.2A</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">8000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/M752m.pdf">http://leadshineusa.com/UploadFile/Down/M752m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Analog M880A 80V 7.8A</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">8000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/M880Am.pdf">http://leadshineusa.com/UploadFile/Down/M880Am.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Analog M860H 80VAC 7.2A</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">1500</p></td>
+<td align="left" valign="top"><p class="table">8000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/MA860Hm.pdf">http://leadshineusa.com/UploadFile/Down/MA860Hm.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Brushed servo DCS303 30V 15A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DCS303m.pdf">http://leadshineusa.com/UploadFile/Down/DCS303m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Brushed servo DCS810 80V 20A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DCS810V1m.pdf">http://leadshineusa.com/UploadFile/Down/DCS810V1m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Brushed servo DCS810S 80V 20A</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">7000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/DCS810Sm.pdf">http://leadshineusa.com/UploadFile/Down/DCS810Sm.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Brushless servo ACS306 30V 15A</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">2500</p></td>
+<td align="left" valign="top"><p class="table">10000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshine.com/UploadFile/Down/ACS306hm.pdf">http://leadshine.com/UploadFile/Down/ACS306hm.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Brushless servo ACS606 60V 15A</p></td>
+<td align="left" valign="top"><p class="table">850</p></td>
+<td align="left" valign="top"><p class="table">850</p></td>
+<td align="left" valign="top"><p class="table">6700</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/ACS606m.pdf">http://leadshineusa.com/UploadFile/Down/ACS606m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Leadshine USA</p></td>
+<td align="left" valign="top"><p class="table">Brushless servo ACS806 80V 20A</p></td>
+<td align="left" valign="top"><p class="table">850</p></td>
+<td align="left" valign="top"><p class="table">850</p></td>
+<td align="left" valign="top"><p class="table">6700</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://leadshineusa.com/UploadFile/Down/ACS806m.pdf">http://leadshineusa.com/UploadFile/Down/ACS806m.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Pololu</p></td>
+<td align="left" valign="top"><p class="table">A4988 Stepper Motor Driver Carrier</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">1000</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">200</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.pololu.com/catalog/product/1182/">http://www.pololu.com/catalog/product/1182/</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Pololu</p></td>
+<td align="left" valign="top"><p class="table">DRV8825 Stepper Motor Driver Carrier</p></td>
+<td align="left" valign="top"><p class="table">1900</p></td>
+<td align="left" valign="top"><p class="table">1900</p></td>
+<td align="left" valign="top"><p class="table">650</p></td>
+<td align="left" valign="top"><p class="table">650</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://www.pololu.com/catalog/product/2132/">http://www.pololu.com/catalog/product/2132/</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">cnc4you</p></td>
+<td align="left" valign="top"><p class="table"><a id="CW5045"></a></p></td>
+<td align="left" valign="top"><p class="table">2000</p></td>
+<td align="left" valign="top"><p class="table">8000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">5000</p></td>
+<td align="left" valign="top"><p class="table">Rising Edge</p></td>
+<td align="left" valign="top"><p class="table"><a href="http://cnc4you.co.uk/resources/CW5045.pdf">http://cnc4you.co.uk/resources/CW5045.pdf</a></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

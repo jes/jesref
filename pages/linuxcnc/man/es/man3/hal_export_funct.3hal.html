@@ -1,0 +1,180 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:19 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_export_funct</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_export_funct</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_export_funct
+- crea una funci&Atilde;&sup3;n en tiempo real invocable
+desde un hilo</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">typedef void(*hal_funct_t)(void
+* <i>arg</i>, long <i>period</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hal_export_funct(const char
+*<i>name</i>, hal_funct_t <i>funct</i>, void *<i>arg</i>,
+int <i>uses_fp</i>, int <i>reentrant</i>, int
+<i>comp_id</i>)</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="7%"></td>
+<td width="4%"></td>
+<td width="78%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>name</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>El nombre de la funci&Atilde;&sup3;n.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>funct</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>El puntero a la funci&Atilde;&sup3;n.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>arg</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>El argumento que se pasar&Atilde;&iexcl; como el primer
+par&Atilde;&iexcl;metro de <i>funct</i></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>uses_fp</i></p>
+
+<p style="margin-left:22%;">No cero si la
+funci&Atilde;&sup3;n utiliza operaciones de punto flotante,
+incluida la asignaci&Atilde;&sup3;n de valores de coma
+flotante con &quot;=&quot;.</p>
+
+<p style="margin-left:11%;"><i>reentrant</i></p>
+
+<p style="margin-left:22%;">Si reentrant no es cero, la
+funci&Atilde;&sup3;n puede ser reemplazada y llamada
+nuevamente antes de que se complete la primera llamada. De
+lo contrario, solo se puede agregar a un hilo.</p>
+
+<p style="margin-left:11%;"><i>comp_id</i></p>
+
+<p style="margin-left:22%;">Un identificador de componente
+HAL devuelto por una llamada anterior a <b>hal_init</b>.</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_export_funct</b>
+crea una funci&Atilde;&sup3;n en tiempo real proporcionada
+por un componente disponible para el sistema. Una llamada
+posterior a <b>hal_add_funct_to_thread</b> se puede usar
+para programar la ejecuci&Atilde;&sup3;n de la
+funci&Atilde;&sup3;n seg&Atilde;&ordm;n lo necesite el
+sistema.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cuando esta
+funci&Atilde;&sup3;n se coloca en un hilo HAL y se inician
+los hilos HAL, <i>funct</i> se llama repetidamente con dos
+argumentos: <i>void *arg</i> es el mismo valor que se le dio
+a <b>hal_export_funct</b>, y <i>long period</i> es el
+intervalo entre llamadas en nanosegundos.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cada llamada a
+la funci&Atilde;&sup3;n debe hacer una
+peque&Atilde;&plusmn;a cantidad de trabajo y retornar.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+c&Atilde;&sup3;digo de estado HAL.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_create_thread(3hal)</b>,
+<b>hal_add_funct_to_thread(3hal)</b></p>
+<hr>
+</body>
+</html>

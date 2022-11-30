@@ -1,0 +1,4324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph"><p>:lang:es</p></div>
+<h1 id="cha:g-codes">Códigos G</h1>
+<div class="paragraph"><p>:ini:ini
+:hal:hal
+:ngc:ngc</p></div>
+<div class="sect1">
+<h2 id="_convenciones">1. Convenciones</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Convenciones utilizadas en esta sección</p></div>
+<div class="paragraph"><p>En los prototipos de código G, un guión (<em>-</em>) representa un valor real
+y (<em>&lt;&gt;</em>) denota un elemento opcional.</p></div>
+<div class="paragraph"><p>Si <em>L-</em> está escrito en un prototipo, a menudo se hará referencia a <em>-</em>
+como el <em>número L</em>, y así sucesivamente para cualquier otra letra.</p></div>
+<div class="paragraph"><p>En los prototipos de código G, la palabra <em>ejes</em> representa cualquier eje como se definió
+en su configuración</p></div>
+<div class="paragraph"><p>Un valor opcional se escribirá como esto <em>&lt;L-&gt;</em>.</p></div>
+<div class="paragraph"><p>Un valor real puede ser:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Un número explícito, <em>4</em>
+</p>
+</li>
+<li>
+<p>
+Una expresión, <em>[2 + 2]</em>
+</p>
+</li>
+<li>
+<p>
+Un valor de parámetro, <em># 88</em>
+</p>
+</li>
+<li>
+<p>
+Un valor de función unaria, <em>acos [0]</em>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>En la mayoría de los casos, si se dan palabras de <em>eje</em>
+(cualquiera o todos de <em>X Y Z A B C U V W</em>),
+especificarán un punto de destino.</p></div>
+<div class="paragraph"><p>Los números de eje están en el sistema de coordenadas actualmente activo,
+a menos que se describa explícitamente como
+en el sistema de coordenadas absoluto.</p></div>
+<div class="paragraph"><p>Cuando las palabras de eje son opcionales, cualquier eje omitido conservará su valor original.</p></div>
+<div class="paragraph"><p>Cualquier elemento en los prototipos de código G no descrito explícitamente como
+opcional es obligatorio.</p></div>
+<div class="paragraph"><p>Los valores que siguen a las letras a menudo se dan como números explícitos.
+A menos que se indique lo contrario, los números explícitos pueden ser valores reales. Por
+ejemplo, <em>G10 L2</em> podría igualmente escribirse <em>G[2*5] L[1+1]</em>. Si el
+el valor del parámetro 100 era 2, <em>G10 L#100</em> también significaría lo mismo.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tabla_de_referencia_rápida_de_código_g_a_id_gcode_quick_reference_table_a">2. Tabla de referencia rápida de código G<a id="gcode:quick-reference-table"></a></h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="tableblock">
+<table rules="all"
+width="75%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="28%" />
+<col width="71%" />
+<thead>
+<tr>
+<th align="center" valign="top">Código                            </th>
+<th align="left" valign="top">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g0">G0</a></p></td>
+<td align="left" valign="top"><p class="table">Movimiento coordinado a velocidad rápida</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g1">G1</a></p></td>
+<td align="left" valign="top"><p class="table">Movimiento coordinado a velocidad de avance</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g2-g3">G2 G3</a></p></td>
+<td align="left" valign="top"><p class="table">Movimiento helicoidal coordinado a velocidad de avance</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g4">G4</a></p></td>
+<td align="left" valign="top"><p class="table">Dwell</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g5">G5</a></p></td>
+<td align="left" valign="top"><p class="table">Spline cúbico</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g5.1">G5.1</a></p></td>
+<td align="left" valign="top"><p class="table">B-Spline cuadrático</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g5.2-g5.3">G5.2</a></p></td>
+<td align="left" valign="top"><p class="table">NURBS, agregar punto de control</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g7">G7</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de diámetro (torno)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g8">G8</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de radio (torno)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g10-l1">G10 L1</a></p></td>
+<td align="left" valign="top"><p class="table">Establecer entrada de tabla de herramientas</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g10-l10">G10 L10</a></p></td>
+<td align="left" valign="top"><p class="table">Establecer tabla de herramientas, calculada, pieza de trabajo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g10-l11">G10 L11</a></p></td>
+<td align="left" valign="top"><p class="table">Establecer tabla de herramientas, calculada, fijación</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g10-l2">G10 L2</a></p></td>
+<td align="left" valign="top"><p class="table">Configuración de origen del sistema de coordenadas</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g10-l20">G10 L20</a></p></td>
+<td align="left" valign="top"><p class="table">Configuración del origen del sistema de coordenadas calculada</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g17-g19.1">G17 - G19.1</a></p></td>
+<td align="left" valign="top"><p class="table">Seleccionar Plano</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g20-g21">G20 G21</a></p></td>
+<td align="left" valign="top"><p class="table">Establecer unidades de medida</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g28-g28.1">G28 - G28.1</a></p></td>
+<td align="left" valign="top"><p class="table">Ir a la posición predefinida</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g30-g30.1">G30 - G30.1</a></p></td>
+<td align="left" valign="top"><p class="table">Ir a la posición predefinida</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g33">G33</a></p></td>
+<td align="left" valign="top"><p class="table">Movimiento sincronizado del husillo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g33.1">G33.1</a></p></td>
+<td align="left" valign="top"><p class="table">Roscado rigido</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g38">G38.2 - G38.5</a></p></td>
+<td align="left" valign="top"><p class="table">Sondeo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g40">G40</a></p></td>
+<td align="left" valign="top"><p class="table">Cancelar la compensación del cortador</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g41-g42">G41 G42</a></p></td>
+<td align="left" valign="top"><p class="table">Compensación del cortador</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g41.1-g42.1">G41.1 G42.1</a></p></td>
+<td align="left" valign="top"><p class="table">Compensación dinámica del cortador</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g43">G43</a></p></td>
+<td align="left" valign="top"><p class="table">Usar el offset de longitud de herramienta de la tabla de herramientas</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g43.1">G43.1</a></p></td>
+<td align="left" valign="top"><p class="table">Offset dinámico de longitudde herramienta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g43.2">G43.2</a></p></td>
+<td align="left" valign="top"><p class="table">Aplicar offset de longitud de herramienta adicional</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g49">G49</a></p></td>
+<td align="left" valign="top"><p class="table">Cancelar offset de longitud de herramienta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g52">G52</a></p></td>
+<td align="left" valign="top"><p class="table">Offset del sistema de coordenadas local</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g53">G53</a></p></td>
+<td align="left" valign="top"><p class="table">Mover en coordenadas de máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g54-g59.3">G54-G59.3</a></p></td>
+<td align="left" valign="top"><p class="table">Seleccionar sistema de coordenadas (1 - 9)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g61">G61</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de ruta exacta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g61.1">G61.1</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de parada exacta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g64">G64</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de control de ruta con tolerancia opcional</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g70">G70</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de acabado del torno (2.9)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g71-g72">G71-G72</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de desbaste del torno (2.9)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g73">G73</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de perforación con rotura de viruta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g74">G74</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de roscado izquierdo con Dwell</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g76">G76</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de roscado de múltiples pasadas (Torno)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g80">G80</a></p></td>
+<td align="left" valign="top"><p class="table">Cancelar modos de movimiento</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g81">G81</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de perforación</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g82">G82</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de perforación con Dwell</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g83">G83</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de perforación con picado</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g84">G84</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de roscado derecho con Dwell</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g85">G85</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de mandrinado, sin Dwell, salida a alimentacion</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g86">G86</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de mandrinado, con Dwell, salida rápida</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g89">G89</a></p></td>
+<td align="left" valign="top"><p class="table">Ciclo de perforación, Dwell, salida a alimentación</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g90-g91">G90 G91</a></p></td>
+<td align="left" valign="top"><p class="table">Modo distancia</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g90.1-g91.1">G90.1 G91.1</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de distancia de arco</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g92">G92</a></p></td>
+<td align="left" valign="top"><p class="table">Compensación del sistema de coordenadas</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g92.1-g92.2">G92.1 G92.2</a></p></td>
+<td align="left" valign="top"><p class="table">Cancelar compensaciones G92</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g92.3">G92.3</a></p></td>
+<td align="left" valign="top"><p class="table">Restaurar compensaciones G92</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g93-g94-g95">G93 G94 G95</a></p></td>
+<td align="left" valign="top"><p class="table">Modos de alimentación</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g96-g97">G96</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de control del husillo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table"><a href="g-code_es.html#gcode:g98-g99">G98 G99</a></p></td>
+<td align="left" valign="top"><p class="table">Modo de retracción del ciclo fijo Z</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g0">3. G0 Movimiento rápido</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G0 ejes</code></pre>
+</div></div>
+<div class="paragraph"><p>Para movimiento rápido, programe <em>G0 ejes</em>, donde todas las palabras de eje son opcionales.
+<em>G0</em> es opcional si el modo de movimiento actual es <em>G0</em>. Esto producirá
+movimiento coordinado hacia el punto de destino a la velocidad máxima rápida
+(o más lento). <em>G0</em> se usa típicamente como un movimiento de posicionamiento.</p></div>
+<div class="sect2">
+<h3 id="_velocidad_rápida">3.1. Velocidad rápida</h3>
+<div class="paragraph"><p>La configuración MAX_VELOCITY en la sección del archivo ini [TRAJ] define la máxima
+velocidad de offset rápido. La velocidad máxima de offset rápido puede ser mayor que la
+configuración de MAX_VELOCITY de ejes individuales durante un movimiento coordinado. La maxima
+velocidad de offset rápido puede ser más lenta que la configuración MAX_VELOCITY en [TRAJ]
+si MAX_VELOCITY de un eje o restricciones de trayectoria la limitan.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G0</div>
+<div class="content">
+<pre><code>G90 (establecer modo de distancia absoluta)
+G0 X1 Y-2.3 (movimiento lineal rápido desde la ubicación actual a X1 Y-2.3)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte las secciones <a href="g-code_es.html#gcode:g90-g91">G90</a> y <a href="m-code_es.html#mcode:m2-m30">M2</a> para obtener más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si la compensación del cortador está activa, el movimiento será diferente de
+lo anterior; vea la sección <a href="tool-compensation_es.html#sec:cutter-compensation">Compensación del cortador</a>.</p></div>
+<div class="paragraph"><p>Si <em>G53</em> está programado en la misma línea, el movimiento también será diferente;
+Consulte la sección <a href="g-code_es.html#gcode:g53">G53</a> para obtener más información.</p></div>
+<div class="paragraph"><p>La trayectoria de un movimiento rápido G0 se puede redondear en los cambios de dirección y depende
+del <a href="../user/user-concepts_es.html#sec:trajectory-control">control de trayectoria</a> y de la máxima
+aceleración de los ejes.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Una letra de eje no tiene un valor real.
+</p>
+</li>
+<li>
+<p>
+Se utiliza una letra de eje que no está configurada
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><a id="gcode:g1"></a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_g1_movimiento_lineal">4. G1 Movimiento lineal</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><code>G1 ejes</code></pre>
+</div></div>
+<div class="paragraph"><p>Para movimiento lineal (línea recta) a <a href="other-code_es.html#sec:set-feed-rate">velocidad de avance</a> programada
+(para cortar o no), programe <em>G1 'ejes</em>', donde todas las palabras de eje son
+opcionales. <em>G1</em> es opcional si el modo de movimiento actual es <em>G1</em>. Esto
+produce movimiento coordinado al punto de destino a la tasa de alimentación actual (o más lenta).</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G1</div>
+<div class="content">
+<pre><code>G90 (establecer modo de distancia absoluta)
+G1 X1.2 Y-3 F10 (movimiento lineal a velocidad de alimentación de 10 desde la posición actual a X1.2 Y-3)
+Z-2.3 (movimiento lineal a la misma velocidad de avance desde la posición actual a Z-2.3)
+Z1 F25 (movimiento lineal a una velocidad de avance de 25 desde la posición actual a Z1)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte las secciones <a href="g-code_es.html#gcode:g90-g91">G90</a> , <a href="other-code_es.html#sec:set-feed-rate">F</a> y <a href="m-code_es.html#mcode:m2-m30">M2</a>
+para más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si la compensación del cortador está activa, el movimiento será diferente de
+lo anterior; vea la sección <a href="tool-compensation_es.html#sec:cutter-compensation">Compensación del cortador</a>.</p></div>
+<div class="paragraph"><p>Si <em>G53</em> está programado en la misma línea, el movimiento también será diferente;
+Consulte la sección <a href="g-code_es.html#gcode:g53">G53</a> para obtener más información.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+No se ha establecido la velocidad de alimentación.
+</p>
+</li>
+<li>
+<p>
+Una letra de eje no tiene un valor real.
+</p>
+</li>
+<li>
+<p>
+Se utiliza una letra de eje que no está configurada
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g2-g3">5. G2, G3 Movimiento de arco</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G2 o G3 offsets de ejes (formato centro)
+G2 o G3 ejes R- (formato radio)
+G2 o G3 offsets|R- &lt;P-&gt; (círculos completos)</code></pre>
+</div></div>
+<div class="paragraph"><p>Un arco circular o helicoidal se especifica utilizando <em>G2</em> (arco en sentido horario)
+o <em>G3</em> (arco en sentido antihorario) a la
+<a href="other-code_es.html#sec:set-feed-rate">velocidad de avance</a> actual. La dirección (CW, CCW) se ve desde
+extremo positivo del eje sobre el cual ocurre el movimiento circular.</p></div>
+<div class="paragraph"><p>El eje del círculo o hélice debe ser paralelo al
+eje X, Y o Z del sistema de coordenadas de máquina.
+El eje (o, equivalentemente, el plano perpendicular al eje)
+se selecciona con <em>G17</em> (eje Z, plano XY),
+<em>G18</em> (eje Y, plano XZ) o <em>G19</em> (eje X, plano YZ).
+Los planos <em>17.1 ', '18.1</em> y '19.1 'no son compatibles actualmente.
+Si el arco es circular, se encuentra en un plano paralelo al plano seleccionado.</p></div>
+<div class="paragraph"><p>Para programar una hélice, incluya la palabra del eje perpendicular al arco
+plano, por ejemplo, si está en el plano <em>G17</em>, incluya una palabra <em>Z</em>. Esta
+hará que el eje <em>Z</em> se mueva al valor programado durante el
+movimiento circular <em>XY</em>.</p></div>
+<div class="paragraph"><p>Para programar un arco que dé más de una vuelta completa, use la palabra <em>P</em>
+especificando el número de vueltas completas más el arco programado. La palabra <em>P</em>
+debe ser un entero. Si <em>P</em> no está especificado, el comportamiento es como si fuera
+dado <em>P1</em> que solo dará una vuelta completa o parcial. Por ejemplo, si un
+arco de 180 grados se programa con P2, el movimiento resultante será 1 1/2
+rotaciones. Para cada incremento de P por encima de 1, se agrega un círculo completo adicional al
+arco programado. Se admiten arcos helicoidales de múltiples vueltas, que dan movimiento útil
+para fresar agujeros o roscas.</p></div>
+<div class="paragraph"><p>Si una línea de código forma un arco e incluye un movimiento de eje giratorio,
+los ejes rotativos giran a una velocidad constante para que el movimiento rotativo
+comienze y termine cuando el movimiento XYZ comienza y termina.
+Las líneas de este tipo casi nunca se programan.</p></div>
+<div class="paragraph"><p>Si la compensación del cortador está activa, el movimiento será diferente de
+lo anterior; vea la sección <a href="tool-compensation_es.html#sec:cutter-compensation">Compensación del cortador</a>.</p></div>
+<div class="paragraph"><p>El centro del arco es absoluto o relativo según lo establecido por <a href="g-code_es.html#gcode:g90.1-g91.1">G90.1 o G91.1</a> respectivamente.</p></div>
+<div class="paragraph"><p>Se permiten dos formatos para especificar un arco: formato centro y formato radio.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+No se ha establecido la velocidad de alimentación.
+</p>
+</li>
+<li>
+<p>
+La palabra P no es un número entero.
+</p>
+</li>
+</ul></div>
+<div class="sect2">
+<h3 id="_arcos_de_formato_centro">5.1. Arcos de formato centro</h3>
+<div class="paragraph"><p>Los arcos de formato centro son más precisos que los arcos de formato radio y
+es el formato preferido.</p></div>
+<div class="paragraph"><p>El punto final del arco, junto con el offset al centro del
+arco desde la ubicación actual se usa para programar arcos que son menos
+que un círculo completo. Está bien si el punto final del arco es el mismo
+que la ubicación actual</p></div>
+<div class="paragraph"><p>Para programar círculos completos se usa el offset al centro del arco desde la ubicación actual y,
+opcionalmente, el número de vueltas  .</p></div>
+<div class="paragraph"><p>Al programar arcos, se puede producir un error debido al redondeo al usar una
+precisión de menos de 4 decimales (0.0000) para pulgadas y menos de
+3 decimales (0.000) para milímetros.</p></div>
+<div class="paragraph"><div class="title">Modo de distancia de arco incremental</div><p>Los offsets del centro del arco son una distancia relativa de la ubicación de inicio del arco.
+El modo de distancia de arco incremental es el predeterminado.</p></div>
+<div class="paragraph"><p>Se deben programar una o más palabras de eje y uno o más offsets para un
+arco de menos de 360 ​​grados.</p></div>
+<div class="paragraph"><p>No se deben programar palabras de eje y uno o más offsets para círculos completos.
+La palabra <em>P</em> está por defecto en 1 y es opcional.</p></div>
+<div class="paragraph"><p>Para obtener más información sobre el 'Modo de distancia de arco incremental, consulte la sección
+<a href="g-code_es.html#gcode:g90.1-g91.1">G91.1</a> .</p></div>
+<div class="paragraph"><p>Modo de distancia de arco absoluta.
+Los offsets del centro del arco son la distancia absoluta desde la posición 0 actual del eje.</p></div>
+<div class="paragraph"><p>Una o más palabras de eje y <em>ambos</em> offsets deben programarse para arcos
+de menos de 360 ​​grados</p></div>
+<div class="paragraph"><p>No se deben programar palabras de eje y ambos offsets para círculos completos.
+La palabra <em>P</em> está por defecto en 1 y es opcional.</p></div>
+<div class="paragraph"><p>Para obtener más información sobre el 'Modo de distancia absoluta del arco, consulte la sección
+<a href="g-code_es.html#gcode:g90.1-g91.1">G90.1</a>.</p></div>
+<div class="paragraph"><p>Plano XY (G17)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G2 o G3 &lt;X- Y- Z- I- J- P-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Z</em> - hélice
+</p>
+</li>
+<li>
+<p>
+<em>I</em> - offset X
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - offset Y
+</p>
+</li>
+<li>
+<p>
+<em>P</em> - número de vueltas
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Plano XZ (G18)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G2 o G3 &lt;X- Z- Y- I- K- P-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Y</em> - hélice
+</p>
+</li>
+<li>
+<p>
+<em>I</em> - offset X
+</p>
+</li>
+<li>
+<p>
+<em>K</em> - offset Z
+</p>
+</li>
+<li>
+<p>
+<em>P</em> - número de vueltas
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Plano YZ (G19)</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G2 o G3 &lt;Y- Z- X- J- K- P-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>X</em> - hélice
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - offset Y
+</p>
+</li>
+<li>
+<p>
+<em>K</em> - offset Z
+</p>
+</li>
+<li>
+<p>
+<em>P</em> - número de vueltas
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+No se establece la velocidad de avance con la palabra <a href="other-code_es.html#sec:set-feed-rate">F</a>.
+</p>
+</li>
+<li>
+<p>
+No hay offsets programados.
+</p>
+</li>
+<li>
+<p>
+Cuando el arco se proyecta en el plano seleccionado, la distancia desde
+  el punto actual al centro difiere de la distancia desde el punto final
+  al centro en más de (.05 pulgadas / .5 mm)
+  o ((.0005 pulgadas / .005 mm) y .1% del radio).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Descifrando el mensaje de error <em>El radio final del arco difiere del radio inicial:</em></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>inicio</em> - la posición actual
+</p>
+</li>
+<li>
+<p>
+<em>centro</em> - la posición central calculada con las palabras i, j o ​​k
+</p>
+</li>
+<li>
+<p>
+<em>fin</em> - el punto final programado
+</p>
+</li>
+<li>
+<p>
+<em>r1</em> - radio desde la posición inicial hasta el centro
+</p>
+</li>
+<li>
+<p>
+<em>r2</em> - radio desde la posición final hasta el centro
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_ejemplos_de_formato_centro">5.2. Ejemplos de formato centro</h3>
+<div class="paragraph"><p>Calcular arcos a mano puede ser difícil a veces. Una opción es
+dibujar el arco con un programa cad para obtener las coordenadas y los offsets.
+Tenga en cuenta la tolerancia mencionada anteriormente; puede que tenga que cambiar la
+precisión de su programa cad para obtener los resultados deseados. Otra
+opción es calcular las coordenadas y el offset utilizando fórmulas. Como
+puede ver en las siguientes figuras, se puede formar un triángulo a partir de la
+posición actual, la posición final y el centro del arco.</p></div>
+<div class="paragraph"><p>En la siguiente figura puede ver que la posición de inicio es X0 Y0 y
+la posición final es X1 Y1. La posición central del arco está en X1 Y0. Esto da
+un offset desde la posición inicial de 1 en el eje X y 0 en el eje Y.
+En este caso solo se necesita un offset I.</p></div>
+<div class="listingblock">
+<div class="title">G2 Ejemplo de línea</div>
+<div class="content">
+<pre><code>G0 X0 Y0
+G2 X1 Y1 I1 F10 (arco en sentido horario en el plano XY)</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g2_es.svg" alt="Ejemplo G2" />
+</div>
+<div class="title">Figure 1. Ejemplo G2</div>
+</div>
+<div class="paragraph"><p>En el siguiente ejemplo, vemos la diferencia entre los offsets para Y si
+estamos haciendo un movimiento G2 o G3. Para el movimiento G2, la posición inicial es
+X0 Y0, para el movimiento G3 es X0 Y1. El centro del arco está en X1 Y0.5 para
+ambos movimientos. Para G2, el offset J es 0.5 y para G3
+el offset J es -0.5.</p></div>
+<div class="listingblock">
+<div class="title">Lineas de ejemplo G2-G3</div>
+<div class="content">
+<pre><code>G0 X0 Y0
+G2 X0 Y1 I1 J0.5 F25 (arco en sentido horario en el plano XY)
+G3 X0 Y0 I1 J-0.5 F25 (arco en sentido antihorario en el plano XY)</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g2-3_en.svg" alt="Ejemplo G2-G3" />
+</div>
+<div class="title">Figure 2. Ejemplo G2-G3</div>
+</div>
+<div class="paragraph"><p>En el siguiente ejemplo mostramos cómo el arco puede hacer una hélice en el eje Z
+agregando la palabra Z.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo Helice G2</div>
+<div class="content">
+<pre><code>G0 X0 Y0 Z0
+G17 G2 X10 Y16 I3 J4 Z-1 (arco helicoidal con Z agregado)</code></pre>
+</div></div>
+<div class="paragraph"><p>En el siguiente ejemplo mostramos cómo hacer más de una vuelta usando la palabra P.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo de palabra P</div>
+<div class="content">
+<pre><code>G0 X0 Y0 Z0
+G2 X0 Y1 Z-1 I1 J0.5 P2 F25</code></pre>
+</div></div>
+<div class="paragraph"><p>En el formato centro, el radio del arco no está especificado, pero
+se puede encontrar fácilmente como la distancia desde el centro del círculo hasta
+el punto actual o el punto final del arco.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_arcos_de_formato_radio">5.3. Arcos de formato radio</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>G2 o G3 ejes R- &lt;P-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>R</em> - radio desde la posición actual
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>No es una buena práctica programar arcos de formato de radio que sean
+círculos casi completos o casi semicírculos debido a que un pequeño cambio en la
+ubicación del punto final producirá un cambio mucho mayor en la
+ubicación del centro del círculo (y, por lo tanto, el centro del
+arco). El efecto de aumento es lo suficientemente grande como para que el error de redondeo en un
+número puede producir cortes fuera de tolerancia. Por ejemplo, un desplazamiento del 1%
+del punto final de un arco de 180 grados produce un 7% de desplazamiento
+de un punto a 90 grados a lo largo del arco. Los círculos casi completos
+son aún peores. Otros arcos de tamaño (en el rango de hasta 165 grados o entre
+195 a 345 grados) están bien.</p></div>
+<div class="paragraph"><p>En el formato radio, las coordenadas del punto final del arco en
+el plano seleccionado se especifica junto con el radio del arco.
+Programe los ejes <em>G2</em> <em>ejes</em> ' R-<em>(o use 'G3</em> en lugar de <em>G2</em>). R es el
+radio. Las palabras de eje son todas opcionales, excepto que debe ser usada
+al menos una de las dos palabras para los ejes del plano seleccionado.
+El número R es el radio. Un radio positivo indica que el
+el arco gira menos de 180 grados, mientras que un radio negativo
+indica un giro de más de 180 grados. Si el arco es helicoidal, también se especifica el
+valor del punto final del arco en el eje de coordenadas paralelo al eje de la hélice.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+se omiten las dos palabras de eje para los ejes del plano seleccionado
+</p>
+</li>
+<li>
+<p>
+el punto final del arco es el mismo que el punto actual.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">G2 Ejemplo de línea</div>
+<div class="content">
+<pre><code>G17 G2 X10 Y15 R20 Z5 (formato de radio con arco)</code></pre>
+</div></div>
+<div class="paragraph"><p>El ejemplo anterior hace un arco circular o helicoidal en sentido horario (visto desde el eje Z positivo)
+cuyo eje es paralelo al eje Z, terminando
+en X = 10, Y = 15 y Z = 5, con un radio de 20. Si el valor inicial
+de Z es 5, este es un arco de un círculo paralelo al plano XY;
+de lo contrario es un arco helicoidal.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g4">6. G4 Dwell</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G4 P-</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - segundos en parada (punto flotante)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El número P es el tiempo en segundos que todos los ejes permanecerán inmóviles.
+El número P es un número de coma flotante, por lo que se pueden usar fracciones de segundo.
+G4 no afecta al husillo, al refrigerante, ni a ninguna E/S.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo de líneas G4</div>
+<div class="content">
+<pre><code>G4 P0.5 (espera de 0.5 segundos antes de continuar)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el número P es negativo o no está especificado.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g5">7. G5 Spline cúbico</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G5 X- Y- &lt;I- J-&gt; P- Q-</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>I</em> - offset incremental X desde el punto de inicio hasta el primer punto de control
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - offset incremental Y desde el punto de inicio hasta el primer punto de control
+</p>
+</li>
+<li>
+<p>
+<em>P</em> - offset incremental X desde el punto final hasta el segundo punto de control
+</p>
+</li>
+<li>
+<p>
+<em>Q</em> - offset incremental Y desde el punto final hasta el segundo punto de control
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G5 crea una B-spline cúbica en el plano XY con los ejes X e Y únicamente.
+P y Q deben especificarse para cada comando G5.</p></div>
+<div class="paragraph"><p>Para el primer comando G5 en una serie de comandos G5, I y J deben
+especificarse. Para los comandos G5 posteriores, tanto I como J deben
+especificarse ambos o ninguno. Si I y J no están especificados,
+la dirección inicial de este spline coincidirá automáticamente con la dirección final del
+anterior (como si I y J fueran la negación de P y Q del anterior)</p></div>
+<div class="paragraph"><p>Por ejemplo, para programar una forma de N con curvas:</p></div>
+<div class="listingblock">
+<div class="title">G5 Muestra spline cúbica inicial</div>
+<div class="content">
+<pre><code>G90 G17
+G0 X0 Y0
+G5 I0 J3 P0 Q-3 X1 Y1</code></pre>
+</div></div>
+<div class="paragraph"><p>Ahora se puede hacer un segundo N curvilíneo que se adhiera suavemente a este
+sin especificar I y J:</p></div>
+<div class="listingblock">
+<div class="title">G5 Muestra de spline cúbica posterior</div>
+<div class="content">
+<pre><code>G5 P0 Q-3 X2 Y2</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+P y Q no están especificados
+</p>
+</li>
+<li>
+<p>
+Solo se especifica uno de I o J
+</p>
+</li>
+<li>
+<p>
+I o J no están especificados en el primero de una serie de comandos G5
+</p>
+</li>
+<li>
+<p>
+Se especifica un eje distinto de X o Y
+</p>
+</li>
+<li>
+<p>
+El plano activo no es G17
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g5.1">8. G5.1 Spline cuadrático</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G5.1 X- Y- I- J-</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>I</em> - offset incremental X desde el punto inicial al punto de control
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - offset incremental Y desde el punto inicial al punto de control
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G5.1 crea una B-spline cuadrática en el plano XY con los ejes X e Y
+solamente. No especificar I o J da un offset cero para el eje no especificado;
+por tanto, uno o ambos deben ser dados.</p></div>
+<div class="paragraph"><p>Por ejemplo, para programar una parábola, a través del origen, de X-2 Y4 a X2 Y4:</p></div>
+<div class="listingblock">
+<div class="title">G5.1 Muestra de spline cuadrática</div>
+<div class="content">
+<pre><code>G90 G17
+G0 X-2 Y4
+G5.1 X2 I2 J-8</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Tanto el offset I como J no están especificados o son cero
+</p>
+</li>
+<li>
+<p>
+Se especifica un eje distinto de X o Y
+</p>
+</li>
+<li>
+<p>
+El plano activo no es G17
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g5.2-g5.3">9. G5.2 G5.3 Bloque NURBS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G5.2 &lt;P-&gt; &lt;X- Y-&gt; &lt;L-&gt;
+X- Y- &lt;P-&gt;
+...
+G5.3</code></pre>
+</div></div>
+<div class="paragraph"><p>Advertencia: G5.2, G5.3 es experimental y no está completamente probado.</p></div>
+<div class="paragraph"><p>G5.2 abre el bloque de datos que define un NURBS y G5.3 lo
+cierra. En las líneas entre estos dos códigos,
+los puntos de control de la curva se definen con sus <em>pesos</em> (P) relacionados y
+el parámetro (L) que determina el orden de la curva.</p></div>
+<div class="paragraph"><p>La coordenada actual, antes del primer comando G5.2, siempre se toma
+como el primer punto de control NURBS. Para establecer el peso para este primer
+punto de control, programe G5.2 P- sin dar ninguna X Y.</p></div>
+<div class="paragraph"><p>El peso predeterminado es 1. El orden predeterminado es 3.</p></div>
+<div class="listingblock">
+<div class="title">G5.2 Ejemplo</div>
+<div class="content">
+<pre><code>G0 X0 Y0 (movimiento rápido)
+F10 (velocidad de avance establecida)
+G5.2 P1 L3
+     X0 Y1 P1
+     X2 Y2 P1
+     X2 Y0 P1
+     X0 Y0 P2
+G5.3
+; Los movimientos rápidos muestran el mismo camino sin el Bloque NURBS
+G0 X0 Y1
+   X2 Y2
+   X2 Y0
+   X0 Y0
+M2</code></pre>
+</div></div>
+<div class="paragraph"><p>Salida de muestra NURBS</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="images/nurbs01.png" alt="Ejemplo de salida NURBS" />
+</span></p></div>
+<div class="paragraph"><p>Puede encontrar más información sobre NURBS aquí:</p></div>
+<div class="paragraph"><p><a href="http://wiki.linuxcnc.org/cgi-bin/wiki.pl?NURBS">http://wiki.linuxcnc.org/cgi-bin/wiki.pl?NURBS</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g7">10. Modo de diámetro de torno G7</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G7</code></pre>
+</div></div>
+<div class="paragraph"><p>Programe G7 para ingresar el modo de diámetro para el eje X en un torno. En
+el modo de diámetro el eje X se mueve 1/2 de la distancia
+al centro del torno. Por ejemplo, X1 movería el cortador a
+0.500" desde el centro del torno dando una parte de 1" de diámetro.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g8">11. Modo de radio de torno G8</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G8</code></pre>
+</div></div>
+<div class="paragraph"><p>Programe G8 para modo radio en el eje X de un torno. Cuando
+el eje X se mueva en modo radio en un torno será la distancia desde el
+centro. Por lo tanto, un corte en X1 daría como resultado una pieza de 2" de diámetro.
+G8 es el predeterminado al arranque.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g10-l1">12. G10 L1 Establecer tabla de herramientas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G10 L1 P- ejes &lt;R- I- J- Q-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - número de herramienta
+</p>
+</li>
+<li>
+<p>
+<em>R</em> - radio de herramienta
+</p>
+</li>
+<li>
+<p>
+<em>I</em> - ángulo frontal (torno)
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - ángulo trasero (torno)
+</p>
+</li>
+<li>
+<p>
+<em>Q</em> - orientación (torno)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G10 L1 establece la tabla de herramientas para el número de herramienta <em>P</em> a los valores de las palabras.</p></div>
+<div class="paragraph"><p>Un G10 L1 válido reescribe y vuelve a cargar la tabla de herramientas.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo de línea G10 L1</div>
+<div class="content">
+<pre><code>G10 L1 P1 Z1.5 (ajustar la herramienta 1 con offset Z desde el origen de la máquina de 1.5)
+G10 L1 P2 R0.015 Q3 (configuración de ejemplo de herramienta 2 de torno radio 0.015 y orientación 3)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La compensación de cortador está activada
+</p>
+</li>
+<li>
+<p>
+El número P no está especificado
+</p>
+</li>
+<li>
+<p>
+El número P no es un número de herramienta válido de la tabla de herramientas
+</p>
+</li>
+<li>
+<p>
+El número P es 0
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para obtener más información sobre la orientación del cortador utilizada por la palabra <em>Q</em>,
+vea el diagrama <a href="../lathe/lathe-user_es.html#lathe-tool-orientation">Orientación Herramienta Torno</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g10-l2">13. G10 L2 Establecer sistema de coordenadas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G10 L2 P- &lt;ejes R-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - sistema de coordenadas (0-9)
+</p>
+</li>
+<li>
+<p>
+<em>R</em> - rotación sobre el eje Z
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G10 L2 desplaza el origen de los ejes en el sistema de coordenadas especificado
+el valor de cada palabra de eje. El offset es desde el origen de la máquina establecido
+durante el recorrido de homing. El valor de offset reemplazará cualquier offset actual vigente para
+el sistema de coordenadas especificado. Las palabras de eje no utilizadas no se cambiarán.</p></div>
+<div class="paragraph"><p>Programe P0 a P9 para especificar qué sistema de coordenadas cambiar.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="50%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 1. Sistema coordinado</caption>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="center" valign="top">Valor P </th>
+<th align="center" valign="top">Sistema de coordenadas </th>
+<th align="center" valign="top">Código G</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">0</p></td>
+<td align="center" valign="top"><p class="table">Activo</p></td>
+<td align="center" valign="top"><p class="table">n/a</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">1</p></td>
+<td align="center" valign="top"><p class="table">1</p></td>
+<td align="center" valign="top"><p class="table">G54</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">2</p></td>
+<td align="center" valign="top"><p class="table">2</p></td>
+<td align="center" valign="top"><p class="table">G55</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">3</p></td>
+<td align="center" valign="top"><p class="table">3</p></td>
+<td align="center" valign="top"><p class="table">G56</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">4</p></td>
+<td align="center" valign="top"><p class="table">4</p></td>
+<td align="center" valign="top"><p class="table">G57</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">5</p></td>
+<td align="center" valign="top"><p class="table">5</p></td>
+<td align="center" valign="top"><p class="table">G58</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">6</p></td>
+<td align="center" valign="top"><p class="table">6</p></td>
+<td align="center" valign="top"><p class="table">G59</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">7</p></td>
+<td align="center" valign="top"><p class="table">7</p></td>
+<td align="center" valign="top"><p class="table">G59.1</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">8</p></td>
+<td align="center" valign="top"><p class="table">8</p></td>
+<td align="center" valign="top"><p class="table">G59.2</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">9</p></td>
+<td align="center" valign="top"><p class="table">9</p></td>
+<td align="center" valign="top"><p class="table">G59.3</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Opcionalmente, programe R para indicar la rotación del eje XY alrededor del eje Z.
+La dirección de rotación es CCW vista desde el extremo positivo del eje Z.</p></div>
+<div class="paragraph"><p>Todas las palabras de eje son opcionales.</p></div>
+<div class="paragraph"><p>Estar en modo de distancia incremental (<a href="g-code_es.html#gcode:g90-g91"><em>G91</em></a>) no tiene efecto en <em>G10 L2</em>.</p></div>
+<div class="paragraph"><p>Conceptos importantes</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+G10 L2 Pn no cambia del sistema de coordenadas actual al especificado por P;
+  tiene que usar G54-59.3 para seleccionar un sistema de coordenadas.
+</p>
+</li>
+<li>
+<p>
+Cuando una rotación está activa, un eje solo permitirá jogging
+  en una dirección positiva o negativa y no a lo largo del eje girado.
+</p>
+</li>
+<li>
+<p>
+Si un offset local <em>G52</em> o un offset de origen <em>G92</em> estaba vigente antes
+  <em>G10 L2</em>, continuará vigente después.
+</p>
+</li>
+<li>
+<p>
+Al programar un sistema de coordenadas con R, cualquier <em>G52</em> o <em>G92</em>
+  se aplicará <strong>después</strong> de la rotación.
+</p>
+</li>
+<li>
+<p>
+El sistema de coordenadas cuyo origen se establece mediante un comando <em>G10</em> puede estar
+  activo o inactivo en el momento en que se ejecuta <em>G10</em>.
+  Si está activo, las nuevas coordenadas surten efecto de inmediato.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El número P no se evalúa como un entero en el rango de 0 a 9.
+</p>
+</li>
+<li>
+<p>
+Se programa un eje que no está definido en la configuración.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo de línea G10 L2</div>
+<div class="content">
+<pre><code>G10 L2 P1 X3.5 Y17.2</code></pre>
+</div></div>
+<div class="paragraph"><p>En el ejemplo anterior, el origen del primer sistema de coordenadas
+(el seleccionado por <em>G54</em>) se configura para ser X = 3.5 e Y = 17.2.
+Como solo se especifican X e Y, el punto de origen solo se mueve en X e Y;
+las otras coordenadas no cambian.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo de línea G10 L2</div>
+<div class="content">
+<pre><code>G10 L2 P1 X0 Y0 Z0 (limpiar offsets para los ejes X, Y y Z en el sistema de coordenadas 1)</code></pre>
+</div></div>
+<div class="paragraph"><p>El ejemplo anterior establece las coordenadas XYZ del sistema de coordenadas 1 en el origen de máquina.</p></div>
+<div class="paragraph"><p>El sistema de coordenadas se describe en la sección <a href="coordinates_es.html#cha:coordinate-system">Sistema de coordenadas</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g10-l10">14. G10 L10 Establecer tabla de herramientas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G10 L10 ejes P &lt;R- I- J- Q-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - número de herramienta
+</p>
+</li>
+<li>
+<p>
+<em>R</em> - radio de herramienta
+</p>
+</li>
+<li>
+<p>
+<em>I</em> - ángulo frontal (torno)
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - ángulo trasero (torno)
+</p>
+</li>
+<li>
+<p>
+<em>Q</em> - orientación (torno)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G10 L10 cambia la entrada de la tabla de herramientas para la herramienta P de modo que si
+la compensación de herramienta se vuelve a cargar, con la máquina en su posición actual
+y con las compensaciones actuales G5x y G52/G92 activas, las coordenadas actuales
+para los ejes dados se convertirán en los valores dados. Los ejes que
+no se han especificado en el comando G10 L10 no se cambiarán. Esto podría ser
+útil con un movimiento de sonda como se describe en la sección <a href="g-code_es.html#gcode:g38">G38</a>.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G10 L10</div>
+<div class="content">
+<pre><code>T1 M6 G43 (carga de herramienta 1 y compensaciones de longitud)
+G10 L10 P1 Z1.5 (establecer la posición actual para Z en 1.5)
+G43 (vuelve a cargar las compensaciones de longitud de herramienta de la tabla de herramientas modificada)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte las secciones <a href="other-code_es.html#sec:select-tool">T</a> , <a href="m-code_es.html#mcode:m6">M6</a> y
+  <a href="g-code_es.html#gcode:g43">G43</a>/<a href="g-code_es.html#gcode:g43.1">G43.1</a>  para más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La compensación de cortador está activada
+</p>
+</li>
+<li>
+<p>
+El número P no está especificado
+</p>
+</li>
+<li>
+<p>
+El número P no es un número de herramienta válido de la tabla de herramientas
+</p>
+</li>
+<li>
+<p>
+El número P es 0
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g10-l11">15. G10 L11 Establecer tabla de herramientas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G10 L11 P- ejes &lt;R- I- J- Q-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - número de herramienta
+</p>
+</li>
+<li>
+<p>
+<em>R</em> - radio de herramienta
+</p>
+</li>
+<li>
+<p>
+<em>I</em> - ángulo frontal (torno)
+</p>
+</li>
+<li>
+<p>
+<em>J</em> - ángulo trasero (torno)
+</p>
+</li>
+<li>
+<p>
+<em>Q</em> - orientación (torno)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G10 L11 es como G10 L10, excepto que en lugar de configurar la entrada
+de acuerdo con las compensaciones actuales, se establece de modo que
+las coordenadas actuales se convertirían en el valor dado si se vuelve a cargar el offset
+de la nueva herramienta y la máquina se coloca en el sistema de coordenadas G59.3
+sin ningún offset G52/G92 activo.</p></div>
+<div class="paragraph"><p>Esto permite al usuario configurar el sistema de coordenadas G59.3 de acuerdo con un
+punto fijo en la máquina, y luego usar ese lugar para medir herramientas
+sin tener en cuenta otras compensaciones actualmente activas.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La compensación de cortador está activada
+</p>
+</li>
+<li>
+<p>
+El número P no está especificado
+</p>
+</li>
+<li>
+<p>
+El número P no es un número de herramienta válido de la tabla de herramientas
+</p>
+</li>
+<li>
+<p>
+El número P es 0
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g10-l20">16. G10 L20 Establecer sistema de coordenadas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G10 L20 P- ejes</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - sistema de coordenadas (0-9)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G10 L20 es similar a G10 L2, excepto que en lugar de configurar el
+offset/entrada al valor dado, se establece en un valor calculado que
+hace que las coordenadas actuales se conviertan en el valor dado.</p></div>
+<div class="listingblock">
+<div class="title">Línea de ejemplo G10 L20</div>
+<div class="content">
+<pre><code>G10 L20 P1 X1.5 (establece la ubicación actual del eje X en el sistema de coordenadas 1 a 1.5)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El número P no se evalúa como un entero en el rango de 0 a 9.
+</p>
+</li>
+<li>
+<p>
+Se programa un eje que no está definido en la configuración.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g17-g19.1">17. G17 - G19.1 Seleccionar plano</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Estos códigos establecen el plano actual de la siguiente manera:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G17</em> - XY (predeterminado)
+</p>
+</li>
+<li>
+<p>
+<em>G18</em> - ZX
+</p>
+</li>
+<li>
+<p>
+<em>G19</em> - YZ
+</p>
+</li>
+<li>
+<p>
+<em>G17.1</em> - UV
+</p>
+</li>
+<li>
+<p>
+<em>G18.1</em> - WU
+</p>
+</li>
+<li>
+<p>
+<em>G19.1</em> - VW
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Los planos UV, WU y VW no admiten arcos.</p></div>
+<div class="paragraph"><p>Es una buena práctica incluir una selección de plano en el preámbulo
+de cada archivo de código G.</p></div>
+<div class="paragraph"><p>Los efectos de tener un plano seleccionado se discuten en las Secciones
+<a href="g-code_es.html#gcode:g2-g3">G2 G3 Arcos</a> y <a href="g-code_es.html#gcode:g80-g89">G81 G89</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g20-g21">18. Unidades G20, G21</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G20</em> - usar pulgadas para unidades de longitud.
+</p>
+</li>
+<li>
+<p>
+<em>G21</em> - usar milímetros para unidades de longitud.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es una buena práctica incluir selección de unidades en el preámbulo
+de cada archivo de código G.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g28-g28.1">19. G28, G28.1 Ir/Establecer posición predefinida</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">Solo use G28 cuando su máquina esté en una posición repetible y
+la posición G28 deseada se ha almacenado con G28.1.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>G28 usa los valores almacenados en los <a href="overview_es.html#sub:numbered-parameters">parámetros</a>
+5161-5169 como el punto final X Y Z A B C U V W a donde moverse.
+Los valores de los parametros son coordenadas máquina <em>absolutas</em> en las <em>unidades</em> de máquina nativas
+especificadas en el archivo ini. Todos los ejes definidos en el archivo ini se moverán cuando
+se emite un G28. Si no se almacenan posiciones con G28.1, todos los ejes irán al
+<a href="coordinates_es.html#sec.machine-coordinate-system">origen de máquina</a>.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G28</em> - hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> desde ls actual
+  posición a la posición <em>absoluta</em> de los valores en los parámetros 5161-5166.
+</p>
+</li>
+<li>
+<p>
+<em>G28 ejes</em> - hace un movimiento rápido a la posición especificada por
+  <em>ejes</em> incluyendo cualquier offset, luego hará un movimiento rápido hacia la
+  posición <em>absoluta</em> de los valores en los parámetros 5161-5166 para todos los <em>ejes</em> especificados. Ningun
+  <em>eje</em> no especificado no se moverá.
+</p>
+</li>
+<li>
+<p>
+<em>G28.1</em> - almacena la posición <em>absoluta</em> actual en los parámetros 5161-5166.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Linea de ejemplo G28</div>
+<div class="content">
+<pre><code>G28 Z2.5 (rápido a Z2.5 y luego a la ubicación Z especificada en #5163)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La compensación del cortador está activada
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g30-g30.1">20. G30, G30.1 Ir/Establecer posición predefinida</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">Use G30 solo cuando su máquina esté en una posición repetible y
+la posición G30 deseada se ha almacenado con G30.1.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>G30 funciona igual que G28 pero usa los valores almacenados en los
+<a href="overview_es.html#sub:numbered-parameters">parámetros</a> 5181-5189 como punto final X Y Z A B C U V W
+a donde moverse. Los valores de los parámetros son coordenadas máquina <em>absolutas</em>
+en las <em>unidades</em> de máquina nativas especificadas en el archivo ini.
+Todos los ejes definidos en el archivo ini se moverán cuando se emita un G30. Si no
+se almacenan las posiciones con G30.1, todos los ejes irán al
+<a href="coordinates_es.html#sec.machine-coordinate-system">origen máquina</a>.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Los parámetros G30 se usarán para mover la herramienta cuando se programe un M6
+si TOOL_CHANGE_AT_G30 = 1 está en la sección [EMCIO] del archivo ini.</td>
+</tr></table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G30</em> - hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> desde la
+  posición actual a la posición "absoluta" de los valores en los parámetros 5181-5189.
+</p>
+</li>
+<li>
+<p>
+<em>G30 ejes</em>:realiza un movimiento rápido a la posición especificada
+  por <em>ejes</em> incluyendo cualquier offset, luego hará un movimiento rápido a la
+  posición <em>absoluta</em> de los valores en los parámetros 5181-5189 para todos los <em>ejes</em>
+  especificados. Cualquier <em>eje</em> no especificado no se moverá.
+</p>
+</li>
+<li>
+<p>
+<em>G30.1</em> - almacena la posición absoluta actual en los parámetros 5181-5186.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">G30 Ejemplo de línea</div>
+<div class="content">
+<pre><code>G30 Z2.5 (rápido a Z2.5 y luego a la ubicación Z especificada en #5183)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La compensación del cortador está activada
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g33">21. Movimiento sincronizado del husillo G33</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G33 X- Y- Z- K- $ -</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>K</em> - distancia por revolución
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para movimiento sincronizado con husillo en una dirección, codifique <em>G33 X- Y- Z- K-</em>
+donde K es la distancia movida en XYZ para cada revolución del husillo.
+Por ejemplo, si comienza en <em>Z = 0</em>, <em>G33 Z-1 K.0625</em> produce
+un movimiento de 1 pulgada en Z cada 16 revoluciones del husillo.
+Este comando podría ser parte de un programa para producir una rosca 16TPI.
+Otro ejemplo en métrica, <em>G33 Z-15 K1.5</em> produce
+un movimiento de 15 mm mientras el husillo gira 10 veces para una rosca de 1,5 mm.</p></div>
+<div class="paragraph"><p>El argumento $ (opcional) establece qué husillo se sincroniza con el movimiento
+(el valor predeterminado es cero). Por ejemplo, G33 Z10 K1 $1 moverá el eje en
+sincronía con el valor del pin HAL spindle.N.revs.</p></div>
+<div class="paragraph"><p>El movimiento sincronizado con el husillo espera los pines index y husillo-a-velocidad,
+por lo que se alinean múltiples pases. <em>G33</em> mueve el extremo al punto final programado.
+G33 podría usarse para cortar roscados cónicos.</p></div>
+<div class="paragraph"><p>Todas las palabras del eje son opcionales, pero se debe utilizar al menos una.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">K sigue la línea descrita por <em>X- Y- Z-</em>. K no es paralelo a
+el eje Z si se utilizan puntos finales X o Y, por ejemplo, al cortar roscas cónicas.</td>
+</tr></table>
+</div>
+<div class="paragraph"><div class="title">Información técnica <a id="gcode:g33-tech-info"></a></div><p>Al comienzo de cada pasada G33, LinuxCNC usa la velocidad del eje y los
+límites de aceleración de la máquina para calcular cuánto tiempo llevará
+acelerar Z después del pulso índice y determina cuántos grados
+rotará el husillo durante ese tiempo. Luego agrega ese ángulo a la
+la posición index y calcula la posición Z utilizando el angulo de husillo corregido.
+Eso significa que Z alcanzará la posición correcta justo al
+terminar de acelerar a la velocidad adecuada y puede comenzar de inmediato
+cortando un buen hilo.</p></div>
+<div class="paragraph"><p>Conexiones HAL
+El pin <em>spindle.N.at-speed</em> debe estar configurado o accionado como true para que el movimiento
+comience. Además spindle.N.revs debe aumentar en 1 por cada revolución
+del husillo y elpin spindle.N.index-enable debe estar conectado a
+un contador de codificador (o resolver) que restablece la habilitación de índice una vez por rev.</p></div>
+<div class="paragraph"><p>Consulte el Manual de integradores para obtener más información sobre el movimiento sincronizado del husillo.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G33</div>
+<div class="content">
+<pre><code>G90 (modo de distancia absoluta)
+G0 X1 Z0.1 (rápido a la posición)
+S100 M3 (comenzar a girar el husillo)
+G33 Z-2 K0.125 (mover el eje Z a -2 a una velocidad igual a 0.125 por revolución)
+G0 X1.25 (movimiento rápido herramienta fuera del trabajo)
+Z0.1 (movimiento rápido a la posición Z inicial)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte las secciones <a href="g-code_es.html#gcode:g90-g91">G90</a> , <a href="g-code_es.html#gcode:g0">G0</a> y <a href="m-code_es.html#mcode:m2-m30">M2</a> para obtener más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Todas las palabras del eje se omiten.
+</p>
+</li>
+<li>
+<p>
+El husillo no gira cuando se ejecuta este comando
+</p>
+</li>
+<li>
+<p>
+El movimiento lineal solicitado excede los límites de velocidad de la máquina
+debido a la velocidad del husillo
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g33.1">22. G33.1 Roscado rígido</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G33.1 X- Y- Z- K- I- $ -</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>K</em> - distancia por revolución
+</p>
+</li>
+<li>
+<p>
+<em>I</em> - multiplicador de velocidad del husillo opcional para un movimiento de retorno más rápido
+</p>
+</li>
+<li>
+<p>
+<em>$</em> - selector de husillo opcional
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">Para roscado solo en Z preposicionar la ubicación XY antes de llamar a G33.1 y solo
+use una palabra Z en G33.1. Si las coordenadas especificadas no son las actuales,
+al llamar a G33.1 el movimiento no será a lo largo del eje Z
+sino un movimiento coordinado y sincronizado con el husillo desde la ubicación actual
+a la ubicación especificada y viceversa.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Para roscado rígido (movimiento sincronizado del husillo con retorno),
+codifique <em>G33.1 X- Y- Z- K-</em> donde <em>K-</em> es la distancia recorrida
+por cada revolución del husillo.</p></div>
+<div class="paragraph"><p>Un movimiento de roscado rígido consiste en la siguiente secuencia:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Un movimiento desde la coordenada actual a la coordenada especificada, sincronizada
+con el husillo seleccionado en la proporción dada y comenzando desde la
+coordenada actual tras un pulso de índice del husillo.
+</p>
+</li>
+<li>
+<p>
+Al llegar al punto final, comanda la inversion del eje y acelera
+por un factor establecido por el multiplicador (p. ej., de derecha a izquierda).
+</p>
+</li>
+<li>
+<p>
+Movimiento sincronizado continuo más allá de la coordenada final especificada
+hasta que el husillo realmente se detenga y se invierta.
+</p>
+</li>
+<li>
+<p>
+Movimiento sincronizado continuo de vuelta a la coordenada original.
+</p>
+</li>
+<li>
+<p>
+Al alcanzar la coordenada original,
+comanda para invertir el eje por segunda vez (por ejemplo, de izquierda a derecha).
+</p>
+</li>
+<li>
+<p>
+Movimiento sincronizado continuo más allá de la coordenada original
+hasta que el husillo realmente se detenga y se invierta.
+</p>
+</li>
+<li>
+<p>
+Un movimiento <strong>no sincronizado</strong> retrocediendo a la coordenada original.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Los movimientos sincronizados con el husillo esperan el índice del husillo,
+así que se alinean múltiples pases. Los movimientos <em>G33.1</em> terminan en la coordenada original.</p></div>
+<div class="paragraph"><p>Todas las palabras del eje son opcionales, pero debe utilizar al menos una.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G33.1</div>
+<div class="content">
+<pre><code>G90 (establecer modo absoluto)
+G0 X1.000 Y1.000 Z0.100 (movimiento rápido a la posición inicial)
+S100 M3 (encender el husillo, 100 RPM)
+G33.1 Z-0.750 K0.05 (roscado rígido de 20 TPI de 0.750 de profundidad)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte las secciones <a href="g-code_es.html#gcode:g90-g91">G90</a> , <a href="g-code_es.html#gcode:g0">G0</a> y <a href="m-code_es.html#mcode:m2-m30">M2</a> para obtener más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Se omiten todas las palabras de eje.
+</p>
+</li>
+<li>
+<p>
+El husillo no gira cuando se ejecuta este comando
+</p>
+</li>
+<li>
+<p>
+El movimiento lineal solicitado excede los límites de velocidad de la máquina.
+debido a la velocidad del husillo
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g38">23. G38.n Sonda recta</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Ejes G38.n</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G38.2</em> - sonda hacia la pieza de trabajo, parada en contacto, señal de error si falla
+</p>
+</li>
+<li>
+<p>
+<em>G38.3</em> - sonda hacia la pieza de trabajo, parada en contacto
+</p>
+</li>
+<li>
+<p>
+<em>G38.4</em> - alejar la sonda de la pieza de trabajo, parada en caso de pérdida de contacto, señal de error si falla
+</p>
+</li>
+<li>
+<p>
+<em>G38.5</em> - alejar la sonda de la pieza de trabajo, parada en caso de pérdida de contacto
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">No podrá utilizar un movimiento de sonda hasta que su
+máquina se ha configurado para proporcionar una señal de entrada de sonda.
+La señal de entrada de la sonda debe estar conectada a <em>motion.probe-input</em> en un archivo .hal.
+G38.n usa motion.probe-input para determinar cuándo la sonda ha hecho (o perdido) el contacto.
+True para el contacto de la sonda cerrado (en contacto), false para el contacto de la sonda abierto.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Programe <em>G38.n ejes</em> para realizar una operación de sonda recta.
+Las palabras de eje son opcionales, pero se debe utilizar al menos una de ellas.
+Las palabras del eje juntas definen el punto de destino hacia el cual se moverá la sonda,
+a partir de la ubicación actual. Si la sonda no se dispara antes alcanzar el destino
+con G38.2 y G38.4, se indicará un error.</p></div>
+<div class="paragraph"><p>La herramienta en el eje debe ser una sonda o contactar un interruptor de sonda.</p></div>
+<div class="paragraph"><p>En respuesta a este comando, la máquina mueve el punto controlado
+(que debe estar en el centro de la bola de la sonda) en línea recta al
+<a href="other-code_es.html#sec:set-feed-rate">avance</a> actual hacia el punto programado.
+En el modo de alimentación de tiempo inverso, la velocidad de alimentación será tal que todo el movimiento
+desde el punto actual hasta el punto programado tomara el tiempo especificado.
+El movimiento se detiene (dentro de los límites de aceleración de la máquina)
+cuando se alcanza el punto programado,
+o cuando se produce el cambio solicitado en la entrada de la sonda,
+lo que ocurra primero.</p></div>
+<div class="paragraph"><p>Después de una prueba exitosa, los parámetros #5061 a #5069 se establecerán en
+las coordenadas X, Y, Z, A, B, C, U, V, W de la ubicación del punto controlado
+en el momento en que la sonda cambió de estado (en el sistema de coordenadas de trabajo actual).
+Después de un sondeo fallido, se establecen en las coordenadas del punto programado.
+El parámetro #5070 se establece en 1 si la sonda tuvo éxito y 0 si la sonda falló.
+Si la operación de sondeo falla, G38.2 y G38.4 señalarán un error
+mostrando un mensaje en pantalla si la GUI seleccionada lo admite,
+y al detener la ejecución del programa.</p></div>
+<div class="paragraph"><p>Un comentario de la forma <em>(PROBEOPEN filename.txt)</em> abrirá
+<em>filename.txt</em> y almacenará las coordenadas
+XYZABCUVW de cada sonda recta exitosa en ella.
+El archivo debe cerrarse con <em>(PROBECLOSE)</em>. Para más información
+vea la  sección <a href="overview_es.html#gcode:comments">comentarios</a>.</p></div>
+<div class="paragraph"><p>Se incluye un archivo de ejemplo <em>smartprobe.ngc</em> (en el directorio de ejemplos)
+para demostrar el uso de movimientos de sonda para registrar en un archivo las coordenadas de una pieza.
+El programa <em>smartprobe.ngc</em> podría usarse con <em>ngcgui</em> con cambios mínimos.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el punto actual es el mismo que el punto programado.
+</p>
+</li>
+<li>
+<p>
+no se usa palabra de eje
+</p>
+</li>
+<li>
+<p>
+la compensación del cortador está habilitada
+</p>
+</li>
+<li>
+<p>
+la velocidad de alimentación es cero
+</p>
+</li>
+<li>
+<p>
+la sonda ya está en el estado objetivo
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g40">24. Compensación G40 desactivada</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G40</em> - apaga la compensación del cortador. Si la compensación de herramienta está ON, el
+siguiente movimiento debe ser lineal y más largo que el diámetro de la herramienta.
+Se puede desactivar la compensación cuando ya está desactivada.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo G40</div>
+<div class="content">
+<pre><code>; La ubicación es X1 después de terminar el movimiento compensado del cortador
+G40 (desactivar compensación)
+G0 X1.6 (movimiento lineal más largo que el diámetro actual de la fresa)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="paragraph"><p>Consulte las secciones <a href="g-code_es.html#gcode:g0">G0</a> y <a href="m-code_es.html#mcode:m2-m30">M2</a> para obtener más información.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Un movimiento de arco G2/G3 se programa después de un G40.
+</p>
+</li>
+<li>
+<p>
+El movimiento lineal después de desactivar la compensación es menor que el diámetro de la herramienta.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g41-g42">25. G41, G42 Compensación del cortador</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G41 &lt;D-&gt; (a la izquierda de la ruta programada)
+G42 &lt;D-&gt; (a la derecha de la ruta programada)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>D</em> - número de herramienta
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>La palabra D es opcional; si no hay una palabra D, se utilizará el radio de la
+herramienta cargada actual (si no se carga ninguna herramienta y no se proporciona una palabra D,
+se usará un radio de 0).</p></div>
+<div class="paragraph"><p>Si se proporciona, la palabra D es el número de herramienta a utilizar. Esto normalmente
+será el número de la herramienta en el husillo (en cuyo caso la palabra D es
+redundante y no necesita ser suministrada), pero puede ser cualquier número de herramienta válido.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content"><em>G41/G42 D0</em> es un poco especial. Su comportamiento es diferente en
+máquinas de cambio de herramientas aleatorio y no aleatorio
+(vea la sección <a href="m-code_es.html#mcode:m6">Cambio de herramienta</a>). En no aleatorio,
+<em>G41/G42 D0</em> aplica el TLO de la herramienta actualmente
+en el husillo, o un TLO de 0 si no hay herramienta en el husillo.
+En máquinas de cambio de herramienta aleatorio, <em>G41/G42 D0</em> aplica el TLO de la herramienta T0 definida
+en el archivo de tabla de herramientas (o causa un error si T0 no está definido en la
+tabla de herramientas).</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Para iniciar la compensación del cortador a la izquierda del perfil de la pieza, use G41.
+G41 inicia la compensación del cortador a la izquierda de la línea programada
+visto desde el extremo positivo del eje perpendicular al plano.</p></div>
+<div class="paragraph"><p>Para iniciar la compensación del cortador a la derecha del perfil de la pieza, use G42.
+G42 inicia la compensación del cortador a la derecha de la línea programada
+vista desde el extremo positivo del eje perpendicular al plano.</p></div>
+<div class="paragraph"><p>El movimiento de entrada debe ser al menos tan largo como el radio de la herramienta y
+puede ser un movimiento rápido.</p></div>
+<div class="paragraph"><p>La compensación del cortador se puede realizar si el plano XY o el plano XZ está activo.</p></div>
+<div class="paragraph"><p>Los comandos de usuario M100-M199 están permitidos cuando la compensación de cortador está activada.</p></div>
+<div class="paragraph"><p>El comportamiento del centro de mecanizado cuando la compensación del cortador
+está activada se describe en la sección <a href="tool-compensation_es.html#sec:cutter-compensation">Compensación de cortador</a>
+junto con ejemplos de código.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El número D no es un número de herramienta válido o 0.
+</p>
+</li>
+<li>
+<p>
+El plano YZ está activo.
+</p>
+</li>
+<li>
+<p>
+Se ordena que la compensación del cortador se active cuando ya está activada.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g41.1-g42.1">26. G41.1, G42.1 Compensación dinámica del cortador</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G41.1 D- &lt;L-&gt; (a la izquierda de la ruta programada)
+G42.1 D- &lt;L-&gt; (a la derecha de la ruta programada)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>D</em> - diámetro del cortador
+</p>
+</li>
+<li>
+<p>
+<em>L</em> - orientación de herramienta (ver <a href="../lathe/lathe-user_es.html#lathe-tool-orientation">orientación de herramienta de torno</a>)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G41.1 y G42.1 funcionan igual que G41 y G42 con la capacidad adicional de poder
+programar el diámetro de la herramienta. La palabra L por defecto es 0 si no se especifica.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El plano YZ está activo.
+</p>
+</li>
+<li>
+<p>
+El número L no está en el rango de 0 a 9 inclusive.
+</p>
+</li>
+<li>
+<p>
+El número L se usa cuando el plano XZ no está activo.
+</p>
+</li>
+<li>
+<p>
+Se ordena que la compensación del cortador se active cuando ya está activada.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g43">27. Compensación de longitud de herramienta G43</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G43 &lt;H-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>H</em> - número de herramienta (opcional)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G43 permite la compensación de la longitud de la herramienta. G43 cambia los movimientos posteriores
+compensando las coordenadas de eje con la longitud del offset. G43
+no causa ningún movimiento. La próxima vez que se mueva un eje compensado,
+el punto final de ese eje será la ubicación compensada.</p></div>
+<div class="paragraph"><p><em>G43</em> sin una palabra H usa la herramienta cargada actualmente del último
+<em>Tn M6</em>.</p></div>
+<div class="paragraph"><p><em>G43 Hn</em> usa el offset de la herramienta n.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content"><em>G43 H0</em> es un poco especial. Su comportamiento es diferente en
+máquinas de cambio de herramientas aleatorio y máquinas de cambio no aleatorio (ver la sección
+<a href="tool-compensation_es.html#sec:tool-changers">Cambiadores de herramientas</a>). En máquinas de cambiador de herramientas no aleatorio,
+<em>G43 H0</em> aplica el TLO de la herramienta actualmente en el husillo,
+o un TLO de 0 si no hay herramienta. En máquinas con cambiador de herramientas aleatorio,
+<em>G43 H0</em> aplica el TLO de la herramienta T0 definida en la tabla de herramientas
+(o causa un error si T0 no está definido en la tabla).</td>
+</tr></table>
+</div>
+<div class="listingblock">
+<div class="title">Línea de ejemplo G43 H-</div>
+<div class="content">
+<pre><code>G43 H1 (establecer compensaciones de herramienta utilizando los valores de la herramienta 1 en la tabla de herramientas)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el número H no es un entero, o
+</p>
+</li>
+<li>
+<p>
+el número H es negativo, o
+</p>
+</li>
+<li>
+<p>
+el número H no es un número de herramienta válido (aunque tenga en cuenta que 0 es un número válido
+de herramienta en máquinas no aleatorias y significa "la herramienta actualmente en el husillo")
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g43.1">28. G43.1 Offset de longitud dinámica de herramienta</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G43.1 ejes</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G43.1 ejes</em> - cambia los movimientos siguientes reemplazando los offsets actuales
+de ejes. G43.1 no causa ningún movimiento. La próxima vez un eje compensado
+se mueva, el punto final de ese eje será la ubicación compensada.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo G43.1</div>
+<div class="content">
+<pre><code>G90 (establecer modo absoluto)
+T1 M6 G43 (carga herramienta 1 y offset de longitud de herramienta, Z está en 0 máquina y DRO muestra Z1.500)
+G43.1 Z0.250 (offset actual de la herramienta en 0.250, DRO ahora muestra Z1.250)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte las secciones <a href="g-code_es.html#gcode:g90-g91">G90</a> , <a href="other-code_es.html#sec:select-tool">T</a> y <a href="m-code_es.html#mcode:m6">M6</a>
+para más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el movimiento se ordena en la misma línea que <em>G43.1</em>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>NOTA:G43.1 no escribe en la tabla de herramientas.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g43.2">29. G43.2 Aplicar offset de longitud de herramienta adicional</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G43.2 H- ejes-</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>H</em> - número de herramienta
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>G43.2 aplica una compensación de herramienta adicional.</p></div>
+<div class="listingblock">
+<div class="title">G43.2 Ejemplo</div>
+<div class="content">
+<pre><code>G90 (establecer modo absoluto)
+T1 M6 (herramienta de carga 1)
+G43 (o G43 H1:reemplaza todas las compensaciones de herramienta con el offset de T1)
+G43.2 H10 (también agregue en el offset de herramienta de T10)
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="paragraph"><p>Puede sumar un número arbitrario de compensaciones llamando a G43.2
+mas veces. No hay suposiciones integradas sobre qué números son compensaciones de geometría
+y cuales son compensaciones de desgaste, o que solo deba tener una de cada una.</p></div>
+<div class="paragraph"><p>Al igual que los otros comandos G43, G43.2 no causa ningún movimiento. La próxima vez que un
+el eje compensado se mueva, el punto final de ese eje será la ubicación compensada.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>H</em> no está especificado y no se especifican offsets de eje
+</p>
+</li>
+<li>
+<p>
+'H está especificado y el número de herramienta dado no existe en la tabla de herramientas
+</p>
+</li>
+<li>
+<p>
+Se especifica <em>H</em> y también se especifican los ejes
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>NOTA:G43.2 no escribe en la tabla de herramientas.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g49">30. G49 Cancelar compensación de longitud de herramienta</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G49</em> - cancela la compensación de longitud de herramienta
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Está bien programar usando el mismo offset que ya está en uso. Tambien es
+correcto programar sin offset de longitud de herramienta si no se está utilizando ninguno.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g52">31. G52 Compensación del sistema de coordenadas local</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G52 ejes</code></pre>
+</div></div>
+<div class="paragraph"><p>G52 se utiliza en un programa de pieza como un "offset del sistema de coordenadas local" temporal
+dentro del sistema de coordenadas de la pieza de trabajo. Más información sobre G52 en la sección
+<a href="coordinates_es.html#sec:g52">offsets locales y globales</a> .</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g53">32. G53 Mover en coordenadas de máquina</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G53 ejes</code></pre>
+</div></div>
+<div class="paragraph"><p>Para moverse en el <a href="coordinates_es.html#sec.machine-coordinate-system">sistema de coordenadas de máquina</a>,
+programe <em>G53</em> en la misma línea que un movimiento lineal. <em>G53</em> no es modal y debe ser
+programado en cada línea. <em>G0</em> o <em>G1</em> no tiene que ser programado en la misma
+línea si están actualmente activos.</p></div>
+<div class="paragraph"><p>Por ejemplo, <em>G53 G0 X0 Y0 Z0</em> moverá los ejes a la posición inicial incluso si
+el sistema de coordenadas actualmente seleccionado tiene compensaciones en efecto.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G53</div>
+<div class="content">
+<pre><code>G53 G0 X0 Y0 Z0 (movimiento lineal rápido al origen de máquina)
+G53 X2 (movimiento lineal rápido a coordenada absoluta X2)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte la sección <a href="g-code_es.html#gcode:g0">G0</a> para obtener más información.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+G53 se usa sin que G0 o G1 estén activos,
+</p>
+</li>
+<li>
+<p>
+G53 se usa mientras la compensación del cortador está activada.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g54-g59.3">33. G54-G59.3 Seleccionar sistema de coordenadas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G54</em>   - seleccione el sistema de coordenadas 1
+</p>
+</li>
+<li>
+<p>
+<em>G55</em>   - selecciona el sistema de coordenadas 2
+</p>
+</li>
+<li>
+<p>
+<em>G56</em>   - selecciona el sistema de coordenadas 3
+</p>
+</li>
+<li>
+<p>
+<em>G57</em>   - selecciona el sistema de coordenadas 4
+</p>
+</li>
+<li>
+<p>
+<em>G58</em>   - selecciona el sistema de coordenadas 5
+</p>
+</li>
+<li>
+<p>
+<em>G59</em>   - selecciona el sistema de coordenadas 6
+</p>
+</li>
+<li>
+<p>
+<em>G59.1</em> - selecciona el sistema de coordenadas 7
+</p>
+</li>
+<li>
+<p>
+<em>G59.2</em> - selecciona el sistema de coordenadas 8
+</p>
+</li>
+<li>
+<p>
+<em>G59.3</em> - selecciona el sistema de coordenadas 9
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Los sistemas de coordenadas almacenan los valores del eje y el
+ángulo de rotación XY alrededor del eje Z
+en los parámetros que se muestran en la siguiente tabla.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 2. Parámetros del sistema de coordenadas</caption>
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<thead>
+<tr>
+<th align="left" valign="top">Selec.</th>
+<th align="center" valign="top">SC</th>
+<th align="center" valign="top">X   </th>
+<th align="center" valign="top">Y   </th>
+<th align="center" valign="top">Z   </th>
+<th align="center" valign="top">A   </th>
+<th align="center" valign="top">B   </th>
+<th align="center" valign="top">C   </th>
+<th align="center" valign="top">U   </th>
+<th align="center" valign="top">V   </th>
+<th align="center" valign="top">W   </th>
+<th align="center" valign="top">R</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">G54</p></td>
+<td align="center" valign="top"><p class="table">1</p></td>
+<td align="center" valign="top"><p class="table">5221</p></td>
+<td align="center" valign="top"><p class="table">5222</p></td>
+<td align="center" valign="top"><p class="table">5223</p></td>
+<td align="center" valign="top"><p class="table">5224</p></td>
+<td align="center" valign="top"><p class="table">5225</p></td>
+<td align="center" valign="top"><p class="table">5226</p></td>
+<td align="center" valign="top"><p class="table">5227</p></td>
+<td align="center" valign="top"><p class="table">5228</p></td>
+<td align="center" valign="top"><p class="table">5229</p></td>
+<td align="center" valign="top"><p class="table">5230</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G55</p></td>
+<td align="center" valign="top"><p class="table">2</p></td>
+<td align="center" valign="top"><p class="table">5241</p></td>
+<td align="center" valign="top"><p class="table">5242</p></td>
+<td align="center" valign="top"><p class="table">5243</p></td>
+<td align="center" valign="top"><p class="table">5244</p></td>
+<td align="center" valign="top"><p class="table">5245</p></td>
+<td align="center" valign="top"><p class="table">5246</p></td>
+<td align="center" valign="top"><p class="table">5247</p></td>
+<td align="center" valign="top"><p class="table">5248</p></td>
+<td align="center" valign="top"><p class="table">5249</p></td>
+<td align="center" valign="top"><p class="table">5250</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G56</p></td>
+<td align="center" valign="top"><p class="table">3</p></td>
+<td align="center" valign="top"><p class="table">5261</p></td>
+<td align="center" valign="top"><p class="table">5262</p></td>
+<td align="center" valign="top"><p class="table">5263</p></td>
+<td align="center" valign="top"><p class="table">5264</p></td>
+<td align="center" valign="top"><p class="table">5265</p></td>
+<td align="center" valign="top"><p class="table">5266</p></td>
+<td align="center" valign="top"><p class="table">5267</p></td>
+<td align="center" valign="top"><p class="table">5268</p></td>
+<td align="center" valign="top"><p class="table">5269</p></td>
+<td align="center" valign="top"><p class="table">5270</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G57</p></td>
+<td align="center" valign="top"><p class="table">4</p></td>
+<td align="center" valign="top"><p class="table">5281</p></td>
+<td align="center" valign="top"><p class="table">5282</p></td>
+<td align="center" valign="top"><p class="table">5283</p></td>
+<td align="center" valign="top"><p class="table">5284</p></td>
+<td align="center" valign="top"><p class="table">5285</p></td>
+<td align="center" valign="top"><p class="table">5286</p></td>
+<td align="center" valign="top"><p class="table">5287</p></td>
+<td align="center" valign="top"><p class="table">5288</p></td>
+<td align="center" valign="top"><p class="table">5289</p></td>
+<td align="center" valign="top"><p class="table">5290</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G58</p></td>
+<td align="center" valign="top"><p class="table">5</p></td>
+<td align="center" valign="top"><p class="table">5301</p></td>
+<td align="center" valign="top"><p class="table">5302</p></td>
+<td align="center" valign="top"><p class="table">5303</p></td>
+<td align="center" valign="top"><p class="table">5304</p></td>
+<td align="center" valign="top"><p class="table">5305</p></td>
+<td align="center" valign="top"><p class="table">5306</p></td>
+<td align="center" valign="top"><p class="table">5307</p></td>
+<td align="center" valign="top"><p class="table">5308</p></td>
+<td align="center" valign="top"><p class="table">5309</p></td>
+<td align="center" valign="top"><p class="table">5310</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59</p></td>
+<td align="center" valign="top"><p class="table">6</p></td>
+<td align="center" valign="top"><p class="table">5321</p></td>
+<td align="center" valign="top"><p class="table">5322</p></td>
+<td align="center" valign="top"><p class="table">5323</p></td>
+<td align="center" valign="top"><p class="table">5324</p></td>
+<td align="center" valign="top"><p class="table">5325</p></td>
+<td align="center" valign="top"><p class="table">5326</p></td>
+<td align="center" valign="top"><p class="table">5327</p></td>
+<td align="center" valign="top"><p class="table">5328</p></td>
+<td align="center" valign="top"><p class="table">5329</p></td>
+<td align="center" valign="top"><p class="table">5330</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59.1</p></td>
+<td align="center" valign="top"><p class="table">7</p></td>
+<td align="center" valign="top"><p class="table">5341</p></td>
+<td align="center" valign="top"><p class="table">5342</p></td>
+<td align="center" valign="top"><p class="table">5343</p></td>
+<td align="center" valign="top"><p class="table">5344</p></td>
+<td align="center" valign="top"><p class="table">5345</p></td>
+<td align="center" valign="top"><p class="table">5346</p></td>
+<td align="center" valign="top"><p class="table">5347</p></td>
+<td align="center" valign="top"><p class="table">5348</p></td>
+<td align="center" valign="top"><p class="table">5349</p></td>
+<td align="center" valign="top"><p class="table">5350</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59.2</p></td>
+<td align="center" valign="top"><p class="table">8</p></td>
+<td align="center" valign="top"><p class="table">5361</p></td>
+<td align="center" valign="top"><p class="table">5362</p></td>
+<td align="center" valign="top"><p class="table">5363</p></td>
+<td align="center" valign="top"><p class="table">5364</p></td>
+<td align="center" valign="top"><p class="table">5365</p></td>
+<td align="center" valign="top"><p class="table">5366</p></td>
+<td align="center" valign="top"><p class="table">5367</p></td>
+<td align="center" valign="top"><p class="table">5368</p></td>
+<td align="center" valign="top"><p class="table">5369</p></td>
+<td align="center" valign="top"><p class="table">5370</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59.3</p></td>
+<td align="center" valign="top"><p class="table">9</p></td>
+<td align="center" valign="top"><p class="table">5381</p></td>
+<td align="center" valign="top"><p class="table">5382</p></td>
+<td align="center" valign="top"><p class="table">5383</p></td>
+<td align="center" valign="top"><p class="table">5384</p></td>
+<td align="center" valign="top"><p class="table">5385</p></td>
+<td align="center" valign="top"><p class="table">5386</p></td>
+<td align="center" valign="top"><p class="table">5387</p></td>
+<td align="center" valign="top"><p class="table">5388</p></td>
+<td align="center" valign="top"><p class="table">5389</p></td>
+<td align="center" valign="top"><p class="table">5390</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+La selección de un sistema de coordenadas se utiliza mientras la compensación del cortador está activada.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Consulte la sección <a href="coordinates_es.html#cha:coordinate-system">Sistema de coordenadas</a> para obtener una descripción general de los
+sistemas de coordenadas.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g61">34. Modo de ruta exacta G61</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G61</em> - Modo de ruta exacta, movimiento exactamente como se programó. Los movimientos se ralentizarán o
+detendran según sea necesario para llegar a cada punto programado. Si dos movimientos secuenciales son
+exactamente co-lineales, no se detendrá.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g61.1">35. G61.1 Modo de parada exacta</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G61.1</em> - Modo de parada exacta, el movimiento se detendrá al final de cada segmento programado.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g64">36. Mezcla de ruta G64</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G64 &lt;P- &lt;Q-&gt;&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>P</em> - tolerancia de mezcla de movimiento
+</p>
+</li>
+<li>
+<p>
+<em>Q</em> - tolerancia naive cam
+</p>
+</li>
+<li>
+<p>
+<em>G64</em> - la mejor velocidad posible.
+</p>
+</li>
+<li>
+<p>
+<em>G64 P- &lt;Q-&gt;</em> mezcla con tolerancia.
+</p>
+</li>
+<li>
+<p>
+<em>G64</em> - sin P significa mantener la mejor velocidad posible, sin importar cómo
+de lejos del punto programado se termina.
+</p>
+</li>
+<li>
+<p>
+<em>G64 P- Q-</em> - es una forma de ajustar su sistema para obtener el mejor compromiso
+entre velocidad y precisión. La tolerancia P significa que la ruta real
+no se apartará más de P- del punto final programado. La velocidad
+se reducirá si es necesario para mantener el camino. Además, cuando se
+active G64 P- Q- , se enciende <em>nive cam</em>; cuando hay
+una serie de alimentación lineal XYZ se mueve al mismo <a href="other-code_es.html#sec:set-feed-rate">feed rate</a>
+que están a menos de Q- lejos de ser colineales, se colapsan en un
+movimiento lineal único. En G2 / G3 se mueve en el plano G17 (XY) cuando el máximo
+La desviación de un arco de una línea recta es menor que el G64 P-
+tolerancia el arco se divide en dos líneas (desde el inicio del arco hasta
+punto medio, y desde el punto medio hasta el final). esas líneas están sujetas a
+El ingenuo algoritmo de leva para líneas. Por lo tanto, line-arc, arc-arc y
+los casos de línea de arco y la línea de línea se benefician de la <em>cámara ingenua
+detector</em>. Esto mejora el rendimiento de contorneado al simplificar el
+camino. Está bien programar para el modo que ya está activo. Ver también
+la sección <a href="../user/user-concepts_es.html#sec:trajectory-control">control de trayectoria</a> para más
+información sobre estos modos.
+Si Q no se especifica, tendrá el mismo comportamiento que antes y
+use el valor de P-.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">G64 P- Línea de ejemplo</div>
+<div class="content">
+<pre><code>G64 P0.015 (configure la siguiente ruta para estar dentro de 0.015 de la ruta real)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es una buena idea incluir una especificación de control de ruta en el preámbulo
+de cada archivo de código G.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g70">37. Ciclo de acabado del torno G70</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G70 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;E-&gt; &lt;P-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Q</em>:el número de subrutina.
+</p>
+</li>
+<li>
+<p>
+<em>X</em> - La posición X inicial, por defecto es la posición inicial.
+</p>
+</li>
+<li>
+<p>
+<em>Z</em> - La posición Z inicial, por defecto es la posición inicial.
+</p>
+</li>
+<li>
+<p>
+<em>D</em> - La distancia inicial del perfil, por defecto es 0.
+</p>
+</li>
+<li>
+<p>
+<em>E</em>:la distancia final del perfil, por defecto es 0.
+</p>
+</li>
+<li>
+<p>
+<em>P</em> - El número de pases para usar, por defecto es 1.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El ciclo <em>G70</em> está diseñado para usarse después de la forma del perfil dado
+en la subrutina con el número Q se ha cortado con G71 o G72.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Si se usan Z o X, <a href="g-code_es.html#gcode:g0">movimiento rápido</a> a esa posición
+está hecho. Esta posición también se usa entre cada pasada de acabado.
+</p>
+</li>
+<li>
+<p>
+Entonces un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> al inicio del perfil es
+ejecutado.
+</p>
+</li>
+<li>
+<p>
+La ruta dada en Q- se sigue usando <a href="g-code_es.html#gcode:g1">G1</a> y
+<a href="g-code_es.html#gcode:g2-g3">[gcode:g2-g3]</a> comandos.
+</p>
+</li>
+<li>
+<p>
+Si se requiere un próximo pase, hay otro rápido al intermedio
+ubicación, antes de que se realice un rápido al inicio del perfil.
+</p>
+</li>
+<li>
+<p>
+Después de la pasada final, la herramienta se deja al final del perfil
+incluyendo E-.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Pases múltiples
+La distancia entre el pase y el perfil final es (pase-1) * (D-E) / P + E.
+Donde pasar el número de pase y D, E y P son los números D / E / P.
+</p>
+</li>
+<li>
+<p>
+La distancia se calcula utilizando la posición inicial del ciclo, con
+una distancia positiva hacia este punto.
+</p>
+</li>
+<li>
+<p>
+Filete y chaflanes en el perfil.
+Es posible agregar filetes o chaflanes en el perfil, vea
+<a href="g-code_es.html#gcode:g71-g72">[gcode:g71-g72]</a> para más detalles.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+No hay una subrutina definida con el número dado en Q.
+</p>
+</li>
+<li>
+<p>
+La ruta dada en el perfil no es monotónica en Z o X.
+</p>
+</li>
+<li>
+<p>
+<a href="g-code_es.html#gcode:g17-g19.1">[gcode:g17-g19.1]</a> no se ha utilizado para seleccionar el plano ZX.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g71-g72">38. G71 G72 Ciclo de desbaste en Torno</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G71 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;I-&gt; &lt;R-&gt;
+G71.1 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;I-&gt; &lt;R-&gt;
+G71.2 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;I-&gt; &lt;R-&gt;
+G72 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;I-&gt; &lt;R-&gt;
+G72.1 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;I-&gt; &lt;R-&gt;
+G72.2 Q- &lt;X-&gt; &lt;Z-&gt; &lt;D-&gt; &lt;I-&gt; &lt;R-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Q</em>:el número de subrutina.
+</p>
+</li>
+<li>
+<p>
+<em>X</em> - La posición X inicial, por defecto es la posición inicial.
+</p>
+</li>
+<li>
+<p>
+<em>Z</em> - La posición Z inicial, por defecto es la posición inicial.
+</p>
+</li>
+<li>
+<p>
+<em>D</em> - La distancia restante al perfil, por defecto es 0.
+</p>
+</li>
+<li>
+<p>
+<em>I</em>:el incremento de corte, por defecto es 1.
+</p>
+</li>
+<li>
+<p>
+<em>R</em> - La distancia de retracción, por defecto es 0.5.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El ciclo G71 / G72 está diseñado para cortar un perfil en un torno. El G71
+Los ciclos eliminan las capas del material mientras atraviesan en la dirección Z.
+Los ciclos G72 eliminan material mientras atraviesan el eje X, el llamado
+ciclo de enfrentamiento. La dirección de viaje es la misma que en el camino dado en
+La subrutina. Para el ciclo G71, la coordenada Z debe ser monotónicamente
+cambiando, para el G72 esto es necesario para el eje X.</p></div>
+<div class="paragraph"><p>El perfil se da en una subrutina con el número Q-. Esta subrutina
+puede contener comandos de movimiento G0, G1, G2 y G3. Todos los otros comandos son
+ignorado, incluidos los ajustes de alimentación y velocidad. Los comandos <a href="g-code_es.html#gcode:g0">[gcode:g0]</a> son
+interpretado como <a href="g-code_es.html#gcode:g1">G1</a> comandos. Cada comando de movimiento también puede incluir
+un número A o C opcional. Si se agrega el número A- un filete con
+el radio dado por A se insertará en el punto final de ese movimiento, si
+este radio es demasiado grande, el algoritmo fallará con una ruta no monotónica
+error. También es posible usar el número C, que permite un chaflán para
+ser insertado Este chaflán tiene los mismos puntos finales que un filete del mismo
+tendría una dimensión pero se inserta una línea recta en lugar de un arco.</p></div>
+<div class="paragraph"><p>Cuando está en modo absoluto, U (para X) y W (para Z) pueden usarse como
+offsets incrementales.</p></div>
+<div class="paragraph"><p>Los ciclos G7x.1 no cortan los bolsillos. Los ciclos G7x.2 solo se cortan después de
+primer bolsillo y continuar donde se detuvo G7x.1. Es recomendable salir
+algo de material adicional para cortar antes del ciclo G7x.2, por lo que si se usa G7x.1
+a D1.0, el G7x.2 puede usar D0.5 y se eliminarán 0.5 mm mientras se mueve
+de un bolsillo al siguiente.</p></div>
+<div class="paragraph"><p>Los ciclos G7x normales cortan todo el perfil en un ciclo.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Si se usan Z o X, <a href="g-code_es.html#gcode:g0">movimiento rápido</a> a esa posición
+está hecho.
+</p>
+</li>
+<li>
+<p>
+Después de cortar el perfil, la herramienta se detiene al final del
+perfil, incluida la distancia especificada en D.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+El número D se usa para mantener una distancia del perfil final,
+para permitir que quede material para el acabado.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+No hay una subrutina definida con el número dado en Q.
+</p>
+</li>
+<li>
+<p>
+La ruta dada en el perfil no es monotónica en Z o X.
+</p>
+</li>
+<li>
+<p>
+<a href="g-code_es.html#gcode:g17-g19.1">[gcode:g17-g19.1]</a> no se ha utilizado para seleccionar el plano ZX.
+</p>
+</li>
+<li>
+<p>
+<a href="g-code_es.html#gcode:g41-g42">[gcode:g41-g42]</a> está activo.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g73">39. G73 Ciclo de taladrado con rotura de viruta</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G73 X- Y- Z- R- Q- &lt;L-&gt;</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>R</em> - posición de retraccion a lo largo del eje Z.
+</p>
+</li>
+<li>
+<p>
+<em>Q</em> - incremento delta a lo largo del eje Z.
+</p>
+</li>
+<li>
+<p>
+<em>L</em> - repetir
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El ciclo <em>G73</em> es taladrar o fresar con rotura de viruta.
+Este ciclo toma un número Q que representa un incremento <em>delta</em> a lo largo del eje Z.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Si la posición Z actual está por debajo de la posición R, el eje Z hace un
+<a href="g-code_es.html#gcode:g0">movimiento rápido</a> a la posición R.
+</p>
+</li>
+<li>
+<p>
+Moverse a las coordenadas X Y
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Mueve el eje Z solo a <a href="other-code_es.html#sec:set-feed-rate">avance</a> actual hacia abajo
+la cantidad delta o hacia la posición Z, lo que sea menos profundo.
+</p>
+</li>
+<li>
+<p>
+Rápido elevandose un poco.
+</p>
+</li>
+<li>
+<p>
+Repite los pasos 2 y 3 hasta alcanzar la posición Z en el paso 2.
+</p>
+</li>
+<li>
+<p>
+rapido del eje Z a la posición R.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el número Q es negativo o cero.
+</p>
+</li>
+<li>
+<p>
+el número R no está especificado
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g74">40. G74 Ciclo de roscado izquierdo, con Dwell</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G74 (X- Y- Z-) o (U- V- W-) R- L- P- $ -</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G74</em> está diseñado para roscar con mandril flotante y parada en el fondo del agujero.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>
+</p>
+</li>
+<li>
+<p>
+Deshabilita los ajustes de avance y velocidad.
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a la velocidad de avance actual a la posición Z.
+</p>
+</li>
+<li>
+<p>
+Detiene el husillo seleccionado (elegido por el parámetro $)
+</p>
+</li>
+<li>
+<p>
+Inicia la rotación del husillo en sentido horario.
+</p>
+</li>
+<li>
+<p>
+Espera P segundos.
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a la velocidad de avance actual para despejar Z
+</p>
+</li>
+<li>
+<p>
+Restaurar ajustes de alimentación y velocidad al estado anterior
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>La longitud de la pausa se especifica mediante una palabra <em>P-</em> en el bloque G74. El pitch del hilo es F dividido por S.
+En el ejemplo, el S100 F125 ofrece un paso de 1,25 mm por revolución.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g76">41. Ciclo de roscado G76</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G76 P- Z- I- J- R- K- Q- H- E- L- $-</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g76-threads_en.svg" alt="G76 Roscado" />
+</div>
+<div class="title">Figure 3. G76 Roscado</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Línea guia</em> - una línea a través de la posición X inicial paralela a Z.
+</p>
+</li>
+<li>
+<p>
+<em>P-</em> - <em>paso de hilo</em> en distancia por revolución.
+</p>
+</li>
+<li>
+<p>
+<em>Z-</em> - posición final de los hilos. Al final del ciclo, la herramienta
+estará en esa posición Z
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Cuando G7 <em>Modo de diámetro de torno</em> está en vigor, los valores para <em>I</em>, <em>J</em> y <em>K</em> son
+mediciones de diámetro. Cuando G8 <em>Modo de radio de torno</em> está en vigor, los valores de
+<em>I</em>, <em>J</em> y <em>K</em> son medidas de radio.</td>
+</tr></table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>I-</em> - offset de la <em>cresta de hilo</em> desde la <em>línea guia</em>. Valores negativos de <em>I</em>
+son hilos externos, y valores positivos de <em>I</em> son hilos internos.
+Generalmente, el material se ha convertido a este tamaño antes del ciclo <em>G76</em>.
+</p>
+</li>
+<li>
+<p>
+<em>J-</em> - un valor positivo que especifica la <em>profundidad de corte inicial</em>. El primer
+corte de roscado será <em>J</em> más allá de la posición de <em>cresta de hilo</em>.
+</p>
+</li>
+<li>
+<p>
+<em>K-</em> - un valor positivo que especifica la <em>profundidad del hilo completo</em>. El final
+del corte de roscado será <em>K</em> más allá de la posición de <em>cresta de hilo</em>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Configuraciones opcionales</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>$ -</em> - el número de husillo con el que se sincronizará el movimiento
+(predeterminado 0). Por ejemplo, si está programado $1, entonces el movimiento comenzará
+en el reinicio de spindle.1.index-enable y procede en sincronía con el
+valor de spindle.1.revs
+</p>
+</li>
+<li>
+<p>
+<em>R-</em> - La <em>degresión de profundidad</em>. (degresión = un descenso por etapas o pasos)
+<em>R1.0</em> selecciona profundidad constante en sucesivos
+pases de roscado. <em>R2.0</em> selecciona área constante. Valores entre 1.0 y
+2.0 seleccionan profundidad decreciente pero área creciente.
+Los valores superiores a 2.0 seleccionan área decreciente.
+Tenga en cuenta que los valores de degresión innecesariamente altos causarán un gran
+número de pases.
+</p>
+</li>
+<li>
+<p>
+<em>Q-</em> - <em>ángulo de deslizamiento compuesto</em> es el ángulo (en grados) que describe
+en qué medida los pases sucesivos deben compensarse a lo largo de la línea guia.
+Esto se usa para hacer que un lado de la herramienta elimine más material que
+el otro. Un valor positivo <em>Q</em> hace que el borde de ataque de la herramienta
+corte más fuerte. Los valores típicos son 29, 29.5 o 30.
+</p>
+</li>
+<li>
+<p>
+<em>H-</em> - El número de <em>pases elasticos</em>. Los pases elasticos son pases adicionales a
+la profundidad total del hilo. Si no se desean pases adicionales, programe <em>H0</em>.
+</p>
+</li>
+<li>
+<p>
+<em>E-</em> - Especifica la distancia a lo largo de la línea guia utilizada para conicidad de la entrada.
+El ángulo del cono será de modo que el último pase se estrecha hacia la cresta del hilo
+sobre la distancia especificada con E. <em>E0.2</em> dará un cono para las
+primeras/últimas 0.2 unidades de longitud a lo largo del
+hilo. Para un programa de conicidad de 45 grados, E igual que K
+</p>
+</li>
+<li>
+<p>
+<em>L-</em> - Especifica qué extremos del hilo tendran conicidad. Programar <em>L0</em> para no
+cono (predeterminado), <em>L1</em> para el cono de entrada, <em>L2</em> para el cono de salida o <em>L3</em>
+tanto para entradas y salidas cónicas. Las entradas cónicas se detendrán en la línea guia para
+sincronizar con el pulso de índice y luego moverse a <a href="other-code_es.html#sec:set-feed-rate">avance</a>
+en el comienzo del cono. Sin entrada cónica, la herramienta hará un rapido a la
+profundidad de corte, luego sincronizara y comenzara el corte.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>La herramienta se movera a las posiciones X y Z iniciales antes de emitir
+G76. La posición X es la <em>línea guia</em> y la posición Z es el
+inicio de los hilos.</p></div>
+<div class="paragraph"><p>La herramienta se detendrá brevemente para la sincronización antes de cada subproceso
+de pase, por lo que se requerirá una ranura de alivio en la entrada a menos que
+el comienzo del hilo pase el final del material o se usa una conicidad de entrada.</p></div>
+<div class="paragraph"><p>A menos que use conicidad de salida, el movimiento de salida no está sincronizado con la
+velocidad del husillo y será un <a href="g-code_es.html#gcode:g0">movimiento rápido</a>. Con un husillo lento, el
+movimiento de salida puede tomar solo una pequeña fracción de una revolución. Si la velocidad
+del husillo aumenta después de completar varios pases,
+los movimientos de salida posteriores requerirán una porción mayor de una revolución, lo que resultará en un
+corte muy pesado durante el movimiento de salida. Esto se puede evitar proporcionando un
+surco de alivio en la salida, o no cambiar la velocidad del husillo mientras se rosca.</p></div>
+<div class="paragraph"><p>La posición final de la herramienta estará al final de la <em>línea guia</em>.
+Se necesitará un movimiento Z seguro en un hilo interno para sacar la herramienta
+del agujero.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El plano activo no es el plano ZX
+</p>
+</li>
+<li>
+<p>
+Se especifican otras palabras de eje, como X- o Y-
+</p>
+</li>
+<li>
+<p>
+El valor de degresión <em>R-</em> es menor que 1.0.
+</p>
+</li>
+<li>
+<p>
+No se especifican todas las palabras requeridas
+</p>
+</li>
+<li>
+<p>
+<em>P-</em>, <em>J-</em>, <em>K-</em> o <em>H-</em> es negativo
+</p>
+</li>
+<li>
+<p>
+<em>E-</em> es mayor que la mitad de la longitud de la línea guia
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><div class="title">Conexiones HAL</div><p>Los pines <em>spindle.N.at-speed</em> y <em>encoder.n.phase-Z</em> para el
+husillo debe estar conectados en su archivo HAL antes de que G76 funcione.
+Vea los pines de <a href="../config/core-components_es.html#sec:motion-pins">husillo</a> en la sección Motion para más información.</p></div>
+<div class="paragraph"><div class="title">Información técnica</div><p>El ciclo fijo G76 se basa en el movimiento sincronizado del husillo G33. Para más
+información ver G33 <a href="g-code_es.html#gcode:g33-tech-info">Información técnica</a>.</p></div>
+<div class="paragraph"><p>El programa de ejemplo <em>g76.ngc</em> muestra el uso del ciclo fijo G76,
+y se puede previsualizar y ejecutar en cualquier máquina usando la configuración <em>sim/lathe.ini</em>.</p></div>
+<div class="listingblock">
+<div class="title">G76 Ejemplo</div>
+<div class="content">
+<pre><code>G0 Z-0.5 X0.2
+G76 P0.05 Z-1 I-.075 J0.008 K0.045 Q29.5 L2 E0.045</code></pre>
+</div></div>
+<div class="paragraph"><p>En la figura, la herramienta está en la posición final después del ciclo G76
+que está completado. Puede ver la ruta de entrada a la derecha desde Q29.5
+y la ruta de salida a la izquierda desde la L2 E0.045. Las lineas blancas
+son los movimientos de corte.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g76-01.png" alt="Ejemplo G76" />
+</div>
+<div class="title">Figure 4. G76 Ejemplo</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g80-g89">42. Ciclos Fijos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>En esta sección se describen los ciclos fijos <em>G81</em> a <em>G89</em> y la detencion de ciclo fijo <em>G80</em>.</p></div>
+<div class="paragraph"><p>Todos los ciclos fijos se realizan con respecto al plano seleccionado actualmente.
+Se puede seleccionar cualquiera de los nueve planos. A lo largo de esta sección,
+la mayoría de las descripciones asumen que el plano XY ha sido seleccionado.
+El comportamiento es análogo si se selecciona otro plano y se deben usar las palabras correctas.
+Por ejemplo, en el plano <em>G17.1</em>, la acción del
+ciclo fijo es a lo largo de W, y las ubicaciones
+o incrementos se dan con U y V. En este caso, sustituya  X, Y, Z por
+U, V, W en las instrucciones a continuación.</p></div>
+<div class="paragraph"><p>Las palabras de eje rotativo no están permitidas en ciclos fijos. Cuando
+el plano activo es uno de la familia XYZ, las palabras del eje UVW no estan
+permitidas. Del mismo modo, cuando el plano activo es uno de la familia UVW,
+las palabras XYZ no están permitidas.</p></div>
+<div class="sect2">
+<h3 id="_palabras_comunes">42.1. Palabras comunes</h3>
+<div class="paragraph"><p>Todos los ciclos fijos usan grupos X, Y, Z o U, V, W dependiendo del
+plano seleccionado y la palabra R. La posición R (generalmente significa retracción) es
+a lo largo del eje perpendicular al plano seleccionado actualmente (eje Z
+para el plano XY, etc.) Algunos ciclos fijos usan argumentos adicionales.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_palabras_sticky">42.2. Palabras Sticky</h3>
+<div class="paragraph"><p>Para los ciclos fijos, llamaremos a un número <em>sticky</em> si, cuando el mismo
+ciclo se utiliza en varias líneas de código en fila, el número debe ser
+usado la primera vez, pero es opcional en el resto de las líneas.
+Los números sticky mantienen su valor en el resto de las líneas si no son
+programados explícitamente con valor diferente. El número R siempre es sticky.
+En el modo de distancia incremental, los números X, Y y R se tratan como
+incrementos desde la posición actual y Z como un incremento desde la
+posición del eje Z antes de que tenga lugar el movimiento que involucra a Z. En
+modo de distancia absoluta, los números X, Y, R y Z son posiciones absolutas en el
+sistema de coordenadas actual</p></div>
+</div>
+<div class="sect2">
+<h3 id="_repetir_ciclo">42.3. Repetir ciclo</h3>
+<div class="paragraph"><p>El número L es opcional y representa el número de repeticiones.
+L = 0 no está permitido. Si se utiliza la función de repetición,
+normalmente se usa en modo de distancia incremental, de modo que la misma secuencia
+de movimientos se repite en varios lugares igualmente espaciados a lo largo de una
+línea recta. Cuando L- es mayor que 1 en modo incremental con el
+plano XY seleccionado, las posiciones X e Y se determinan sumando los
+números X e Y dados a las posiciones X e Y actuales (en el
+primera vuelta) o a las posiciones X e Y al final de la anterior
+vuelta (en las repeticiones). Por lo tanto, si programa <em>L10</em>,
+obtendra 10 ciclos El primer ciclo será la distancia X, Y desde
+la ubicación original. Las posiciones R y Z no cambian durante la
+repeticion. El número L no es sticky. En modo de distancia absoluta,
+L &gt; 1 significa <em>hacer el mismo ciclo en el mismo lugar varias
+veces</em>. Omitir la palabra L es equivalente a especificar L = 1.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_modo_de_retracción">42.4. Modo de retracción</h3>
+<div class="paragraph"><p>La altura del movimiento de retracción al final de cada repetición (llamada
+<em>despejar Z</em> en las descripciones) está determinado por la configuración del
+modo de retracción, ya sea a la posición Z original (si está por encima
+de la posición R y el modo de retracción es <em>G98</em>, OLD_Z) o, de lo contrario,
+a la posición R. Consulte la sección <a href="g-code_es.html#gcode:g98-g99">G98 G99</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="gcode:canned-cycle-errors">42.5. Errores de ciclo fijo</h3>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+faltan palabras de eje durante un ciclo fijo,
+</p>
+</li>
+<li>
+<p>
+se usan juntas palabras de eje de diferentes grupos (XYZ) (UVW),
+</p>
+</li>
+<li>
+<p>
+se requiere un número P pero se usa un número P negativo,
+</p>
+</li>
+<li>
+<p>
+se utiliza un número L que no evalúa a un entero positivo,
+</p>
+</li>
+<li>
+<p>
+se usa movimiento de eje giratorio durante un ciclo fijo,
+</p>
+</li>
+<li>
+<p>
+la velocidad de alimentación de tiempo inverso está activa durante un ciclo fijo,
+</p>
+</li>
+<li>
+<p>
+o la compensación del cortador está activa durante un ciclo fijo.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si el plano XY está activo, el número Z es sticky y es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+falta el número Z y el mismo ciclo fijo no estaba
+activo,
+</p>
+</li>
+<li>
+<p>
+o el número R es menor que el número Z
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si otros planos están activos, las condiciones de error son análogas a las
+condiciones XY anteriores.</p></div>
+</div>
+<div class="sect2">
+<h3 id="gcode:preliminary-motion">42.6. Movimientos preliminares e intermedios</h3>
+<div class="paragraph"><p>El movimiento preliminar es un conjunto de movimientos que es común a todos los
+ciclos fijos de fresado. Si la posición Z actual está por debajo de la posición R,
+el eje Z hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> a la posición R. Esto solo sucede
+una vez, independientemente del valor de L.</p></div>
+<div class="paragraph"><p>Además, al comienzo del primer ciclo y en cada repetición,
+se realizan uno o dos movimientos siguientes</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> paralelo al plano XY para
+la posición XY dada,
+</p>
+</li>
+<li>
+<p>
+El eje Z hace un movimiento rápido a la posición R, si
+no está ya en la posición R.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Si otro plano está activo, los movimientos preliminares y intermedios son
+análogo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_por_qué_usar_un_ciclo_fijo">42.7. ¿Por qué usar un ciclo fijo?</h3>
+<div class="paragraph"><p>Hay al menos dos razones para usar ciclos fijos. El primero es
+economía del código. Un solo orificio tomaría varias líneas de código para
+definirlo.</p></div>
+<div class="paragraph"><p>El <a href="g-code_es.html#gcode:g81-example">Ejemplo 1</a> G81 demuestra cómo podría ser un ciclo fijo.
+Se utiliza para producir 8 agujeros con diez líneas de código G dentro del modo de ciclo fijo.
+El siguiente programa producirá el mismo conjunto de 8 agujeros usando cinco líneas.
+para el ciclo fijo. No sigue exactamente el mismo camino ni
+perfora en el mismo orden que el ejemplo anterior, pero
+la economía de la escritura de un buen ciclo fijo debería ser obvia.</p></div>
+<div class="paragraph"><p>NOTA:los números de línea no son necesarios, pero ayudan a aclarar estos ejemplos</p></div>
+<div class="paragraph"><p>Ocho agujeros</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>N100 G90 G0 X0 Y0 Z0 (home)
+N110 G1 F10 X0 G4 P0.1
+N120 G91 G81 X1 Y0 Z-1 R1 L4 (ciclo de taladro)
+N130 G90 G0 X0 Y1
+N140 Z0
+N150 G91 G81 X1 Y0 Z-0.5 R1 L4 (ciclo de taladro)
+N160 G80 (apagar ciclo fijo)
+N170 M2 (final del programa)</code></pre>
+</div></div>
+<div class="paragraph"><p>El G98 a la segunda línea de arriba significa que el movimiento de retorno será al
+valor de Z en la primera línea ya que es más alto que el valor R especificado.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/eight-holes_es.svg" alt="images/eight-holes_es.svg" />
+</div>
+</div>
+<div class="paragraph"><p>Doce agujeros en un cuadrado</p></div>
+<div class="paragraph"><p>Este ejemplo demuestra el uso de la palabra L para repetir un conjunto de
+ciclos de taladrado incrementales para bloques sucesivos de código dentro del mismo
+modo de movimiento G81. Aquí producimos 12 agujeros usando cinco líneas de código en
+el modo de movimiento de ciclo.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>N1000 G90 G0 X0 Y0 Z0 (home)
+N1010 G1 F50 X0 G4 P0.1
+N1020 G91 G81 X1 Y0 Z-0.5 R1 L4 (ciclo de taladro)
+N1030 X0 Y1 R0 L3 (repetir)
+N1040 X-1 Y0 L3 (repetir)
+N1050 X0 Y-1 L2 (repetir)
+N1060 G80 (apagar ciclo fijo)
+N1070 G90 G0 X0 (traslado rápido a home)
+N1080 Y0
+N1090 Z0
+N1100 M2 (fin del programa)</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/twelve-holes_es.svg" alt="images/twelve-holes_es.svg" />
+</div>
+</div>
+<div class="paragraph"><p>La segunda razón para usar un ciclo fijo es que todos producen
+movimientos preliminares y retornos que se pueden anticipar y controlar
+independientemente del punto de inicio del ciclo fijo.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g80">43. G80 Cancelar ciclo fijo</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>G80 Cancel Modal Motion)</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G80</em> - cancela el movimiento modal de ciclo fijo. <em>G80</em> es parte del grupo modal 1,
+así que programar cualquier otro código G del grupo modal 1 también
+cancela el ciclo fijo.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Se programan palabras de eje cuando G80 está activo.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo G80</div>
+<div class="content">
+<pre><code>G90 G81 X1 Y1 Z1.5 R2.8 (ciclo fijo de distancia absoluta)
+G80 (desactivar el movimiento del ciclo fijo)
+G0 X0 Y0 Z0 (movimiento rápido a home)</code></pre>
+</div></div>
+<div class="paragraph"><p>El siguiente código produce la misma posición final y el mismo estado de la máquina que
+el código anterior.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo G0</div>
+<div class="content">
+<pre><code>G90 G81 X1 Y1 Z1.5 R2.8 (ciclo fijo de distancia absoluta)
+G0 X0 Y0 Z0 (movimiento rápido para coordinar inicio)</code></pre>
+</div></div>
+<div class="paragraph"><p>La ventaja del primer conjunto es que, la línea G80 apaga claramente el
+ciclo fijo G81. Con el primer conjunto de bloques, el programador debe activar de nuevo
+el movimiento con G0, como se hace en la siguiente línea, o cualquier otra palabra G de
+modo de movimiento.</p></div>
+<div class="paragraph"><p>Si un ciclo fijo no se apaga con G80 u otra palabra de movimiento,
+el ciclo fijo intentará repetirse usando el siguiente bloque de código
+que contenga una palabra X, Y o Z. El siguiente archivo explora (G81) un conjunto
+de ocho agujeros como se muestra en lo siguiente.</p></div>
+<div class="listingblock">
+<div class="title">G80 Ejemplo 1</div>
+<div class="content">
+<pre><code>N100 G90 G0 X0 Y0 Z0 (home)
+N110 G1 X0 G4 P0.1
+N120 G81 X1 Y0 Z0 R1 (ciclo de taladro fijo)
+N130 X2
+N140 X3
+N150 X4
+N160 Y1 Z0.5
+N170 X3
+N180 X2
+N190 X1
+N200 G80 (apagar ciclo fijo)
+N210 G0 X0 (traslado rápido a home)
+N220 Y0
+N230 Z0
+N240 M2 (final del programa)</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Observe el cambio de posición z después de los primeros cuatro agujeros.
+Además, este es uno de los pocos lugares donde los números de línea tienen algún valor;
+ser capaz de señalar a un lector una línea específica de código.</td>
+</tr></table>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g81mult_es.svg" alt="Ciclo G80" />
+</div>
+<div class="title">Figure 5. Ciclo G80</div>
+</div>
+<div class="paragraph"><p>El uso de G80 en la línea N200 es opcional porque el G0 en la siguiente
+línea apagará el ciclo G81. Pero usando el G80 como se muestra en
+el ejemplo 1 proporcionará un ciclo fijo más fácil de leer. Sin el,
+no es tan obvio que todos los bloques entre N120 y N200 pertenecen
+al ciclo fijo.</p></div>
+<div class="paragraph" id="gcode:g81"><p>==G81 Ciclo de taladrado</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G81 (X- Y- Z-) o (U- V- W-) R- L-</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G81</em> está destinado a taladrado.</p></div>
+<div class="paragraph"><p>El ciclo funciona de la siguiente manera:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>
+</p>
+</li>
+<li>
+<p>
+Mover el eje Z al <a href="other-code_es.html#sec:set-feed-rate">avance</a> actual a la posición Z
+.
+</p>
+</li>
+<li>
+<p>
+El eje Z hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> para despejar Z.
+</p>
+</li>
+<li>
+<p>
+Ejemplo 1 - Posición absoluta G81 <a id="gcode:g81-example"></a>
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Supongamos que la posición actual es (X1, Y2, Z3) y la siguiente línea de NC</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G90 G98 G81 X4 Y5 Z1.5 R2.8</code></pre>
+</div></div>
+<div class="paragraph"><p>Esto requiere el modo de distancia absoluta (G90) y el modo de retracción OLD_Z
+(G98) y llama al ciclo de perforación G81 que se realiza una vez.</p></div>
+<div class="paragraph"><p>El valor X y la posición X es 4.</p></div>
+<div class="paragraph"><p>El valor Y y la posición Y es 5.</p></div>
+<div class="paragraph"><p>El valor Z y la posición Z es 1.5.</p></div>
+<div class="paragraph"><p>El valor R y la Z de despeje son 2.8. OLD_Z es 3.</p></div>
+<div class="paragraph"><p>Se realizan los siguientes movimientos:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> paralelo al plano XY a (X4, Y5)
+</p>
+</li>
+<li>
+<p>
+un movimiento rápido paralelo al eje Z hacia (Z2.8).
+</p>
+</li>
+<li>
+<p>
+movimiento paralelo al eje Z al <a href="other-code_es.html#sec:set-feed-rate">avance</a> actual a (Z1.5)
+</p>
+</li>
+<li>
+<p>
+Un movimiento rápido paralelo al eje Z a (Z3)
+</p>
+</li>
+</ol></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g81ex1_es.svg" alt="images/g81ex1_es.svg" />
+</div>
+</div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Ejemplo 2 - posición relativa G81
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Supongamos que la posición actual es (X1, Y2, Z3) y la siguiente línea de NC.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G91 G98 G81 X4 Y5 Z-0.6 R1.8 L3</code></pre>
+</div></div>
+<div class="paragraph"><p>Esto requiere el modo de distancia incremental (G91) y el modo de retracción OLD_Z
+(G98). También exige que el ciclo de taladrado G81 se repita tres
+veces. El valor X es 4, el valor Y es 5, el valor Z es -0.6 y el
+valor R es 1.8. La posición X inicial es 5 (= 1 + 4), la Y inicial
+es 7 (= 2 + 5), la posición Z de despeje es 4.8 (= 1.8 + 3), y la Z
+es 4.2 (= 4.8-0.6). OLD_Z es 3.</p></div>
+<div class="paragraph"><p>El primer movimiento preliminar es un movimiento rápido a lo largo del eje Z para
+(X1, Y2, Z4.8), ya que OLD_Z &lt; Z de despeje.</p></div>
+<div class="paragraph"><p>La primera repetición consiste en 3 movimientos.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> paralelo al plano XY a (X5, Y7)
+</p>
+</li>
+<li>
+<p>
+movimiento paralelo al eje Z a <a href="other-code_es.html#sec:set-feed-rate">avance</a> hacia (Z4.2)
+</p>
+</li>
+<li>
+<p>
+Un movimiento rápido paralelo al eje Z a (X5, Y7, Z4.8)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>La segunda repetición consiste en 3 movimientos. La posición X se restablece a
+9 (= 5 + 4) y la posición Y a 12 (= 7 + 5).</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> paralelo al plano XY a (X9, Y12, Z4.8)
+</p>
+</li>
+<li>
+<p>
+movimiento paralelo al eje Z a la velocidad de avance a (X9, Y12, Z4.2)
+</p>
+</li>
+<li>
+<p>
+Un movimiento rápido paralelo al eje Z a (X9, Y12, Z4.8)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>La tercera repetición consiste en 3 movimientos. La posición X se restablece a
+13 (= 9 + 4) y la posición Y a 17 (= 12 + 5).</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> paralelo al plano XY a (X13, Y17, Z4.8)
+</p>
+</li>
+<li>
+<p>
+movimiento paralelo al eje Z a la velocidad de avance a (X13, Y17, Z4.2)
+</p>
+</li>
+<li>
+<p>
+Un movimiento rápido paralelo al eje Z a (X13, Y17, Z4.8)
+</p>
+</li>
+</ol></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g81ex2_es.svg" alt="images/g81ex2_es.svg" />
+</div>
+</div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Ejemplo 3 - Posición relativa G81
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Ahora suponga que ejecuta el primer bloque de código G81 pero desde (X0,
+Y0, Z0) en lugar de desde (X1, Y2, Z3).</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G90 G98 G81 X4 Y5 Z1.5 R2.8</code></pre>
+</div></div>
+<div class="paragraph"><p>Como OLD_Z está por debajo del valor R, no agrega
+nada al movimiento, pero dado que el valor inicial de Z es menor que
+el valor especificado en R, habrá un movimiento inicial Z durante el
+movimiento preliminar</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g81_es.svg" alt="images/g81_es.svg" />
+</div>
+</div>
+<div class="paragraph"><p>Ejemplo 4 - G81 Absoluto R&gt; Z</p></div>
+<div class="paragraph"><p>Este es un diagrama de la ruta de movimiento para el segundo bloque de código g81.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G91 G98 G81 X4 Y5 Z-0.6 R1.8 L3</code></pre>
+</div></div>
+<div class="paragraph"><p>Como esta trama comienza con (X0, Y0, Z0), el intérprete agrega
+Z0 y R1.8 iniciales y movimientos rápidos a esa ubicación. Después de esa Z inicial,
+la función de repetición funciona igual que en el ejemplo 3 con
+la profundidad Z final de 0.6 por debajo del valor R.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/g81a_es.svg" alt="images/g81a_es.svg" />
+</div>
+</div>
+<div class="paragraph"><p>Ejemplo 5 - Posición relativa R&gt; Z</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G90 G98 G81 X4 Y5 Z-0.6 R1.8</code></pre>
+</div></div>
+<div class="paragraph"><p>Como este gráfico comenzaria con (X0, Y0, Z0), el intérprete agrega el Z0 inicial
+y R1.8 y movimientos rápidos a esa ubicación como en el <em>Ejemplo 4</em>. Después de esa Z inicial,
+se realiza el <a href="g-code_es.html#gcode:g0">movimiento rápido</a> a X4 Y5. Entonces la profundidad Z final
+es 0.6 por debajo del valor R. La función de repetición haría que la Z se moviera
+al mismo lugar nuevamente.</p></div>
+<div class="paragraph" id="gcode:g82"><p>==G82 Ciclo de perforación, con Dwell</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G82 (X- Y- Z-) o (U- V- W-) R- L- P-</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G82</em> está diseñado para perforar con una pausa en la parte inferior de
+el agujero.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a <a href="other-code_es.html#sec:set-feed-rate">velocidad de avance</a> a la posición Z.
+</p>
+</li>
+<li>
+<p>
+Espera P segundos.
+</p>
+</li>
+<li>
+<p>
+El eje Z hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> para despejar Z.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>El movimiento de un ciclo fijo G82 se parece a G81 con
+una pausa en la parte inferior del movimiento Z. El tiempo de
+pausa se especifica mediante una palabra <em>P-</em> en el bloque G82.</p></div>
+<div class="paragraph" id="gcode:g83"><p>==G83 Ciclo de perforación con picado</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G83 (X- Y- Z-) o (U- V- W-) R- L- Q-</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G83</em> está destinado a perforación o fresado con rotura de viruta.
+Las retracciones en este ciclo despejan el agujero de esquirlas y cortar las virutas largas
+(que son comunes cuando se perfora aluminio). Este ciclo toma un número Q que representa un
+incremento <em>delta</em> a lo largo del eje Z. La retracción antes de la profundidad final siempre
+esta en el plano de <em>retracción</em> incluso si G98 está en efecto. La retracción final obedecerá
+al G98/99 en efecto. G83 funciona igual que G81 con la adición de retracciones durante la operación de perforación.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a <a href="other-code_es.html#sec:set-feed-rate">velocidad de avance</a> hacia abajo la cantidad
+delta o a la posición Z, lo que sea menos profundo.
+</p>
+</li>
+<li>
+<p>
+Movimiento rápido de regreso al plano de retracción especificado por la palabra R.
+</p>
+</li>
+<li>
+<p>
+Movimiento rápido hacia abajo hasta el fondo del agujero actual, retrocediendo un poco.
+</p>
+</li>
+<li>
+<p>
+Repite los pasos 2, 3 y 4 hasta alcanzar la posición Z en el paso 2.
+</p>
+</li>
+<li>
+<p>
+El eje Z hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> para despejar Z.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el número Q es negativo o cero.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g84">44. G84 Ciclo de roscado a derecha, con Dwell</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G84 (X- Y- Z-) o (U- V- W-) R- L- P- $ -</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G84</em> está diseñado para roscar con mandril flotante y permanecer en el fondo del agujero.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>
+</p>
+</li>
+<li>
+<p>
+Deshabilita ajustes de avance y velocidad.
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a velocidad de avance actual a la posición Z.
+</p>
+</li>
+<li>
+<p>
+Detiene el husillo seleccionado (elegido por el parámetro $)
+</p>
+</li>
+<li>
+<p>
+Inicia la rotación del husillo en sentido antihorario.
+</p>
+</li>
+<li>
+<p>
+Espere P segundos.
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a la velocidad de avance actual para despejar Z
+</p>
+</li>
+<li>
+<p>
+Restaura y habilita ajustes de alimentación y velocidad al estado anterior
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>La longitud de la pausa se especifica mediante una palabra <em>P-</em> en el bloque G84. El pitch de la rosca es F
+dividido por S.
+En el ejemplo, S100 F125 ofrece un paso de 1,25 mm por revolución.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g85">45. G85 Ciclo mandrinado, salida a avance</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G85 (X- Y- Z-) o (U- V- W-) R- L-</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G85</em> está diseñado para mandrinar o escariar, pero podría usarse
+para taladrar o fresar.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>.
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a <a href="other-code_es.html#sec:set-feed-rate">velocidad de avance</a> a la posición Z.
+</p>
+</li>
+<li>
+<p>
+Retrae el eje Z a velocidad de avance actual al plano R si es más bajo
+que la Z inicial.
+</p>
+</li>
+<li>
+<p>
+Retrae a la velocidad transversal para despejar Z.
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g86">46. G86 Ciclo de taladrado, parada del husillo, salida a rápido.</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G86 (X- Y- Z-) o (U- V- W-) R- L- P- $-</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G86</em> está destinado a mandrinado. Este ciclo usa P
+segundos de parada.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>.
+</p>
+</li>
+<li>
+<p>
+Mueve el eje Z a <a href="other-code_es.html#sec:set-feed-rate">velocidad de avance</a> a la posición Z.
+</p>
+</li>
+<li>
+<p>
+Espera P segundos.
+</p>
+</li>
+<li>
+<p>
+Detiene el giro del husillo seleccionado (elegido por el parámetro $).
+</p>
+</li>
+<li>
+<p>
+El eje Z hace un <a href="g-code_es.html#gcode:g0">movimiento rápido</a> para despejar Z.
+</p>
+</li>
+<li>
+<p>
+Reinicia el husillo en la dirección en la que iba.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el husillo no gira antes de ejecutar este ciclo.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_g87_ciclo_de_mandrinado_posterior">47. G87 Ciclo de mandrinado posterior</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Este código no está implementado actualmente en LinuxCNC. Se acepta, pero el
+comportamiento es indefinido.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ciclo_de_taladrado_g88_parada_del_husillo_salida_manual">48. Ciclo de taladrado G88, parada del husillo, salida manual</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Este código no está implementado actualmente en LinuxCNC. Se acepta, pero el
+El comportamiento es indefinido.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g89">49. G89 Ciclo de mandrinado, con Dwell, salida a avance</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G89 (X- Y- Z-) o (U- V- W-) R- L- P-</code></pre>
+</div></div>
+<div class="paragraph"><p>El ciclo <em>G89</em> está destinado a mandrinado. Este ciclo usa un número P
+que especifica el número de segundos de parada (Dwell).</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Movimiento preliminar, como se describe en la sección
+<a href="g-code_es.html#gcode:preliminary-motion">movimientos preliminares e intermedios</a>.
+</p>
+</li>
+<li>
+<p>
+Mover el eje Z solo a <a href="other-code_es.html#sec:set-feed-rate">avance</a> actual a la posición Z.
+</p>
+</li>
+<li>
+<p>
+Espera de P segundos.
+</p>
+</li>
+<li>
+<p>
+Retraer el eje Z a velocidad de avance actual para despejar Z.
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g90-g91">50. G90, G91 Modo de distancia</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G90</em> - modo de distancia absoluta. En este
+modo, los números de eje (X, Y, Z, A, B, C, U, V, W)
+generalmente representan posiciones en términos del
+sistema coordinado activo. Las excepciones a esta regla se describen
+explícitamente en la sección <a href="g-code_es.html#gcode:g80-g89">G80 G89</a>.
+</p>
+</li>
+<li>
+<p>
+<em>G91</em> - modo de distancia incremental. En este modo, los números de eje generalmente representan
+incrementos de la coordenada actual.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo G90</div>
+<div class="content">
+<pre><code>G90 (establecer modo de distancia absoluta)
+G0 X2.5 (movimiento rápido a coordenada X2.5 incluyendo cualquier compensación en efecto)</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Ejemplo G91</div>
+<div class="content">
+<pre><code>G91 (establecer modo de distancia incremental)
+G0 X2.5 (movimiento rápido de 2.5 udes. desde la posición actual a lo largo del eje X)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Consulte la sección <a href="g-code_es.html#gcode:g0">G0</a> para obtener más información.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g90.1-g91.1">51. G90.1, G91.1 Modo de distancia de arco</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G90.1</em> - modo de distancia absoluta para offsets I, J y K.
+Cuando G90.1 está en vigor, I y J deben especificarse con G2/G3
+para el plano XY o J y K para el plano XZ o es un error.
+</p>
+</li>
+<li>
+<p>
+<em>G91.1</em> - modo de distancia incremental para offsets I, J y K. G91.1 devuelve
+I, J y K a su comportamiento predeterminado.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g92">52. G92 Offset de sistema de coordenadas G92</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G92 ejes</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">Solo use <em>G92</em> después de que su máquina se haya posicionado en el punto deseado.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p><em>G92</em> hace que el punto actual tenga las coordenadas que desea (sin
+movimiento), donde las palabras de eje contienen los números de eje que desea.
+Todas las palabras de eje son opcionales, pero se debe utilizar al menos una.
+Si no se usa una palabra de eje para un eje dado, el offset para ese eje será cero.</p></div>
+<div class="paragraph"><p>Cuando se ejecuta <em>G92</em>, se mueven los <a href="coordinates_es.html#sec.machine-coordinate-system">origenes</a>
+de todos los sistemas de coordenadas. Se mueven de tal manera que el valor del
+punto controlado actual, en el sistema de coordenadas actualmente activo,
+se convierte en el valor especificado. Todos los orígenes de sistema de coordenadas.
+(G53-G59.3) se compensan esta misma distancia.</p></div>
+<div class="paragraph"><p><em>G92</em> utiliza los valores almacenados en los <a href="overview_es.html#sub:numbered-parameters">parámetros</a>
+5211-5219 como los valores de offset X Y Z A B C U V W para cada eje.
+Los valores de los parámetros son coordenadas de máquina <em>absolutas</em>
+en las <em>unidades</em> nativas de máquina  como se especificó en el archivo ini.
+Todos los ejes definidos en el archivo ini se compensarán cuando G92 esté activo.
+Si no se ingresó un eje después del G92, el offset de ese eje será cero</p></div>
+<div class="paragraph"><p>Por ejemplo, suponga que el punto actual está en X = 4 y no hay
+ningún offset <em>G92</em> activo. Entonces se programa <em>G92 X7</em>. Esto
+mueve todos los orígenes -3 en X, lo que hace que el
+punto actual se convierta en X = 7. Este -3 se guarda en el parámetro 5211.</p></div>
+<div class="paragraph"><p>Estar en modo de distancia incremental (G91 en lugar de G90) no tiene ningún efecto
+sobre la acción de <em>G92</em>.</p></div>
+<div class="paragraph"><p>Las compensaciones <em>G92</em> pueden estar vigentes cuando se llama a <em>G92</em>.
+Si este es el caso, el offset se reemplaza con un nuevo
+offset que hace que el punto actual se convierta al valor especificado.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+se omiten todas las palabras del eje.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>LinuxCNC almacena las compensaciones G92 y las reutiliza en la próxima ejecución de un
+programa. Para evitar esto, puede programar un G92.1 (para borrarlos), o
+un G92.2 (para quitarlos, pero quedan almacenados).</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">El comando <em>G52</em> también se puede usar para cambiar este offset; ver la sección
+<a href="coordinates_es.html#sec:g52-and-g92-offsets">Offsets</a> para más detalles sobre
+<em>G92</em> y <em>G52</em> y cómo interactúan.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Consulte la sección <a href="coordinates_es.html#cha:coordinate-system">Sistema de coordenadas</a> para obtener un
+resumen de los sistemas de coordenadas.</p></div>
+<div class="paragraph"><p>Consulte la sección <a href="overview_es.html#gcode:parameters">parámetros</a> para obtener más información.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g92.1-g92.2">53. G92.1, G92.2 Restablecer compensaciones G92</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G92.1</em> - apaga las compensaciones G92 y restablece <a href="overview_es.html#sub:numbered-parameters">parámetros</a> 5211 - 5219 a cero.
+</p>
+</li>
+<li>
+<p>
+<em>G92.2</em> - apaga las compensaciones de G92 pero mantén <a href="overview_es.html#sub:numbered-parameters">parámetros</a> 5211 - 5219 disponibles.
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">G92.1 solo borra las compensaciones G92, para cambiar las compensaciones del sistema de coordenadas G53-G59.3
+en el código G use <a href="g-code_es.html#gcode:g10-l2">G10 L2</a> o <a href="g-code_es.html#gcode:g10-l20">G10 L20</a>.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g92.3">54. G92.3 Restaurar compensaciones G92</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G92.3</em> - establece el offset de G92 a los valores guardados en los parámetros 5211 a 5219
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Puede establecer offsets de eje en un programa y utilizar los mismos offsets en
+otro programa Programa <em>G92</em> en el primer programa. Esto establecerá
+parámetros 5211 a 5219. No utilice <em>G92.1</em> en el resto del
+primer programa Los valores de los parámetros se guardarán cuando el primer
+el programa sale y se restaura cuando se inicia el segundo.
+Use <em>G92.3</em> cerca del comienzo del segundo programa. Eso restaurará
+las compensaciones guardadas en el primer programa.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g93-g94-g95">55. Modo de velocidad de alimentación G93, G94, G95</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G93</em> - Modo de Tiempo Inverso. En modo de velocidad de avance de tiempo inverso, la palabra F
+significa que el movimiento debe completarse en [uno dividido por el número F]
+minutos. Por ejemplo, si el número F es 2.0, el movimiento debería ser
+completado en medio minuto.
+</p>
+<div class="paragraph"><p>Cuando el modo de velocidad de avance de tiempo inverso está activo, debe aparecer una palabra F
+en cada línea que tiene un movimiento G1, G2 o G3. Si la linea no tiene G1, G2 o G3, F se ignora.
+Estar en modo de velocidad de tiempo inverso no afecta a los movimientos G0.</p></div>
+</li>
+<li>
+<p>
+<em>G94</em> - Modo Unidades por Minuto.
+En el modo de alimentación de unidades por minuto, una palabra F significa que
+el punto controlado debe moverse a un cierto número de pulgadas por
+minuto, milímetros por minuto o grados por minuto, dependiendo de
+qué unidades de longitud se utilizan y qué eje o ejes se mueven.
+</p>
+</li>
+<li>
+<p>
+<em>G95</em> - Modo Unidades por Revolución
+En modo de unidades por revolución, una palabra F se interpreta como que
+el punto controlado debe moverse un cierto número de pulgadas por revolución
+del husillo, dependiendo de qué unidades de longitud se estén utilizando y cuáles
+eje o ejes se mueven. G95 no es adecuado para roscar; use G33 o G76.
+G95 requiere que se conecte spindle.N.speed-in. El husillo real
+con el que se sincroniza la alimentacion se elige con el parámetro $
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El modo de alimentación de tiempo inverso está activo y una línea con G1, G2 o G3
+(explícita o implícitamente) no tiene una palabra F.
+</p>
+</li>
+<li>
+<p>
+No se especifica una nueva velocidad de alimentación después de cambiar a G94 o G95
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g96-g97">56. G96, G97 Modo de control del husillo</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G96 &lt;D-&gt; S- &lt;$ -&gt; (Modo de velocidad de superficie constante)
+G97 S- &lt;$ -&gt; (Modo RPM)</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>D</em> - RPM máximas del husillo
+</p>
+</li>
+<li>
+<p>
+<em>S</em> - velocidad de superficie
+</p>
+</li>
+<li>
+<p>
+'$ "- el husillo del cual se variará la velocidad.
+</p>
+</li>
+<li>
+<p>
+<em>G96 D- S-</em> - selecciona la velocidad superficial constante de <em>S</em> pies por minuto
+(si G20 está en vigor) o metros por minuto
+(si G21 está en vigor). D- es opcional.
+</p>
+<div class="paragraph"><p>Cuando use G96, asegúrese de que X0 en
+el sistema de coordenadas actual (incluidos los offsets y las longitudes de herramienta) es
+el centro de rotación o LinuxCNC no proporcionará la velocidad de superficie deseada.
+G96 no se ve afectado por el modo de radio o diámetro.</p></div>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para lograr el modo CSS en los husillos seleccionados, ejecute comandos G96 sucesivos
+para cada husillo antes de emitir M3.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G97</em> selecciona el modo RPM.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Línea de ejemplo G96</div>
+<div class="content">
+<pre><code>G96 D2500 S250 (establece CSS con rpm máximo de 2500 y una velocidad de superficie de 250)</code></pre>
+</div></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+S no se especifica con G96
+</p>
+</li>
+<li>
+<p>
+Se especifica un movimiento de avance en el modo G96 mientras el husillo no gira
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:g98-g99">57. G98, G99 Nivel de retorno del ciclo fijo</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G98</em> - se retrocede a la posición en la que se encontraba el eje justo antes de una serie
+de uno o más ciclos contiguos.
+</p>
+</li>
+<li>
+<p>
+<em>G99</em> - retrocede a la posición especificada por la palabra R del ciclo fijo.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Programe un <em>G98</em> y el ciclo fijo usará la posición Z antes del
+ciclo fijo como la posición de retorno Z si es más alto que el valor R
+especificado en el ciclo. Si es menor, se usará el valor R.
+La palabra R tiene diferentes significados en modo de distancia absoluta y
+en modo de distancia incremental.</p></div>
+<div class="listingblock">
+<div class="title">G98 Retraer al origen</div>
+<div class="content">
+<pre><code>G0 X1 Y2 Z3
+G90 G98 G81 X4 Y5 Z-0.6 R1.8 F10</code></pre>
+</div></div>
+<div class="paragraph"><p>G98 en la segunda línea significa que el movimiento de retorno será al
+valor de Z en la primera línea ya que es más alto que el valor R
+especificado.</p></div>
+<div class="paragraph"><p>El plano <em>inicial</em> (G98) se restablece cada vez que el modo de movimiento del ciclo es
+abandonado, ya sea explícitamente (G80) o implícitamente (cualquier código de movimiento
+que no sea un ciclo). Cambiar entre modos de ciclo (por ejemplo, G81
+a G83) NO restablece el plano <em>inicial</em>. Es posible cambiar
+entre G98 y G99 durante una serie de ciclos.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

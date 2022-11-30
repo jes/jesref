@@ -1,0 +1,1006 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:24 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MOTION</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MOTION</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#MOTION PINS">MOTION PINS</a><br>
+<a href="#AXIS PINS">AXIS PINS</a><br>
+<a href="#JOINT PINS">JOINT PINS</a><br>
+<a href="#JOINT UNLOCK PINS">JOINT UNLOCK PINS</a><br>
+<a href="#SPINDLE PINS">SPINDLE PINS</a><br>
+<a href="#MOTION PARAMETERS">MOTION PARAMETERS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">motion -
+accepts NML motion commands, interacts with HAL in
+realtime</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+motmod [base_period_nsec=</b><i>period</i><b>]
+[base_thread_fp=</b><i>0 or 1</i><b>]
+[servo_period_nsec=</b><i>period</i><b>]
+[traj_period_nsec=</b><i>period</i><b>]
+[num_joints=</b><i>[1-9]</i><b>]
+[num_dio=</b><i>[1-64]</i><b>]
+[num_aio=</b><i>[1-64]</i><b>]
+[num_spindles=</b><i>[1-8]</i><b>]
+[unlock_joints_mask=</b><i>jointmask</i><b>]</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">The limits for
+the following items are compile-time settings: <br>
+Number of joints available (num_joints) is set by
+EMCMOT_MAX_JOINTS. <br>
+Maximum number of digital inputs (num_dio) is set by
+EMCMOT_MAX_DIO. <br>
+Maximum number of analog inputs (num_aio) is set by
+EMCMOT_MAX_AIO. <br>
+Maximum number of spindles (num_spindles) is set by
+EMCMOT_MAX_SPINDLES</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">By default, the
+base thread does not support floating point. Software
+stepping, software encoder counting, and software pwm do not
+use floating point. <b>base_thread_fp</b> can be used to
+enable floating point in the base thread (for example for
+brushless DC motor control).</p>
+
+<p style="margin-left:11%; margin-top: 1em">These pins and
+parameters are created by the realtime <b>motmod</b> module.
+This module provides a HAL interface for LinuxCNC&rsquo;s
+motion planner. Basically <b>motmod</b> takes in a list of
+waypoints and generates a nice blended and
+constraint-limited stream of joint positions to be fed to
+the motor drives.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Optionally the
+number of Digital I/O is set with num_dio. The number of
+Analog I/O is set with num_aio. The default is 4 each.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Pin names
+starting with &quot;<b>joint</b>&quot; or
+&quot;<b>axis</b>&quot; are are read and updated by the
+motion-controller function.</p>
+
+<h2>MOTION PINS
+<a name="MOTION PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>motion-command-handler.time</b>
+OUT S32</p>
+
+<p style="margin-left:22%;">Time (in CPU clocks) for the
+motion module motion-command-handler</p>
+
+<p style="margin-left:11%;"><b>motion-controller.time</b>
+OUT S32</p>
+
+<p style="margin-left:22%;">Time (in CPU clocks) for the
+motion module motion-controller</p>
+
+<p style="margin-left:11%;"><b>motion.adaptive-feed</b> IN
+FLOAT</p>
+
+<p style="margin-left:22%;">When adaptive feed is enabled
+with M52 P1, the commanded velocity is multiplied by this
+value. This effect is multiplicative with the NML-level feed
+override value and motion.feed-hold. Negative values are
+valid and will run the G-code path in reverse.</p>
+
+
+<p style="margin-left:11%;"><b>motion.analog-in-</b><i>NN</i>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">These pins are used by M66 Enn
+wait-for-input mode.</p>
+
+
+<p style="margin-left:11%;"><b>motion.analog-out-</b><i>NN</i>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">These pins are used by
+M67-68.</p>
+
+<p style="margin-left:11%;"><b>motion.coord-error</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE when motion has
+encountered an error, such as exceeding a soft limit</p>
+
+<p style="margin-left:11%;"><b>motion.coord-mode</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE when motion is in
+&quot;coordinated mode&quot;, as opposed to &quot;teleop
+mode&quot;</p>
+
+<p style="margin-left:11%;"><b>motion.current-vel</b> OUT
+FLOAT</p>
+
+<p style="margin-left:22%;">Current cartesian velocity</p>
+
+
+<p style="margin-left:11%;"><b>motion.digital-in-</b><i>NN</i>
+IN BIT</p>
+
+<p style="margin-left:22%;">These pins are used by M66 Pnn
+wait-for-input mode.</p>
+
+
+<p style="margin-left:11%;"><b>motion.digital-out-</b><i>NN</i>
+OUT BIT</p>
+
+<p style="margin-left:22%;">These pins are controlled by
+the M62 through M65 words.</p>
+
+<p style="margin-left:11%;"><b>motion.distance-to-go</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Distance remaining in the
+current move</p>
+
+<p style="margin-left:11%;"><b>motion.enable</b> IN BIT</p>
+
+<p style="margin-left:22%;">If this bit is driven FALSE,
+motion stops, the machine is placed in the &quot;machine
+off&quot; state, and a message is displayed for the
+operator. For normal motion, drive this bit TRUE.</p>
+
+<p style="margin-left:11%;"><b>motion.eoffset-active</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Indicates external offsets are
+active (non-zero)</p>
+
+<p style="margin-left:11%;"><b>motion.eoffset-limited</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Indicates motion with external
+offsets was limited by a soft limit constraint
+([AXIS_L]MIN_LIMIT,MAX_LIMIT).</p>
+
+<p style="margin-left:11%;"><b>motion.feed-hold</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">When Feed Stop Control is
+enabled with M53 P1, and this bit is TRUE, the feed rate is
+set to 0.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Note: feed-hold
+applies to gcode commands -- not jogs.</p>
+
+<p style="margin-left:11%;"><b>motion.feed-inhibit</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">When this pin is TRUE, machine
+motion is inhibited for gcode commands.</p>
+
+<p style="margin-left:22%; margin-top: 1em">If the machine
+is performing a spindle synchronized move when this pin goes
+TRUE, the spindle synchronized motion will finish, and any
+following moves will be inhibited (this is to prevent damage
+to the machine, the tool, or the work piece).</p>
+
+<p style="margin-left:22%; margin-top: 1em">If the machine
+is in the middle of a (non-spindle synchronized) move when
+this pin goes TRUE, the machine will decelerate to a stop at
+the maximum allowed acceleration rate.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Motion resumes
+when this pin goes FALSE.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Note:
+feed-inhibit applies to gcode commands -- not jogs.</p>
+
+<p style="margin-left:11%;"><b>motion.homing-inhibit</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">If this bit is TRUE, initiation
+of any joint homing move (including &quot;Home All&quot;) is
+disallowed and an error is reported. By default, homing is
+allowed in joint mode whenever motion is enabled.</p>
+
+<p style="margin-left:11%;"><b>motion.in-position</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE if the machine is in
+position (ie, not currently moving towards the commanded
+position).</p>
+
+<p style="margin-left:11%;"><b>motion.motion-enabled</b>
+OUT BIT <b><br>
+motion.motion-type</b> OUT S32</p>
+
+<p style="margin-left:22%;">These values are from
+src/emc/nml_intf/motion_types.h</p>
+
+<p style="margin-left:32%;">0: Idle (no motion)</p>
+
+<p style="margin-left:32%; margin-top: 1em">1: Traverse</p>
+
+<p style="margin-left:32%; margin-top: 1em">2: Linear
+feed</p>
+
+<p style="margin-left:32%; margin-top: 1em">3: Arc feed</p>
+
+<p style="margin-left:32%; margin-top: 1em">4: Tool
+change</p>
+
+<p style="margin-left:32%; margin-top: 1em">5: Probing</p>
+
+<p style="margin-left:32%; margin-top: 1em">6: Rotary
+unlock for traverse</p>
+
+<p style="margin-left:11%;"><b>motion.on-soft-limit</b> OUT
+BIT <b><br>
+motion.probe-input</b> IN BIT</p>
+
+<p style="margin-left:22%;">G38.n uses the value on this
+pin to determine when the probe has made contact. TRUE for
+probe contact closed (touching), FALSE for probe contact
+open.</p>
+
+<p style="margin-left:11%;"><b>motion.program-line</b> OUT
+S32</p>
+
+<p style="margin-left:22%;">The current program line while
+executing. Zero if not running or between lines while single
+stepping.</p>
+
+<p style="margin-left:11%;"><b>motion.requested-vel</b> OUT
+FLOAT</p>
+
+<p style="margin-left:22%;">The current requested velocity
+in user units per second. This value is the F-word setting
+from the G-code file, possibly reduced to accommodate
+machine velocity and acceleration limits. The value on this
+pin does not reflect the feed override or any other
+adjustments.</p>
+
+
+<p style="margin-left:11%;"><b>motion.servo.last-period</b>
+OUT U32</p>
+
+<p style="margin-left:22%;">The number of CPU clocks
+between invocations of the servo thread. Typically, this
+number divided by the CPU speed gives the time in seconds,
+and can be used to determine whether the realtime motion
+controller is meeting its timing constraints</p>
+
+<p style="margin-left:11%;"><b>motion.teleop-mode</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Motion mode is teleop (axis
+coordinate jogging available).</p>
+
+<p style="margin-left:11%;"><b>motion.tooloffset.L</b> OUT
+FLOAT</p>
+
+<p style="margin-left:22%;">Current tool offset for each
+axis where (<b>L</b> is the axis letter, one of: <b>x y z a
+b c u v w</b>)</p>
+
+<p style="margin-left:11%;"><b>motion.tp-reverse</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Trajectory planning is reversed
+(reverse run)</p>
+
+<h2>AXIS PINS
+<a name="AXIS PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(<b>L</b> is
+the axis letter, one of: <b>x y z a b c u v w</b>) <b><br>
+axis.</b><i>L</i><b>.eoffset</b> OUT FLOAT</p>
+
+<p style="margin-left:22%;">Current external offset.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-clear</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Clear external offset
+request</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-counts</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Counts input for external
+offset. The eoffset-counts are transferred to an internal
+register. The applied external offset is the product of the
+register counts and the eoffset-scale value. The register is
+<b>reset to zero at each machine startup</b>. If the machine
+is turned off with an external offset active, the
+eoffset-counts pin should be set to zero before
+restarting.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-enable</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Enable for external offset
+(also requires ini file setting for
+[AXIS_L]OFFSET_AV_RATIO)</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-request</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Debug pin for requested
+external offset.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-scale</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Scale for external offset.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-accel-fraction</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Sets acceleration for wheel
+jogging to a fraction of the ini max_acceleration for the
+axis. Values greater than 1 or less than zero are
+ignored.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-counts</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Connect to the
+&quot;counts&quot; pin of an external encoder to use a
+physical jog wheel.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-enable</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">When TRUE (and in manual mode),
+any change to &quot;jog-counts&quot; will result in motion.
+When false, &quot;jog-counts&quot; is ignored.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-scale</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Sets the distance moved for
+each count on &quot;jog-counts&quot;, in machine units.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-vel-mode</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">When FALSE (the default), the
+jogwheel operates in position mode. The axis will move
+exactly jog-scale units for each count, regardless of how
+long that might take. When TRUE, the wheel operates in
+velocity mode - motion stops when the wheel stops, even if
+that means the commanded motion is not completed.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.kb-jog-active</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">(free planner axis jogging
+active (keyboard or halui))</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.pos-cmd</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">The axis commanded position.
+There may be several offsets between the axis and motor
+coordinates: backlash compensation, screw error
+compensation, and home offsets. External offsets are
+reported separately (axis.<b>L</b>.eoffset).</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.teleop-pos-cmd</b>
+OUT FLOAT <b><br>
+axis.</b><i>L</i><b>.teleop-tp-enable</b> OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE when the &quot;teleop
+planner&quot; is enabled for this axis</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.teleop-vel-cmd</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">The axis&rsquo;s commanded
+velocity</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.teleop-vel-lim</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">The velocity limit for the
+teleop planner</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.wheel-jog-active</b>
+OUT BIT</p>
+
+<h2>JOINT PINS
+<a name="JOINT PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>N</b> is the
+joint number (<b>0</b> ... <b>num_joints-1</b>)) <br>
+(<b>Note:</b> pins marked <b>(DEBUG)</b> serve as debugging
+aids</p>
+
+<p style="margin-left:22%;">and are subject to change or
+removal at any time.)</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.joint-acc-cmd</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The joint&rsquo;s commanded
+acceleration</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.active</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE when this joint is
+active</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.amp-enable-out</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE if the amplifier for this
+joint should be enabled</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.amp-fault-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Should be driven TRUE if an
+external fault is detected with the amplifier for this
+joint</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.backlash-corr</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Backlash or screw compensation
+raw value</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.backlash-filt</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Backlash or screw compensation
+filtered value (respecting motion limits)</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.backlash-vel</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Backlash or screw compensation
+velocity</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.coarse-pos-cmd</b>
+OUT FLOAT <b>(DEBUG) <br>
+joint.</b><i>N</i><b>.error</b> OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE when this joint has
+encountered an error, such as a limit switch closing</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.f-error</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The actual following error</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.f-error-lim</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The following error limit</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.f-errored</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE when this joint has
+exceeded the following error limit</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.faulted</b>
+OUT BIT <b>(DEBUG) <br>
+joint.</b><i>N</i><b>.free-pos-cmd</b> OUT FLOAT
+<b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The &quot;free planner&quot;
+commanded position for this joint.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.free-tp-enable</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE when the &quot;free
+planner&quot; is enabled for this joint</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.free-vel-lim</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The velocity limit for the free
+planner</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.home-state</b>
+OUT S32 <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">homing state machine state</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.home-sw-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Should be driven TRUE if the
+home switch for this joint is closed</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.homed</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE if the joint has been
+homed</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.homing</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE if the joint is currently
+homing</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.in-position</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE if the joint is using the
+&quot;free planner&quot; and has come to a stop</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.index-enable</b>
+IO BIT</p>
+
+<p style="margin-left:22%;">Should be attached to the
+index-enable pin of the joint&rsquo;s encoder to enable
+homing to index pulse</p>
+
+<p style="margin-left:11%;"><b>joint.N.is-unlocked</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Indicates joint is unlocked
+(see JOINT UNLOCK PINS).</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-accel-fraction</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Sets acceleration for wheel
+jogging to a fraction of the ini max_acceleration for the
+joint. Values greater than 1 or less than zero are
+ignored.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-counts</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Connect to the
+&quot;counts&quot; pin of an external encoder to use a
+physical jog wheel.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-enable</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">When TRUE (and in manual mode),
+any change to &quot;jog-counts&quot; will result in motion.
+When false, &quot;jog-counts&quot; is ignored.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-scale</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Sets the distance moved for
+each count on &quot;jog-counts&quot;, in machine units.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-vel-mode</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">When FALSE (the default), the
+jogwheel operates in position mode. The joint will move
+exactly jog-scale units for each count, regardless of how
+long that might take. When TRUE, the wheel operates in
+velocity mode - motion stops when the wheel stops, even if
+that means the commanded motion is not completed.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.kb-jog-active</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">(free planner joint jogging
+active (keyboard or halui))</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.motor-offset</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">joint motor offset established
+when joint is homed.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.motor-pos-cmd</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">The commanded position for this
+joint.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.motor-pos-fb</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">The actual position for this
+joint.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.neg-hard-limit</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The negative hard limit for the
+joint</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.neg-lim-sw-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Should be driven TRUE if the
+negative limit switch for this joint is tripped.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-cmd</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">The joint (as opposed to motor)
+commanded position. There may be several offsets between the
+joint and motor coordinates: backlash compensation, screw
+error compensation, and home offsets.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-fb</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">The joint feedback position.
+This value is computed from the actual motor position minus
+joint offsets. Useful for machine visualization.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-hard-limit</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The positive hard limit for the
+joint</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-lim-sw-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Should be driven TRUE if the
+positive limit switch for this joint is tripped.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.unlock</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE if the axis is a locked
+joint (typically a rotary) and a move is commanded (see
+JOINT UNLOCK PINS).</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.joint-vel-cmd</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">The joint&rsquo;s commanded
+velocity</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.wheel-jog-active</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<h2>JOINT UNLOCK PINS
+<a name="JOINT UNLOCK PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The joint pins
+used for unlocking a joint (<b>joint.N.unlock</b>,
+<b>joint.N.is-unlocked</b>), are created according to the
+<b>unlock_joints_mask=</b>jointmask parameter for motmod.
+These pins may be required for locking indexers (typically a
+rotary joint)</p>
+
+<p style="margin-left:11%; margin-top: 1em">The jointmask
+bits are: (lsb)0:joint0, 1:joint1, 2:joint2, ... <br>
+Example: loadrt motmod ... <b>unlock_joints_mask=</b>0x38
+creates unlock pins <br>
+for joints 3,4,5</p>
+
+<h2>SPINDLE PINS
+<a name="SPINDLE PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(<b>M</b> is
+the spindle number (<b>0</b> ... <b>num_spindles-1</b>))
+<b><br>
+spindle.M.amp-fault-in</b> IN BIT</p>
+
+<p style="margin-left:22%;">Should be driven TRUE if an
+external fault is detected with the amplifier for this
+spindle</p>
+
+<p style="margin-left:11%;"><b>spindle.M.at-speed</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Motion will pause until this
+pin is TRUE, under the following conditions: before the
+first feed move after each spindle start or speed change;
+before the start of every chain of spindle-synchronized
+moves; and if in CSS mode, at every rapid-&gt;feed
+transition.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.brake</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE when the spindle brake
+should be applied</p>
+
+<p style="margin-left:11%;"><b>spindle.M.forward</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE when the spindle should
+rotate forward</p>
+
+<p style="margin-left:11%;"><b>spindle.M.index-enable</b>
+I/O BIT</p>
+
+<p style="margin-left:22%;">For correct operation of
+spindle synchronized moves, this signal must be hooked to
+the index-enable pin of the spindle encoder.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.inhibit</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">When TRUE, the spindle speed is
+set and held to 0.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.is-oriented</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Acknowledge pin for
+spindle-orient. Completes orient cycle. If spindle-orient
+was true when spindle-is-oriented was asserted, the
+spindle-orient pin is cleared and the spindle-locked pin is
+asserted. Also, the spindle-brake pin is asserted.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.locked</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Spindle orient complete pin.
+Cleared by any of M3,M4,M5.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.on</b> OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE when spindle should
+rotate</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Indicates start of spindle
+orient cycle. Set by M19. Cleared by any of M3,M4,M5.</p>
+
+<p style="margin-left:22%; margin-top: 1em">If
+spindle-orient-fault is not zero during spindle-orient true,
+the M19 command fails with an error message.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient-angle</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Desired spindle orientation for
+M19. Value of the M19 R word parameter plus the value of the
+[RS274NGC]ORIENT_OFFSET ini parameter.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient-fault</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Fault code input for orient
+cycle. Any value other than zero will cause the orient cycle
+to abort.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient-mode</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Desired spindle rotation mode.
+Reflects M19 P parameter word.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.reverse</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE when the spindle should
+rotate backward</p>
+
+<p style="margin-left:11%;"><b>spindle.M.revs</b> IN
+FLOAT</p>
+
+<p style="margin-left:22%;">For correct operation of
+spindle synchronized moves, this signal must be hooked to
+the position pin of the spindle encoder.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-cmd-rps</b>
+FLOAT OUT</p>
+
+<p style="margin-left:22%;">Commanded spindle speed in
+units of revolutions per second</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-in</b> IN
+FLOAT</p>
+
+<p style="margin-left:22%;">Actual spindle speed feedback
+in revolutions per second; used for G96 (constant surface
+speed) and G95 (feed per revolution) modes.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out</b> OUT
+FLOAT</p>
+
+<p style="margin-left:22%;">Desired spindle speed in
+rotations per minute</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out-abs</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Desired spindle speed in
+rotations per minute, always positive regardless of spindle
+direction.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out-rps</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Desired spindle speed in
+rotations per second</p>
+
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out-rps-abs</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Desired spindle speed in
+rotations per second, always positive regardless of spindle
+direction.</p>
+
+<h2>MOTION PARAMETERS
+<a name="MOTION PARAMETERS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Many of the
+parameters serve as debugging aids, and are subject to
+change or removal at any time. <b><br>
+motion-command-handler.tmax</b> RW S32</p>
+
+<p style="margin-left:22%;">Show information about the
+execution time of these HAL functions in CPU clocks</p>
+
+
+<p style="margin-left:11%;"><b>motion-command-handler.tmax-increased</b>
+RO S32 <b><br>
+motion-controller.tmax</b> RW S32</p>
+
+<p style="margin-left:22%;">Show information about the
+execution time of these HAL functions in CPU clocks</p>
+
+
+<p style="margin-left:11%;"><b>motion-controller.tmax-increased</b>
+RO BIT <b><br>
+motion.debug-</b><i>*</i></p>
+
+<p style="margin-left:22%;">These values are used for
+debugging purposes.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generally,
+these functions are both added to the servo-thread in the
+order shown. <b><br>
+motion-command-handler</b></p>
+
+<p style="margin-left:22%;">Processes motion commands
+coming from user space. The pin named
+<b>motion-command-handler.time</b> and parameters
+<b>motion-command-handler.tmax,tmax-increased</b>are created
+for this function.</p>
+
+<p style="margin-left:11%;"><b>motion-controller</b></p>
+
+<p style="margin-left:22%;">Runs the LinuxCNC motion
+controller The pin named <b>motion-controller.time</b> and
+parameters <b>motion-controller.tmax,tmax-increased</b> are
+created for this function.</p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This manual
+page is incomplete. <br>
+Identification of pins categorized with <b>(DEBUG)</b> is
+dubious.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">iocontrol(1),
+milltask(1)</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:37 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>XHC-HB04</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">XHC-HB04</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#UDEV">UDEV</a><br>
+<a href="#Standalone Usage">Standalone Usage</a><br>
+<a href="#Options">Options</a><br>
+<a href="#button-cfg-file format">button-cfg-file format</a><br>
+<a href="#Hal Usage">Hal Usage</a><br>
+<a href="#Input Pins (Control)">Input Pins (Control)</a><br>
+<a href="#Input Pins (to the pendant LCD display)">Input Pins (to the pendant LCD display)</a><br>
+<a href="#Output Pins (Status)">Output Pins (Status)</a><br>
+<a href="#Output Pins (for jogging using axis.N.jog-counts)">Output Pins (for jogging using axis.N.jog-counts)</a><br>
+<a href="#Experimental: Pins for halui plus/minus jogging">Experimental: Pins for halui plus/minus jogging</a><br>
+<a href="#Button output pins (for the 18 button, layout2 pendant)">Button output pins (for the 18 button, layout2 pendant)</a><br>
+<a href="#Synthesized button pins">Synthesized button pins</a><br>
+<a href="#DEBUGGING">DEBUGGING</a><br>
+<a href="#Sim Configs">Sim Configs</a><br>
+<a href="#Author">Author</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xhc-hb04 -
+User-space HAL component for the xhc-hb04 pendant.</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The xhc-hb04
+component supports a common USB pendant that provides a
+number of pushbuttons, a manual pulse generator (mpg or jog
+wheel), and a selector switch for the wheel.</p>
+
+<p style="margin-left:11%; margin-top: 1em">There are at
+least two hardware versions -- one with 16 buttons and a
+more common one with 18 buttons. The information herein is
+based on the 18 button device with a USB Vendor:Product code
+of 10CE:EB70.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In addition to
+buttons, the pendant provides an LCD display for the current
+stepsize multiplier (from a set of available integer
+values), position (absolute and relative, labeled MC and WC
+respectively), feedrate (override percent and value in units
+per minute), and spindle speed (override percent and value
+in revolutions per minute (RPM)). The display is managed by
+a rotary switch that selects one of four axes for wheel
+positioning, feed override, spindle override, or OFF.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The pendant
+display, its rotary selector switch, and the component pin
+names use designators x,y,z,a. While this arrangement
+presumes a machine configured as XYZA, the pins can be
+assigned independently as required in a HAL
+configuration.</p>
+
+<h2>UDEV
+<a name="UDEV"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The xhc-hb04
+executable needs permission for reading the pendant&rsquo;s
+USB device. Debian package installs (debs) handle this
+automatically but Run-In-Place (RIP) builds may need a udev
+rules file. This file should be created (using sudo and a
+text editor) as:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>/etc/udev/rules.d/99-xhc-hb04.rules</b>
+with the single line:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">ATTR{idProduct}==&quot;eb70&quot;,
+ATTR{idVendor}==&quot;10ce&quot;, MODE=&quot;0666&quot;,
+OWNER=&quot;root&quot;, GROUP=&quot;plugdev&quot;</p>
+
+<h2>Standalone Usage
+<a name="Standalone Usage"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The xhc-hb04
+program can be run from the command line without LinuxCNC to
+test a pendant in a simulation mode. This standalone mode is
+used to identify the button codes produced for each button
+press and to verify proper counting of the jog wheel. The
+identified button codes can be used to create a
+<b>button-cfg-file</b>. When a <b>button-cfg-file</b>
+exists, pendant operation can be verified using the -I
+option to specify the file.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Usage:</p>
+
+<p style="margin-left:11%; margin-top: 1em">$ xhc-hb04
+[options]</p>
+
+<h2>Options
+<a name="Options"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-h</b> list
+command line options and exit <b><br>
+-I button-cfg-file</b> (see below for file format) <b><br>
+-H</b> run in real-time HAL mode (simulation mode is
+default) <b><br>
+-x</b> wait for pendant detection before creating HAL pins.
+<b><br>
+-s n</b> n is one of the following stepsize sequences</p>
+
+<p style="margin-left:11%; margin-top: 1em">1:
+1,10,100,1000 (default) <br>
+2: 1,5,10,20 <br>
+3: 1,10,100 <br>
+4: 1,5,10,20,50,100 <br>
+5: 1,10,50,100,1000 <br>
+The stepsize selected is always multiplied by 0.001</p>
+
+<h2>button-cfg-file format
+<a name="button-cfg-file format"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Standard
+configuration files are provided in the distribution for
+known button configurations: <br>
+/usr/share/linuxcnc/hallib/xhc-hb04-layout1.cfg <br>
+/usr/share/linuxcnc/hallib/xhc-hb04-layout2.cfg <br>
+or for a RIP build: <br>
+rip_base_dir/lib/hallib/xhc-hb04-layout1.cfg <br>
+rip_base_dir/lib/hallib/xhc-hb04-layout2.cfg</p>
+
+<p style="margin-left:11%; margin-top: 1em">layout1
+describes the 16 button pendant, layout2 describes the more
+common 18 button pendant.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The button
+configuration file follows the same format as ini files but
+should use a file suffix of .cfg.</p>
+
+<p style="margin-left:11%; margin-top: 1em">File format:
+<br>
+[XHC-HB04] <br>
+BUTTON=X1:button-thename1 <br>
+BUTTON=X2:button-thename2 <br>
+BUTTON=X3:button-thename3 <br>
+etc.</p>
+
+<p style="margin-left:11%; margin-top: 1em">XN is the code
+reported for a button press and button-thenameN is the name
+to be assigned to the pin created for the button.</p>
+
+<h2>Hal Usage
+<a name="Hal Usage"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Use the -H
+option to specify HAL mode and other options as
+required:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>loadusr
+-W</i> <b>xhc-hb04</b> <i>-H [Options]</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Example:
+<i>loadusr -W</i> <b>xhc-hb04</b> <i>-H -I path_to_cfg_file
+-s 2</i></p>
+
+<h2>Input Pins (Control)
+<a name="Input Pins (Control)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(bit in)
+<i>xhc-hb04.stepsize-up</i> A 1 pulse on this pin changes
+the</p>
+
+<p style="margin-left:22%;">stepsize to the next higher
+stepsize in the stepsize sequence specified in the xhc-hb04
+(loadusr) command.</p>
+
+<p style="margin-left:11%;">(bit in)
+<i>xhc-hb04.stepsize-down</i> A 1 pulse on this pin changes
+the</p>
+
+<p style="margin-left:22%;">stepsize to the next lower
+stepsize in the stepsize sequence specified in the xhc-hb04
+(loadusr) command.</p>
+
+<h2>Input Pins (to the pendant LCD display)
+<a name="Input Pins (to the pendant LCD display)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(float in)
+<i>xhc-hb04.[xyza].pos-absolute</i> Absolule position
+display.</p>
+
+<p style="margin-left:22%;">(typically connect to:
+halui.axis.N.pos-feedback). The LCD display for pos-absolute
+is fixed format with a sign, 4 number digits and 3 fraction
+digits (+XXXX.XXX), require: -9999.999 &lt;= value &lt;=
+9999.999.</p>
+
+<p style="margin-left:11%;">(float in)
+<i>xhc-hb04.[xyza].pos-relative</i> Relative position
+display.</p>
+
+<p style="margin-left:22%;">(typically connect to:
+halui.axis.N.pos-relative). The LCD display for pos-relative
+is fixed format with a sign, 4 number digits and 3 fraction
+digits (+XXXX.XXX), require: -9999.999 &lt;= value &lt;=
+9999.999.</p>
+
+<p style="margin-left:11%;">(float in)
+<i>xhc-hb04.feed-override</i> Feed-override value.</p>
+
+<p style="margin-left:22%;">The float value is converted to
+a 16 bit integer and multiplied by 100 in order to display
+as percent, require: 0 &lt;= pinvalue &lt;= 655 (typically
+connect to: halui.feed-override.value)</p>
+
+<p style="margin-left:11%;">(float in)
+<i>xhc-hb04.feed-value</i> Current Feed-value
+(units/sec).</p>
+
+<p style="margin-left:22%;">The float value is converted to
+a 16 bit integer and multiplied by 60 in order to display as
+units-per-minute, require: 0 &lt;= pinvalue &lt;= 1092
+(65520 units-per-minute) (typically connect to:
+motion.current-vel)</p>
+
+<p style="margin-left:11%;">(float in)
+<i>xhc-hb04.spindle-override</i> Spindle-override value.</p>
+
+<p style="margin-left:22%;">The float value is converted to
+a 16 bit integer and multiplied by 100 in order to display
+as percent, require: 0 &lt;= pinvalue &lt;= 655) (typically
+connect to: halui.spindle-override.value)</p>
+
+<p style="margin-left:11%;">(float in)
+<i>xhc-hb04.spindle-rps</i> Spindle speed in rps.</p>
+
+<p style="margin-left:22%;">(revolutions per second). The
+float value is converted to a 16 bit integer and multiplied
+by 60 in order to display as RPMs, require: 0 &lt;= pinvalue
+&lt;= 1092 (65520 RPM) (typically connect to:
+spindle.N.speed-out-rps-abs)</p>
+
+<p style="margin-left:11%;">(bit in)
+<i>xhc-hb04.inch-icon</i> Use inch icon (default is mm)</p>
+
+<h2>Output Pins (Status)
+<a name="Output Pins (Status)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(bit out)
+<i>xhc-hb04.sleeping</i> True when the driver receives a
+pendant</p>
+
+<p style="margin-left:22%;">inactive (sleeping)
+message.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.jog.enable-off</i> True when the pendant
+rotary</p>
+
+<p style="margin-left:22%;">selector switch is in the OFF
+position or when the pendant is sleeping.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.enable-[xyza]</i> True when the pendant
+rotary</p>
+
+<p style="margin-left:22%;">selector switch is in the
+[xyza] position and not sleeping.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.enable-spindle-override</i> True when the
+pendant</p>
+
+<p style="margin-left:22%;">rotary selector switch is in
+the Spindle position and not sleeping. (typically connect
+to: halui.spindle-override-count-enable)</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.enable-feed-override</i> True when the pendant
+rotary</p>
+
+<p style="margin-left:22%;">selector switch is in the Feed
+position and not sleeping. (typically connect to:
+halui.feed-override-count-enable)</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.connected</i> True when connection to the
+pendant</p>
+
+<p style="margin-left:22%;">is established over the USB
+interface.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.require_pendant</i> True if driver started
+with</p>
+
+<p style="margin-left:22%;">the -x option.</p>
+
+<p style="margin-left:11%;">(s32 out)
+<i>xhc-hb04.stepsize</i> Current stepsize in the stepsize
+sequence</p>
+
+<p style="margin-left:22%;">as controlled by the
+stepsize-up and/or stepsize-down pins.</p>
+
+<h2>Output Pins (for jogging using axis.N.jog-counts)
+<a name="Output Pins (for jogging using axis.N.jog-counts)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(s32 out)
+<i>xhc-hb04.jog.counts</i> Number of counts of the wheel
+since</p>
+
+<p style="margin-left:22%;">start-up (50 counts per wheel
+revolution). (typically connect to axis.N.jog-counts
+(lowpass filtering may be helpful))</p>
+
+<p style="margin-left:11%;">(s32 out)
+<i>xhc-hb04.jog.counts-neg</i> The value of the</p>
+
+<p style="margin-left:22%;">xhc-hb04.jog.counts multiplied
+by -1.</p>
+
+<p style="margin-left:11%;">(float out)
+<i>xhc-hb04.jog.scale</i> Value is the current stepsize</p>
+
+<p style="margin-left:22%;">multiplied by 0.001. (typically
+connect to axis.N.jog-scale)</p>
+
+<h2>Experimental: Pins for halui plus/minus jogging
+<a name="Experimental: Pins for halui plus/minus jogging"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">These pins
+provide some support for non-trivkins, world mode jogging.
+<br>
+(float in) <i>xhc-hb04.jog.max-velocity</i> Connect to <br>
+halui.max-velocity.value <br>
+(float out) <i>xhc-hb04.jog.velocity</i> Connect to
+halui.jog-speed <br>
+(bit out) <i>xhc-hb04.jog.plus-[xyza]</i> Connect to
+halui.jog.N.plus <br>
+(bit out) <i>xhc-hb04.jog.minus-[xyza]</i> Connect to
+halui.jog.N.minus <br>
+(float out) <i>xhc-hb04.jog.increment</i> Debug pin --
+abs(delta_pos)</p>
+
+<h2>Button output pins (for the 18 button, layout2 pendant)
+<a name="Button output pins (for the 18 button, layout2 pendant)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The output bit
+type pins are TRUE when the button is pressed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">ROW 1 <br>
+(bit out) xhc-hb04.button-reset <br>
+(bit out) xhc-hb04.button-stop</p>
+
+<p style="margin-left:11%; margin-top: 1em">ROW 2 <br>
+(bit out) xhc-hb04.button-goto-zero <br>
+(bit out) xhc-hb04.button-rewind <br>
+(bit out) xhc-hb04.button-start-pause <br>
+(bit out) xhc-hb04.button-probe-z</p>
+
+<p style="margin-left:11%; margin-top: 1em">ROW 3 <br>
+(bit out) xhc-hb04.button-spindle <br>
+(bit out) xhc-hb04.button-half <br>
+(bit out) xhc-hb04.button-zero <br>
+(bit out) xhc-hb04.button-safe-z</p>
+
+<p style="margin-left:11%; margin-top: 1em">ROW 4 <br>
+(bit out) xhc-hb04.button-home <br>
+(bit out) xhc-hb04.button-macro-1 <br>
+(bit out) xhc-hb04.button-macro-2 <br>
+(bit out) xhc-hb04.button-macro-3</p>
+
+<p style="margin-left:11%; margin-top: 1em">ROW 5 <br>
+(bit out) xhc-hb04.button-step <br>
+(bit out) xhc-hb04.button-mode <br>
+(bit out) xhc-hb04.button-macro-6 <br>
+(bit out) xhc-hb04.button-macro-7</p>
+
+<h2>Synthesized button pins
+<a name="Synthesized button pins"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Additional
+buttons are synthesized for buttons named <b>zero</b>,
+<b>goto-zero</b>, and <b>half</b>. These synthesized buttons
+are active when the button is pressed AND the
+selector-switch is set to the corresponding axis [xyza].</p>
+
+<p style="margin-left:11%; margin-top: 1em">(bit out)
+xhc-hb04.button-zero-[xyza] <br>
+(bit out) xhc-hb04.button-goto-zero-[xyza] <br>
+(bit out) xhc-hb04.button-half-[xyza]</p>
+
+<h2>DEBUGGING
+<a name="DEBUGGING"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">For debugging
+USB activity, use environmental variable LIBUSB_DEBUG: <br>
+export LIBUSB_DEBUG=[2 | 3 | 4]; xhc-hb04 [options]</p>
+
+<p style="margin-left:22%;">2:warning, 3:info, 4:debug</p>
+
+<h2>Sim Configs
+<a name="Sim Configs"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+distribution includes several simulation configurations in
+the directory: <br>
+
+/usr/share/doc/linuxcnc/examples/sample-configs/sim/axis/xhc-hb04/
+<br>
+or for a RIP build: <br>
+rip_base_dir/configs/sim/axis/xhc-hb04/</p>
+
+<p style="margin-left:11%; margin-top: 1em">These
+configurations use a distribution-provided script
+(xhc-hb04.tcl) to configure the pendant and make necessary
+HAL connections according to a number of ini file settings.
+The script uses an additional HAL component (xhc_hb04_util)
+to provide common functionality and includes support for a
+standard method for the start-pause button.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The settings
+available include: <br>
+1) specify button-cfg-file for standard layout1 or layout2
+<br>
+2) select axes (up to 4 axes from set of x y z a b c u v w)
+<br>
+3) implement per-axis filtering coeficients <br>
+4) implement per-axis acceleration for mpg jogging <br>
+5) implement per-axis scale settings <br>
+6) select normal or velocity based jog modes <br>
+7) select stepsize sequence <br>
+8) option to initialize pin for inch or mm display icon <br>
+9) option to require pendant on startup</p>
+
+<p style="margin-left:11%; margin-top: 1em">The sim configs
+illustrate button connections that: <br>
+1) connect pendant stepsize-up button to the step input pin.
+<br>
+2) connect buttons to halui.* pins <br>
+3) connect buttons to motion.* pins</p>
+
+<p style="margin-left:11%; margin-top: 1em">Another script
+is included to monitor the pendant and report loss of USB
+connectivity. See the README and .txt files in the above
+directory for usage.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Note:</b>
+The sim configs use the axis gui but the scripts are
+available with any HAL configuration or gui. The same
+scripts can be used to adapt the xhc-hb04 to existing
+configurations provided that the halui, motion, and axis.N
+pins needed are not otherwise claimed. Instructions are
+included in README file in the directory named above.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Use halcmd to
+display the pins and signals used by the xhc-hb04.tcl
+script: <br>
+halcmd show pin xhc-hb04 (show all xhc-hb04 pins) <br>
+halcmd show pin pendant_util (show all pendant_util pins)
+<br>
+halcmd show sig pendant: (show all pendant signals)</p>
+
+<h2>Author
+<a name="Author"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Frederick Rible
+(frible@teaser.fr)</p>
+<hr>
+</body>
+</html>

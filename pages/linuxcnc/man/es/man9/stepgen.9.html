@@ -1,0 +1,494 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:31 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>STEPGEN</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">STEPGEN</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#TIMING">TIMING</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">stepgen -
+generaci&Atilde;&sup3;n de pulsos de pasos por software</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+stepgen step_type=</b><i>type0</i>[,<i>type1</i> ...]
+[<b>ctrl_type=</b><i>type0</i> [,<i>type1</i>
+&acirc;&brvbar;]] [<b>user_step_type=#, #</b> ... ]</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>stepgen</b>
+se usa para controlar motores paso a paso. La velocidad de
+paso m&Atilde;&iexcl;xima depende de la CPU y otros
+factores, y generalmente est&Atilde;&iexcl; en el rango de
+5KHz a 25KHz. Si se necesitan tasas m&Atilde;&iexcl;s altas,
+un generador de pasos de hardware es una mejor
+opci&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>stepgen</b>
+tiene dos modos de control, que pueden seleccionarse canal
+por canal utilizando <b>ctrl_type</b>. Los valores posibles
+son &quot;<b>p</b>&quot; para el control de
+posici&Atilde;&sup3;n y &quot;<b>v</b>&quot; para el control
+de velocidad. El valor predeterminado es el control de
+posici&Atilde;&sup3;n, que conduce el motor a una
+posici&Atilde;&sup3;n ordenada, sujeto a los l&Atilde;mites
+de aceleraci&Atilde;&sup3;n y velocidad. El control de
+velocidad conduce el motor a una velocidad ordenada,
+nuevamente sujeta a l&Atilde;mites de
+aceleraci&Atilde;&sup3;n y velocidad. Por lo general, el
+modo de posici&Atilde;&sup3;n se usa para ejes de
+m&Atilde;&iexcl;quina. El modo de velocidad
+est&Atilde;&iexcl; reservado para aplicaciones inusuales
+donde se desea un movimiento continuo a cierta velocidad, en
+lugar de moverse a una posici&Atilde;&sup3;n
+espec&Atilde;fica. (Tenga en cuenta que el modo de velocidad
+reemplaza el componente anterior <b>freqgen</b>).</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>stepgen</b>
+puede controlar un m&Atilde;&iexcl;ximo de 16 motores. El
+n&Atilde;&ordm;mero de motores/canales realmente cargados
+depende del n&Atilde;&ordm;mero de valores <i>type</i>
+dados. El valor de cada <i>type</i> determina las salidas
+para ese canal. El modo de posici&Atilde;&sup3;n o velocidad
+se puede seleccionar individualmente para cada canal. Ambos
+modos de control admiten los mismos 16 tipos de pasos
+posibles.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Con mucho, el
+tipo de paso m&Atilde;&iexcl;s com&Atilde;&ordm;n es
+&rsquo;0&rsquo;, paso y direcci&Atilde;&sup3;n
+est&Atilde;&iexcl;ndar. Otros incluyen arriba/abajo,
+cuadratura y una amplia variedad de patrones de tres, cuatro
+y cinco fases que se pueden usar para controlar directamente
+algunos tipos de bobinados de motor. (Cuando se usa con
+buffers apropiados, por supuesto).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Algunos de los
+tipos de pasos se describen a continuaci&Atilde;&sup3;n,
+pero para obtener m&Atilde;&iexcl;s detalles (incluidos los
+diagramas de temporizaci&Atilde;&sup3;n) consulte la
+secci&Atilde;&sup3;n <b>stepgen</b> del manual de referencia
+de HAL. <br>
+tipo 0: paso / dir</p>
+
+<p style="margin-left:22%;">Dos pines, uno para el paso y
+otro para la direcci&Atilde;&sup3;n. <b>make-pulses</b> debe
+ejecutarse al menos dos veces para cada paso (una vez para
+establecer el pin de paso TRUE y otra para borrarlo). Esto
+limita la velocidad de paso m&Atilde;&iexcl;xima a la mitad
+(o menos) de la velocidad que pueden alcanzar los tipos
+2-14. Los par&Atilde;&iexcl;metros <b>steplen</b> y
+<b>stepspace</b> pueden reducir a&Atilde;&ordm;n
+m&Atilde;&iexcl;s la velocidad de paso m&Atilde;&iexcl;xima.
+Los par&Atilde;&iexcl;metros <b>dirsetup</b> y
+<b>dirhold</b> tambi&Atilde;&copy;n se aplican a este tipo
+de paso.</p>
+
+<p style="margin-left:11%;">tipo 1: arriba / abajo</p>
+
+<p style="margin-left:22%;">Dos pines, uno para
+&rsquo;subir&rsquo; y otro para &rsquo;bajar&rsquo;. Al
+igual que el tipo 0, <b>make-pulses</b> debe ejecutarse dos
+veces por paso, lo que limita la velocidad
+m&Atilde;&iexcl;xima.</p>
+
+<p style="margin-left:11%;">tipo 2: cuadratura</p>
+
+<p style="margin-left:22%;">Dos pines, fase-A y fase-B.
+Para avanzar, A conduce a B. Puede avanzar un paso cada vez
+que corre <b>make-pulses</b>.</p>
+
+<p style="margin-left:11%;">tipo 3:
+trif&Atilde;&iexcl;sico, paso completo</p>
+
+<p style="margin-left:22%;">Tres pines, fase-A, fase-B y
+fase-C. Tres pasos por ciclo completo, luego se repite. Solo
+una fase es alta a la vez: para el movimiento hacia
+adelante, el patr&Atilde;&sup3;n es A, luego B, luego C y
+luego A nuevamente.</p>
+
+<p style="margin-left:11%;">tipo 4:
+trif&Atilde;&iexcl;sico, medio paso</p>
+
+<p style="margin-left:22%;">Tres pines, fases A a C. Seis
+pasos por ciclo completo. Primero A est&Atilde;&iexcl; alto
+solo, luego A y B juntos, luego B solo, luego B y C juntos,
+etc.</p>
+
+<p style="margin-left:11%;">tipos 5 a 8: cuatro fases, paso
+completo</p>
+
+<p style="margin-left:22%;">Cuatro pines, fases A a D.
+Cuatro pasos por ciclo completo. Los tipos 5 y 6 son
+adecuados para su uso con steppers unipolares, donde se
+aplica energ&Atilde;a a la toma central de cada devanado, y
+cuatro transistores de colector abierto impulsan los
+extremos. Los tipos 7 y 8 son adecuados para steppers
+bipolares, conducidos por dos puentes en H.</p>
+
+<p style="margin-left:11%;">tipos 9 y 10: cuatro fases,
+medio paso</p>
+
+<p style="margin-left:22%;">Cuatro pines, fases A a D. Ocho
+pasos por ciclo completo. El tipo 9 es adecuado para el
+accionamiento unipolar, y el tipo 10 para el accionamiento
+bipolar.</p>
+
+<p style="margin-left:11%;">tipos 11 y 12: cinco fases,
+paso completo</p>
+
+<p style="margin-left:22%;">Cinco pines, fases A a E. Cinco
+pasos por ciclo completo. Consulte el manual de referencia
+de HAL para ver los patrones.</p>
+
+<p style="margin-left:11%;">tipos 13 y 14: cinco fases,
+medio paso</p>
+
+<p style="margin-left:22%;">Cinco pines, fases A a E. Diez
+pasos por ciclo completo. Consulte el manual de referencia
+de HAL para ver los patrones.</p>
+
+<p style="margin-left:11%;">tipo 15: especificado por el
+usuario</p>
+
+<p style="margin-left:22%;">Utiliza la forma de onda
+especificada por el par&Atilde;&iexcl;metro del
+m&Atilde;&sup3;dulo <b>user_step_type</b>, que puede tener
+hasta 10 pasos y 5 fases.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>stepgen.make-pulses</b>
+(no de punto flotante)</p>
+
+<p style="margin-left:22%;">Genera los pulsos de pasos,
+utilizando informaci&Atilde;&sup3;n calculada por
+<b>update-freq</b>. Debe llamarse con la mayor frecuencia
+posible, para maximizar la velocidad de paso alcanzable y
+minimizar el jitter. Funciona en todos los canales a la
+vez.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.capture-position</b>
+(usa punto flotante)</p>
+
+<p style="margin-left:22%;">Captura el valor de
+retroalimentaci&Atilde;&sup3;n de posici&Atilde;&sup3;n del
+c&Atilde;&sup3;digo de alta velocidad y lo pone a
+disposici&Atilde;&sup3;n en un pin para su uso en otras
+partes del sistema. Funciona en todos los canales a la
+vez.</p>
+
+<p style="margin-left:11%;"><b>stepgen.update-freq</b> (usa
+punto flotante)</p>
+
+<p style="margin-left:22%;">Acepta un comando de velocidad
+o posici&Atilde;&sup3;n y lo convierte en un formato
+utilizable por <b>make-pulses</b> para la
+generaci&Atilde;&sup3;n de pasos. Funciona en todos los
+canales a la vez.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>stepgen.</b><i>N</i><b>.counts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">La posici&Atilde;&sup3;n
+actual, en recuentos, para el canal<i>N</i>. Actualizado por
+<b>capture-position</b>.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.position-fb</b>
+float out</p>
+
+<p style="margin-left:22%;">La posici&Atilde;&sup3;n
+actual, en unidades de longitud (ver par&Atilde;&iexcl;metro
+<b>position-scale</b>). Actualizado por
+<b>capture-position</b>. La resoluci&Atilde;&sup3;n de
+<b>position-fb</b> es mucho m&Atilde;&iexcl;s fina que un
+solo paso. Si necesita ver pasos individuales, use
+<b>counts</b>.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">Habilita los pasos de salida:
+cuando es FALSE, no se generan pasos.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.velocity-cmd</b>
+float in (solo en modo de velocidad)</p>
+
+<p style="margin-left:22%;">Velocidad ordenada, en unidades
+de longitud por segundo (ver par&Atilde;&iexcl;metro
+<b>position-scale</b>).</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.position-cmd</b>
+float in (modo de posici&Atilde;&sup3;n solamente)</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n ordenada,
+en unidades de longitud (ver par&Atilde;&iexcl;metro
+<b>position-scale).</b></p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.step</b>
+bit out (paso tipo 0 solamente)</p>
+
+<p style="margin-left:22%;">Salida de pulso de paso.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.dir</b>
+bit out (paso tipo 0 solamente)</p>
+
+<p style="margin-left:22%;">Salida de
+direcci&Atilde;&sup3;n: baja para avance, alta para
+retroceso.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.up</b>
+bit out (solo paso tipo 1)</p>
+
+<p style="margin-left:22%;">Salida de cuenta, pulsos para
+pasos hacia adelante.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.down</b>
+bit out (paso tipo 1 solamente)</p>
+
+<p style="margin-left:22%;">Salida de cuenta regresiva,
+pulsos para pasos hacia atras.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.phase-A</b>
+hasta <b>phase-E</b> bit out (pasos de tipo 2-14
+solamente)</p>
+
+<p style="margin-left:22%;">Bits de salida. <b>phase-A</b>
+y <b>phase-B</b> est&Atilde;&iexcl;n presentes para los
+tipos de paso 2-14, <b>phase-C</b> para los tipos 3-14,
+<b>phase-D</b> para los tipos 5-14, y <b>phase-E</b> para
+los tipos 11-14. El comportamiento depende del tipo de paso
+seleccionado.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>stepgen.</b><i>N</i><b>.frequency</b>
+float ro</p>
+
+<p style="margin-left:22%;">La velocidad de paso actual, en
+pasos por segundo, para el canal<i>N</i>.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.maxaccel</b>
+float rw</p>
+
+<p style="margin-left:22%;">El l&Atilde;mite de
+aceleraci&Atilde;&sup3;n/desaceleraci&Atilde;&sup3;n, en
+unidades de longitud por segundo al cuadrado.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.maxvel</b>
+float rw</p>
+
+<p style="margin-left:22%;">La velocidad
+m&Atilde;&iexcl;xima permitida, en unidades de longitud por
+segundo. Si no se puede alcanzar la velocidad
+m&Atilde;&iexcl;xima solicitada con la
+combinaci&Atilde;&sup3;n actual de escala y el periodo del
+hilo de <b>make-pulses</b>, se establecer&Atilde;&iexcl; al
+valor m&Atilde;&iexcl;s alto posible.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.position-scale</b>
+float rw</p>
+
+<p style="margin-left:22%;">La escala de
+retroalimentaci&Atilde;&sup3;n de posici&Atilde;&sup3;n,
+comando de posici&Atilde;&sup3;n y comando de velocidad, en
+pasos por unidad de longitud.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.rawcounts</b>
+s32 ro</p>
+
+<p style="margin-left:22%;">La posici&Atilde;&sup3;n en
+recuentos, actualizada por <b>make-pulses</b>. (Nota: esto
+se actualiza con m&Atilde;&iexcl;s frecuencia que el pin
+<b>counts</b>).</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.steplen</b>
+u32 rw</p>
+
+<p style="margin-left:22%;">La longitud de los pulsos de
+paso, en nanosegundos. Medido desde el borde ascendente
+hasta el borde descendente.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.stepspace</b>
+u32 rw (solo tipos de paso 0 y 1)</p>
+
+<p style="margin-left:22%;">El espacio m&Atilde;nimo entre
+pulsos de paso, en nanosegundos. Medido desde el borde
+descendente hasta el borde ascendente. El tiempo real
+depende de la velocidad de avance y puede ser mucho
+m&Atilde;&iexcl;s largo. Si <b>stepspace</b> es 0, entonces
+<b>step</b> se puede afirmar cada per&Atilde;odo. Esto se
+puede usar junto con los pines de restablecimiento
+autom&Atilde;&iexcl;tico de <b>hal_parport</b> para emitir
+un impulso de paso por per&Atilde;odo. En este modo,
+<b>steplen</b> debe establecerse para un per&Atilde;odo o
+menos.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.dirsetup</b>
+u32 rw (solo tipo de paso 0)</p>
+
+<p style="margin-left:22%;">El tiempo m&Atilde;nimo de
+configuraci&Atilde;&sup3;n de direcci&Atilde;&sup3;n a paso,
+en per&Atilde;odos de nanosegundos. Medido desde el cambio
+de direcci&Atilde;&sup3;n hasta el borde ascendente del
+paso.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.dirhold</b>
+u32 rw (solo tipo de paso 0)</p>
+
+<p style="margin-left:22%;">El tiempo m&Atilde;nimo de
+retenci&Atilde;&sup3;n de la direcci&Atilde;&sup3;n
+despu&Atilde;&copy;s del paso, en nanosegundos. Medido desde
+el borde descendente del paso hasta el cambio de
+direcci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>stepgen.</b><i>N</i><b>.dirdelay</b>
+u32 rw (solo los tipos de paso 1 y superiores)</p>
+
+<p style="margin-left:22%;">El tiempo m&Atilde;nimo entre
+un paso hacia adelante y un paso hacia atr&Atilde;&iexcl;s,
+en nanosegundos.</p>
+
+<h2>TIMING
+<a name="TIMING"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Hay cinco
+par&Atilde;&iexcl;metros de tiempo que controlan la forma de
+onda de salida. Ning&Atilde;&ordm;n tipo de paso usa los
+cinco, y solo los que se usar&Atilde;&iexcl;n se exportan a
+HAL. Los valores de estos par&Atilde;&iexcl;metros
+est&Atilde;&iexcl;n en nanosegundos, por lo que no es
+necesario volver a calcular cuando se cambian los
+per&Atilde;odos de hilos. En los diagramas de tiempo que
+siguen, se identifican con los siguientes
+n&Atilde;&ordm;meros:</p>
+
+<p style="margin-left:11%; margin-top: 1em">(1)
+<b>stepgen.n.steplen</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">(2)
+<b>stepgen.n.stepspace</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">(3)
+<b>stepgen.n.dirhold</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">(4)
+<b>stepgen.n.dirsetup</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">(5)
+<b>stepgen.n.dirdelay</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Para el tipo de
+paso 0, se utilizan los par&Atilde;&iexcl;metros de
+temporizaci&Atilde;&sup3;n 1 a 4. El siguiente diagrama de
+tiempo muestra las formas de onda de salida y lo que ajusta
+cada par&Atilde;&iexcl;metro.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><PRE> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _____ &nbsp; &nbsp; &nbsp; &nbsp; _____ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _____<BR> &nbsp; &nbsp;STEP &nbsp;____/ &nbsp; &nbsp; &#92;_______/ &nbsp; &nbsp; &#92;_____________/ &nbsp; &nbsp; &#92;______<BR> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; |<BR> &nbsp; &nbsp;Time &nbsp; &nbsp; &nbsp;|-(1)-|--(2)--|-(1)-|--(3)--|-(4)-|-(1)-|<BR> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|__________________<BR> &nbsp; &nbsp;DIR &nbsp; ________________________________/<BR></PRE></p>
+
+<p style="margin-left:11%; margin-top: 1em">Para el tipo de
+paso 1, se utilizan los par&Atilde;&iexcl;metros de
+temporizaci&Atilde;&sup3;n 1, 2 y 5. El siguiente diagrama
+de tiempo muestra las formas de onda de salida y lo que
+ajusta cada par&Atilde;&iexcl;metro.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><PRE> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _____ &nbsp; &nbsp; &nbsp; _____<BR> &nbsp; &nbsp;UP &nbsp; &nbsp;__/ &nbsp; &nbsp; &#92;_____/ &nbsp; &nbsp; &#92;________________________________<BR> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;| &nbsp; &nbsp; | &nbsp; &nbsp; | &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp; &nbsp; |<BR> &nbsp; &nbsp;Time &nbsp; &nbsp;|-(1)-|-(2)-|-(1)-|---(5)---|-(1)-|-(2)-|-(1)-|<BR> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|_____| &nbsp; &nbsp; |_____|<BR> &nbsp; &nbsp;DOWN &nbsp;______________________________/ &nbsp; &nbsp; &#92;_____/ &nbsp; &nbsp; &#92;____<BR></PRE></p>
+
+<p style="margin-left:11%; margin-top: 1em">Para los tipos
+de paso 2 y superiores, el patr&Atilde;&sup3;n exacto de las
+salidas depende del tipo de paso (consulte el manual de HAL
+para obtener una lista completa). Las salidas cambian de un
+estado a otro en un intervalo m&Atilde;nimo de
+<b>steplen</b>. Cuando ocurre un cambio de
+direcci&Atilde;&sup3;n, el tiempo m&Atilde;nimo entre el
+&Atilde;&ordm;ltimo paso en una direcci&Atilde;&sup3;n y el
+primero en la otra direcci&Atilde;&sup3;n es la suma de
+<b>steplen</b> y <b>dirdelay</b>.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El manual de
+usuario de HAL.</p>
+<hr>
+</body>
+</html>

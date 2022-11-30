@@ -1,0 +1,215 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:29 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MUX_GENERIC</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MUX_GENERIC</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">mux_generic -
+elige uno de entre varios valores de entrada</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="63%">
+
+
+<p style="margin-top: 1em"><b>loadrt mux_generic config =
+bb8,fu12 ....</b></p></td>
+<td width="26%">
+</td></tr>
+</table>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mux-gen.</b><i>NN</i>
+Dependiendo de los tipos de datos pueden ejecutarse en un
+<br>
+hilo de punto flotante o no flotante.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mux-gen.</b><i>NN</i><b>.suppress-no-input</b>
+bit in</p>
+
+<p style="margin-left:22%;">Esto suprime el cambio de
+salida si todas las l&Atilde;neas de selecci&Atilde;&sup3;n
+son falsas. Esto detiene los saltos no deseados en la salida
+entre las transiciones de entrada pero hace que in00 no
+est&Atilde;&copy; disponible.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.debounce-us</b>
+u32 in</p>
+
+<p style="margin-left:22%;">establece el tiempo de debouce
+en microsegundos. p.ej. 100000 = una d&Atilde;&copy;cima de
+segundo. Las entradas de selecci&Atilde;&sup3;n deben ser
+estables ese tiempo antes de que cambie la salida. Esto
+ayuda a ignorar los interruptores
+&rsquo;ruidosos&rsquo;.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.sel-bit</b><i>MM</i>
+bit in (M = 0..N) <b><br>
+mux-gen.</b><i>NN</i><b>.sel-int</b> u32 in &nbsp;fR</p>
+
+<p style="margin-left:22%;">Juntos, determinan
+qu&Atilde;&copy; valor <b>in</b><i>N</i> se copia en
+<b>output</b>. Los pines de bits se interpretan como bits
+binarios, y el resultado simplemente se agrega a la entrada
+del pin entero. Se espera que normalmente se use uno u otro.
+Sin embargo, existe la posibilidad de utilizar un bit de
+orden superior para &quot;cambiar&quot; los valores
+establecidos por el pin entero. Los pines sel-bit solo se
+crean cuando el tama&Atilde;&plusmn;o del componente mux_gen
+es una potencia entera de dos. Este componente (a diferencia
+de mux16) no ofrece la opci&Atilde;&sup3;n de decodificar
+c&Atilde;&sup3;digo gray; sin embargo, se puede lograr el
+mismo efecto organizando el orden de los valores de entrada
+para que se adapten.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.out-[bit/float/s32/u32]</b>
+out de tipo variable</p>
+
+<p style="margin-left:22%;">Sigue el valor de uno de los
+valores <b>in</b><i>N</i> de acuerdo con los bits de
+selecci&Atilde;&sup3;n y/o el n&Atilde;&ordm;mero de
+selecci&Atilde;&sup3;n. Los valores se
+convertir&Atilde;&iexcl;n/truncar&Atilde;&iexcl;n de acuerdo
+con las reglas est&Atilde;&iexcl;ndar de C. Esto significa,
+por ejemplo, que una entrada float mayor que 2147483647
+dar&Atilde;&iexcl; una salida S32 de -2147483648.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.in-[bit/float/s32/u32]-</b><i>MM</i>
+in tipo variable</p>
+
+<p style="margin-left:22%;">Los posibles valores de salida
+son seleccionados por los pines de
+selecci&Atilde;&sup3;n.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mux-gen.</b><i>N</i><b>.elapsed</b>
+float r</p>
+
+<p style="margin-left:22%;">Valor actual del temporizador
+antirrebote interno para la depuraci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>N</i><b>.selected</b>
+s32 r</p>
+
+<p style="margin-left:22%;">Valor actual de la variable de
+selecci&Atilde;&sup3;n interna despu&Atilde;&copy;s de la
+conversi&Atilde;&sup3;n para la depuraci&Atilde;&sup3;n.
+Posiblemente &Atilde;&ordm;til para configurar interruptores
+de c&Atilde;&sup3;digo gray. &Acirc;&nbsp;</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Este componente
+es una versi&Atilde;&sup3;n m&Atilde;&iexcl;s general de los
+otros componentes de multiplexaci&Atilde;&sup3;n. Permite la
+creaci&Atilde;&sup3;n de multiplexores de
+tama&Atilde;&plusmn;o arbitrario (hasta 1024 entradas) y
+tambi&Atilde;&copy;n admite diferentes tipos de datos en los
+pines de entrada y salida. La cadena de
+configuraci&Atilde;&sup3;n es una lista, separada por comas,
+de letras y n&Atilde;&ordm;meros de c&Atilde;&sup3;digo,
+como &quot;bb4,fu12&quot;. Esto crear&Atilde;a un mux
+bit-a-bit de 4 elementos y un mux float-a-unsigned de 12
+elementos. Las letras de c&Atilde;&sup3;digo son b=bit,
+f=float, s=entero con signo, u=entero sin signo. El primer
+c&Atilde;&sup3;digo de letra es el tipo de entrada, el
+segundo es el tipo de salida. Los c&Atilde;&sup3;digos no
+distinguen entre may&Atilde;&ordm;sculas y
+min&Atilde;&ordm;sculas. El orden de las letras es
+significativo, pero la posici&Atilde;&sup3;n en la cadena no
+lo es. No inserte ning&Atilde;&ordm;n espacio en la cadena
+de configuraci&Atilde;&sup3;n. Cualquier valor float
+distinto de cero se convertir&Atilde;&iexcl; en una salida
+&quot;verdadera&quot; en forma de bit. Tenga cuidado de que
+los tipos de datos floats pueden ser muy, muy cercanos a
+cero y en realidad no pueden ser iguales a cero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cada mux tiene
+su propia funci&Atilde;&sup3;n HAL y debe agregarse a un
+hilo por separado. Si ni la entrada ni la salida son de tipo
+float, la funci&Atilde;&sup3;n es segura para hilos
+b&Atilde;&iexcl;sicos (sin punto flotante). Cualquier
+mux_generic con una entrada o salida de punto flotante solo
+se puede agregar a un hilo de punto flotante.</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Andy Pugh</p>
+<hr>
+</body>
+</html>

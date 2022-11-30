@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>LinuxCNC User Introduction</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>LinuxCNC User Introduction</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:linuxcnc-user-introduction">1. How LinuxCNC Works</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC is a suite of highly-customisable applications for the control of a Computer Numerically
+Controlled (CNC) mills and lathes, 3D printers, robots, laser cutters, plasma cutters and other automated
+devices. It is capable of providing coordinated control of up to 9 axes of movement.</p></div>
+<div class="paragraph"><p>At its heart, LinuxCNC consists of several key components that are integrated together to form one
+complete system:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+a Graphical User Interface (GUI), which forms the basic interface between the operator, the software
+and the CNC machine itself;
+</p>
+</li>
+<li>
+<p>
+the <a href="../hal/intro.html#cha:hal-introduction">Hardware Abstraction Layer</a> (HAL), which provides a method of linking all
+the various internal virtual signals generated and received by LinuxCNC with the outside world; and,
+</p>
+</li>
+<li>
+<p>
+the high level controllers that coordinate the generation and execution of motion control of the CNC
+machine, namely the motion controller (EMCMOT), the discrete input/output controller (EMCIO) and the
+task executor (EMCTASK).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The below illustration is a simple block diagram showing what a typical 3-axis, CNC mill with stepper
+motors might look like:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/whatstep1.png" alt="Simple LinuxCNC Controlled Machine" />
+</div>
+</div>
+<div class="paragraph"><p>A computer running LinuxCNC sends a sequence of pulses via the parallel port to the stepper drives, each of
+which has one stepper motor connected to it. Each drive receives two independent signals; one signal to
+command the drive to move its associated stepper motor in a clockwise or anti-clockwise direction, and a
+second signal that defines the speed at which that stepper motor rotates.</p></div>
+<div class="paragraph"><p>While a stepper motor system under parallel port control is illustrated, a LinuxCNC system can also take
+advantage of a wide variety of dedicated hardware motion control interfaces for increased speed and I/O
+capabilities. A full list of interfaces supported by LinuxCNC can be found on the
+<a href="http://http://wiki.linuxcnc.org/cgi-bin/wiki.pl?LinuxCNC_Supported_Hardware">Supported Hardware</a> page of the
+Wiki.</p></div>
+<div class="paragraph"><p>In most circumstances, users will create a configuration specific to their mill setup using either the
+<a href="../config/stepconf.html#cha:stepconf-wizard">Stepper Configuration Wizard</a> (for CNC systems operating using the computers'
+parallel port) or the <a href="../config/pncconf.html#cha:pncconf-wizard">Mesa Hardware Wizard</a> (for more advanced systems utilising a
+Mesa Anything I/O PCI card). Running either wizard will create several folders on the computers' hard drive
+containing a number of configuration files specific to that CNC machine, and an icon placed on the desktop
+to allow easy launching of LinuxCNC.</p></div>
+<div class="paragraph"><p>For example, if the Stepper Configuration Wizard was used to create a setup for the 3-axis CNC mill
+illustrated above entitled <em>My_CNC</em>, the folders created by the wizard would typically contain the
+following files:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Folder: My_CNC
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+My_CNC.ini
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+The INI file contains all the basic hardware information regarding the operation of the CNC mill such
+as the number of steps each stepper motor must turn to complete one full revolution, the maximum rate at
+which each stepper may operate at, the limits of travel of each axis or the configuration and behaviour of
+limit switches on each axis.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+My_CNC.hal
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+This HAL file contains information that tells LinuxCNC how to link the internal virtual signals to
+physical connections beyond the computer. For example, specifying pin 4 on the parallel port to send out
+the Z axis step direction signal, or directing LinuxCNC to cease driving the X axis motor when a limit
+switch is triggered on parallel port pin 13.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+custom.HAL
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Customisations to the mill configuration beyond the scope of the wizard may be performed by including
+further links to other virtual points within LinuxCNC in this HAL file. When starting a LinuxCNC session,
+this file is read and processed before the GUI is loaded. An example may include initiating Modbus
+communications to the spindle motor so that it is confirmed as operational before the GUI is displayed.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+custom_postgui.hal
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+The custom_postgui HAL file allows further customisation of LinuxCNC, but differs from custom.HAL in
+that it is processed after the GUI is displayed. For example, after establishing Modbus communications to
+the spindle motor in custom.hal, LinuxCNC can use the custom_postgui file to link the spindle speed readout
+from the motor drive to a bargraph displayed on the GUI.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+postgui_backup.hal
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+This is provided as a backup copy of the custom_postgui.hal file to allow the user to quickly restore a
+previously-working postgui HAL configuration. This is especially useful if the user wants to run the
+Configuration Wizard again under the same <em>My_CNC</em> name in order to modify some parameters of the mill.
+Saving the mill configuration in the Wizard will overwrite the existing custom_postgui file while leaving
+the postgui_backup file untouched.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+tool.tbl
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+A tool table file contains a parameterised list of any cutting tools used by the mill. These parameters
+can include cutter diameter and length, and is used to provide a catalogue of data that tells LinuxCNC how
+to compensate its motion for different sized tools within a milling operation.
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Folder: nc_files
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+The nc_files folder is provided as a default location to store the G-code programs used to drive the
+mill. It also includes a number of subfolders with G-code examples.
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_graphical_user_interfaces">2. Graphical User Interfaces</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A graphical user interface is the part of the LinuxCNC that the machine tool operator interacts with.
+LinuxCNC comes with several types of user interfaces which may be chosen from by editing certain fields
+contained in the <a href="../config/ini-config.html#cha:ini-configuration">INI file</a>:</p></div>
+<div class="paragraph"><p><a href="../gui/axis.html#cha:axis-gui"><em>Axis</em></a>, the standard keyboard GUI interface. This is also the default GUI launched when a
+Configuration Wizard is used to create a desktop icon launcher:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/axis.png" alt="Axis, the standard keyboard GUI interface" />
+</div>
+</div>
+<div class="paragraph"><p><a href="../gui/touchy.html#cha:touchy-gui"><em>Touchy</em></a>, a touch screen GUI:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/touchy.png" alt="Touchy, a touch screen GUI" />
+</div>
+</div>
+<div class="paragraph"><p><a href="../gui/gscreen.html#cha:gscreen"><em>Gscreen</em></a>, a user-configurable touch screen GUI:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/gscreen-mill.png" alt="Gscreen, a configurable base touch screen GUI" />
+</div>
+</div>
+<div class="paragraph"><p><a href="../gui/gmoccapy.html#cha:gmoccapy"><em>GMOCCAPY</em></a>, a touch screen GUI based on Gscreen. GMOCCAPY is also designed to work equally
+well in applications where a keyboard and mouse are the preferred methods of controlling the GUI:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/gmoccapy_3_axis.png" alt="gmoccapy, a touch screen GUI based on Gscreen" />
+</div>
+</div>
+<div class="paragraph"><p><a href="../gui/ngcgui.html#cha:ngcgui"><em>NGCGUI</em></a>, a subroutine GUI that provides wizard-style programming of G code. NGCGUI may be
+run as a standalone program or embedded into another GUI as a series of tabs. The following screen shot
+shows NGCGUI embedded into Axis:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/ngcgui.png" alt="NGCGUI, a subroutine GUI that provides wizard-style programming of G code" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtual_control_panels">3. Virtual Control Panels</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>As mentioned above, many of LinuxCNC&#8217;s GUIs may be customised by the user. This may be done to add
+indicators, readouts, switches or sliders to the basic appearance of one of the GUIs for increased
+flexibility or functionality. Two styles of Virtual Control Panel are offered in LinuxCNC:</p></div>
+<div class="paragraph"><p><a href="../gui/pyvcp.html#cha:pyvcp"><em>PyVCP</em></a>, a Python-based virtual control panel that can be added to the Axis GUI. PyVCP only
+utilises virtual signals contained within the Hardware Abstraction Layer, such as the spindle-at-speed
+indicator or the Emergency Stop output signal, and has a simple no-frills appearance. This makes it an
+excellent choice if the user wants to add a Virtual Control Panel with minimal fuss.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/axis-pyvcp.png" alt="PyVCP with Axis" />
+</div>
+</div>
+<div class="paragraph"><p><a href="../gui/gladevcp.html#cha:glade-vcp"><em>GladeVCP</em></a>, a Glade-based virtual control panel that can be added to the Axis or Touchy
+GUIs. GladeVCP has the advantage over PyVCP in that it is not limited to the display or control of HAL
+virtual signals, but can include other external interfaces outside LinuxCNC such as window or network
+events. GladeVCP is also more flexible in how it may be configured to appear on the GUI:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="../gui/images/axis-gladevcp.png" alt="GladeVCP with Axis" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_languages">4. Languages</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC uses translation files to translate LinuxCNC User Interfaces into many languages including French,
+German, Italian, Finnish, Russian, Romanian, Portuguese and Chinese.  Assuming a translation has been
+created, LinuxCNC will automatically use whatever native language you log in with when starting the Linux
+operating system. If your language has not been translated, contact a developer on the IRC, the mailing
+list or the User Forum for assistance.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modes_of_operation">5. Modes of Operation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>When LinuxCNC is running, there are three different major modes used for inputting commands. These are
+Manual, Auto, and Manual Data Input (MDI). Changing from one mode to another makes a big difference in the
+way that the LinuxCNC control behaves. There are specific things that can be done in one mode that cannot
+be done in another. An operator can home an axis in manual mode but not in auto or MDI modes. An operator
+can cause the machine to execute a whole file full of G-codes in the auto mode but not in manual or MDI.</p></div>
+<div class="paragraph"><p>In manual mode, each command is entered separately. In human terms a manual command might be turn on
+coolant or jog X at 25 inches per minute. These are roughly equivalent to flipping a switch or turning the
+hand wheel for an axis. These commands are normally handled on one of the graphical interfaces by pressing
+a button with the mouse or holding down a key on the keyboard. In auto mode, a similar button or key press
+might be used to load or start the running of a whole program of G-code that is stored in a file. In the
+MDI mode the operator might type in a block of code and tell the machine to execute it by pressing the
+&lt;return&gt; or &lt;enter&gt; key on the keyboard.</p></div>
+<div class="paragraph"><p>Some motion control commands are available concurrently and will cause the same changes in motion in all
+modes. These include Abort, Emergency Stop, and Feed Rate Override. Commands like these should be self
+explanatory.</p></div>
+<div class="paragraph"><p>The AXIS user interface hides some of the distinctions between Auto and the other modes by making
+Auto-commands available at most times. It also blurs the distinction between Manual and MDI because some
+Manual commands like Touch Off are actually implemented by sending MDI commands. It does this by
+automatically changing to the mode that is needed for the action the user has requested.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

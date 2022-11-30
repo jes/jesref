@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>获取LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>获取LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:getting-linuxcnc"><p>本节介绍下载和全新安装LinuxCNC的推荐方法。也有其他适合高级用户的<a href="#_alternate_install_methods">安装方法</a>。如果您需要升级现有安装，请转至<a href="updating-linuxcnc-cn.html#cha:updating-linuxcnc">更新LinuxCNC</a>部分。</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">LinuxCNC需要带额外实时功能的内核。
+这里有三个选择：Preempt-RT、RTAI、或Xenomai。
+另外，与它们相容的有两个版本的LinuxCNC。 详情请看以下列表。</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>使用Live/安装镜像是最容易获取全新安装LinuxCNC的方式。
+这是一个混合ISO文件系统镜像，可以将其写入USB储存设备或DVD光盘，并用于启动电脑。
+在启动时，您可以选择启动"Live"系统（为了运行LinuxCNC，且不会对电脑进行任何永久性更改）
+或启动安装程序（为了将LinuxCNC及其操作系统安装到电脑的硬盘上）。</p></div>
+<div class="paragraph"><p>该过程的概要如下所示：</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+下载Live/安装镜像。
+</p>
+</li>
+<li>
+<p>
+将镜像写入USB储存设备或DVD光盘。
+</p>
+</li>
+<li>
+<p>
+启动Live系统以测试LinuxCNC。
+</p>
+</li>
+<li>
+<p>
+启动安装程序以安装LinuxCNC。
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_下载镜像">1. 下载镜像</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>本节介绍了一些下载Live/安装镜像的方法。</p></div>
+<div class="sect2">
+<h3 id="_normal_download">1.1. 普通下载</h3>
+<div class="paragraph"><p>通过单击此处下载Live/安装CD：</p></div>
+<div class="paragraph"><p><a href="http://www.linuxcnc.org/iso/linuxcnc-2.8.2-buster.iso">http://www.linuxcnc.org/iso/linuxcnc-2.8.2-buster.iso</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_使用zsync下载">1.2. 使用zsync下载</h3>
+<div class="paragraph"><p>zsync是一个下载应用程序，它可以有效恢复中断的下载，
+并有效地传输有少量更变的大文件（前提是您有较旧的本地副本）。
+如果在使用<a href="getting-linuxcnc-cn.html#_normal_download">普通下载</a>方法下载镜像时遇到问题，
+请使用zsync试试。</p></div>
+<div class="olist arabic"><div class="title">Linux中的zsync</div><ol class="arabic">
+<li>
+<p>
+使用Synaptic或在 <a href="http://linuxcnc.org/docs/2.8/html/common/linux-faq.html#faq:terminal">终端</a>中运行以下命令来安装zsync
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install zsync</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+然后运行以下命令将iso下载到您的电脑上
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>http://www.linuxcnc.org/iso/linuxcnc-2.8.2-buster.iso</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="paragraph"><div class="title">Windows中的zsync</div><p>Windows有一个zsync端口。它以控制台应用程序运作。 它可以从以下位置下载 ：</p></div>
+<div class="paragraph"><p><a href="https://www.assembla.com/spaces/zsync-windows/documents">https://www.assembla.com/spaces/zsync-windows/documents</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_验证镜像">1.3. 验证镜像</h3>
+<div class="paragraph"><p>（如果已使用zsync，不需要此步骤）</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+下载后，请验证镜像的校验和以确保完整性。
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>md5sum linuxcnc-2.8.2-buster.iso</code></pre>
+</div></div>
+<div class="paragraph"><p>或</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>sha256sum linuxcnc-2.8.2-buster.iso</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+然后于以下校验和作比较
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>md5sum: 8a6e6abd2c792c3e06fbee0ed049ed41
+sha256sum: 0bfeac3ddfe1bdbf5ca4dad84eeec165741d3f253a16b75e4405c06b7b489700</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="paragraph"><div class="title">在Windows或Mac上验证md5sum</div><p>Windows和Mac OS X不附带md5sum程序，但是有替代方法。
+可以于此找到更多信息：
+<a href="https://help.ubuntu.com/community/HowToMD5SUM">How To MD5SUM</a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_将镜像写入可启动设备">2. 将镜像写入可启动设备</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC Live/安装镜像是一个混合ISO镜像，可以将其直接写入USB储存设备（闪盘）或DVD光盘中，
+并用于启动电脑。由于镜像太大，无法放入CD光盘。</p></div>
+<div class="olist arabic"><div class="title">在Linux中将镜像写入USB储存设备</div><ol class="arabic">
+<li>
+<p>
+连接一个USB储存设备（例如闪盘或手指类设备）。
+</p>
+</li>
+<li>
+<p>
+确定与USB闪盘相对应的设备文件。连接设备后，可以在dmesg的输出中找到此信息。/proc/partitions也可能会有所帮助。
+</p>
+</li>
+<li>
+<p>
+使用dd命令将镜像写入USB储存设备。例如，如果您的储存设备显示为/dev/sde，则使用以下命令：
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>dd if=linuxcnc-2.8.2-buster.iso of=/dev/sde</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">在Mac OS X中将镜像写入USB储存设备</div><ol class="arabic">
+<li>
+<p>
+开启终端并打入
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>diskutil list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+插入USB并记下新出现的磁盘的名称，例如/dev/disk5
+</p>
+</li>
+<li>
+<p>
+卸下USB。 以上步骤获取的数字应取代N
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>diskutil unmountDisk /dev/diskN</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+与以上Linux的过程一样，使用dd传输数据。 注意磁盘名称前有个额外的"r"
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo dd if=/path-to.iso of=/dev/rdiskN bs=1m</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+注意这个可能会花很长时间完成，并在过程中不会有反馈。
+</p>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">在Linux中将镜像写入DVD</div><ol class="arabic">
+<li>
+<p>
+将空白DVD插入刻录机。'CD/DVD Creator'或'选择光盘类型'窗口将会弹出。 将它直接关闭，因为我们不会使用它。
+</p>
+</li>
+<li>
+<p>
+在文件浏览器中浏览到下载的镜像。
+</p>
+</li>
+<li>
+<p>
+右键单击ISO镜像文件，然后选择“写入光盘”。
+</p>
+</li>
+<li>
+<p>
+选择写入速度。建议您以最低的速度写入。
+</p>
+</li>
+<li>
+<p>
+开始刻录过程。
+</p>
+</li>
+<li>
+<p>
+如果弹出窗口请您为光盘影像选择文件名，只需选择确定。
+</p>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">在Windows中将镜像写入DVD</div><ol class="arabic">
+<li>
+<p>
+下载并安装Infra Recorder，这是一个免费的开源镜像刻录程序：http://infrarecorder.org/
+</p>
+</li>
+<li>
+<p>
+将空白CD插入驱动器中，然后选择不执行任何操作，或者在弹出自动运行对话框时选择取消。
+</p>
+</li>
+<li>
+<p>
+打开Infra Recorder，然后选择“操作”菜单，然后选择“刻录镜像”。
+</p>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">在Mac OS X中将镜像写入DVD</div><ol class="arabic">
+<li>
+<p>
+下载.iso文件
+</p>
+</li>
+<li>
+<p>
+在Finder窗口里右键单击文件，并选择"刻录至光盘"（"刻录至光盘"选项只会在机器有内置或连接着光盘驱动器时出现）
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_测试linuxcnc">3. 测试LinuxCNC</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>请保持插入USB储存设备，或保持DVD光盘在DVD光盘驱动器里，然后关机，再重新开机。
+这将让电脑从"Live/安装镜像"启动，并选择"Live启动"选项。</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">如果系统没有从DVD光盘或USB启动，您有可能需要在个人电脑的基本输入输出系统（BIOS）里更变启动顺序。</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>电脑启动后，您可以尝试LinuxCNC而无需安装它。
+除非安装LinuxCNC，否则无法创建自定义配置或更改大多数系统设定，但您可以（更是应该）运行延迟测试。</p></div>
+<div class="paragraph"><p>试用LinuxCNC：从应用程序/CNC菜单中选择LinuxCNC。
+一个对话框会弹出，您可以在这里从许多选项中选择一个样本配置。
+在这个阶段只有"sim"配置是合理的选项。 有些样本配置包括虚拟的3D模拟机器，您可搜索"Vismach"找到它们。</p></div>
+<div class="paragraph"><p>要查看您的电脑是否适合软件步进脉冲生成，请按照 <a href="http://linuxcnc.org/docs/2.8/html/install/latency-test.html">这里</a>的指示运行延迟测试。</p></div>
+<div class="paragraph"><p>在写这份档案的时候，Live镜像只适于Preempt-RT内核及相应的LinuxCNC。
+对于一些硬件这可能不能够提供够好的延迟。 有一个利用RTAI实时内核的实验版本可以多数时候提供更好的延迟。</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_安装linuxcnc">4. 安装LinuxCNC</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>要从LiveCD安装LinuxCNC，请在启动时选择<em>Install (Graphical)</em>(图形化界面安装)。</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_linuxcnc更新">5. LinuxCNC更新 </h2>
+<div class="sectionbody">
+<div class="paragraph"><p>通过常规安装，更新管理器将在您上线时通知您有关LinuxCNC的更新，并允许您轻松升级而无需Linux知识。
+被问到时，升级除操作系统以外的所有内容都是没问题的。</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">如果出现提示，也请不要升级操作系统。但是您应该接受操作系统更新，尤其是安全性更新。</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_安装问题">6. 安装问题</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>在极少数情况下，如果在Live CD安装过程中，无法在启动过程中识别硬盘，
+则可能需要将基本输入输出系统（BIOS）重置为默认设定。</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternate_install_methods">7. 其他安装方法</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>如上所述使用Live/安装镜像是安装LinuxCNC最简单，首选的方法。
+我们已尽量简化该方法，并使它可靠，令它既适合初学者用户又适合有经验的用户。
+但是，这通常会取代任何现有的操作系统。</p></div>
+<div class="paragraph"><p>此外，对于熟悉Debian系统管理（查找安装镜像，操纵apt源，更改内核版本等）有经验的用户，以下平台支持新的安装：
+（"amd64"指"64-位元"，并且不限于AMD处理器，可以于任何64-位元 x86系统上运行）</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<thead>
+<tr>
+<th align="left" valign="top"> 发行版         </th>
+<th align="left" valign="top"> 架构          </th>
+<th align="left" valign="top"> 内核       </th>
+<th align="left" valign="top"> 软件包名称       </th>
+<th align="left" valign="top"> 典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Buster</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">仅模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Buster</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; armhf</p></td>
+<td align="left" valign="top"><p class="table">preemp-rt</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">机器控制与模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Buster</p></td>
+<td align="left" valign="top"><p class="table">amd64</p></td>
+<td align="left" valign="top"><p class="table">RTAI</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc</p></td>
+<td align="left" valign="top"><p class="table">机器控制（已知问题）</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Jessie</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">仅模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Wheezy</p></td>
+<td align="left" valign="top"><p class="table">i386</p></td>
+<td align="left" valign="top"><p class="table">RTAI</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc</p></td>
+<td align="left" valign="top"><p class="table">机器控制与模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Wheezy</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Preempt-RT</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">机器控制与模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Wheezy</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">仅模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Ubuntu Precise</p></td>
+<td align="left" valign="top"><p class="table">i386</p></td>
+<td align="left" valign="top"><p class="table">RTAI</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc</p></td>
+<td align="left" valign="top"><p class="table">机器控制与模拟</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Ubuntu Precise</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">仅模拟</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Ubuntu Lucid或更旧并不支持LinuxCNC 2.8。</td>
+</tr></table>
+</div>
+<div class="paragraph"><div class="title">Preempt-RT内核</div><p>适用于Debian的Preempt-RT内核可于平常的debian.org档案库内找到。
+使用于Raspberry Pi的Preempt-RT内核可于LinuxCNC储存库内找到。
+此软件包叫做"linux-image-rt-*"。
+普通地利用Synaptic软件包管理器或在命令内执行apt-get来安装此软件包。</p></div>
+<div class="paragraph"><div class="title">RTAI内核</div><p>可从linuxcnc.org debian档案库内找到可下载的RTAI内核。apt源是：</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Debian Wheezy: <code>deb http://linuxcnc.org wheezy base</code>
+</p>
+</li>
+<li>
+<p>
+Ubuntu Precise: <code>deb http://linuxcnc.org precise base</code>
+</p>
+</li>
+<li>
+<p>
+Ubuntu Lucid: <code>deb http://linuxcnc.org lucid base</code>
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Debian Wheezy与Ubuntu Precise都非常旧，并且不再受支持。
+我们强烈不建议使用它们来做新安装，并建议您考虑升级已有的安装。</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Buster/RTAI软件包只适于amd64，但现在很少有无法运行64-位元操作系统的系统。</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">64-位元RTAI 5.2内核与这个版本的LinuxCNC存在已知的问题。
+有时候系统会完全封锁。 但是目前这只会在退出系统时发生。
+运行时系统看起来是稳定的。 但还是应该将此待作实验中。</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">如果您决定使用RTAI 5.2内核并注意到以上描述的情况外的问题，请您立刻举报给项目开发人员。</td>
+</tr></table>
+</div>
+<div class="sect2">
+<h3 id="_在debian_buster上安装_与preempt_rt内核">7.1. 在Debian Buster上安装（与Preempt-RT内核）</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+安装Debian Buster（Debian 10），amd64版本。 你可以从这里下载安装程序：
+<a href="https://www.debian.org/releases/buster/">https://www.debian.org/releases/buster/</a>
+</p>
+</li>
+<li>
+<p>
+刻录完iso并启动后，如果不想使用Gnome桌面，
+  请选择<em>Advanced Options</em> &gt; 'Alternative desktop environments'，
+  并选择您所喜欢的。然后选择安装或图形安装。
+</p>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">不要输入root密码，这会关闭sudo，则将无法完成以下步骤。</td>
+</tr></table>
+</div>
+</li>
+<li>
+<p>
+在 <a href="http://linuxcnc.org/docs/2.8/html/common/linux-faq.html#faq:terminal">终端</a>中运行以下命令，将机器更新至最新软件包。
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update
+sudo apt-get dist-upgrade</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装Preempt-RT内核和模块
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-rt-amd64</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+重新启动，然后选择Linux 4.19.0-9-rt-amd64内核。
+它可能藏在Grub里的"Debian Buster进阶选项"子菜单。
+登录时，请验证以下命令是否报告了`PREEMPT RT`。
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>uname -v</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+打开 应用程序菜单 &gt; 系统 &gt; Synaptic软件包管理器，搜索'linux-image'，
+  然后右键单击'original non-rt'并选择'标记为完全删除'。
+  重新启动。 这会让系统强制从RT内核启动。
+  如果您宁愿保留所有的内核，您不必删除其他内核，但是会需要此档案并没讲解的额外对grub启动配置的更变。
+</p>
+</li>
+<li>
+<p>
+通过运行以下命令将LinuxCNC包签名密匙添加到APT密匙环
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+添加APT储存库：
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code> echo deb http://linuxcnc.org/ buster base 2.8-rtpreempt | sudo tee -a /etc/apt/sources.list.d/linuxcnc.list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+从linuxcnc.org更新软件包列表
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装uspace（在安装uspace之前可能需要重新启动）
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc-uspace</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="cha:Installing-RTAI">7.2. 在Debian Buster上安装（与实验性RTAI内核）</h3>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">这个内核有已知的稳定性问题。 当LinuxCNC已加载它似乎可以正常运行。
+但是在系统关机时曾出现过内核恐慌。</td>
+</tr></table>
+</div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+这个内核与LinuxCNC版本可以在LiveCD安装之上安装，或可以以上所述在新的Debian Buster 64-位元安装上。
+</p>
+</li>
+<li>
+<p>
+将LinuxCNC包签名密匙添加到APT密匙环（如果在更换LinuxCNC Live-CD镜像的实时模式则不需要）
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+添加APT储存库：
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code> echo deb http://linuxcnc.org/ buster base 2.8-rt | sudo tee -a /etc/apt/sources.list.d/linuxcnc.list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+从linuxcnc.org更新软件包列表
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装RTAI内核
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-4.19.195-rtai-amd64</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装RTAI应用层
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install rtai-modules-4.19.195</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装linuxcnc（安装之前可能需要重新启动）
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_在raspbian_10上安装">7.3. 在Raspbian 10上安装</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+下载库存Raspbian镜像到SD卡上，并以 <a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">平常的方式</a>安装
+</p>
+</li>
+<li>
+<p>
+启动Pi，然后打开一个终端
+</p>
+</li>
+<li>
+<p>
+将LinuxCNC包签名密匙添加到APT密匙环
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+添加 APT 储存库 ：
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code> echo deb http://linuxcnc.org/ buster base 2.8-rtpreempt | sudo tee -a /etc/apt/sources.list.d/linuxcnc.list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+从linuxcnc.org更新软件包列表
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装实时内核
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-4.19.71-rt24-v7l+</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+安装linuxcnc（安装之前可能需要重新启动）
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc-uspace</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_在ubuntu_precise上安装">7.4. 在Ubuntu Precise上安装</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+安装Ubuntu Precise 12.04 x86（32-位元）。
+  任何版本都应该可行（常规Ubuntu，Xubuntu，Lubuntu等）。
+  当前不支持64-位元（AMD64）。
+  您可以在此处下载安装程序：
+  <a href="http://releases.ubuntu.com/precise/">http://releases.ubuntu.com/precise/</a>
+  请留意这个版本已不受支持的警告。 但是这是一个安装LinuxCNC与经过多重测试的RTAI内核的方法。
+</p>
+</li>
+<li>
+<p>
+运行以下命令，以使与Ubuntu Precise中的最新软件包保持最新。
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update
+sudo apt-get dist-upgrade</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+通过运行以下命令将LinuxCNC包签名密匙添加到APT密匙环
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+添加新的APT源
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo add-apt-repository "deb http://linuxcnc.org/ precise base 2.8-rt"</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+从linuxcnc.org获取软件包列表。
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+通过运行以下命令安装RTAI内核和模块
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-3.4-9-rtai-686-pae rtai-modules-3.4-9-rtai-686-pae</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+如果您希望能够使用git储存库从源码构建LinuxCNC，请运行
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-headers-3.4-9-rtai-686-pae</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+重新启动，并确保您使用rtai内核启动。登录时，请验证内核名称为3.4-9-rtai-686-pae。
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>uname -r</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+运行
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

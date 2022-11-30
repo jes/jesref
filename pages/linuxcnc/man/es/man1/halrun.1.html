@@ -1,0 +1,238 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HALRUN</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HALRUN</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#EJEMPLOS">EJEMPLOS</a><br>
+<a href="#HISTORIA">HISTORIA</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#COMUNICACION DE ERRORES">COMUNICACION DE ERRORES</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halrun -
+manipula HAL de LinuxCNC desde la linea de comandos</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun</b>
+<i>-h</i></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun
+[</b><i>-I</i>] [<i>halcmd_opts</i>]
+[<i>nombre_de_archivo[.hal|.tcl]</i>]</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun</b>
+<i>-T</i> [<i>halcmd_opts</i>]
+[<i>nombre_de_archivo[.hal|.tcl]</i>]</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun</b>
+<i>-U</i></p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>halrun</b></i>
+es un script de conveniencia que se utiliza para manipular
+la HAL ( Capa de abstraccion Hardware) desde la linea de
+comando. Cuando se invoca, <b>halrun</b>:</p>
+
+<p style="margin-left:11%; margin-top: 1em">Configura el
+entorno en tiempo real. <br>
+Ejecuta un interprete de comandos (<b>halcmd</b> o
+<b>haltcl</b>). <br>
+Ejecuta una sesion interactiva (opcionalmente). <br>
+Destruye el entorno en tiempo real.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si no se
+especifica ningun nombre de archivo, se inicia una sesion
+interactiva. <br>
+La sesion utilizara <b>halcmd</b>(1) a menos que se
+especifique -T en <br>
+en que caso se utilizara <b>haltcl</b>(1).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si se
+especifica un nombre de archivo y ni la opcion -I ni la
+opcion -T <br>
+estan incluidas, el nombre del archivo sera procesado por el
+interprete de comandos <br>
+correspondiente a la extension de nombre de archivo
+(<b>halcmd</b> <br>
+o <b>haltcl</b>). Despues del procesamiento, el entorno en
+tiempo real. <br>
+sera destruido.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si se
+especifica un nombre de archivo y se incluye la opcion -I o
+-T, <br>
+el archivo es procesado por el interprete de comandos
+apropiado y <br>
+luego se inicia una sesion interactiva para <b>halcmd</b> o
+<b><br>
+haltcl</b> de acuerdo con la opcion -I o -T.</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd_opts</b></p>
+
+<p style="margin-left:22%;">Cuando se especifica un archivo
+.hal, los <b>halcmd_opts</b> son pasados a <b>halcmd</b>.
+Consulte la pagina de manual de <b>halcmd</b>(1). Cuando se
+especifica un archivo .tcl, las unicas opciones validas son:
+<br>
+-i inifile <br>
+-f nombre de archivo[.tcl|.hal] (alterna con la
+especificacion del archivo)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><b>-I</b></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>Ejecutar una sesion interactiva de <b>halcmd</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><b>-T</b></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>Ejecutar una sesion interactiva de <b>haltcl</b>.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><b>-U</b></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>Forzar la salida del entorno en tiempo real. Libera el
+mutex HAL, solicita que se descarguen todos los componentes
+de HAL y detiene el sistema en tiempo real. <b>-U</b> debe
+ser el unico argumento de la linea de comandos.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><b>\-h</b></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>Mostrar una breve pantalla de ayuda y salir</p></td></tr>
+</table>
+
+<h2>EJEMPLOS
+<a name="EJEMPLOS"></a>
+</h2>
+
+
+<h2>HISTORIA
+<a name="HISTORIA"></a>
+</h2>
+
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguno
+conocido en este momento.</p>
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Version
+original de John Kasunich, como parte del Proyecto de
+controlador de maquina mejorada LinuxCNC. Ahora incluye
+importantes aportaciones de varios miembros del
+proyecto.</p>
+
+<h2>COMUNICACION DE ERRORES
+<a name="COMUNICACION DE ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Informar de
+errores a LinuxCNC bug tracker &lang; URL:
+http://sf.net/p/emc/bugs/ &rang; .</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2003 John Kasunich. <br>
+Este es un software libre; ver las fuentes para condiciones
+de copia. No hay garantia; ni siquiera para COMERCIABILIDAD
+o APTITUD PARA UN PROPoSITO PARTICULAR.</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd</b>(1),
+<b>haltcl</b>(1)</p>
+<hr>
+</body>
+</html>

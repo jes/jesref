@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>HAL User Interface</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>HAL User Interface</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:hal-user-interface">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Halui is a HAL based user interface for LinuxCNC, it connects HAL pins to
+NML commands. Most of the functionality (buttons, indicators etc.) that
+is provided by a common GUIs (axis, gscreen, etc.), is provided by HAL
+pins in Halui.</p></div>
+<div class="paragraph"><p>The easiest way to add halui is to add the following to the [HAL]
+section of the ini file.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+HALUI = halui
+...</code></pre>
+</div></div>
+<div class="paragraph"><p>An alternate way to invoke it is to include the following in your .hal
+file. Make sure you use a correct path to your ini file.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadusr halui -ini /path/to/inifile.ini</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mdi">2. MDI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Sometimes the user wants to add more complicated tasks to be performed
+by the activation of a HAL pin. This is possible using the following
+MDI commands method:</p></div>
+<div class="paragraph"><p>MDI_COMMANDs are added to the ini file in the [HALUI] section,
+Example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HALUI]
+MDI_COMMAND = G0 G53 Z0
+MDI_COMMAND = G28
+MDI_COMMAND = o&lt;mysub&gt;call
+...</code></pre>
+</div></div>
+<div class="paragraph"><p>When halui starts it will read the MDI_COMMAND fields in the ini and
+export pins from 00 to the number of MDI_COMMAND&#8217;s found in the ini up
+to a maximum of 64 commands.  These pins can be connected like any
+hal pins.  A common method is to use buttons provided by vitual
+control panels.  Example halfile connections:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net quill-up       &lt;= pyvcp.quillup
+net quill-up       =&gt; halui.mdi-command-00
+
+net reference-pos  &lt;= pyvcp.referencepos
+net reference-pos  =&gt; halui.mdi-command-01
+
+net call-mysub     &lt;= pyvcp.callmysub
+net call-mysub     =&gt; halui.mdi-command-02</code></pre>
+</div></div>
+<div class="paragraph"><p>These nets connect the halui.mdi-command-NN pins
+provided by halui:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ halcmd show pin halui.mdi
+Component Pins:
+Owner  Type  Dir Value  Name
+   10  bit   IN  FALSE  halui.mdi-command-00 &lt;== quill-up
+   10  bit   IN  FALSE  halui.mdi-command-01 &lt;== reference-pos
+   10  bit   IN  FALSE  halui.mdi-command-02 &lt;== call-mysub
+   ...</code></pre>
+</div></div>
+<div class="paragraph"><p>When a halui MDI pin is set (pulsed) true, halui will send the MDI
+command defined in the ini. This will not always succeed depending on
+the current operating mode (e.g., while in AUTO halui can&#8217;t
+successfully send MDI commands).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_halui_pin_reference">3. Halui pin reference</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>All halui pins are documented in the halui man page:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ man halui</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_configuration">4. Example Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>An example sim config (configs/sim/axis/halui_pyvcp/halui.ini)
+is included in the distribution.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

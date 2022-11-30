@@ -1,0 +1,147 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:37 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>WJ200_VFD</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">WJ200_VFD</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">wj200_vfd -
+Hitachi wj200 modbus driver</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>wj200_vfd</b></p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>wj200-vfd.</b><i>N</i><b>.commanded-frequency</b>
+float in</p>
+
+<p style="margin-left:22%;">Frequency of vfd</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.reverse</b>
+bit in</p>
+
+<p style="margin-left:22%;">1 when reverse 0 when
+forward</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.run</b>
+bit in</p>
+
+<p style="margin-left:22%;">run the vfd</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">1 to enable the vfd. 0 will
+remote trip the vfd, thereby disabling it.</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.is-running</b>
+bit out</p>
+
+<p style="margin-left:22%;">1 when running</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.is-at-speed</b>
+bit out</p>
+
+<p style="margin-left:22%;">1 when running at assigned
+frequency</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.is-ready</b>
+bit out</p>
+
+<p style="margin-left:22%;">1 when vfd is ready to run</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.is-alarm</b>
+bit out</p>
+
+<p style="margin-left:22%;">1 when vfd alarm is set</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.motor-current</b>
+float out</p>
+
+<p style="margin-left:22%;">Output current in amps</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.heatsink-temp</b>
+float out</p>
+
+<p style="margin-left:22%;">Temperature of drive
+heatsink</p>
+
+
+<p style="margin-left:11%;"><b>wj200-vfd.</b><i>N</i><b>.watchdog-out</b>
+bit out</p>
+
+<p style="margin-left:22%;">Alternates between 1 and 0
+after every update cycle. Feed into a watchdog component to
+ensure vfd driver is communicating with the vfd
+properly.</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>wj200-vfd.</b><i>N</i><b>.mbslaveaddr</b>
+u32 rw</p>
+
+<p style="margin-left:22%;">Modbus slave address</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">GPLv2 or
+greater</p>
+<hr>
+</body>
+</html>

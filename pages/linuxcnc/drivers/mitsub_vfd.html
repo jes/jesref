@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Mitsub VFD Driver</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Mitsub VFD Driver</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:mitsub-vfd-driver"><p>This is a userspace HAL program, written in python, to control VFD&#8217;s from
+Mitsubishi.<br />
+Specifcally the A500 F500 E500 A500 D700 E700 F700 series - others may work.<br />
+mitsub_vfd supports serial control using the RS485 protocol.<br />
+Conversion from USB or serial port to RS485 requires special hardware.<br /></p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Since this is a userspace program it can be affected by computer loading and
+latency. It is possible to lose control of the VFDs. It is optional to set the
+VFD to stop if it loses communication if that is desirable. One should always
+have an Estop circuit that kills the power to the unit in case of emergency.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>This component is loaded using the halcmd "loadusr" command:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadusr -Wn coolant mitsub_vfd spindle=02 coolant=01</code></pre>
+</div></div>
+<div class="paragraph"><p>The above command says:<br />
+loadusr, wait for coolant pins to be ready, component mitsub_vfd, with 2 slaves
+named spindle (slave #2) and coolant (slave #1)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_command_line_options">1. Command Line Options</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The command line options are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>-b or --baud &lt;rate&gt;</em> : set the baud rate - all networked VFDs must be the same
+</p>
+</li>
+<li>
+<p>
+<em>-p or --port &lt;device path&gt;</em> : sets the port to use such as /dev/ttyUSB0
+</p>
+</li>
+<li>
+<p>
+<em>&lt;name&gt;=&lt;slave#&gt;</em> : sets the HAL component/pin name and slave number.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Debugging can be toggled by setting the debug pin true.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Turning on debugging will result in a flood of text in the terminal.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pins">2. Pins</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Where &lt;n&gt; is <code>mitsub_vfd</code> or the name given during loading.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>&lt;n&gt;.fwd</em> (bit, in)
+                True sets motion forward, False sets reverse.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.run</em> (bit, in)
+                True sets the VFD in motion based on the .fwd pin.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.debug</em> (bit, in)
+                Prints debug info to the terminal.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.alarm</em> (bit, out)
+                signals an alarm state of VFD.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.up-to-speed</em> (bit, out)
+                when drive is at commanded speed (speed-tolerance is set on vfd)
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.monitor</em> (bit, in)
+                some models (eg E500) cannot monitor status -set the monitor pin to false
+in this case pins such as up-to-speed, amps, alarm and status bits are not updated.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.motor-cmd</em> (float, in)
+              commanded speed to the VFD (scaled to hertz by default).
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.motor-fb</em> (float, out)
+              feedback speed from the VFD (scaled to hertz by default).
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.motor-amps</em> (float, out)
+                Current amperage output of motor.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.motor-power</em> (float, out)
+                Current power output of motor.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.scale-cmd</em> (float, in)
+                Scales the motor-cmd pin to arbitrary units. default 1 = Hertz.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.scale-fb</em> (float, in)
+                Scales the motor-fb pin to arbitrary units. default 1 = Hertz.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.scale-amps</em> (float, in)
+                Scales the motor-amps pin to arbitrary units. default 1 = amps.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.scale-power</em> (float, in)
+                Scales the motor-power pin to arbitrary units. default 1 = .
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.estop</em> (bit, in)
+              puts the VFD into emergency-stopped status.
+</p>
+</li>
+<li>
+<p>
+<em>&lt;n&gt;.status-bit-N</em> (bit, out)
+            N = 0 to 7, Status bits are user configurable on the VFD. bit 3 should be set to
+at speed and bit 7 should be set to alarm. others are free to be set as required.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hal_example">3. HAL example</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">#</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># example usage of the Mitsubishi VFD driver</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">loadusr</span></span> -<span style="font-weight: bold"><span style="color: #000000">Wn</span></span> <span style="font-weight: bold"><span style="color: #000000">coolant</span></span> <span style="font-weight: bold"><span style="color: #000000">mitsub_vfd</span></span> <span style="font-weight: bold"><span style="color: #000000">spindle</span></span><span style="color: #990000">=</span><span style="color: #993399">02</span> <span style="font-weight: bold"><span style="color: #000000">coolant</span></span><span style="color: #990000">=</span><span style="color: #993399">01</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># **************** Spindle VFD setup slave 2 *********************</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">spindle-vel-cmd</span></span>               <span style="color: #009900">spindle.motor-cmd</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">spindle-cw</span></span>                    <span style="color: #009900">spindle.fwd</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">spindle-on</span></span>                    <span style="color: #009900">spindle.run</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">spindle-at-speed</span></span>              <span style="color: #009900">spindle.up-to-speed</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">estop-out</span></span>                     <span style="color: #009900">spindle.estop</span>
+<span style="font-style: italic"><span style="color: #9A1900">#       cmd scaled to RPM</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">spindle.scale-cmd</span> .<span style="color: #993399">135</span>
+<span style="font-style: italic"><span style="color: #9A1900">#       feedback is in rpm</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">spindle.scale-fb</span> <span style="color: #993399">7.411</span>
+<span style="font-style: italic"><span style="color: #9A1900">#       allows us to see status</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">spindle.monitor</span> <span style="color: #993399">1</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">spindle-speed-indicator</span></span> <span style="color: #009900">spindle.motor-fb</span>        <span style="color: #009900">gladevcp.spindle-speed</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># *************** Coolant vfd setup slave 3 ***********************</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">coolant-flood</span></span>               <span style="color: #009900">coolant.run</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">coolant-is-on</span></span>               <span style="color: #009900">coolant.up-to-speed</span>   <span style="color: #009900">gladevcp.coolant-on-led</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">estop-out</span></span>                   <span style="color: #009900">coolant.estop</span>
+<span style="font-style: italic"><span style="color: #9A1900">#       cmd and feedback scaled to hertz</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">coolant.scale-cmd</span> <span style="color: #993399">1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">coolant.scale-fb</span> <span style="color: #993399">1</span>
+<span style="font-style: italic"><span style="color: #9A1900">#       command full speed</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">coolant.motor-cmd</span> <span style="color: #993399">60</span>
+<span style="font-style: italic"><span style="color: #9A1900">#       allows us to see status</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">setp</span></span> <span style="color: #009900">coolant.monitor</span> <span style="color: #993399">1</span>
+</tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_the_mitsubishi_vfd_for_serial_usage">4. Configuring the Mitsubishi VFD for serial usage</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_connecting_the_serial_port">4.1. Connecting the Serial Port</h3>
+<div class="paragraph"><p>The Mitsubishi VFDs have an RJ-45 jack for serial communication.<br />
+Since they use RS485 protocol,  they can be networked together point to point.<br />
+This driver was tested using the Opto22 AC7A to convert from RS232 to RS485.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_modbus_setup">4.2. Modbus setup</h3>
+<div class="paragraph"><p>Referenced manuals:</p></div>
+<div class="paragraph"><p><em>communication option reference manual</em> and <em>A500 technical manual</em> for 500 series.<br />
+<em>Fr-A700 F700 E700 D700 technical manual</em> for the 700 series</p></div>
+<div class="paragraph"><p>The VFD must have PR settings adjusted manually for serial communication.<br />
+One must power cycle the VFD for some of these to register eg PR 79</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>PR 77</em> set to 1              <em>-to unlock other PR modification.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 79</em> set to 1 or 0         <em>-for communication thru serial.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 117</em> set to 0-31          <em>-slave number, driver must reference same number.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 118</em> tested with 96       <em>-baud rate (can be set to 48,96,192) if driver is also set.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 119</em> set to 0             <em>-stop bit/data length (8 bits, two stop)</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 120</em> set to 0             <em>-no parity</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 121</em> set to 1-10          <em>-if 10 (maximuim) COM errors then VFD faults.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 122</em> tested with 9999     <em>-if communication is lost VFD will not error.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 123</em> set to 9999          <em>-no wait time is added to the serial data frame.</em>
+</p>
+</li>
+<li>
+<p>
+<em>PR 124</em> set to 0             <em>-no carriage return at end of line.</em>
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

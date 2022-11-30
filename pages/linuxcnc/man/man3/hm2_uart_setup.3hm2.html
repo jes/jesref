@@ -1,0 +1,139 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_uart_setup</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_uart_setup</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_uart_setup
+- setup a Hostmot2 UART</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_uart_setup(char *name,
+int bitrate, s32 tx_mode, s32 rx_mode){</p></td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_uart_setup</b>
+Setup the bitrate for the UART named &quot;name&quot;.
+&quot;name&quot; is a unique string given to each UART
+during hostmot2 setup. The names of the available UARTs are
+printed to standard output during the driver loading process
+and take the form: hm2_&lt;board name&gt;.&lt;board
+index&gt;.uart.&lt;index&gt; For example hm2_5i23.0.uart.0
+The minimum bitrate is approximately 50bps, and the
+maximimum around the FPGA frequency, 48MHz for a 5i23. The
+UART function allows different RX and TX bitrates, but that
+is not currently supported by this driver</p>
+
+<p style="margin-left:11%; margin-top: 1em">tx_mode is bit
+mask defined in the Hostmot2 regmap: Bit 0..3 = TXEnable
+delay. TXEnable delay specifies the transmit data <br>
+holdoff time from the TXenable signal valid state. This is
+used for <br>
+RS-485 (half duplex) operaton, to delay transmit data until
+the driver <br>
+is enabled, allowing for driver enable delays, isolation
+barrier delays <br>
+etc. Delay is in units of ClockLow period. Bit 4 =
+FIFOError, it indicates that a host push has overflowed the
+FIFO <br>
+(Mainly for driver debugging) Bit 5 = DriveEnableAuto, When
+set, enables Drive when any data is in FIFO or <br>
+Xmit Shift register,removes drive when FIFO and Xmit shift
+register <br>
+are empty. Bit 6 = DriveEnableBit, If DriveEnableAuto is 0,
+controls Drive ( <br>
+for software control of Xmit drive)</p>
+
+<p style="margin-left:11%; margin-top: 1em">rx_mode is bit
+mask defined in the Hostmot2 regmap: Bit 0 = FalseStart bit
+Status, 1 = false start bit detected Bit 1 = OverRun Status,
+1 = overrun condition detected (no valid stop bit) Bit 2 =
+RXMaskEnable, 1= enable RXMask for half duplex operation,
+<br>
+0 = ignore RXMask Bit 4 = FIFOError, indicates that a host
+read has attemped to read more <br>
+data than available. (mainly for driver debugging) Bit 5 =
+LostDataError, indicates that data was received with no room
+in FIFO, <br>
+therefore lost Bit 6 = RXMask, RO RXMASK status Bit 7 = FIFO
+Has Data</p>
+
+<p style="margin-left:11%; margin-top: 1em">rx_mode and
+tx_mode registers are currently write-only. There should
+possibly be a get-status function.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To write only
+to the tx_mode DriveEnable bit call this function with the
+bitrate unchanged and -1 as the rx_mode To change bitrate
+without altering mode settings send -1 to both modes.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns0 on
+success and -1 on failure</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">man
+hm2_uart_send, man hm2_uart_read See src/hal/drivers
+mesa_uart.comp for an example usage.</p>
+<hr>
+</body>
+</html>

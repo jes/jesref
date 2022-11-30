@@ -1,0 +1,119 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_tram_add_bspi_frame</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_tram_add_bspi_frame</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#REALTIME CONSIDERATIONS">REALTIME CONSIDERATIONS</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_tram_add_bspi_frame
+- add a register-write to the Hostmot2 TRAM</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">hm2_tram_add_bspi_frame(char
+*name, int chan, u32 **wbuff, u32 **rbuff)</p></td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_tram_add_bspi_frame</b>
+Add a regular (every thread) write event to the Hostmot2
+tram for bspi instance &quot;name&quot;. &quot;name&quot; is
+a unique string given to each bspi channel during hostmot2
+setup. The names of the available channels are printed to
+standard output during the driver loading process and take
+the form: hm2_&lt;board name&gt;.&lt;board
+index&gt;.bspi.&lt;index&gt; For example
+hm2_5i23.0.bspi.0</p>
+
+<p style="margin-left:11%; margin-top: 1em">This function
+is used to add a regular, every thread, write or write-read
+transaction to the Translation RAM system. A write need not
+have a read (use 0 for **rbuff) but it is an error to have a
+read without a write. Note that the TRAM list is not
+actioned until the hm2_allocate_bspi_tram function is
+called. The read and write parameters must be pointers to
+pointers, as TRAM re-maps the buffers into contiguous
+memory.</p>
+
+<h2>REALTIME CONSIDERATIONS
+<a name="REALTIME CONSIDERATIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Call only from
+realtime init code, not from user space or realtime
+code.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns 0 on
+success and -1 on failure.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_allocate_bspi_tram(3hm2)</b>,
+<b>hm2_bspi_set_read_function(3hm2)</b>,
+<b>hm2_bspi_setup_chan(3hm2)</b>,
+<b>hm2_bspi_set_write_function(3hm2)</b>,
+<b>hm2_bspi_write_chan(3hm2)</b>, See src/hal/drivers
+mesa_7i65.comp for an example usage.</p>
+<hr>
+</body>
+</html>

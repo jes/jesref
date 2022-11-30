@@ -1,0 +1,79 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:35 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>IOCONTROL</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">IOCONTROL</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">iocontrol -
+interacts with HAL or G-code in userspace</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[EMCIO] <br>
+EMCIO = io</b> <br>
+or <b><br>
+EMCIO = iov2</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">I/O control
+handles I/O tasks like coolant, toolchange, e-stop and lube.
+The signals are turned on and off in userspace with G-code
+or in the case of e-stop in hal. <br>
+I/O Control V2 (iov2) adds more toolchager support for
+communication with the toolchanger.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Whether
+<b>io</b> or <b>iov2</b> is used can be chosen in the
+[EMCIO] section of the INI file.</p>
+
+<p style="margin-left:11%; margin-top: 1em">See also
+<a href="http://linuxcnc.org/docs/html/config/iov2.html">http://linuxcnc.org/docs/html/config/iov2.html</a></p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="io.1.html"><b>io</b>(1),</a>
+<a href="iov2.1.html"><b>iov2</b>(1)</a></p>
+<hr>
+</body>
+</html>

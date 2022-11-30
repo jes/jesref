@@ -1,0 +1,226 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:16 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_manualtoolchange</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_manualtoolchange</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#USO">USO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_manualtoolchange
+- Componente de espacio de usuario HAL para habilitar
+cambios manuales de herramienta.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">loadusr
+hal_manualtoolchange</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_manualtoolchange
+es un componente de espacio de usuario de LinuxCNC que
+permite a los usuarios con m&Atilde;&iexcl;quinas que no
+tienen cambiadores autom&Atilde;&iexcl;ticos de herramientas
+realizar cambios manuales de herramienta. Cuando se usa y se
+encuentra un cambio de herramienta M6, el componente de
+movimiento detendr&Atilde;&iexcl; el husillo y
+pausar&Atilde;&iexcl; el programa. El componente
+hal_manualtoolchange recibir&Atilde;&iexcl; una
+se&Atilde;&plusmn;al del componente de movimiento, lo que
+har&Atilde;&iexcl; que muestre una ventana de cambio de
+herramienta que le indica al usuario qu&Atilde;&copy;
+n&Atilde;&ordm;mero de herramienta cargar en
+funci&Atilde;&sup3;n del &Atilde;&ordm;ltimo
+n&Atilde;&ordm;mero T- programado. El di&Atilde;&iexcl;logo
+permanecer&Atilde;&iexcl; activo hasta que se presione el
+bot&Atilde;&sup3;n &quot;continuar&quot;. Cuando se presiona
+el bot&Atilde;&sup3;n &quot;continuar&quot;,
+hal_manualtoolchange le indicar&Atilde;&iexcl; al componente
+de movimiento que el cambio de herramienta
+est&Atilde;&iexcl; completo, permitiendo as&Atilde; que el
+movimiento vuelva a encender el husillo y reanude la
+ejecuci&Atilde;&sup3;n del programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">Adem&Atilde;&iexcl;s,
+el componente hal_manualtoolchange incluye un pin de hal
+para un bot&Atilde;&sup3;n que se puede conectar a un
+bot&Atilde;&sup3;n f&Atilde;sico para completar el cambio de
+herramienta y eliminar el indicador de la ventana
+(hal_manualtoolchange.change_button).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_manualtoolchange
+se puede usar incluso cuando AXIS no se usa como GUI. Este
+componente es m&Atilde;&iexcl;s &Atilde;&ordm;til si tiene
+herramientas preestablecidas y usa la tabla de
+herramientas.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_manualtoolchange.number</b>
+s32 in</p>
+
+<p style="margin-left:22%;">Recibe el &Atilde;&ordm;ltimo
+n&Atilde;&ordm;mero T- programado.</p>
+
+
+<p style="margin-left:11%;"><b>hal_manualtoolchange.change</b>
+bit in</p>
+
+<p style="margin-left:22%;">Recibe la se&Atilde;&plusmn;al
+para hacer cambio de herramienta.</p>
+
+
+<p style="margin-left:11%;"><b>hal_manualtoolchange.changed</b>
+bit out</p>
+
+<p style="margin-left:22%;">Indica que el cambio de
+herramienta est&Atilde;&iexcl; completo.</p>
+
+
+<p style="margin-left:11%;"><b>hal_manualtoolchange.change_button</b>
+bit in</p>
+
+<p style="margin-left:22%;">Pin para permitir que un
+interruptor externo indique que el cambio de herramienta se
+ha completado.</p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El uso normal
+es cargar el componente en su archivo HAL y conectar los
+pines apropiados de los componentes <i>motion</i> y
+<i>io</i>. Las siguientes l&Atilde;neas son t&Atilde;picas
+en un archivo HAL cuando se utiliza el componente userspace
+hal_manualtoolchange. <b><br>
+loadusr -W hal_manualtoolchange</b></p>
+
+<p style="margin-left:22%;">Cargar el componente
+hal_manualtoolchange userspace esperando que el componente
+est&Atilde;&copy; listo antes de continuar.</p>
+
+<p style="margin-left:11%;"><b>net tool-change
+iocontrol.0.tool-change =&gt;
+hal_manualtoolchange.change</b></p>
+
+<p style="margin-left:22%;">Cuando se ejecuta un
+c&Atilde;&sup3;digo M6, el movimiento establece
+<i>iocontrol.0.tool-change</i> en alto, lo que indica un
+cambio de herramienta. Este pin debe estar conectado a
+<i>hal_manualtoolchange.change</i>. Esto hace que el cuadro
+de di&Atilde;&iexcl;logo Cambio de Herramienta se muestre en
+la pantalla y espere a que el usuario haga clic en el
+bot&Atilde;&sup3;n Continuar en el cuadro de
+di&Atilde;&iexcl;logo o presione un bot&Atilde;&sup3;n
+conectado externamente.</p>
+
+<p style="margin-left:11%;"><b>net tool-changed
+iocontrol.0.tool-changed &lt;= <br>
+hal_manualtoolchange.changed</b></p>
+
+<p style="margin-left:22%;">Cuando se presiona el
+bot&Atilde;&sup3;n Continuar del cuadro de
+di&Atilde;&iexcl;logo Cambio de Herramienta,
+establecer&Atilde;&iexcl; el pin
+<i>hal_manualtoolchange.changed</i> a alto, esto debe ser
+conectado al pin <i>iocontrol.0.tool-changed</i> , indicando
+al controlador de movimiento que el cambio de herramienta se
+ha completado y puede continuar con la
+ejecuci&Atilde;&sup3;n del programa de c&Atilde;&sup3;digo
+G.</p>
+
+<p style="margin-left:11%;"><b>net tool-number
+iocontrol.0.tool-prep-number =&gt; <br>
+hal_manualtoolchange.number</b></p>
+
+<p style="margin-left:22%;">Cuando se ejecuta un comando T-
+en un programa de c&Atilde;&sup3;digo G, el
+n&Atilde;&ordm;mero de herramienta se
+mantendr&Atilde;&iexcl; en
+<i>iocontrol.0.tool-prep-number</i>. Este pin debe estar
+conectado a <i>hal_manualtoolchange.number</i>. El valor de
+este pin, el n&Atilde;&ordm;mero de herramienta, se muestra
+en el cuadro de di&Atilde;&iexcl;logo Cambio de herramienta
+para que el usuario sepa qu&Atilde;&copy; herramienta debe
+cargarse.</p>
+
+<p style="margin-left:11%;"><b>net tool-prepare-loopback
+iocontrol.0.tool-prepare =&gt; <br>
+iocontrol.0.tool-prepared</b></p>
+
+<p style="margin-left:22%;">El pin
+<i>iocontrol.0.tool-prepare</i> se activar&Atilde;&iexcl;
+cuando se solicite una preparacion de herramienta Tn. Como
+no hay un cambiador de herramientas automatizado, este pin
+debe conectarse a <i>iocontrol.0.tool-prepared</i> para
+indicar que la herramienta ha sido preparada.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si desea
+utilizar un bot&Atilde;&sup3;n externo para indicar al
+componente hal_manualtoolchange que el cambio de herramienta
+se ha completado, simplemente coloque el bot&Atilde;&sup3;n
+en HAL (a trav&Atilde;&copy;s de un pin de entrada parport o
+una entrada hostmot2 gpio o similar) y
+con&Atilde;&copy;ctelo directamente al pin
+<i>hal_manualtoolchange. change_button</i>. Por ejemplo:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>net
+tool-changed-btn hal_manualtoolchange.change_button &lt;=
+parport.0.pin-15-in</b></p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">motion(1)
+iocontrol(1) halcmd(1)</p>
+<hr>
+</body>
+</html>

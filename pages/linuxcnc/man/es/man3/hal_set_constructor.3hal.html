@@ -1,0 +1,123 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:20 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_set_constructor</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_set_constructor</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_set_constructor
+- Establece la funci&Atilde;&sup3;n constructora para un
+componente</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">typedef int (*
+hal_constructor_t) (const char * prefix, const char * arg);
+int hal_set_constructor(int <i>comp_id</i>,
+hal_constructor_t <i>constructor</i>)</p></td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="89%">
+
+
+<p><i>comp_id</i> Un identificador de componente HAL
+devuelto por una llamada anterior a <b>hal_init</b>.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p><i>prefix</i> El prefijo que se dar&Atilde;&iexcl; a los
+pines, par&Atilde;&iexcl;metros y funciones en la nueva
+instancia</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p>arg Un argumento que puede ser utilizado por el
+componente para personalizar esta instancia.</p></td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Como
+caracter&Atilde;stica experimental en HAL 2.1, los
+componentes pueden ser <i>constructable</i>. Tal componente
+puede crear pines y par&Atilde;&iexcl;metros no solo en el
+momento en que el m&Atilde;&sup3;dulo se carga, sino que
+puede crear pines y par&Atilde;&iexcl;metros adicionales, y
+funciones bajo demanda.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+c&Atilde;&sup3;digo de estado HAL.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd(1)</b></p>
+<hr>
+</body>
+</html>

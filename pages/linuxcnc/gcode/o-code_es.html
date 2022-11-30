@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Códigos O</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Códigos O</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:o-codes"><p>Los códigos O proporcionan control de flujo en programas NC. Cada bloque tiene un
+número asociado, que es el número utilizado después de O. Se debe tener cuidado
+para que coincidan adecuadamente los números O. Los códigos O usan la letra <em>O</em> no el
+número cero como el primer carácter en el número como O100 u o100.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_numeración">1. Numeración</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Los códigos O numerados deben tener un número único para cada subrutina,
+.Ejemplo de numeración</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(el comienzo de o100)
+o100 sub
+(observe que el bloque if-endif usa un número diferente)
+  (el comienzo de o110)
+  o110 if [#2 GT 5]
+    (algún código aquí)
+  (el final de o110)
+  o110 endif
+  (un poco más de código aquí)
+(el final de o100)
+o100 endsub</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:comments">2. Comentarios</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>No deben usarse comentarios en la misma línea que la palabra O, ya que el comportamiento puede
+cambiar en el futuro.</p></div>
+<div class="paragraph"><p>El comportamiento es indefinido si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Se utiliza el mismo número para más de un bloque.
+</p>
+</li>
+<li>
+<p>
+Se usan otras palabras en una línea con una palabra O
+</p>
+</li>
+<li>
+<p>
+Se usan comentarios en una línea con una palabra O
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">El uso de minúsculas o hace que sea más fácil distinguir de un 0
+que podría haber sido mal escrito. Por ejemplo, que no es un 0 es más fácil de
+ver en o100 que en O100.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:subroutines">3. Subrutinas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Las subrutinas comienzan en <em>Onnn sub</em> y terminan en <em>Onnn endsub</em>. Las líneas entre
+<em>Onnn sub</em> y <em>Onnn endsub</em> no se ejecutan hasta que se llama a la subrutina
+con <em>Onnn call</em>. Cada subrutina debe usar un número único.</p></div>
+<div class="paragraph"><p>Ejemplo de subrutina</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o100 sub
+  G53 G0 X0 Y0 Z0 (rápido al home de la máquina)
+o100 endsub
+
+(se llama la subrutina)
+o100 call
+M2</code></pre>
+</div></div>
+<div class="paragraph"><p>Consulte las secciones <a href="g-code_es.html#gcode:g53">G53</a> , <a href="g-code_es.html#gcode:g0">G0</a> y <a href="m-code_es.html#mcode:m2-m30">M2</a> para obtener más información.</p></div>
+<div class="paragraph"><div class="title">O- Return</div><p>Dentro de una subrutina, se puede ejecutar <em>O- return</em>. Esto vuelve al código de llamada
+inmediatamente, como si se encontrara <em>O-endsub</em>.</p></div>
+<div class="listingblock">
+<div class="title">O- Ejemplo de return</div>
+<div class="content">
+<pre><code>o100 sub
+  (prueba si el parámetro #2 es mayor que 5)
+  o110 if [#2 GT 5]
+    (regrese al inicio de la subrutina si la prueba es verdadera)
+    o100 return
+  o110 endif
+    (esto solo se ejecuta si el parámetro #2 no es mayor que 5)
+    (DEBUG, el parámetro 2 es [#1])
+o100 endsub</code></pre>
+</div></div>
+<div class="paragraph"><p>Consulte las secciones <a href="overview_es.html#gcode:binary-operators">operadores binarios</a> y <a href="overview_es.html#gcode:parameters">parámetros</a> para obtener más información.</p></div>
+<div class="paragraph"><div class="title">O- Call</div><p><em>O- Call</em> toma hasta 30 argumentos opcionales, que se pasan a la subrutina
+como <em>#1</em>, <em>#2</em>, &#8230;, #N. Los parámetros de #N+1 a #30 tienen el mismo
+valor como en el contexto de llamada. Al regresar de la subrutina, los valores de
+los parámetros del 1 al 30 (independientemente del número de argumentos)
+serán restaurados a los valores que tenían antes de la llamada. Los parámetros #1 - #30
+son locales a la subrutina.</p></div>
+<div class="paragraph"><p>Como <em>1 2 3</em> se analiza como el número 123, los parámetros deben estar
+entre corchetes. Lo siguiente llama a una subrutina con 3 argumentos:</p></div>
+<div class="listingblock">
+<div class="title">O- Ejemplo de llamada</div>
+<div class="content">
+<pre><code>o100 sub
+  (prueba si el parámetro #2 es mayor que 5)
+  o110 if [#2 GT 5]
+    (regresa al inicio de la subrutina si la prueba es verdadera)
+    o100 return
+  o110 endif
+    (esto solo se ejecuta si el parámetro #2 no es mayor que 5)
+    (DEBUG, el parámetro 1 es [#1])
+    (DEBUG, el parámetro 3 es [#3])
+o100 endsub
+
+o100 call [100] [2] [325]</code></pre>
+</div></div>
+<div class="paragraph"><p>Los cuerpos de subrutina no pueden estar anidados. Solo pueden llamarse después
+de ser definidos. Pueden ser llamados desde otras funciones, y pueden llamarse
+a sí mismos recursivamente si tiene sentido hacerlo. El maximo
+nivel de anidación de subrutinas es 10.</p></div>
+<div class="paragraph"><p>Las subrutinas pueden cambiar el valor de los parámetros por encima de #30 y esos cambios
+serán visible para el código de llamada. Las subrutinas también pueden cambiar el valor de
+parámetros globales con nombre.</p></div>
+<div class="sect2">
+<h3 id="ocode:fanuc-style-programs">3.1. Programas numerados al estilo Fanuc</h3>
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Programas numerados (tanto principales como subprogramas), la llamada <em>M98</em> y
+<em>M99</em> devuelven códigos M, y sus respectivas diferencias semánticas son un
+alternativa a las subrutinas rs274ngc descritas anteriormente, proporcionadas para
+compatibilidad con Fanuc y otros controladores de máquina.</p></div>
+<div class="paragraph"><p>Los programas numerados están habilitados de manera predeterminada y pueden deshabilitarse
+colocando <code>DISABLE_FANUC_STYLE_SUB = 1</code> en la sección <code>[RS274NGC]</code> del archivo <code>.ini</code>.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Las definiciones y llamadas principales y subprogramas numerados difieren de
+rs274ngc tradicional tanto en sintaxis como en ejecución. Para reducir la
+posibilidad de confusión, el intérprete generará un error si
+las definiciones de un estilo se mezclan con las llamadas de otro.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Ejemplo simple de subprograma numerado</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o1 (Ejemplo 1)          ; Programa principal 1, "Ejemplo 1"
+M98 P100                        ; Llama al subprograma 100
+M30                                     ; Fin del programa principal
+
+o100                            ; Comienzo del subprograma 100
+  G53 G0 X0 Y0 Z0     ; Rápido a home máquina
+M99                                     ; Regresar del subprograma 100</code></pre>
+</div></div>
+<div class="paragraph"><div class="title"><code>o1 (Título)</code></div><p>El bloque inicial opcional del programa principal le da al programa principal
+el número <code>1</code>. Algunos controladores tratan un seguiente
+comentario opcional entre paréntesis como título del programa, <code>Ejemplo 1</code> en este ejemplo,
+pero esto no tiene un significado especial en el intérprete rs274ngc.</p></div>
+<div class="paragraph"><div class="title"><code>M98 P- &lt;L\-&gt;</code></div><p>Llama a un subprograma numerado. El bloque <code>M98 P100</code> es análogo a la
+sintaxis tradicional <code>o100 call</code>, pero solo se puede usar para llamar a un
+subprograma numerado definido con <code>o100</code> &#8230;` M99`. Una palabra
+opcional <em>L</em>- especifica un recuento de bucles.</p></div>
+<div class="paragraph"><div class="title"><code>M30</code></div><p>El programa principal debe terminarse con <code>M02</code> o <code>M30</code> (o <code>M99</code>; consulte
+abajo).</p></div>
+<div class="paragraph"><div class="title"><code>O-</code> Inicio de definición de subprograma</div><p>Marca el inicio de una definición de subprograma numerado. El bloque <code>O100</code>
+es similar a <code>o100 sub</code>, excepto que debe colocarse más adelante en el
+archivo que el bloque de llamada <code>M98 P100</code>.</p></div>
+<div class="paragraph"><div class="title"><code>M99</code> Return de la subrutina numerada</div><p>El bloque <code>M99</code> es análogo a la sintaxis tradicional` o100 endsub`,
+pero solo puede terminar un programa numerado (<code>o100</code> en este ejemplo),
+y no puede terminar una subrutina que comience con sintaxis <code>o100 sub</code>.</p></div>
+<div class="paragraph"><p>La llamada de subprograma <code>M98</code> difiere de rs274ngc <code>O call</code> en lo
+siguiente:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El subprograma numerado debe seguir la llamada <code>M98</code> en el archivo de programa.
+El intérprete arrojará un error si el subprograma precede al bloque de llamada.
+</p>
+</li>
+<li>
+<p>
+Los parámetros <code>#1</code>,` #2`, &#8230;, <code>#30</code> son globales y accesibles en
+subprogramas numerados, similares a los parámetros numerados más altos en
+llamadas de estilo tradicional. Modificaciones a estos parámetros dentro de un
+el subprograma son modificaciones globales y persistirán después del retorno de
+subprograma.
+</p>
+</li>
+<li>
+<p>
+Las llamadas <code>M98</code> a subprograma no tienen valor de retorno.
+</p>
+</li>
+<li>
+<p>
+Los bloques de llamadas del subprograma <code>M98</code> pueden contener una palabra L opcional
+especificando un recuento de repetición de bucle. Sin la palabra L, el subprograma
+se ejecutará solo una vez (equivalente a <code>M98 L1</code>). Un bloque <code>M98 L0</code>
+no ejecutará el subprograma.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>En casos raros, el código <code>M99</code> puede usarse para terminar el programa principal,
+donde indica un <em>programa sin fin</em>. Cuando el
+el intérprete alcanza un <code>M99</code> en el programa principal, saltará de nuevo al
+comienzo del archivo y reanudara la ejecución en la primera línea.
+Un ejemplo de un programa sin fin es en un ciclo de calentamiento de la máquina; una
+bloque final de programa con eliminacion <code>/M30</code> puede usarse para detener el ciclo
+en un punto ordenado cuando el operador está listo.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo completo de subprograma numerado</div>
+<div class="content">
+<pre><code>O1                             ; Programa principal 1
+  #1 = 0
+  (PRINT,X MAIN BEGIN:  1=#1)
+  M98 P100 L5                  ; Llame al subprograma 100
+  (PRINT,X MAIN END:  1=#1)
+M30                            ; Fin del programa principal
+
+O100                           ; Subprograma 100
+  #1 = [#1 + 1]
+  M98 P200 L5                  ; Llamada a subprograma 200
+  (PRINT,&gt;&gt; O100:  #1)
+M99                            ; Return desde Subprograma 100
+
+O200                           ; Subprograma 200
+  #1 = [#1 + 0.01]
+  (PRINT,&gt;&gt;&gt;&gt; O200:  #1)
+M99                            ; Return desde Subprograma 200</code></pre>
+</div></div>
+<div class="paragraph"><p>En este ejemplo, el parámetro <code>#1</code> se inicializa a <code>0</code>. El subprograma
+<code>O100</code> se llama cinco veces en un bucle. Anidado dentro de cada llamada a
+<code>O100</code>, el subprograma <code>O200</code> se llama cinco veces en un ciclo; 25 veces en
+total.</p></div>
+<div class="paragraph"><p>Tenga en cuenta que el parámetro <code>#1</code> es global. Al final del programa principal,
+después de las actualizaciones dentro de <code>O100</code> y` O200`, su valor será igual a <code>5.25</code>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:looping">4. Bucles</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>El <em>bucle while</em> tiene dos estructuras: <em>while/endwhile</em> y <em>do/while</em>.
+En cada caso, el ciclo se cierra cuando la condición <em>while</em> se evalúa como
+falso. La diferencia es cuando se realiza la condición de prueba. El bucle <em>do/while</em>
+ejecuta el código en el bucle y luego verifica la condición de prueba.
+El bucle <em>while/endwhile</em> hace la prueba primero.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo While/Endwhile</div>
+<div class="content">
+<pre><code>(dibuja una forma de diente de sierra)
+G0 X1 Y0 (mover a la posición inicial)
+#1 = 0 (asigne al parámetro # 1 el valor de 0)
+F25 (establecer una velocidad de alimentación)
+o101 while [#1 LT 10]
+  G1 X0
+  G1 Y[#1/10] X1
+  #1 = [#1+1] (incrementar el contador de prueba)
+o101 endwhile
+M2 (final del programa)</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Ejemplo Do/While</div>
+<div class="content">
+<pre><code>#1 = 0 (asigne al parámetro # 1 el valor de 0)
+o100 do
+  (debug, parámetro 1 = #1)
+  o110 if [#1 EQ 2]
+    #1 = 3 (asigne el valor de 3 al parámetro #1)
+    (msg, #1 se le ha asignado el valor de 3)
+    o100 continue (saltar al inicio del bucle)
+  o110 endif
+  (algún código aquí)
+  #1 = [#1+1] (incrementar el contador de prueba)
+o100 while [#1 LT 3]
+(msg, bucle hecho!)
+M2</code></pre>
+</div></div>
+<div class="paragraph"><p>Dentro de un ciclo while, <em>O- break</em> sale inmediatamente del ciclo, y <em>O- continue</em> salta
+inmediatamente a la próxima evaluación de la condición <em>while</em>.
+Si aún es cierta, el ciclo comienza nuevamente en la parte superior. Si
+es falsa, sale del bucle.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:conditional">5. Condicionales</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>El condicional <em>if</em> consiste en un grupo de declaraciones con el mismo número <em>o</em>
+que comienzan con <em>if</em> y terminan con <em>endif</em>. Condiciones opcionales <em>elseif</em> y <em>else</em>
+puede estar entre el inicio <em>if</em> y el final <em>endif</em>.</p></div>
+<div class="paragraph"><p>Si el condicional <em>if</em> se evalúa como verdadero, entonces  se ejecuta el grupo de declaraciones
+siguiendo al <em>if</em> hasta la siguiente línea condicional.</p></div>
+<div class="paragraph"><p>Si el condicional <em>if</em> se evalúa como falso, entonces las condiciones <em>elseif</em> son
+evaluadas en orden hasta que una evalúa como verdadera. Si la condición <em>elseif</em> es
+cierta entonces se ejecutan las declaraciones que siguen al <em>elseif</em> hasta el próximo condicional.
+Si ninguna de las condiciones <em>if</em> o <em>elseif</em> se evalúa como verdadera,
+entonces se ejecutan las declaraciones que siguen al <em>else</em>. Cuando una condición es
+evaluada como verdadero, no se evalúan más condiciones en el grupo.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo If / Endif</div>
+<div class="content">
+<pre><code>(si el parámetro #31 es igual a 3, configure S2000)
+o101 if [#31 EQ 3]
+  S2000
+o101 endif</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Ejemplo If ElseIf Else EndIf</div>
+<div class="content">
+<pre><code>(si el parámetro #2 es mayor que 5, configure F100)
+o102 if [#2 GT 5]
+  F100
+o102 elseif [#2 LT 2]
+(de lo contrario, si el parámetro #2 es menor que 2, configure F200)
+  F200
+(de lo contrario, si el parámetro #2 es de 2 al 5, configure F150)
+o102 else
+  F150
+o102 endif</code></pre>
+</div></div>
+<div class="paragraph"><p>Se pueden probar varias condiciones mediante declaraciones <em>elseif</em> hasta que
+la ruta <em>else</em> finalmente se ejecuta si todas las condiciones anteriores son falsas:</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo If Elseif Else Endif</div>
+<div class="content">
+<pre><code>(si el parámetro #2 es mayor que 5, configure F100)
+O102 if [#2 GT 5]
+  F100
+(de lo contrario, si el parámetro #2 es inferior a 2, configure F200)
+O102 elseif [#2 LT 2]
+  F20
+(el parámetro #2 está entre 2 y 5)
+O102 else
+  F200
+O102 endif</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:repeat">6. Repeat</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p><em>repeat</em> ejecutará las declaraciones dentro de
+repeat/endrepeat el número especificado de veces. El ejemplo muestra cómo
+puede fresar una serie diagonal de formas a partir de la presente
+posición.</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo de repeat</div>
+<div class="content">
+<pre><code>(Fresar 5 formas diagonales)
+G91 (modo incremental)
+o103 repeat [5]
+... (inserte el código de fresado aquí)
+G0 X1 Y1 (movimiento diagonal a la siguiente posición)
+o103 endrepeat
+G90 (modo absoluto)</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:indirection">7. Indirección</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>El O-número puede ser dado por un parámetro y/o cálculo.</p></div>
+<div class="paragraph"><p>Ejemplo de Indirección</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o[#101+2] call</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">Calculando valores en O-palabras</div><p>Para obtener más información sobre los valores, consulte las siguientes secciones</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="overview_es.html#gcode:parameters">parámetros</a>
+</p>
+</li>
+<li>
+<p>
+<a href="overview_es.html#gcode:expressions">expresiones</a>
+</p>
+</li>
+<li>
+<p>
+<a href="overview_es.html#gcode:binary-operators">operadores binarios</a>
+</p>
+</li>
+<li>
+<p>
+<a href="overview_es.html#gcode:functions">funciones</a>
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:calling-files">8. Llamando a archivos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Para llamar a un archivo separado con una subrutina, nombre el archivo igual que
+su llamada e incluya un sub y endub en el archivo. El archivo debe estar en el
+directorio señalado por <em>PROGRAM_PREFIX</em> o <em>SUBROUTINE_PATH</em> en el archivo ini.
+El nombre del archivo puede incluir <strong>letras minúsculas</strong>, números, guiones y guiones bajos
+solamente. Un archivo de subrutina con nombre solo puede contener una única definición de subrutina.</p></div>
+<div class="paragraph"><p>Ejemplo de archivo con nombre</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o&lt;myfile&gt; call</code></pre>
+</div></div>
+<div class="paragraph"><p>Ejemplo de archivo numerado</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o123 call</code></pre>
+</div></div>
+<div class="paragraph"><p>En el archivo llamado, debe incluir el sub y el endsub oxxx y el
+archivo debe ser un archivo válido.</p></div>
+<div class="paragraph"><p>Ejemplo de archivo llamado</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(nombre de archivo myfile.ngc)
+o&lt;myfile&gt; sub
+  (código aquí)
+o&lt;myfile&gt; endsub
+M2</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Los nombres de los archivos son solo letras minúsculas, por lo que <em>o &lt;MyFile&gt;</em> se convierte en <em>o &lt;myfile&gt;</em>
+por el intérprete. Más información sobre la ruta de búsqueda y las opciones para
+la ruta de búsqueda se encuentra en la sección de configuración INI.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_valores_de_retorno_de_subrutina">9. Valores de retorno de subrutina </h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las subrutinas pueden devolver opcionalmente un valor mediante una expresión opcional en
+una declaración <em>endsub</em> o <em>return</em>.</p></div>
+<div class="paragraph"><p>Ejemplo de valor de retorno</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o123 return [#2 *5]
+...
+o123 endub [3 * 4]</code></pre>
+</div></div>
+<div class="paragraph"><p>Un valor de retorno de subrutina se almacena en el
+<a href="overview_es.html#gcode:predefined-named-parameters">parámetro con nombre predefinido</a> <em>&lt;_value&gt;</em> y
+el parámetro predefinido <em>&lt;_value_returned&gt;</em> se establece en 1, para indicar que
+se ha devuelto un valor. Ambos parámetros son globales y se borran solo
+antes de la próxima llamada de subrutina.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ocode:errors">10. Errores</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Las siguientes declaraciones provocan un mensaje de error y abortan el
+interprete:</p></div>
+<div class="paragraph"><p> - un <code>return</code> o` endsub` no dentro de una subdefinición
+ - una etiqueta en <em>repeat</em> que se define en otra parte
+ - una etiqueta en <code>while</code> que se define en otro lugar y no se refiere a un` do`
+ - una etiqueta en <code>if</code> definida en otra parte
+ - una etiqueta indefinida en <code>else</code> o` elseif`
+ - una etiqueta en <code>else</code>,` elseif` o <code>endif</code> no apunta a un` if` coincidente
+ - una etiqueta en <code>break</code> o` continue` que no apunta a una coincidencia <code>while</code> o` do`
+ - una etiqueta en <code>endrepeat</code> o` endwhile` sin hacer referencia a un <code>while</code> o` repeat` correspondiente
+    
+Para hacer estos errores advertencias no fatales en stderr, establezca el bit 0x20 en
+la opción mask [[RS274NGC]FEATURE=` del .ini.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:28 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LCD</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">LCD</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">lcd - Transmite
+datos HAL a una pantalla LCD</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt lcd
+fmt_strings=&quot;&quot; Texto sin formato %4.4f\nAnd So
+on|Second Page, Next Inst&quot;&quot;</b></p></td></tr>
+</table>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lcd</b>
+(requiere un hilo de punto flotante). Todas las instancias
+de LCD <br>
+se actualizan con la misma funci&Atilde;&sup3;n.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">&Acirc;&laquo;TP
+<b>lcd.</b><i>NN</i><b>.out</b> (u32) out El flujo de bytes
+de salida se env&Atilde;a a trav&Atilde;&copy;s de este pin.
+Se env&Atilde;a un car&Atilde;&iexcl;cter a cada
+invocaci&Atilde;&sup3;n de hilo sin ninguna negociacion
+prevista. <b><br>
+
+lcd.</b><i>NN</i><b>.page.</b><i>PP.</i><b>arg.</b><i>NN</i>
+(float/s32/u32/bit) in</p>
+
+<p style="margin-left:22%;">Los pines de entrada tienen los
+tipos que coinciden con los especificadores de cadena de
+formato.</p>
+
+
+<p style="margin-left:11%;"><b>lcd.</b><i>NN</i><b>.page_num</b>
+(u32) in</p>
+
+<p style="margin-left:22%;">Selecciona el
+n&Atilde;&ordm;mero de p&Atilde;&iexcl;gina. Se pueden
+definir varios dise&Atilde;&plusmn;os, y este pin cambia
+entre ellos.</p>
+
+
+<p style="margin-left:11%;"><b>lcd.</b><i>NN</i><b>.contrast</b>
+(float) in</p>
+
+<p style="margin-left:22%;">Intenta establecer el contraste
+de la pantalla LCD usando la secuencia de bytes ESC C y
+luego un valor de 0x20 a 0xBF. (a juego con Mesa 7i73). El
+valor debe estar entre 0 y 1.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lcd.</b><i>NN</i><b>.decimal-separator</b>
+(u32) rw</p>
+
+<p style="margin-left:22%;">Establece el separador decimal
+utilizado para los n&Atilde;&ordm;meros de punto flotante.
+El valor predeterminado es 46 (0x2E) que corresponde a
+&quot;.&quot;. Si se requiere una coma, establezca este
+par&Atilde;&iexcl;metro en 44 (0x2C).</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lcd</b> toma
+cadenas de formato muy parecidas a las utilizadas en C y
+muchos otros lenguajes en las funciones printf y scanf y sus
+variantes.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El componente
+fue escrito espec&Atilde;ficamente para admitir el
+controlador colgante Mesa 7i73, sin embargo, puede ser
+&Atilde;&ordm;til para transmitir datos a otros dispositivos
+de caracteres y, como el formato de salida imita el formato
+del terminal ADM3, podr&Atilde;a usarse para transmitir
+datos a un dispositivo en serie. Quiz&Atilde;&iexcl;s
+incluso un ADM3 genuino. Las cadenas contienen una mezcla de
+valores de texto (que se muestran directamente),
+c&Atilde;&sup3;digos de formato &quot;escapados&quot; y
+descriptores num&Atilde;&copy;ricos de formato. Para obtener
+una descripci&Atilde;&sup3;n detallada de los
+c&Atilde;&sup3;digos de formato, consulte:
+http://en.wikipedia.org/wiki/Printf</p>
+
+<p style="margin-left:11%; margin-top: 1em">El componente
+se puede configurar para mostrar un n&Atilde;&ordm;mero
+ilimitado de p&Atilde;&iexcl;ginas con un formato diferente,
+que se pueden seleccionar con un pin HAL. <br>
+&Acirc;&nbsp;<b>&Atilde;&sup3;digos escapados</b></p>
+
+<p style="margin-left:22%;">&Acirc;&nbsp;\n Inserta los
+caracteres clear-to-end, retorno de carro y avance de
+l&Atilde;nea. Esto continuar&Atilde;&iexcl; el salto de
+l&Atilde;nea y se borrar&Atilde;&iexcl; incluso si se ha
+producido un reajuste autom&Atilde;&iexcl;tico (lcd no tiene
+conocimiento del ancho de la pantalla lcd). Para imprimir en
+la columna de la derecha, es necesario permitir que el
+formato se ajuste y omita el c&Atilde;&sup3;digo \n.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&Acirc;&nbsp;\t
+Inserta un tabulador (en realidad 4 espacios en la
+versi&Atilde;&sup3;n actual en lugar de un tabulador
+verdadero).</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&Acirc;&nbsp;\NN
+inserta el car&Atilde;&iexcl;cter definido por el
+c&Atilde;&sup3;digo hexadecimal NN. &Acirc;&nbsp;Como el
+car&Atilde;&iexcl;cter &rsquo;,&rsquo; se usa en la cadena
+de formato para separar las instancias de LCD, debe estar
+representado por <br>
+\2C en la cadena de formato. (el separador decimal se maneja
+de manera diferente) &Acirc;&nbsp; &Acirc;&nbsp;\\ Inserta
+un literal \.</p>
+
+<p style="margin-left:11%;">&Acirc;&nbsp;<b>Formatos
+num&Atilde;&copy;ricos</b></p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>lcd</b>
+difiere ligeramente de las convenciones
+est&Atilde;&iexcl;ndar de printf. Una diferencia
+significativa es que los l&Atilde;mites de ancho se aplican
+estrictamente para evitar que la pantalla LCD haga scroll y
+estropee el dise&Atilde;&plusmn;o. El ancho del campo
+incluye el car&Atilde;&iexcl;cter del signo, de modo que los
+n&Atilde;&ordm;meros negativos a menudo
+tendr&Atilde;&iexcl;n un rango v&Atilde;&iexcl;lido
+m&Atilde;&iexcl;s peque&Atilde;&plusmn;o que los positivos.
+Los n&Atilde;&ordm;meros que no caben en el ancho
+especificado se muestran como una l&Atilde;nea de asteriscos
+(<b>********</b>).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Cada formato
+comienza con un s&Atilde;mbolo &quot;%&quot;. (Para un %
+literal use &quot;%%&quot;). Inmediatamente
+despu&Atilde;&copy;s del % se pueden usar los siguientes
+modificadores:</p>
+
+<p style="margin-left:22%; margin-top: 1em">&quot; &quot;
+(espacio) Rellena el n&Atilde;&ordm;mero al ancho
+especificado con espacios. Este es el valor predeterminado y
+no es estrictamente necesario.</p>
+
+<p style="margin-left:22%; margin-top: 1em">&quot;0&quot;
+Rellena el n&Atilde;&ordm;mero al ancho especificado con el
+n&Atilde;&ordm;mero 0.</p>
+
+<p style="margin-left:22%; margin-top: 1em">&quot;+&quot;
+Fuerza la visualizaci&Atilde;&sup3;n de un s&Atilde;mbolo +
+antes de los n&Atilde;&ordm;meros positivos. Esto (como el
+signo aparecer&Atilde;&iexcl; inmediatamente a la izquierda
+de los d&Atilde;gitos para un n&Atilde;&ordm;mero con
+espacio y en la posici&Atilde;&sup3;n extrema izquierda para
+un n&Atilde;&ordm;mero con 0.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;1234567890&quot;
+Una entrada num&Atilde;&copy;rica (que no sea el 0 inicial
+anterior) define el n&Atilde;&ordm;mero total de caracteres
+a mostrar, incluido el separador decimal y el signo. Si bien
+este n&Atilde;&ordm;mero puede tener tantos d&Atilde;gitos
+como sea necesario, el ancho m&Atilde;&iexcl;ximo del campo
+es de 20 caracteres. La precisi&Atilde;&sup3;n inherente del
+tipo de datos &quot;doble&quot; significa que
+m&Atilde;&iexcl;s de 14 d&Atilde;gitos
+tender&Atilde;&iexcl;n a mostrar errores en los
+d&Atilde;gitos menos significativos. Los tipos de datos
+enteros nunca llenar&Atilde;&iexcl;n m&Atilde;&iexcl;s de 10
+d&Atilde;gitos decimales.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Siguiendo al
+especificador de ancho debe estar el especificador decimal.
+Este solo puede ser un car&Atilde;&iexcl;cter de punto (.)
+ya que la coma (,) se usa como separador de instancia.
+Actualmente, lcd no accede a la informaci&Atilde;&sup3;n de
+la configuraci&Atilde;&sup3;n regional para determinar el
+separador correcto, pero el par&Atilde;&iexcl;metro Hal
+<b>decimal-separator</b> se puede utilizar para elegir
+cualquier separador deseado.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">Despu&Atilde;&copy;s
+del separador decimal debe haber un n&Atilde;&ordm;mero que
+determine cu&Atilde;&iexcl;ntos lugares decimales mostrar.
+Esta entrada se ignora en el caso de formatos enteros.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Todos los
+modificadores anteriores son opcionales, pero para
+especificar una precisi&Atilde;&sup3;n decimal, el punto
+decimal debe preceder a la precisi&Atilde;&sup3;n. Por
+ejemplo %.3f. &Acirc;&nbsp;La precisi&Atilde;&sup3;n decimal
+predeterminada es 4.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Los formatos
+num&Atilde;&copy;ricos admitidos son:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%f %F</b>
+(por ejemplo, %+09.3f) Estos crean un pin HAL de tipo de
+punto flotante. El ejemplo se mostrar&Atilde;a en un campo
+de 9 caracteres, con 3 lugares de decimales,. como separador
+decimal, rellenado a la izquierda con 0s y con un signo que
+se muestra tanto para positivo como para negativo. Por el
+contrario, un %f simple tendr&Atilde;a 6 d&Atilde;gitos de
+ancho decimal, de formato variable, con un signo que solo se
+muestra para n&Atilde;&ordm;meros negativos. Tanto %f como
+%F crean exactamente el mismo formato.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%i %d</b>
+(Por ejemplo %+4d) Crea un pin HAL s32 (s32). El ejemplo
+mostrar&Atilde;a el valor con 4 caracteres fijos, espacio
+rellenado, ancho que incluye el + que da un rango de +999 a
+-999. %i y %d crean resultados id&Atilde;&copy;nticos.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%u</b> (por
+ejemplo %08u) Crea un pin HAL sin signo (u32). El ejemplo
+ser&Atilde;a un ancho fijo de 8 caracteres, rellenado con
+ceros.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%x, %X</b>
+Crea un pin HAL sin signo (u32) y muestra el valor en
+hexadecimal. Tanto %x como %X muestran letras
+may&Atilde;&ordm;sculas para los d&Atilde;gitos ABCDEF. Se
+puede especificar un ancho, aunque el tipo HAL u32 tiene
+solo 8 d&Atilde;gitos hexadecimales de ancho.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%o</b> Crea
+un pin sin signo (u32) y muestra el valor en Octal.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%c</b> Crea
+un pin HAL u32 y muestra el car&Atilde;&iexcl;cter
+correspondiente al valor del pin. Se suprimen los valores
+inferiores a 32 (espacio). Se puede usar un especificador de
+ancho, por ejemplo, %20c se puede usar para crear una
+l&Atilde;nea completa de un car&Atilde;&iexcl;cter.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>%b</b> Este
+especificador no tiene equivalente en printf. Crea un pin
+HAL de tipo bit (booleano). La b debe ir seguida de dos
+caracteres y la pantalla mostrar&Atilde;&iexcl; el primero
+de ellos cuando el pin sea TRUE y el segundo cuando sea
+FALSE. Tenga en cuenta que los caracteres que siguen, no
+preceden a la &quot;b&quot;, a diferencia del caso con otros
+formatos. Los caracteres pueden ser valores hexadecimales
+&quot;escapados&quot;. Por ejemplo, &quot;%b\FF&quot;
+mostrar&Atilde;&iexcl; un bloque negro s&Atilde;&sup3;lido
+si es TRUE, y un espacio si es FALSE y &quot;%b\7F\7E&quot;
+mostrar&Atilde;&iexcl; la flecha derecha para FALSE y la
+flecha izquierda para TRUE. Un valor inesperado de
+&rsquo;E&rsquo; indica un error de formato.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>Pages</b> El
+separador de p&Atilde;&iexcl;gina es &quot;|&quot; (pipe. si
+se necesita el car&Atilde;&iexcl;cter real, entonces se
+puede usar \7C). Una &quot;Page&quot; en este contexto se
+refiere a un formato separado que puede mostrarse en la
+misma pantalla.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>Instances</b>
+El separador de instancia es la coma. Esto crea una
+instancia lcd completamente separada, por ejemplo, para
+controlar una segunda pantalla lcd en un segundo 7i73. El
+uso de comas para separar las instancias est&Atilde;&iexcl;
+integrado en el c&Atilde;&sup3;digo de lectura del modparam
+para que ni siquiera se puedan utilizar las comas
+&quot;\,&quot;. Se puede mostrar una coma usando la
+secuencia \2C.</p>
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Andy Pugh</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

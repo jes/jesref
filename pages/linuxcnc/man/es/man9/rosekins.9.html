@@ -1,0 +1,121 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:30 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>ROSEKINS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">ROSEKINS</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#CINEM&Atilde;TICA">CINEM&Atilde;TICA</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rosekins -
+Cinem&Atilde;&iexcl;tica para un motor Rose</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="23%">
+
+
+<p style="margin-top: 1em"><b>loadrt rosekins</b></p></td>
+<td width="66%">
+</td></tr>
+</table>
+
+<h2>CINEM&Atilde;TICA
+<a name="CINEM&Atilde;TICA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">joint_0 linear,
+transverse (perpendicular al husillo) <br>
+joint_1 linear, longitudinal (paralela a la identidad del
+husillo a z) <br>
+joint_2 rotary, spindle (sujeci&Atilde;&sup3;n del trabajo,
+no sujeci&Atilde;&sup3;n de herramienta, p. ej. <br>
+no un husillo de alta velocidad)</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rosekins.revolutions</b>
+float out</p>
+
+<p style="margin-left:22%;">Recuento de cruces del eje X
+negativo. Los cruces en sentido horario aumentan las
+revoluciones en 1, los cruces en sentido antihorario las
+disminuyen en 1</p>
+
+<p style="margin-left:11%;"><b>rosekins.theta_degrees</b>
+float out</p>
+
+<p style="margin-left:22%;">Valor principal para
+arctan(Y/X)</p>
+
+
+<p style="margin-left:11%;"><b>rosekins.bigtheta_degrees</b>
+float out</p>
+
+<p style="margin-left:22%;">&Atilde;ngulo acumulado (theta
++ revoluciones * 360)</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Theta es el
+valor principal de arctan(Y/X). Los valores del
+&Atilde;&iexcl;ngulo Joint_2 no se limitan a los valores
+principales de arctan(Y / X) sino que se acumulan
+continuamente a medida que se gira el husillo. Se
+proporcionan pines Hal para el valor principal y un recuento
+del n&Atilde;&ordm;mero de revoluciones.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El movimiento
+transversal es exactamente perpendicular al husillo. En un
+motor rose tradicional, el movimiento transversal se crea
+&acute;balanceando&acute; el cabezal sobre un pivote. Una
+longitud de pivote t&Atilde;pica combinada con la cantidad
+limitada de recorrido X en una m&Atilde;&iexcl;quina real
+hacen que la aproximaci&Atilde;&sup3;n perpendicular sea un
+modelo razonable.</p>
+<hr>
+</body>
+</html>

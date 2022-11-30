@@ -1,0 +1,514 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:24 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>AT_PID</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">AT_PID</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#NOMBRES">NOMBRES</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">at_pid -
+controlador proporcional/integral/derivativo con
+autoajuste</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+at_pid [num_chan=</b><i>num</i> <b>|
+names=</b><i>name1</i><b>[,</b><i>name2</i><b>...]]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>at_pid</b>
+es un controlador proporcional/integral/derivativo
+cl&Atilde;&iexcl;sico, que se utiliza para controlar la
+retroalimentaci&Atilde;&sup3;n de posici&Atilde;&sup3;n o
+velocidad para servomotores y otras aplicaciones de lazo
+cerrado.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>at_pid</b>
+admite un m&Atilde;&iexcl;ximo de diecis&Atilde;&copy;is
+controladores. El n&Atilde;&ordm;mero que se carga realmente
+se establece mediante el argumento <b>num_chan</b> cuando se
+carga el m&Atilde;&sup3;dulo. Alternativamente, especifique
+<b>names=</b> y nombres &Atilde;&ordm;nicos separado por
+comas para cada controlador.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+especificadores <b>num_chan=</b> y <b>names=</b> son
+mutuamente excluyentes. Si no se especifica ni
+<b>num_chan=</b> ni <b>names=</b>, el valor predeterminado
+es <i>tres</i><b>.</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Si <b>debug</b>
+se establece en 1 (el valor predeterminado es 0), se
+exportar&Atilde;&iexcl;n algunos par&Atilde;&iexcl;metros
+HAL adicionales, que pueden ser &Atilde;&ordm;tiles para
+sintonizaci&Atilde;&sup3;n, pero que de lo contrario son
+innecesarios.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>at_pid</b>
+tiene un modo de ajuste autom&Atilde;&iexcl;tico
+incorporado. Funciona estableciendo un ciclo l&Atilde;mite
+para caracterizar el proceso. De esto, se puede determinar
+<b>Pgain/Igain/Dgain</b> o <b>Pgain/Igain/FF1</b> usando
+Ziegler-Nichols. Cuando se usa <b>FF1</b>, la escala debe
+establecerse de modo que la <b>salida</b> est&Atilde;&copy;
+en unidades de usuario por segundo.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Durante el
+ajuste autom&Atilde;&iexcl;tico, la entrada <b>command</b>
+no deber&Atilde;a cambiar. El ciclo l&Atilde;mite se
+configura alrededor de la posici&Atilde;&sup3;n ordenada. No
+hay valores de sintonizaci&Atilde;&sup3;n iniciales
+requeridos para comenzar la sintonizaci&Atilde;&sup3;n
+autom&Atilde;&iexcl;tica. Solo deben configurarse
+<b>tune-cycles</b>, <b>tune-effort</b> y <b>tune-mode</b>
+antes de comenzar el ajuste autom&Atilde;&iexcl;tico. Cuando
+la sintonizaci&Atilde;&sup3;n autom&Atilde;&iexcl;tica se
+completa, se establecer&Atilde;&iexcl;n los
+par&Atilde;&iexcl;metros de ajuste. Si se ejecuta desde
+LinuxCNC, es posible que sea necesario disminuir la
+configuraci&Atilde;&sup3;n de FERROR del eje que se
+est&Atilde;&iexcl; sintonizando, ya que debe ser mayor que
+la amplitud del ciclo l&Atilde;mite para evitar un error de
+seguimiento.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Para realizar
+la sintonizaci&Atilde;&sup3;n autom&Atilde;&iexcl;tica, siga
+los siguientes pasos: <br>
+- Mueva el eje a afinar a alg&Atilde;&ordm;n lugar cercano
+al centro de su carrera. <br>
+- Establezca <b>tune-cycles</b> (el valor predeterminado
+deber&Atilde;a estar bien en la mayor&Atilde;a <br>
+de los casos) y <b>tune-mode</b>. <br>
+- Establezca <b>tune-effort</b> a un valor
+peque&Atilde;&plusmn;o. <br>
+- Establezca <b>enable</b> en TRUE. <br>
+- Establezca <b>tune-mode</b> en TRUE. <br>
+- Establezca <b>tune-start</b> en TRUE. <br>
+- Si no hay oscilaci&Atilde;&sup3;n, o la
+oscilaci&Atilde;&sup3;n es demasiado peque&Atilde;&plusmn;a,
+aumente <br>
+lentamente <b>Tune-effort</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La
+sintonizaci&Atilde;&sup3;n autom&Atilde;&iexcl;tica se puede
+cancelar en cualquier momento configurando <b>enable</b> o
+<b>Tune-mode</b> a FALSE.</p>
+
+<h2>NOMBRES
+<a name="NOMBRES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los nombres de
+los pines, par&Atilde;&iexcl;metros y funciones tienen el
+prefijo: <b><br>
+pid.N.</b> para N=0,1,...,num-1 cuando se usa
+<b>num_chan=num <br>
+nameN.</b> para nameN=name1,name2,... cuando se usa
+<b>names=name1,name2,...</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">El formato
+<b>pid.N.</b> se muestra en las siguientes
+descripciones.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid.</b><i>N</i><b>.do-pid-calcs</b>
+(usa coma float)</p>
+
+<p style="margin-left:22%;">C&Atilde;&iexcl;lculos PID para
+el bucle de control <i>N</i>.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid.</b><i>N</i><b>.command</b>
+float in</p>
+
+<p style="margin-left:22%;">El valor deseado (ordenado)
+para el bucle de control.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.feedback</b>
+float in</p>
+
+<p style="margin-left:22%;">El valor real
+(retroalimentaci&Atilde;&sup3;n) de alg&Atilde;&ordm;n
+sensor, como un encoder.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.error</b>
+float</p>
+
+<p style="margin-left:22%;">La diferencia entre comando y
+retroalimentaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.output</b>
+float</p>
+
+<p style="margin-left:22%;">La salida del bucle PID, que va
+a alg&Atilde;&ordm;n actuador, como un motor.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, habilita los
+c&Atilde;&iexcl;lculos PID. Cuando es FALSE, <b>output</b>
+es cero y todos los integradores internos, etc., se
+reinician.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.tune-mode</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, habilita el
+modo de sintonizaci&Atilde;&sup3;n autom&Atilde;&iexcl;tica.
+Cuando es FALSE, son realizados los c&Atilde;&iexcl;lculos
+PID normales.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.tune-start</b>
+bit io</p>
+
+<p style="margin-left:22%;">Cuando se establece en TRUE,
+comienza la sintonizaci&Atilde;&sup3;n
+autom&Atilde;&iexcl;tica. Se borra cuando se completa la
+sintonizaci&Atilde;&sup3;n autom&Atilde;&iexcl;tica.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid.</b><i>N</i><b>.Pgain</b>
+float rw</p>
+
+<p style="margin-left:22%;">Ganancia proporcional. Resulta
+en una contribuci&Atilde;&sup3;n a la salida igual al error
+multiplicado por <b>Pgain</b>.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.Igain</b>
+float rw</p>
+
+<p style="margin-left:22%;">Ganancia integral. Resulta en
+una contribuci&Atilde;&sup3;n a la salida igual a la
+integral del error multiplicado por <b>Igain</b>. Por
+ejemplo, un error de 0.02 que dur&Atilde;&sup3; 10 segundos
+resultar&Atilde;a en un error integrado (<b>errorI</b>) de
+0.2, y si <b>Igain</b> es 20, el t&Atilde;&copy;rmino
+integral agregar&Atilde;a 4.0 a la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.Dgain</b>
+float rw</p>
+
+<p style="margin-left:22%;">Ganancia derivativa. Resulta en
+una contribuci&Atilde;&sup3;n a la salida que es igual a la
+tasa de cambio (derivativo) del error multiplicado por
+<b>Dgain</b>. Por ejemplo un un error que
+cambi&Atilde;&sup3; de 0.02 a 0.03 durante 0.2 segundos
+resultar&Atilde;a en un error derivativo (<b>errorD</b>) de
+0.05, y si <b>Dgain</b> es 5, el termino derivativo
+agregar&Atilde;a 0.25 a la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.bias</b>
+float rw</p>
+
+<p style="margin-left:22%;"><b>bias</b> es una cantidad
+constante que se agrega a la salida. En la mayor&Atilde;a de
+los casos deber&Atilde;a dejarse en cero. Sin embargo, a
+veces puede ser &Atilde;&ordm;til para compensar
+servoamplificadores, o para equilibrar el peso de un objeto
+que se mueve verticalmente. <b>bias</b> se anula cuando el
+bucle PID est&Atilde;&iexcl; deshabilitado, al igual que
+todos los dem&Atilde;&iexcl;s componentes de la salida. Si
+se necesita una salida distinta de cero incluso cuando el
+bucle PID est&Atilde;&iexcl; deshabilitado, debe agregarse
+con un bloque HAL externo sum2.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF0</b>
+float rw</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de orden cero. Produce una
+contribuci&Atilde;&sup3;n a la salida igual a <b>FF0</b>
+multiplicado por el valor ordenado. Para los bucles de
+posici&Atilde;&sup3;n, deber&Atilde;a generalmente se deja
+en cero. Para bucles de velocidad, <b>FF0</b> puede
+compensar fricci&Atilde;&sup3;n o FCEM del motor y puede
+permitir un mejor ajuste si se usa correctamente.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF1</b>
+float rw</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de primer orden. Produce una
+contribuci&Atilde;&sup3;n a la salida que es igual a
+<b>FF1</b> multiplicado por la derivada del valor ordenado.
+Para bucles de posici&Atilde;&sup3;n, la
+contribuci&Atilde;&sup3;n es proporcional a la velocidad y
+se puede usar para compensar la fricci&Atilde;&sup3;n o la
+FCEM. Para los bucles de velocidad, es proporcional a la
+aceleraci&Atilde;&sup3;n y puede compensar la inercia. En
+ambos casos, puede resultar en un mejor ajuste si se usa
+correctamente.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF2</b>
+float rw</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de segundo orden. Produce una
+contribuci&Atilde;&sup3;n a la salida que es igual a
+<b>FF2</b> multiplicado por la segunda derivada del valor
+ordenado. Para bucles de posici&Atilde;&sup3;n, la
+contribuci&Atilde;&sup3;n es proporcional a la
+aceleraci&Atilde;&sup3;n, y puede ser utilizada para
+compensar la inercia. Para los bucles de velocidad,
+generalmente deber&Atilde;a dejarse en cero.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.deadband</b>
+float rw</p>
+
+<p style="margin-left:22%;">Define un rango de error
+&quot;aceptable&quot;. Si el valor absoluto de <b>error</b>
+es menor que <b>deadband</b>, se tratar&Atilde;&iexcl; como
+si el error fuera cero. Al usar dispositivos de
+retroalimentaci&Atilde;&sup3;n, como encoders que
+est&Atilde;&iexcl;n inherentemente cuantificados, la banda
+muerta debe establecerse un poco m&Atilde;&iexcl;s de la
+mitad, para evitar que el bucle de control entre en una
+b&Atilde;&ordm;squeda de ida y vuelta si el comando
+est&Atilde;&iexcl; entre dos valores adyacentes del encoder.
+Cuando el valor absoluto del error es mayor que la banda
+muerta, el valor de la banda muerta se resta del error
+anterior al realizar los c&Atilde;&iexcl;lculos de bucle
+para evitar un paso en la funci&Atilde;&sup3;n de
+transferencia al filo de la banda muerta. (Ver
+<b>BUGS</b>.)</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxoutput</b>
+float rw</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de la salida. No
+se permitir&Atilde;&iexcl; que el valor absoluto de la
+salida exceda <b>maxoutput</b>, a menos que <b>maxoutput</b>
+sea cero. Cuando la salida esta limitada, el integrador de
+errores se mantendr&Atilde;&iexcl; en lugar de integrarse,
+para evitar windup y sobredisparo.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxerror</b>
+float rw</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en la variable
+interna de error utilizada para P, I y D. Se puede utilizar
+para evitar que los valores altos de <b>Pgain</b> generen
+fuertes salidas en condiciones en las que el error es grande
+(por ejemplo, cuando el comando realiza un cambio de paso).
+Normalmente no es necesario, pero puede ser
+&Atilde;&ordm;til al ajustar sistemas no lineales.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxerrorD</b>
+float rw</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en la derivada de
+error. La tasa de cambio de error utilizada por el
+t&Atilde;&copy;rmino <b>Dgain</b> se limitar&Atilde;&iexcl;
+a este valor, a menos que el valor sea cero. Se puede usar
+para limitar el efecto de <b>Dgain</b> y evitar grandes
+picos de salida debido a pasos en el comando y/o
+retroalimentacion. No es normalmente necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxerrorI</b>
+float rw</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de integrador de
+errores. El integrador de errores utilizado por el
+t&Atilde;&copy;rmino<b>Igain</b> estar&Atilde;&iexcl;
+limitado a este valor, a menos que sea cero. Se puede usar
+para prevenir windup y sobredisparo resultante
+durante/despu&Atilde;&copy;s de errores sostenidos.
+Normalmente no es necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxcmdD</b>
+float rw</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de derivada de
+comando. La derivada de comando utilizada por <b>FF1</b>
+estara limitada a este valor, a menos que el valor sea cero.
+Se puede usar para prevenir que <b>FF1</b> produzca picos de
+salida grandes si hay un cambio de paso en el comando.
+Normalmente no es necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxcmdDD</b>
+float rw</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en la segunda
+derivada del comando. La segunda derivada de comando
+utilizada por <b>FF2</b> estar&Atilde;&iexcl; limitada a
+este valor, a menos que el valor sea cero. Puede ser usado
+para evitar que <b>FF2</b> produzca picos de salida grandes
+si hay un cambio de paso en el comando. Normalmente no es
+necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.tune-type</b>
+u32 rw</p>
+
+<p style="margin-left:22%;">Cuando se establece en 0, se
+calculan <b>Pgain / Igain / Dgain</b>. Cuando se establece
+en 1, se calculan <b>Pgain / Igain / FF1</b>.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.tune-cycles</b>
+u32 rw</p>
+
+<p style="margin-left:22%;">Determina el
+n&Atilde;&ordm;mero de ciclos a ejecutar para caracterizar
+el proceso. <b>tune-cycles</b> en realidad establece el
+n&Atilde;&ordm;mero de semiciclos. Mayor numero de de ciclos
+dan una caracterizaci&Atilde;&sup3;n m&Atilde;&iexcl;s
+precisa ya que se usa el promedio de todos los ciclos.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.tune-effort</b>
+float rw</p>
+
+<p style="margin-left:22%;">Determina el esfuerzo limite
+utilizado en la configuraci&Atilde;&sup3;n del ciclo en el
+proceso. <b>tune-effort</b> debe establecerse en un valor
+positivo menor que <b>maxoutput</b>. Comience con un valor
+peque&Atilde;&plusmn;o y aumente hasta un valor que resulte
+en una buena porci&Atilde;&sup3;n de la corriente
+m&Atilde;&iexcl;xima del motor que se est&Atilde;&iexcl;
+utilizando. Cuanto menor sea el valor, menor
+ser&Atilde;&iexcl; la amplitud del ciclo l&Atilde;mite.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.errorI</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Integral del error. Este es el
+valor que se multiplica por <b>Igain</b> para producir el
+t&Atilde;&copy;rmino integral de la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.errorD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Derivada del error. Este es el
+valor que se multiplica por <b>Dgain</b> para producir el
+t&Atilde;&copy;rmino derivativo de la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.commandD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Derivada del comando. Este es
+el valor que se multiplica por <b>FF1</b> para producir el
+t&Atilde;&copy;rmino feed-forward de primer orden de la
+salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.commandDD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Segunda derivada del comando.
+Este es el valor que se multiplica por <b>FF2</b> para
+producir el t&Atilde;&copy;rmino feed-forward de segundo
+orden de la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.ultimate-gain</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Determinado a partir de la
+caracterizaci&Atilde;&sup3;n del proceso.
+<b>ultimate-gain</b> es la raz&Atilde;&sup3;n de
+<i>tune-effort</i> a la amplitud del ciclo l&Atilde;mite
+multiplicado por 4.0 y dividido por Pi.
+<b>pid.</b><i>N</i><b>.ultimate-period</b> float ro (solo si
+debug=1) Determinado a partir de la
+caracterizaci&Atilde;&sup3;n del proceso.
+<b>ultimate-period</b> es el per&Atilde;odo del ciclo
+l&Atilde;mite.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Algunas
+personas argumentan que la banda muerta debe implementarse
+de manera que el error sea tratado como cero si
+est&Atilde;&iexcl; dentro de la banda muerta, y no
+modificarse si est&Atilde;&iexcl; fuera de la banda muerta.
+Esto no se hizo porque causar&Atilde;a un paso en la
+funci&Atilde;&sup3;n de transferencia igual al
+tama&Atilde;&plusmn;o de la banda muerta. Las personas que
+prefieran ese comportamiento estan invitadas a agregar un
+par&Atilde;&iexcl;metro que cambie el comportamiento, o
+escribir su propia versi&Atilde;&sup3;n de <b>at_pid</b>.
+Sin embargo, el comportamiento predeterminado no debe
+cambiarse.</p>
+<hr>
+</body>
+</html>

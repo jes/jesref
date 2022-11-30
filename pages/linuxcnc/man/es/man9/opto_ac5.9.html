@@ -1,0 +1,181 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:30 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>OPTO_AC5</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">OPTO_AC5</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">opto_ac5 -
+Controlador en tiempo real para tarjetas opto22 PCI-AC5</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+opto_ac5 [portconfig0=0x</b><i>N</i><b>]
+[portconfig1=0x</b><i>N</i><b>]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estos pines y
+par&Atilde;&iexcl;metros son creados por el
+m&Atilde;&sup3;dulo en tiempo real <b>opto_ac5</b>. Las
+variables portconfig0 y portconfig1 se utilizan para
+configurar los dos puertos de cada tarjeta. Los primeros 24
+bits de un n&Atilde;&ordm;mero de 32 bits representan los 24
+puntos de E/S de cada puerto. El bit m&Atilde;&iexcl;s bajo
+(el m&Atilde;&iexcl;s a la derecha) ser&Atilde;a el pin 0 de
+HAL, que es el pin 47 del conector de cabecera. Luego, el
+siguiente bit a la izquierda ser&Atilde;a el pin 1 de HAL,
+el pin 45 del conector de cabecera y as&Atilde;
+sucesivamente, hasta que el bit 24 ser&Atilde;a el pin 23 de
+HAL, el pin del conector de cabecera 1) Los bits
+&quot;1&quot; representan puntos de salida. Por lo tanto, el
+canal 0..11 como entradas y 12..23 como salidas
+estar&Atilde;an representados por (en binario)
+111111111111000000000000 que es 0xfff000 en hexadecimal. Ese
+es el n&Atilde;&ordm;mero que usar&Atilde;as Eg. loadrt
+opto_ac5 portconfig0 = 0xfff000</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si no se
+especifica ninguna variable portconfig, la
+configuraci&Atilde;&sup3;n predeterminada es 12 entradas y
+luego 12 salidas.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Se admiten
+hasta 4 tableros. Las tablas est&Atilde;&iexcl;n numeradas a
+partir de 0.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El
+n&Atilde;&ordm;mero de puerto puede ser 0 o 1. El puerto 0
+se cierra al soporte de la tarjeta.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>opto_ac5.[</b><i>BOARDNUMBER</i>].<b>port[</b><i>PORTNUMBER</i>].<b>in-[</b><i>PINNUMBER</i>]
+OUT bit <b><br>
+
+opto_ac5.[</b><i>BOARDNUMBER</i>].<b>port[</b><i>PORTNUMBER</i>].<b>in-[</b><i>PINNUMBER</i>]-not
+OUT bit</p>
+
+<p style="margin-left:22%;">Conecte una
+se&Atilde;&plusmn;al de hal bit a este pin para leer un
+punto de E/S de la tarjeta. El PINNUMBER representa la
+posici&Atilde;&sup3;n en el bastidor de rel&Atilde;&copy;s.
+P.ej. PINNUMBER 0 es la posici&Atilde;&sup3;n 0 en un rack
+de rel&Atilde;&copy;s opto22 y ser&Atilde;a el pin 47 en el
+conector de cabecera de 50 pines. El pin<b>-not</b> se
+invierte para que LOW d&Atilde;&copy; TRUE y HIGH
+d&Atilde;&copy; FALSE.</p>
+
+<p style="margin-left:11%;"><b>opto_ac5.
+[</b><i>BOARDNUMBER</i>].<b>port[</b><i>PORTNUMBER</i>].<b>out-[</b><i>PINNUMBER</i>]
+IN bit</p>
+
+<p style="margin-left:22%;">Conecte una
+se&Atilde;&plusmn;al de hal bit a este pin para escribir en
+un punto de E / S de la tarjeta. El PINNUMBER representa la
+posici&Atilde;&sup3;n en el bastidor de rel&Atilde;&copy;s.
+El PINNUMBER 23 es la posici&Atilde;&sup3;n 23 en un rack de
+rel&Atilde;&copy;s opto22 y ser&Atilde;a el pin 1 en el
+conector del encabezado de 50 pines.</p>
+
+<p style="margin-left:11%;"><b>opto_ac5.
+[</b><i>BOARDNUMBER</i>].<b>led [</b><i>NUMBER</i>] OUT
+bit</p>
+
+<p style="margin-left:22%;">Enciende / apaga uno de los LED
+incorporados. Los LED est&Atilde;&iexcl;n numerados del 0 al
+3.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>opto_ac5.[</b><i>BOARDNUMBER</i>].<b>port[</b><i>PORTNUMBER</i>].<b>out-[</b><i>PINNUMBER</i>]-invert
+W bit</p>
+
+<p style="margin-left:22%;">Cuando sea TRUE, invierta el
+significado del pin<b>-out</b> correspondiente para que TRUE
+d&Atilde;&copy; BAJO y FALSE d&Atilde;&copy; ALTO.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>opto_ac5.0.digital-read</b></p>
+
+<p style="margin-left:22%;">Agregue esto a un hilo para
+leer todos los puntos de entrada.</p>
+
+
+<p style="margin-left:11%;"><b>opto_ac5.0.digital-write</b></p>
+
+<p style="margin-left:22%;">Agregue esto a un hilo para
+escribir todos los puntos de salida y LEDS.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Todas las
+placas se cargan con las mismas configuraciones de puerto
+que la primera placa.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">http://wiki.linuxcnc.org/cgi-bin/wiki.pl?OptoPciAc5</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,1313 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>XHC-WHB04B-6</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">XHC-WHB04B-6</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#UDEV">UDEV</a><br>
+<a href="#STANDALONE USAGE">STANDALONE USAGE</a><br>
+<a href="#HAL USAGE">HAL USAGE</a><br>
+<a href="#HAL CONFIGURATION EXAMPLE">HAL CONFIGURATION EXAMPLE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#NOTES">NOTES</a><br>
+<a href="#AUTHORS">AUTHORS</a><br>
+<a href="#HISTORY">HISTORY</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xhc-whb04b-6 -
+Userspace jog dial HAL component for the wireless XHC
+WHB04B-6 USB device.</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xhc-whb04b-6
+[-h] | [-H] [OPTIONS]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+xhc-whb04b-6 HAL component supports the XHC WHB04B-6, a
+6-axis wireless USB pendant. It provides a number of
+push-buttons, a jogwheel, two rotary buttons for axis and
+speed / step selection and an ordinary LCD display.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The LCD
+display, having a very simple firmware interface, indicates
+the following listed information only. No other information,
+such as custom data, can be printed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Activated axis
+(X, Y, Z, A, B or C). Current axis position of X, Y, Z and
+separately of A, B, C. Whether machine (X, Y, Z, A, B or C)
+or relative (X1, Y1, Z1, A1, B1 or C1) coordinates are
+displayed. Step size or velocity depending on the operating
+mode (MPG or Step or Continuous). Feedrate override Spindle
+Feedrate override Machine state such as reset. Battery level
+Wireless signal strength</p>
+
+<p style="margin-left:11%; margin-top: 1em">The pendant
+display, its rotary selector switch, and the component pin
+names use designators x,y,z,a,b and c. While this
+arrangement presumes a machine configured as X, Y, Z, A, B
+an C, the pins can be assigned independently as required in
+a HAL configuration.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-h,
+--help</b> Prints the synopsis and the most commonly used
+commands.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-H</b> Run
+xhc-whb04b-6 in HAL-mode instead of interactive mode. When
+in HAL mode commands from device will be exposed to
+HAL&rsquo;s shred memory. Interactive mode is useful for
+testing device connectivity and debugging.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-s</b> Lead
++ jogwheel changes the spindle override speed. Each tick
+will increase/decrease the spindle override.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-f</b> MPG +
+jogwheel changes the feed override. Each tick will
+increment/decrement the feed override.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-B</b> Add
+5mm and 10mm to Step feedrate output</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-t</b> Wait
+with timeout for USB device then proceed, exit otherwise.
+Without -t the timeout is implicitly infinite.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-u, -U</b>
+Show received data from device. With -U received and
+transmitted data will be printed. Output is prefixed with
+&quot;usb&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-p</b> Show
+HAL pins and HAL related messages. Output is prefixed with
+&quot;hal&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-e</b> Show
+captured events such as button pressed/released, jog dial,
+axis rotary button, and feed rotary button event. Output is
+prefixed with &quot;event&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-a</b>
+Enable all logging facilities without explicitly specifying
+each.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-c</b>
+Enable checksum output which is necessary for debugging the
+checksum generator function. Do not rely on this feature
+since it will be removed once the generator is
+implemented.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-n</b> Force
+being silent and not printing any output except of errors.
+This will also inhibit messages prefixed with
+&quot;init&quot;.</p>
+
+<h2>UDEV
+<a name="UDEV"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+xhc-whb04b-6 executable needs permission for reading the
+pendant&rsquo;s USB device. There may be the need for
+additional udev rules. If so, this file
+/etc/udev/rules.d/99-xhc-whb04b-6.rules should be created
+with the single line ATTR{idProduct}==&quot;eb93&quot;,
+ATTR{idVendor}==&quot;10ce&quot;, MODE=&quot;0666&quot;,
+OWNER=&quot;root&quot;, GROUP=&quot;plugdev&quot;.</p>
+
+<h2>STANDALONE USAGE
+<a name="STANDALONE USAGE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+xhc-whb04b-6 program can be run from the command line
+without LinuxCNC to test a pendant. This standalone mode is
+used to identify the button codes produced for each button
+press and debug transmitted USB data.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>EXAMPLES
+<br>
+xhc-whb04b-6 -ue</b></p>
+
+<p style="margin-left:17%;">Start in userspace mode
+(simulation) and prints incoming USB data transfer and
+generated key pressed/released events.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xhc-whb04b-6
+-p</b></p>
+
+<p style="margin-left:17%;">Start in userspace mode
+(simulation) and prints HAL pin names and events distributed
+to HAL memory.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xhc-whb04b-6
+-H</b></p>
+
+<p style="margin-left:17%;">Start in HAL mode (Normal mode
+for real machine use).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xhc-whb04b-6
+-HsfB</b></p>
+
+<p style="margin-left:17%;">Start in HAL mode + Spindle
+Override + Feedrate Override + Big step 5/10mm).</p>
+
+<h2>HAL USAGE
+<a name="HAL USAGE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Use the -H
+option to specify HAL mode and other options as required:
+<b>loadusr -W xhc-whb04b-6 -HsfB</b></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Input/Output
+Signals <br>
+Note:</b> For each button an output pin is provided even if
+no functionality is realized with that signal. For example,
+to stop a running program the Stop button pin may be
+directly connected to halui.program.stop. However, to
+start/pause/resume a program, the corresponding button
+toggles besides whb.button.start-pause also the
+whb.halui.program.{run,pause,resume} signals accordingly.
+<b>Note:</b> The Spindle+/Spindle- buttons do manipulate the
+spindle override. The spindle speed is set with the
+respective combos Fn + Spindle- and FN + Spindle+.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The following
+tables list all in-/output pins and state which signals they
+are meant to be connected to.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Axis
+and Stepgen</big></b></p>
+
+<p style="margin-left:17%;">Signals utilized for moving
+axis.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>&lt;N&gt;</b>
+... denotes the axis number, which is of {x, y, z, a, b,
+c}</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.home-all</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.home-all</b>, driven by M-Home Pin for requesting
+all axis to home. See also <b>whb.button.m-home</b>.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.axis.&lt;N&gt;.select</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.axis.&lt;N&gt;.select</b> Pin to select axis.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.axis.&lt;N&gt;.jog-counts</b>
+(s32,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>axis.&lt;N&gt;.jog-counts</b> The count pin of the
+jogwheel.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.axis.&lt;N&gt;.jog-enable</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>axis.&lt;N&gt;.jog-enable</b> If true (and in manual
+mode), any change to &quot;jog-counts&quot; will result in
+motion. If false, &quot;jog-counts&quot; is ignored.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.axis.&lt;N&gt;.jog-scale</b>
+(float,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>axis.&lt;N&gt;.jog-scale</b> The distance to move for
+each count on &quot;jog-counts&quot;, in machine units.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.axis.&lt;N&gt;.jog-vel-mode</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>axis.&lt;N&gt;.jog-jog-vel-mode</b> If false the jogwheel
+operates in position mode. The axis will move exactly
+jog-scale units for each count, regardless of how long that
+might take. If true, the jogwheel operates in velocity mode
+- motion stops when the wheel stops, even if that means the
+commanded motion is not completed.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.max-velocity.value</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.max-velocity.value</b> The maximum allowable
+velocity, in units per second (&lt;N&gt; is two digit
+<i>0</i>-padded).</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.feed-override.scale</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.feed-override.scale</b> The scaling for feed
+override value.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.axis.&lt;N&gt;.pos-feedback</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.axis.&lt;N&gt;.pos-feedback</b> Feedback axis
+position in machine coordinates to be displayed.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.axis.&lt;N&gt;.pos-relative</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.axis.&lt;N&gt;.pos-relative</b> Commanded axis
+position in relative coordinates to be displayed.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Machine</big></b></p>
+
+<p style="margin-left:17%;">Signals utilized for toggling
+machine status.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.machine.on</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.machine.on</b> Pin for requesting machine on.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.machine.is-on</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.machine.is-on</b> Pin that indicates machine is
+on.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.machine.off</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.machine.off</b> Pin for requesting machine off.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Spindle</big></b></p>
+
+<p style="margin-left:17%;">Signals utilized for operating
+a spindle.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.start</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.start</b> Pin to start the spindle.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.is-on</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.on</b> Pin to indicate spindle is on
+(either direction).</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.stop</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.stop</b> Pin to stop the spindle.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.forward</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.forward</b> Pin to make the spindle go
+forward.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.reverse</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.reverse</b> Pin to make the spindle go
+reverse.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.decrease</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.decrease</b> Pin to decrease the spindle
+speed.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle.increase</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.increase</b> Pin to increase the spindle
+speed.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle-override.increase</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.override.increase</b> Pin for increasing
+the spindle override by the amount of scale.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle-override.decrease</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.override.decrease</b> Pin for decreasing
+the spindle override by the amount of scale.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle-override.value</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.override.value</b> The current spindle
+override value.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.spindle-override.scale</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.spindle.0.override.scale</b> The current spindle
+scaling override value.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Feed</big></b></p>
+
+<p style="margin-left:17%;">Signals utilized for operating
+spindle and feed override. The feed rotary button can serve
+in Continuous move x% from max velocity Step move x mm Mpg
+override feed/spindle the special position Lead.
+<b>Continuous:</b> In this mode jogging is performed at the
+selected feed rate. As long the jogwheel turns, the selected
+axis moves. <b>Step:</b> In this mode the machine moves
+steps * wheel_counts at the currently selected step size and
+the current set feed rate in machine units. If the commanded
+position is not reached the machine keeps moving even the
+jogwheel is not turning. <b>Lead:</b> Manipulates the
+spindle override.+ <b>Mpg:</b> Manipulates the feedrate
+override.+</p>
+
+<p style="margin-left:17%; margin-top: 1em"><b>Note:</b> As
+a consequence of 3 modes from manufacturer, switching the
+feed rotary button back from Lead revert to Mpg mode, Mpg
+mode is default mode at startup. Depending on the mode
+before turning the rotary button, the feed override results
+in different values. In MPG/CON the feed rate will change to
+100%, 60%, ... and so forth. In Step mode the feed rate is
+mm.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.feed-override.value</b>
+(float,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.feed-override.value</b> The current feed override
+value.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.feed-override.decrease</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.feed-override.decrease</b> Pin for decreasing the
+feed override by amount of scale.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.feed-override.increase</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.feed-override.increase</b> Pin for increasing the
+feed override by amount of scale.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.feed-override.scale</b>
+(float,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.feed-override.scale</b> Pin for setting the scale
+on changing the feed override.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.max-velocity.value</b>
+(float,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.max-velocity.value</b></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Program</big></b></p>
+
+<p style="margin-left:17%;">Signals for operating program
+and MDI mode.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.run</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.program.run</b> in for running a program.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.is-running</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.program.is-running</b> in indicating a program is
+running.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.pause</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.program.pause</b> Pin for pausing a program.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.is-paused</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.program.is-paused</b> Pin indicating a program is
+pausing.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.resume</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.program.resume</b> Pin for resuming a program.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.stop</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to <b>program.stop</b>
+Pin for stoping a program.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.program.is-idle</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.program.is-idle</b> Pin indicating no program is
+running.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.auto</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.auto</b> Pin for requesting auto mode.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.is-auto</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.is-auto</b> Pin for indicating auto mode is
+on.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.joint</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.joint</b> Pin for requesting joint by joint
+mode.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.is-joint</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.is-joint</b> Pin indicating joint by joint
+mode is on.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.manual</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.manual</b> Pin for requesting manual mode.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.is-manual</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.is-manual</b> Pin indicating manual mode is
+on.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.mdi</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.mdi</b> Pin for requesting MDI mode.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.is-mdi</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.is-mdi</b> Pin indicating MDI mode is on.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.teleop</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.teleop</b> + Pin for requesting axis by axis
+mode.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.halui.mode.is-teleop</b>
+(bit,in)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mode.is-teleop</b> Pin indicating axis by axis mode
+is on.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Buttons</big></b></p>
+
+<p style="margin-left:17%;">For flexibility reasons each
+button provides an output pin even if no functionality is
+realized directly with that signal. The Fn button can be
+combined with each other push-button. This includes also
+RESET, Stop, Start/Pause, Macro-10, and Step|Continuous. By
+default the more frequent used orange buttons are executed,
+whereas blue ones (whb.button.macro-&lt;M&gt;) by combining
+them with Fn (press Fn first then button).</p>
+
+<p style="margin-left:17%; margin-top: 1em">Button macro
+needs to be added to your ini and needs to be edited for
+your own use :</p>
+
+<p style="margin-left:23%; margin-top: 1em">[HALUI] <br>
+MDI_COMMAND=(debug,macro0) # this one is for numbering but
+not used by pendant (need 1 to 16) <br>
+MDI_COMMAND=(debug,macro1) <br>
+MDI_COMMAND=(debug,macro2) <br>
+MDI_COMMAND=(debug,macro3) <br>
+MDI_COMMAND=(debug,macro4) <br>
+MDI_COMMAND=(debug,macro5) <br>
+MDI_COMMAND=(debug,macro6) <br>
+MDI_COMMAND=(debug,macro7) <br>
+MDI_COMMAND=(debug,macro8) <br>
+MDI_COMMAND=(debug,macro9) <br>
+MDI_COMMAND=(debug,macro10) <br>
+MDI_COMMAND=(debug,macro11) <br>
+MDI_COMMAND=(debug,macro12) <br>
+MDI_COMMAND=(debug,macro13) <br>
+MDI_COMMAND=(debug,macro14) <br>
+MDI_COMMAND=(debug,macro15) <br>
+MDI_COMMAND=(debug,macro16)</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>&lt;M&gt;</b>
+... denotes an arbitrary macro number which is of {1, 2,
+..., 16}</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.reset</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>whb.halui.estop.{activate, reset}</b> True one Reset
+button down, false otherwise. For toggling E-stop use
+whb.halui.estop .active and .reset.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.stop</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>whb.halui.program.stop</b> True on Stop button down,
+false otherwise. For stopping a program use
+whb.halui.program.stop.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.start-pause</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see <b>whb.halui.program.{run,
+pause, resume}</b> True on Start-Pause button down, false
+otherwise.For toggling start-pause use whb.halui.program
+.run, .pause, and .resume.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.feed-plus</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True on Feed+ button down,
+false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.feed-minus</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True on Feed- button down,
+false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.spindle-plus</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>halui.spindle.0.override.increase</b> True on Spindle+
+button down, false otherwise. This button is meant to
+manipulate the spindle override. For increasing the spindle
+override use <b>halui.spindle.0.override.increase</b></p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.spindle-minus</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>halui.spindle.0.override.decrease</b> True on Spindle-
+button down, false otherwise. This button is meant to
+manipulate the spindle override.For decreasing the spindle
+override use <b>halui.spindle.0.override.decrease</b></p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.m-home</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.home-all</b> True on M-Home button down, false
+otherwise. Requests MDI mode before button pin is set. See
+also <b>whb.halui.mode.mdi</b>.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.safe-z</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Safe-Z button
+down, false otherwise. Requests MDI mode before button pin
+is set. See also <b>whb.halui.mode.mdi</b>.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.w-home</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on W-Home button
+down, false otherwise. Requests MDI mode before button pin
+is set. See also <b>whb.halui.mode.mdi</b>.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.s-on-off</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>whb.halui.spindle.{start, stop}</b> True on S-ON/OFF
+button down, false otherwise.For toggling spindle on-off use
+halui.spindle.0.start. For toggling spindle on-off use
+halui.spindle.0.stop.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.fn</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True on Fn button down, false
+otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.probe-z</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Probe-Z button
+down, false otherwise.Requests MDI mode before button pin is
+set. See also <b>whb.halui.mode.mdi</b>.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-1</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-1 button
+(Fn + Feed+) down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-2</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-2 button
+(Fn + Feed-) down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-3</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>whb.halui.spindle.increase</b> True on Macro-3 button (Fn
++ Spindle+) down, false otherwise. This button is meant to
+manipulate the spindle speed. For decreasing the spindle
+speed use whb.halui.spindle.increase.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-4</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">see
+<b>whb.halui.spindle.decrease</b> True on Macro-4 button
+down (Fn + Spindle-), false otherwise This button is meant
+to manipulate the spindle speed. For decreasing the spindle
+speed use <b>whb.halui.spindle.decrease</b></p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-5</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-5 button
+down (Fn + M-HOME), false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-6</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-6 button
+down (Fn + Safe-Z), false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-7</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-7 button
+down (Fn + W-HOME), false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-8</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">reserved for Spindle Direction
+True on Macro-8 button down (Fn + S-ON/OFF), false
+otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-9</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-9 button
+down (Fn + Probe-Z), false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-10</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">reserved for toggle DRO
+Abs/rel. True on Macro-10 button down, false otherwise.
+Switches the display coordinates to relative coordinates.On
+display the axis are denoted then as X1, Y1, Z1, A1, B1 and
+C1. See also
+<b>whb.halui.axis.&lt;N&gt;.pos-relative</b>.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-11</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-11 button
+down (Fn + RESET), false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-12</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-12 button
+(Fn + Stop) down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-13</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; rue on Macro-13 button
+(Fn</p>
+
+<p style="margin-left:23%; margin-top: 1em">Start/Pause)
+down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-14</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-14 button
+(Fn + Macro-10) down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-15</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-15 button
+down (Fn + MPG), false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.macro-16</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">connect to
+<b>halui.mdi-command-</b>&lt;M&gt; True on Macro-16 button
+(Fn + Step) down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.mode-continuous</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True on Continuous mode button
+down, false otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.button.mode-step</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True on Step mode button down,
+false otherwise.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b><big>Pendant</big></b></p>
+
+<p style="margin-left:17%;"><b>whb.pendant.is-sleeping</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True as long pendant is in
+sleep mode (usually a few seconds after turned off), false
+otherwise.</p>
+
+
+<p style="margin-left:17%; margin-top: 1em"><b>whb.pendant.is-connected</b>
+(bit,out)</p>
+
+<p style="margin-left:23%;">True as long pendant is not in
+sleep mode (turned on), false otherwise.</p>
+
+<h2>HAL CONFIGURATION EXAMPLE
+<a name="HAL CONFIGURATION EXAMPLE"></a>
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em"># <br>
+### Hal File xhc_whb04b_6.hal Example <br>
+# <br>
+#
+######################################################################
+<br>
+# load pendant components <br>
+#
+######################################################################</p>
+
+<p style="margin-left:17%; margin-top: 1em">loadusr -W
+xhc-whb04b-6 -HsfB</p>
+
+<p style="margin-left:17%; margin-top: 1em">#
+######################################################################
+<br>
+# pendant signal configuration <br>
+#
+######################################################################</p>
+
+<p style="margin-left:17%; margin-top: 1em"># On/Off
+signals <br>
+net machine.is-on halui.machine.is-on
+whb.halui.machine.is-on <br>
+net pdnt.machine.on whb.halui.machine.on halui.machine.on
+<br>
+net pdnt.machine.off whb.halui.machine.off
+halui.machine.off</p>
+
+<p style="margin-left:17%; margin-top: 1em"># program
+related signals <br>
+net pdnt.program.is-idle whb.halui.program.is-idle
+halui.program.is-idle <br>
+net pdnt.program.is-paused whb.halui.program.is-paused
+halui.program.is-paused <br>
+net pdnt.program-is-running whb.halui.program.is-running
+halui.program.is-running <br>
+net pdnt.program.resume whb.halui.program.resume
+halui.program.resume <br>
+net pdnt.program.pause whb.halui.program.pause
+halui.program.pause <br>
+net pdnt.program.run whb.halui.program.run halui.program.run
+<br>
+net pdnt.program.stop whb.halui.program.stop
+halui.program.stop</p>
+
+<p style="margin-left:17%; margin-top: 1em"># machine mode
+related signals <br>
+net pdnt.mode.auto whb.halui.mode.auto halui.mode.auto <br>
+net pdnt.mode.manual whb.halui.mode.manual halui.mode.manual
+<br>
+net pdnt.mode.mdi whb.halui.mode.mdi halui.mode.mdi <br>
+net pdnt.mode.joint whb.halui.mode.joint halui.mode.joint
+<br>
+net pdnt.mode.teleop whb.halui.mode.teleop halui.mode.teleop
+<br>
+net pdnt.mode.is-auto halui.mode.is-auto
+whb.halui.mode.is-auto <br>
+net pdnt.mode.is-manual halui.mode.is-manual
+whb.halui.mode.is-manual <br>
+net pdnt.mode.is-mdi halui.mode.is-mdi whb.halui.mode.is-mdi
+<br>
+net pdnt.mode.is-joint halui.mode.is-joint
+whb.halui.mode.is-joint <br>
+net pdnt.mode.is-teleop halui.mode.is-teleop
+whb.halui.mode.is-teleop</p>
+
+<p style="margin-left:17%; margin-top: 1em">#
+&quot;selected axis&quot; signals <br>
+net pdnt.axis.X.select whb.halui.axis.x.select
+halui.axis.x.select <br>
+net pdnt.axis.y.select whb.halui.axis.y.select
+halui.axis.y.select <br>
+net pdnt.axis.Z.select whb.halui.axis.z.select
+halui.axis.z.select</p>
+
+<p style="margin-left:17%; margin-top: 1em">net
+pdnt.axis.x.jog-scale whb.axis.x.jog-scale axis.x.jog-scale
+<br>
+net pdnt.axis.y.jog-scale whb.axis.y.jog-scale
+axis.y.jog-scale <br>
+net pdnt.axis.z.jog-scale whb.axis.z.jog-scale
+axis.z.jog-scale</p>
+
+<p style="margin-left:17%; margin-top: 1em">net
+pdnt.axis.x.jog-counts whb.axis.x.jog-counts
+axis.x.jog-counts <br>
+net pdnt.axis.y.jog-counts whb.axis.y.jog-counts
+axis.y.jog-counts <br>
+net pdnt.axis.z.jog-counts whb.axis.z.jog-counts
+axis.z.jog-counts</p>
+
+<p style="margin-left:17%; margin-top: 1em">net
+pdnt.axis.x.jog-enable whb.axis.x.jog-enable
+axis.x.jog-enable <br>
+net pdnt.axis.y.jog-enable whb.axis.y.jog-enable
+axis.y.jog-enable <br>
+net pdnt.axis.z.jog-enable whb.axis.z.jog-enable
+axis.z.jog-enable</p>
+
+<p style="margin-left:17%; margin-top: 1em">net
+pdnt.axis.x.jog-vel-mode whb.axis.x.jog-vel-mode
+axis.x.jog-vel-mode <br>
+net pdnt.axis.y.jog-vel-mode whb.axis.y.jog-vel-mode
+axis.y.jog-vel-mode <br>
+net pdnt.axis.z.jog-vel-mode whb.axis.z.jog-vel-mode
+axis.z.jog-vel-mode</p>
+
+<p style="margin-left:17%; margin-top: 1em"># macro buttons
+to MDI commands <br>
+net pdnt.macro-1 whb.button.macro-1 halui.mdi-command-01 #
+use MDI command from main.ini <br>
+net pdnt.macro-2 whb.button.macro-2 halui.mdi-command-02 #
+use MDI command from main.ini or used for Hardcoded lube
+on/off <br>
+net pdnt.reserved.for.spindle+ whb.button.macro-3 # Harcoded
+for spindle+ whb.halui.spindle.increase <br>
+net pdnt.reserved.for.spindle- whb.button.macro-4 # Harcoded
+for spindle- whb.halui.spindle.decrease <br>
+net pdnt.macro-5 whb.button.macro-5 halui.mdi-command-05 #
+use MDI command from main.ini <br>
+net pdnt.macro-6 whb.button.macro-6 halui.mdi-command-06 #
+use MDI command from main.ini <br>
+net pdnt.macro-7 whb.button.macro-7 halui.mdi-command-07 #
+use MDI command from main.ini <br>
+net pdnt.reserved.for.spindle.dir whb.button.macro-8 #
+Harcoded for spindle direction inside pendant <br>
+net pdnt.macro-9 whb.button.macro-9 halui.mdi-command-09 #
+use MDI command from main.ini <br>
+net pdnt.reserved.for.ABS-REL whb.button.macro-10 #
+Hardcoded for swap Dro Relative/Absolue <br>
+net pdnt.macro-14 whb.button.macro-14 halui.mdi-command-14 #
+use MDI command from main.ini <br>
+net pdnt.reserved.for.flood whb.button.macro-15 # Harcoded
+for halui.flood on/off <br>
+net pdnt.reserved.for.mist whb.button.macro-16 # Harcoded
+for halui.mist on/off</p>
+
+<p style="margin-left:17%; margin-top: 1em">net
+pdnt.macro.11 whb.button.macro-11 halui.mdi-command-11 # use
+MDI command from main.ini <br>
+net pdnt.macro.12 whb.button.macro-12 halui.mdi-command-12 #
+use MDI command from main.ini <br>
+net pdnt.macro.13 whb.button.macro-13 halui.mdi-command-13 #
+use MDI command from main.ini</p>
+
+<p style="margin-left:17%; margin-top: 1em"># flood and
+mist toggle signals <br>
+net pdnt.flood.is-on whb.halui.flood.is-on halui.flood.is-on
+#return signal is on or off <br>
+net pdnt.flood.off whb.halui.flood.off halui.flood.off
+#reserved whb.button.macro-15 <br>
+net pdnt.flood.on whb.halui.flood.on halui.flood.on
+#reserved whb.button.macro-15</p>
+
+<p style="margin-left:17%; margin-top: 1em">net
+pdnt.mist.is-on whb.halui.mist.is-on halui.mist.is-on
+#return signal is on or off <br>
+net pdnt.mist.off whb.halui.mist.off halui.mist.off
+#reserved whb.button.macro-16 <br>
+net pdnt.mist.on whb.halui.mist.on halui.mist.on #reserved
+whb.button.macro-16</p>
+
+<p style="margin-left:17%; margin-top: 1em">#net
+pdnt.lube.is-on whb.halui.lube.is-on halui.lube.is-on
+#return signal is on or off <br>
+#net pdnt.lube.off whb.halui.lube.off halui.lube.off
+#reserved whb.button.macro-2 <br>
+#net pdnt.lube.on whb.halui.lube.on halui.lube.on #reserved
+whb.button.macro-2</p>
+
+<p style="margin-left:17%; margin-top: 1em"># default
+function button signals <br>
+net pdnt.button.m-home whb.button.m-home halui.home-all #
+Homeing use built-in halui home all <br>
+net pdnt.button.safe-z whb.button.safe-z
+halui.mdi-command-03 # Safe-z use MDI command from main.ini
+<br>
+net pdnt.button.w-home whb.button.w-home
+halui.mdi-command-04 # Unpark use MDI command from main.ini
+<br>
+net pdnt.button.probe-z whb.button.probe-z
+halui.mdi-command-08 # Probe-Z use MDI command from
+main.ini</p>
+
+<p style="margin-left:17%; margin-top: 1em"># unused, just
+exposes pendant internal status or as basic button <br>
+#net pdnt.mode-lead whb.halui.feed.selected-lead <br>
+#net pdnt.mode-mpg-feed whb.halui.feed.selected-mpg-feed
+<br>
+#net pdnt.mode-continuous whb.halui.feed.selected-continuous
+<br>
+#net pdnt.mode-step whb.halui.feed.selected-step</p>
+
+<p style="margin-left:17%; margin-top: 1em">#net
+pdnt.button.mode-mpg whb.button.mode-continuous <br>
+#net pdnt.button.mode-step whb.button.mode-step <br>
+#net pdnt.button.fn whb.button.fn <br>
+#net pdnt.button.reset whb.button.reset <br>
+#net pdnt.button.stop whb.button.stop <br>
+#net pdnt.button.start-pause whb.button.start-pause <br>
+#net pdnt.button.s-on-off whb.button.s-on-off <br>
+#net pdnt.button.spindle-plus whb.button.spindle-plus <br>
+#net pdnt.button.spindle-minus whb.button.spindle-minus <br>
+#net pdnt.button.feed-plus whb.button.feed-plus <br>
+#net pdnt.button.feed-minus whb.button.feed-minus</p>
+
+<p style="margin-left:17%; margin-top: 1em"># spindle
+related signals <br>
+net pdnt.spindle.is-on whb.halui.spindle.is-on spindle.0.on
+<br>
+net pdnt.spindle.start whb.halui.spindle.start
+halui.spindle.0.start <br>
+net pdnt.spindle.stop whb.halui.spindle.stop
+halui.spindle.0.stop <br>
+net pdnt.spindle.forward whb.halui.spindle.forward
+halui.spindle.0.forward <br>
+net pdnt.spindle.reverse whb.halui.spindle.reverse
+halui.spindle.0.reverse <br>
+net pdnt.spindle.increase whb.halui.spindle.increase
+halui.spindle.0.increase # reserved whb.button.macro-3 <br>
+net pdnt.spindle.decrease whb.halui.spindle.decrease
+halui.spindle.0.decrease # reserved whb.button.macro-4 <br>
+net pdnt.spindle-speed-abs whb.halui.spindle-speed-cmd
+spindle.0.speed-out-abs # speed cmd from motion in rpm
+absolue</p>
+
+<p style="margin-left:17%; margin-top: 1em"># spindle speed
+override signals <br>
+net pdnt.spindle-override.scale
+whb.halui.spindle-override.scale
+halui.spindle.0.override.scale # needed for both spindle+/-
+and spindleoverride+/- button <br>
+net pdnt.spindle.override.value
+halui.spindle.0.override.value
+whb.halui.spindle-override.value # GUI feed rate related
+signals <br>
+net pdnt.spindle.override.increase
+whb.halui.spindle-override.increase
+halui.spindle.0.override.increase <br>
+net pdnt.spindle.override.decrease
+whb.halui.spindle-override.decrease
+halui.spindle.0.override.decrease</p>
+
+<p style="margin-left:17%; margin-top: 1em"># GUI feed rate
+related signals can be used when program is running moving
+GUI slider <br>
+net pdnt.feed-override.scale whb.halui.feed-override.scale
+halui.feed-override.scale # needed for both FeedOverride+/-
+and rotary knob button <br>
+net pdnt.max-velocity.value whb.halui.max-velocity.value
+halui.max-velocity.value # needed for Mpg mode : button feed
+position% * max-velocity = Mpg feedrate</p>
+
+<p style="margin-left:17%; margin-top: 1em"># take feed
+override min/max values from/to the GUI <br>
+net pdnt.feed-override.value halui.feed-override.value
+whb.halui.feed-override.value # GUI feed rate related
+signals <br>
+net pdnt.feed-override.increase
+whb.halui.feed-override.increase
+halui.feed-override.increase <br>
+net pdnt.feed-override.decrease
+whb.halui.feed-override.decrease
+halui.feed-override.decrease</p>
+
+<p style="margin-left:17%; margin-top: 1em"># axis position
+related signals feedback <br>
+net pdnt.axis.x.pos-feedback halui.axis.x.pos-feedback
+whb.halui.axis.x.pos-feedback <br>
+net pdnt.axis.y.pos-feedback halui.axis.y.pos-feedback
+whb.halui.axis.y.pos-feedback <br>
+net pdnt.axis.z.pos-feedback halui.axis.z.pos-feedback
+whb.halui.axis.z.pos-feedback</p>
+
+<p style="margin-left:17%; margin-top: 1em"># axis position
+related signals relative <br>
+net pdnt.axis.x.pos-relative halui.axis.x.pos-relative
+whb.halui.axis.x.pos-relative <br>
+net pdnt.axis.y.pos-relative halui.axis.y.pos-relative
+whb.halui.axis.y.pos-relative <br>
+net pdnt.axis.z.pos-relative halui.axis.z.pos-relative
+whb.halui.axis.z.pos-relative</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xhc-whb04b-6
+developer documentation on GitHub</p>
+
+<h2>NOTES
+<a name="NOTES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The CRC code
+function is not disclosed by the manufacturer. Thus the CRC
+value transmitted with each package is not checked yet. Feel
+free to help us enhance the component.</p>
+
+<h2>AUTHORS
+<a name="AUTHORS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+was started by Raoul Rubien based on predecessor device
+component xhc-hb04.cc.
+https://github.com/machinekit/machinekit/graphs/contributors
+gives you a more complete list of contributors.</p>
+
+<h2>HISTORY
+<a name="HISTORY"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The component
+was developed accidentally as leisure project. The
+development started with the xhc-whb04 (4-axis wireless
+pendant) implementation as reference. 73 &amp; many thanks
+to the developers who delivered provided an excellent
+preparatory work!</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2018 Raoul Rubien (github.com/rubienr) Updated for
+Linuxcnc 2020 by alkabal_free.fr. This is free software; see
+the source for copying conditions. There is NO warranty; not
+even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.</p>
+<hr>
+</body>
+</html>

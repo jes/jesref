@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Adding Configuration Selection Items</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Adding Configuration Selection Items</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Example Configurations can be added to the Configuration Selector
+by two methods:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Auxiliary applications&#8201;&#8212;&#8201;Applications installed independently
+  with a deb package can place configuration subdirectories in
+  a specified system directory.  The directory name is specified
+  using the shell linuxcnc_var script:
+</p>
+</li>
+</ul></div>
+<div class="exampleblock">
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre><code>$ linuxcnc_var LINUXCNC_AUX_EXAMPLES
+/usr/share/linuxcnc/aux_examples</code></pre>
+</div></div>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Runtime settings&#8201;&#8212;&#8201;the configuration selector can also offer
+  configuration subdirectories specified at runtime using an
+  exported environamental variable (LINUXCNC_AUX_CONFIGS).  This
+  variable should be a path list of one or more configuration
+  directories separated by a (:).  Typically, this variable
+  would be set in a shell starting linuxcnc or in a user&#8217;s
+  ~/.profile startup script.  Example:
+</p>
+</li>
+</ul></div>
+<div class="exampleblock">
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre><code>export LINUXCNC_AUX_CONFIGS=~/myconfigs:/opt/otherconfigs</code></pre>
+</div></div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

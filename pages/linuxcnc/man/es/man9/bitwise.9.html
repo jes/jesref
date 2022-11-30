@@ -1,0 +1,143 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:25 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>BITWISE</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">BITWISE</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">bitwise -
+Computes various bitwise operations on the two input
+values</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="72%">
+
+
+<p style="margin-top: 1em"><b>loadrt bitwise
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="17%">
+</td></tr>
+</table>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>bitwise.</b><i>N</i></p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>bitwise.</b>N</i><b>.in0</b>
+u32 in</p>
+
+<p style="margin-left:22%;">First input value</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.in1</b>
+u32 in</p>
+
+<p style="margin-left:22%;">Second input value</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.out-and</b>
+u32 out</p>
+
+<p style="margin-left:22%;">The bitwise AND of the two
+inputs</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.out-or</b>
+u32 out</p>
+
+<p style="margin-left:22%;">The bitwise OR of the two
+inputs</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.out-xor</b>
+u32 out</p>
+
+<p style="margin-left:22%;">The bitwise XOR of the two
+inputs</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.out-nand</b>
+u32 out</p>
+
+<p style="margin-left:22%;">The inverse of the bitwise
+AND</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.out-nor</b>
+u32 out</p>
+
+<p style="margin-left:22%;">The inverse of the bitwise
+OR</p>
+
+
+<p style="margin-left:11%;"><b>bitwise.</b><i>N</i><b>.out-xnor</b>
+u32 out</p>
+
+<p style="margin-left:22%;">The inverse of the bitwise
+XOR</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Andy Pugh</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">GPL 2+</p>
+<hr>
+</body>
+</html>

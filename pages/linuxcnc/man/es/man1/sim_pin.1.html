@@ -1,0 +1,151 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>sim_pin</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">sim_pin</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#NOTA">NOTA</a><br>
+<a href="#USO">USO</a><br>
+<a href="#EJEMPLO">EJEMPLO</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_pin</b>
+- GUI para mostrar y configurar una o m&Atilde;&iexcl;s
+entradas Hal</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_pin</b>
+<i>[Options] name1</i> [<i>name2</i> [<i>name3</i> ...]]</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Options</i>:
+<b><br>
+-- help</b> (muestra el texto de ayuda) <b><br>
+-- title title_string</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Para elementos
+de bit, el nombre puede incluir un especificador /mode= :
+<i><br>
+namei</i><b>/mode=</b>[<b>pulse</b> | <b>toggle</b> |
+<b>hold</b>] <br>
+(el valor predeterminado es alternar)</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se admiten
+elementos Hal booleanos (bit) y elementos
+num&Atilde;&copy;ricos (u32, s32, float).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si la entrada
+con nombre es de tipo num&Atilde;&copy;rico, la interfaz
+gr&Atilde;&iexcl;fica de usuario muestra:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Entry</b>
+Widget de entrada para valor o una expresi&Atilde;&sup3;n
+Tcl v&Atilde;&iexcl;lida. <b><br>
+Set</b> Pulsador para establecer un nuevo valor desde Entry
+(o usar &lt;RETURN&gt;) <b><br>
+Reset</b> Pulsador para restablecer el valor presente al
+inicio</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si la entrada
+es de tipo <b>bit</b> , la interfaz gr&Atilde;&iexcl;fica de
+usuario muestra un solo bot&Atilde;&sup3;n que
+est&Atilde;&iexcl; controlado por selectores de botones
+radio:</p>
+
+<p style="margin-left:11%; margin-top: 1em">mode =
+<b>pulse</b> Entrada de pulso 1 por cada
+pulsaci&Atilde;&sup3;n de bot&Atilde;&sup3;n <br>
+mode = <b>toggle</b> Alternar entrada para cada
+pulsaci&Atilde;&sup3;n de bot&Atilde;&sup3;n <br>
+mode = <b>hold</b> Establece la entrada en 1 mientras se
+presiona el bot&Atilde;&sup3;n</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si el modo de
+elemento de bit comienza con una letra
+may&Atilde;&ordm;scula, los botones de radio para
+seleccionar otros modos no se muestran</p>
+
+<h2>NOTA
+<a name="NOTA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">LinuxCNC o una
+aplicaci&Atilde;&sup3;n Hal independiente debe estar
+ejecut&Atilde;&iexcl;ndose</p>
+
+<p style="margin-left:11%; margin-top: 1em">Un elemento con
+nombre puede especificar un <b>pin</b> , <b>parametro</b> o
+<b>se&Atilde;&plusmn;al</b> . El elemento nombrado debe ser
+escribible:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pin IN o
+I/O</b> (y no est&Atilde;&iexcl; conectado a una
+se&Atilde;&plusmn;al con un escritor) <b><br>
+param RW <br>
+signal conectado a un pin escribible</b></p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_pin</b>
+se puede usar de forma interactiva desde una l&Atilde;nea de
+comandos de shell o comenzar autom&Atilde;&iexcl;ticamente
+desde un archivo ini de configuraci&Atilde;&sup3;n.</p>
+
+<h2>EJEMPLO
+<a name="EJEMPLO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ejemplo para el
+uso del archivo ini:</p>
+
+<p style="margin-left:11%; margin-top: 1em">[APPLICATIONS]
+<br>
+DELAY = 5 <br>
+APP = <b>sim_pin</b> \.br <br>
+halui.machine.off/mode=pulse \ <br>
+ini.traj_arc_blend_enable \ <br>
+ motion-command-handler-tmax</p>
+<hr>
+</body>
+</html>

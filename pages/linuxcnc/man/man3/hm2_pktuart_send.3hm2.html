@@ -1,0 +1,131 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_pktuart_send</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_pktuart_send</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_pktuart_send
+- write data to a Hostmot2 PktUART</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_uart_send(char *name,
+unsigned char data[], rtapi_u8 *num_frames, rtapi_u16
+frame_sizes[])</p> </td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_pktuart_send</b>
+writes &quot;num_frames&quot; of data to the PktUART
+&quot;name&quot; from the buffer &quot;data&quot; with frame
+sizes preset in &quot;frame_sizes[]&quot; array.
+&quot;frame_sizes[]&quot; array should not have more than 16
+elements as this is the highest number of frames that can be
+sent out in the so called &quot;burst mode&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note that the
+PktUART MaxFrameSize is 1024 bytes as hard-coded in
+hostmot2.vhd .</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&quot;name&quot;
+is a unique string given to each PktUART during hostmot2
+setup. The names of the available channels are printed to
+standard output during the driver loading process and take
+the form: hm2_&lt;board name&gt;.&lt;board
+index&gt;.pktuart.&lt;index&gt; For example
+hm2_5i25.0.pktuart.0 .</p>
+
+<p style="margin-left:11%; margin-top: 1em">This function
+sends a variable number of PktUART packets (less or equal
+16) from the the specified channel. It should be used inside
+a realtime HAL component registered with the main hostmot2
+driver using the function hm2_pktuart_setup in the setup
+code.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns the
+number of bytes sent on success and negative error codes on
+failure.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&quot;num_frames&quot;
+which pointer is passed by value is set to the number of
+successfully datagrams sent out.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Negative error
+codes are: <b><br>
+-1 - low level read/write error <br>
+-EINVAL - any PktUART configuration error per instance <br>
+-HM2_PKTUART_TxSCFIFOError - Tx Send Count FIFO Error</b>
+<br>
+Numeric values of HM2_PKTUART_ error codes are defined in
+<br>
+src/hal/drivers/mesa-hostmot2/pktuart_errno.h .</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>man
+hm2_pktuart_setup, man hm2_pktuart_read</b> <br>
+See src/hal/drivers/mesa_pktgyro_test.comp for an example
+usage.</p>
+<hr>
+</body>
+</html>

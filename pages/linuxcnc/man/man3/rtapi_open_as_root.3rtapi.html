@@ -1,0 +1,144 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:42 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_open_as_root</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_open_as_root</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#ARGUMENTS">ARGUMENTS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#REALTIME CONSIDERATIONS">REALTIME CONSIDERATIONS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_open_as_root
+- Open a file with &quot;root&quot; privilege</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;rtapi.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="84%">
+
+
+<p style="margin-top: 1em"><b>int rtapi_open_as_root(const
+char</b> <i>*filename</i><b>, int</b> <i>flags)</i></p></td>
+<td width="5%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTS
+<a name="ARGUMENTS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>filename</i></p>
+
+<p style="margin-left:22%;">The filename to open, as in
+<b>open(2)</b>. Note that rtapi has no well-defined
+&quot;current directory&quot;, so this should be an absolute
+path, but this is not enforced.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>flags</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>The open flags, as in <b>open(2)</b>. Should never
+include bits that open or create files (e.g., O_CREAT,
+O_APPEND, etc) as this API is not intended for creating or
+writing files, but this is not enforced.</p></td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">In
+&quot;uspace&quot; realtime, root privileges are dropped
+whenever possible. This API temporarily switches on root
+privileges to open a file, and switches them off before
+returning. This can be useful for example when accessing
+device nodes or memory-mapped I/O.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In the case of
+PCI devices on x86 and x86-64 systems, prefer the
+linux-style PCI interfaces provided in
+<b>&lt;rtapi_pci.h&gt;</b>.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">In case of
+success, the nonnegative file descriptor opened. If the
+caller does not close it, it remains open until rtapi_app
+exits.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In case of
+failure, a negative errno value.</p>
+
+<h2>REALTIME CONSIDERATIONS
+<a name="REALTIME CONSIDERATIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Call only from
+realtime initcode in &quot;uspace&quot; realtime.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>open(2)</b>,
+<b>rtapi_pci(3)</b></p>
+<hr>
+</body>
+</html>

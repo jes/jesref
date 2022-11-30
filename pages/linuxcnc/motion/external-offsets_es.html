@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Offsets Externos de Ejes</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Offsets Externos de Ejes</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:external-offsets"><p>Los offsets externos de ejes estan soportados durante los movimientos teleop (universal)
+y coordinado (gcode). Los offsets externos de ejes estan
+habilitados para cada eje en la configuración del archivo ini y controlados
+dinámicamente por pines Hal de entrada. La interfaz Hal es similar a la
+que se utiliza para un volante jog. Este tipo de interfaz está implementado
+normalmente con un generador de pulsos manual (mpg),
+conectado a un componente codificador hal que cuenta los pulsos.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración_del_archivo_ini">1. Configuración del archivo ini</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para cada letra de eje (<strong>L</strong> será uno de x,y,z,a,b,c,u,v,w):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[AXIS_L]OFFSET_AV_RATIO = valor (controla acel/vel para offsets externos)</code></pre>
+</div></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Valores permitidos: 0 &lt;= valor &lt;= 0.9
+</p>
+</li>
+<li>
+<p>
+Los valores no permitidos se reemplazan con 0.1, con un mensaje a la salida estándar
+</p>
+</li>
+<li>
+<p>
+Valor por defecto: 0 (desactiva el offset externo).
+  Consecuencia: omitiendo [AXIS_L]OFFSET_AV_RATIO se desactiva el offset externo para el eje L.
+</p>
+</li>
+<li>
+<p>
+Si no es cero, OFFSET_AV_RATIO (<strong>r</strong>), ajusta la velocidad y aceleración máxima convencional (planificada)
+  para preservar las restricciones en [AXIS_L]:
+</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>velocidad máxima planificada   = (1-r) * MAX_VELOCITY
+velocidad de offset externo    = (  r) * MAX_VELOCITY</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>aceleración máxima planificada = (1-r) * MAX_ACCELERATIOIN
+aceleración de offset externo  = (  r) * MAX_ACCELERATION</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pines_hal">2. Pines Hal</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pines_hal_de_movimiento_por_eje">2.1. Pines Hal de movimiento por eje</h3>
+<div class="paragraph"><p>Para cada letra de eje (<strong>L</strong> será uno de x,y,z,a,b,c,u,v,w)</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+<strong>axis.L.eoffset-enable</strong>  Entrada (bit): habilitacion.
+</p>
+</li>
+<li>
+<p>
+<strong>axis.L.eoffset-scale</strong>   Entrada (float): factor de escala.
+</p>
+</li>
+<li>
+<p>
+<strong>axis.L.eoffset-count</strong>   Entrada (s32): entrada al registro de conteo.
+</p>
+</li>
+<li>
+<p>
+<strong>axis.L.eoffset-clear</strong>   Entrada (bit): borrar el offset solicitado.
+</p>
+</li>
+<li>
+<p>
+<strong>axis.L.eoffset</strong>         Salida  (float): offset externo actual.
+</p>
+</li>
+<li>
+<p>
+<strong>axis.L.eoffset-request</strong> Salida  (float): offset externo solicitado.
+</p>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_otros_pines_hal_motion">2.2. Otros Pines Hal Motion</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+<strong>motion.eoffset-active</strong>  Salida (bit): se aplican offsets externos distintos de cero.
+</p>
+</li>
+<li>
+<p>
+<strong>motion.eoffset-limited</strong> Salida (bit): movimiento inhibido debido a límite soft.
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_uso">3. Uso</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Los pines hal de entrada del eje (enable,scale,counts) son similares a los
+pines utilizados para volante jog.</p></div>
+<div class="sect2">
+<h3 id="_cálculo_de_offset">3.1. Cálculo de offset</h3>
+<div class="paragraph"><p>En cada período servo, el pin <em>axis.L.eoffset-count</em> se compara con
+el valor en el periodo anterior. El aumento o disminución (delta positivo
+o negativo) del pin <em>axis.L.eoffset-count</em> se multiplica
+por el valor actual del pin <em>axis.L.eoffset-scale</em>. Este producto es
+acumulado en un registro interno y exportado al pin Hal
+<em>axis.L.eoffset-request</em>. El registro de acumulación se reinicia
+a cero en cada encendido de la máquina.</p></div>
+<div class="paragraph"><p>El valor de offset solicitado se utiliza para planificar el movimiento para el
+offset que se aplica a la coordenada <em>L</em> y se representa
+por el pin hal <em>axis.L.eoffset</em>. El movimiento previsto respeta las
+restricciones asignadas de velocidad y aceleración, que pueden ser limitadas
+si el movimiento neto (offset más jogging teleop o movimiento coordinado)
+alcanza un límite soft de la coordenada <em>L</em>.</p></div>
+<div class="paragraph"><p>Para muchas aplicaciones, el pin <em>axis.L.eoffset-scale</em> es constante
+y la respuesta neta <em>axis.L.eoffset-request</em> a
+<em>axis.L.eoffset-count</em> es equivalente al producto del
+valor acumulado de <em>axis.L.eoffset-count</em> y el valor (constante) del pin
+<em>axis.L.eoffset-scale</em>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_máquina_apagada_encendida">3.2. Máquina apagada/encendida</h3>
+<div class="paragraph"><p>Cuando la máquina está apagada, la <strong>posición actual con
+los offsets se mantiene</strong>, por lo que no hay
+movimiento inesperado al apagar o encender.</p></div>
+<div class="paragraph"><p>En cada arranque (máquina-on), los registros internos de conteos para
+cada uno de los pines hal <em>axis.L.eoffset-count</em> se ponen a cero y
+el pin correspondiente de la salida hal <em>axis.L.eoffset</em> se restablece a cero.</p></div>
+<div class="paragraph"><p>En otras palabras, los offsets externos <strong>se definen como CERO en
+cada inicio</strong> (machine-on) independientemente del valor de
+los pines <em>axis.L.eoffset-count</em>. Para evitar confusiones, se
+recomienda que todos los pines <em>axis.L.eoffset-count</em> estén configurados a
+cero cuando la máquina se apaga.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_límites_soft">3.3. Límites soft</h3>
+<div class="paragraph"><p>Los movimientos por offsets externos de eje se planifican independientemente con
+ajustes de velocidad y aceleración especificados por
+<em>[AXIS_L]OFFSET_AV_RATIO</em>. El movimiento de offset no está
+coordinado con jogs teleop ni con movimientos coordinados (gcode).
+Durante el movimiento teleop y el movimiento coordinado (gcode),
+los límites soft de eje (<em>[AXIS_L]MIN_LIMIT, MAX_LIMIT</em>) restringen
+el movimiento del eje.</p></div>
+<div class="paragraph"><p>Cuando se aplican offsets externos y el movimiento alcanza un límite soft
+(por aumentos de offset externo o jogging teleop o movimiento coordinado),
+se activa el pin hal <em>motion.eoffset-limited</em> y el
+valor del eje se mantiene nominalmente al del límite soft. Este pin hal puede
+ser utilizado por la lógica hal asociada para truncar cuentas de eoffsets adicionales
+o para detener la máquina (conectando a <em>halui.machine.off</em> por
+ejemplo). Si el eje se mueve dentro de los límites soft, el
+pin <em>motion.eoffset-limited</em> se reinicia.</p></div>
+<div class="paragraph"><p>Cuando se opera en un límite soft durante el movimiento coordinado que
+continúa cambiando el valor planificado del eje, el pin de salida
+<em>axis.L.eoffset</em> indicará el offset actual - la
+distancia necesaria para alcanzar el límite en lugar de la solicitud de offset calculada.
+Este valor indicado cambiará a medida que cambie el valor planificado del eje.</p></div>
+<div class="paragraph"><p>El pin hal <em>axis.L.eoffset-request</em> indica el
+offset actual solicitado, que es el producto del registro de conteos interno
+y eoffset-scale. En general, el valor del pin <em>axis.L.eoffset</em>
+retrasa el valor de <em>axis.L.eoffset-request</em> puesto que
+el offset externo está sujeto a un límite de aceleración.
+Cuando se opera en un límite soft, las actualizaciones adicionales de
+<em>axis.L.eoffset-count</em> continuará afectando al
+offset externo solicitado como se refleja en el pin Hal <em>axis.L.eoffset-request</em>.</p></div>
+<div class="paragraph"><p>Cuando se hace jogging teleop con offsets externos habilitados <strong>y</strong>
+con valores distintos de cero, el movimiento se detendrá al encontrar un límite soft
+en el eje infractor <strong>sin un intervalo de desaceleración</strong>.
+Del mismo modo, durante el movimiento coordinado con offsets externos
+habilitados, alcanzar un límite soft detendrá el movimiento sin
+fase de desaceleración. Para este caso, no importa si
+los offsets son cero.</p></div>
+<div class="paragraph"><p>Cuando el movimiento se detiene sin fase de desaceleración,
+<strong>los límites de aceleración del sistema pueden violarse</strong> y dar lugar a: 1) a un
+error de seguimiento (y/o un golpe brusco) en un sistema servo, 2) una pérdida de
+pasos para un sistema de motor paso a paso.
+En general, se recomienda que los offsets externos se apliquen de forma que se evite
+la cercania a los límites softs.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_notas">3.4. Notas</h3>
+<div class="paragraph"><p>Los offsets externos se aplican a las letras de coordenadas de eje (xyzabcuvw).
+Todas las articulaciones deben tener home antes de que los offsets externos del eje sean
+aplicados.</p></div>
+<div class="paragraph"><p>Si un pin hal <em>axis.L.eoffset-enable</em> se restablece cuando su offset no es
+cero, el offset se mantiene. El offset puede ser borrado por:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+una conmutacion <em>Máquina apagada/Máquina encendida</em>
+</p>
+</li>
+<li>
+<p>
+reactivación del pin de habilitación e incremento/decremento del pin Hal <em>axis.L.eoffset-count</em>
+para devolver el offset a cero.
+</p>
+</li>
+<li>
+<p>
+pulso en el pin hal <em>axis.L.eoffset-clear</em>
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Los offsets externos están diseñados para usarse con offsets <em>pequeños</em> que
+se aplican dentro de los límites soft.</p></div>
+<div class="paragraph"><p>Cuando se aplican offsets externos, se respetan los límites soft tanto para jogging teleop como
+para movimiento coordinado. Sin embargo, cuando se alcanza un límite soft
+durante el movimiento coordinado, la reduccion del
+offset externo culpable <strong>no produce alejamiento</strong> del límite soft
+<strong>si el movimiento planificado continúa en la misma dirección</strong>. Esta
+circunstancia puede ocurrir ya que la tasa de eliminación de corrección de offset
+(según lo establecido en <em>[AXIS_L]OFFSET_AV_RATIO</em>) puede ser menor que la
+velocidad de movimiento planificada opuesta. En tales casos, <strong>pausando</strong> (o
+parando) lo planificado, el movimiento coordinado permitirá el
+alejamiento del límite soft cuando se hacen cambios correctivos en el
+offset externo ofensivo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_advertencia">3.5. Advertencia</h3>
+<div class="paragraph"><p>El uso de offsets externos puede alterar el movimiento de la máquina de una
+manera significativa. El control de los offsets externos con componentes y conexiones hal
+y cualquier interfaz de usuario asociada,
+debe ser cuidadosamente diseñado y probado antes de la implementación.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_componentes_de_hal_relacionados">4. Componentes de Hal relacionados</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_eoffset_per_angle_comp">4.1. eoffset_per_angle.comp</h3>
+<div class="paragraph"><p>Componente para calcular un offset externo desde una función basada
+en un ángulo medido (coordenada rotativa o husillo). Ver la
+página man para detalles (<strong>$ man eoffset_per_angle</strong>).</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pruebas">5. Pruebas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La capacidad de offset externo de un eje se habilita agregando
+una configuración [AXIS_L] para cada eje candidato. Por ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[AXIS_Z]
+OFFSET_AV_RATIO = 0.2</code></pre>
+</div></div>
+<div class="paragraph"><p>Para las pruebas, es conveniente simular una interfaz de jog de volante utilizando la
+gui <strong>sim_pin</strong>. Por ejemplo, en una terminal:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ sim_pin axis.z.eoffset-enable axis.z.eoffset-scale axis.z.eoffset-counts</code></pre>
+</div></div>
+<div class="paragraph"><p>El uso de offsets externos se facilita mostrando información
+relacionada con los offsets actuales: el valor actual de eoffset y
+el valor de eoffset solicitado, pos-cmd del eje, y (para una
+máquina con cinemática de identidad) pos-cmd y offset del motor de la articulación correspondiente.
+La configuración sim proporcionada (ver más abajo) muestra un ejemplo de panel pyvcp para la gui Axis.</p></div>
+<div class="paragraph"><p>En ausencia de una pantalla personalizada, se puede iniciar <strong>halshow</strong> como
+una aplicación auxiliar con una lista de observación personalizada.</p></div>
+<div class="paragraph"><p>Ejemplo de configuración de archivos ini para simular conexiones del pin hal
+eoffset y mostrar información de eoffset para el eje z (para cinemática
+de identidad con z==joint2):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[APPLICATIONS]
+APP = sim_pin \
+      axis.z.eoffset-enable \
+      axis.z.eoffset-scale \
+      axis.z.eoffset-counts \
+      axis.z.eoffset-clear
+
+APP = halshow --fformat "%0.5f" ./z.halshow</code></pre>
+</div></div>
+<div class="paragraph"><p>Donde el archivo z.halshow (en el directorio de configuración) es:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pin+joint.2.motor-pos-cmd
+pin+joint.2.motor-offset
+pin+axis.z.pos-cmd
+pin+axis.z.eoffset
+pin+axis.z.eoffset-request
+pin+motion.eoffset-limited</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ejemplos">6. Ejemplos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las configuraciones de simulación proporcionadas demuestran el uso de
+offsets externos como punto de partida para personalización de hardware
+real del usuario.</p></div>
+<div class="paragraph"><p>Las configuraciones sim utilizan la configuración ini <em>[HAL]HALFILE = LIB:basic_sim.tcl</em>
+para configurar todas las rutina de conexiones hal para
+los ejes especificados en el archivo ini <em>[TRAJ]COORDINATES =</em>.
+La lógica hal necesaria para demostrar la funcionalidad de offset externo
+y las conexiones de pines de gui hal para un panel pyvcp se realizan en
+archivos hal separados. Una configuración no simulada debería
+reemplazar el elemento <em>LIB:basic_sim.tcl</em> con HALFILEs apropiados para la
+máquina. Los archivos pyvcp proporcionados (.hal y .xml) podrían ser un
+punto de partida para interfaces gui específicas de la aplicación.</p></div>
+<div class="sect2">
+<h3 id="_eoffsets_demo_ini">6.1. eoffsets_demo.ini</h3>
+<div class="paragraph"><p>La configuración sim <em>sim/configs/axis/external_offsets/eoffsets_demo.ini</em>
+demuestra una máquina cartesiana XYZ con controles para habilitar
+offsets externos en cualquier eje.</p></div>
+<div class="paragraph"><p>Se proporcionan pantallas para mostrar todas las posiciones importantes y
+valores de offset.</p></div>
+<div class="paragraph"><p>Una gui sim_pin proporciona controles para los pines de offset del eje: eoffset-scale,
+eoffset-count (a través de la señal e:&lt;L&gt;counts) y eoffset-clear
+(a través de la señal e:clearall)</p></div>
+<div class="paragraph"><p>Se usa un script (eoffsets_monitor.tcl) para establecer los pines <em>axis.L.counts</em> en
+cero en el apagado de la máquina.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_jwp_z_ini">6.2. jwp_z.ini</h3>
+<div class="paragraph"><p>La configuración sim <em>sim/configs/axis/external_offsets/jwp_z.ini</em>
+demuestra la implementacion de una capacidad <em>jog-while-pause</em> en una sola coordenada (Z):</p></div>
+<div class="paragraph"><p>Los LED del panel se proporcionan para mostrar los estados de elementos importantes.</p></div>
+<div class="paragraph"><p>Se proporcionan controles para establecer el factor de escala eoffset y para
+incrementar/decrementar/borrar las cuentas eoffset.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_dynamic_offsets_ini">6.3. dynamic_offsets.ini</h3>
+<div class="paragraph"><p>Esta configuración sim <em>sim/configs/axis/external_offsets/dynamic_offsets.ini</em>
+demuestra los offsets aplicados dinámicamente mediante la conexión de una forma de onda sinusoidal
+a las entradas externas de offset de la coordenada z.</p></div>
+<div class="paragraph"><p>Los LED del panel se proporcionan para mostrar los estados de elementos importantes.</p></div>
+<div class="paragraph"><p>Se proporcionan controles para modificar la configuración del archivo ini para
+velocidad máxima y aceleración máxima del eje Z.</p></div>
+<div class="paragraph"><p>Se proporcionan controles para configurar los parámetros del generador de forma de onda.</p></div>
+<div class="paragraph"><p>Se inicia una aplicación de halscope para mostrar la forma de onda aplicada, la
+respuesta de offset, y la respuesta del comando motor.</p></div>
+<div class="paragraph"><p>Nota: no se reconocen cambios en la coordenada z, max-acceleration y max-speed
+mientras se está ejecutando un programa.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_opa_ini_eoffset_per_angle">6.4. opa.ini (eoffset_per_angle)</h3>
+<div class="paragraph"><p>La configuración opa.ini utiliza el componente hal eoffset_per_angle
+(<strong>$ man eoffset_per_angle</strong>) para demostrar una máquina XZC con offsets funcionales
+calculados a partir de la coordenada C (ángulo) y aplicados a
+la coordenada transversal (X). Los cálculos de offset se basan en
+un radio de referencia especificado normalmente establecido por un M68 programado (o comando MDI)
+para controlar un pin <strong>motion.analog-out-NN</strong>.</p></div>
+<div class="paragraph"><p>Los LED del panel se proporcionan para mostrar los estados de elementos importantes.</p></div>
+<div class="paragraph"><p>Se proporcionan funciones para los polígonos internos y externos (nsides&gt; = 3),
+ondas sinusoidales y ondas cuadradas. Las funciones se pueden multiplicar en
+frecuencia usando el pin fmul y modificar la amplitud usando el pin rfrac
+(fracción del radio de referencia).</p></div>
+<div class="paragraph"><p>Se proporcionan controles para iniciar/detener las formas de onda de offset y para
+establecer el tipo de función y sus parámetros.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

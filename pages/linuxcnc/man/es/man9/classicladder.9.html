@@ -1,0 +1,211 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:25 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>CLASSICLADDER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">CLASSICLADDER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">classicladder -
+plc por software en tiempo real basado en
+l&Atilde;&sup3;gica de escalera</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+classicladder_rt [numRungs=</b><i>N</i><b>]
+[numBits=</b><i>N</i><b>] [numWords=</b><i>N</i><b>]
+[numTimers=</b><i>N</i><b>] [numMonostables=</b><i>N</i><b>]
+[numCounters=</b><i>N</i><b>]
+[numPhysInputs=</b><i>N</i><b>]
+[numPhysOutputs=</b><i>N</i><b>]
+[numArithmExpr=</b><i>N</i><b>]
+[numSections=</b><i>N</i><b>] [numSymbols=</b><i>N</i><b>]
+[numS32in=</b><i>N</i><b>] [numS32out=</b><i>N</i><b>]
+[numFloatIn=</b><i>N</i><b>]
+[numFloatOut=</b><i>N</i><b>]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estos pines y
+par&Atilde;&iexcl;metros son creados por el
+m&Atilde;&sup3;dulo <b>classicladder_rt</b> en tiempo real.
+Cada per&Atilde;odo (m&Atilde;nimo 1000000 ns),
+classicladder lee las entradas, eval&Atilde;&ordm;a la
+l&Atilde;&sup3;gica de escalera definida en la GUI y luego
+escribe las salidas.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>classicladder.0.in-</b><i>NN</i>
+IN bit</p>
+
+<p style="margin-left:22%;">Estos pines para
+se&Atilde;&plusmn;ales de bit se asignan a las variables
+<b>%I</b><i>NN</i> en classicladder</p>
+
+
+<p style="margin-left:11%;"><b>classicladder.0.out-</b><i>NN</i>
+OUT bit</p>
+
+<p style="margin-left:22%;">Estos pines para
+se&Atilde;&plusmn;ales de bit se asignan a las variables
+<b>%Q</b><i>NN</i> en la salida desde classicladder</p>
+
+
+<p style="margin-left:11%;"><b>classicladder.0.s32in-</b><i>NN</i>
+IN s32</p>
+
+<p style="margin-left:22%;">Entrada entera de
+classicladder. Estos pines para se&Atilde;&plusmn;ales s32
+se asignan a las variables <b>%IW</b><i>NN</i> en
+classicladder</p>
+
+
+<p style="margin-left:11%;"><b>cclassicladder.0.s32out-</b><i>NN</i>
+OUT s32</p>
+
+<p style="margin-left:22%;">Salida entera de classicladder
+Estos pines para se&Atilde;&plusmn;ales s32 se asignan a las
+variables <b>%QW</b><i>NN</i> en classicladder</p>
+
+
+<p style="margin-left:11%;"><b>classicladder.0.floatin-</b><i>NN</i>
+IN float</p>
+
+<p style="margin-left:22%;">Entrada entera de classicladder
+Estos pines para se&Atilde;&plusmn;ales float se asignan a
+las variables <b>%IF</b><i>NN</i> en classicladder. Estos se
+truncan a los valores S32 internamente. por ejemplo, 7.5
+ser&Atilde;&iexcl; 7</p>
+
+
+<p style="margin-left:11%;"><b>classicladder.0.floatout-</b><i>NN</i>
+OUT float</p>
+
+<p style="margin-left:22%;">Salida float de classicladder
+Estos pines para se&Atilde;&plusmn;ales float se asignan a
+las variables <b>%QF</b><i>NN</i> en classicladder</p>
+
+<p style="margin-left:11%;"><b>classicladder.0.hide_gui IN
+bit</b></p>
+
+<p style="margin-left:22%;">Este pin para
+se&Atilde;&plusmn;al de bit oculta la ventana
+cl&Atilde;&iexcl;sica classicladder, a la vez que corre el
+c&Atilde;&sup3;digo de espacio de usuario. Esto suele ser
+deseable cuando se usa Modbus, ya que Modbus requiere
+c&Atilde;&sup3;digo en espacio de usuario para su
+ejecucion.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>classicladder.0.refresh.time</b>
+RO s32</p>
+
+<p style="margin-left:22%;">Muestra cu&Atilde;&iexcl;nto
+tiempo tard&Atilde;&sup3; la &Atilde;&ordm;ltima
+actualizaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>classicladder.0.refresh.tmax</b>
+RW s32</p>
+
+<p style="margin-left:22%;">Muestra cu&Atilde;&iexcl;nto
+tiempo tard&Atilde;&sup3; la actualizaci&Atilde;&sup3;n
+m&Atilde;&iexcl;s larga</p>
+
+
+<p style="margin-left:11%;"><b>classicladder.0.ladder-state</b>
+RO s32</p>
+
+<p style="margin-left:22%;">Muestra si el programa se
+est&Atilde;&iexcl; ejecutando o no.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>classicladder.0.refresh</b>
+FP</p>
+
+<p style="margin-left:22%;">La tasa de
+actualizaci&Atilde;&sup3;n de escalon. Agregue esto al hilo
+servo. Puede agregarlo a un hilo m&Atilde;&iexcl;s
+r&Atilde;&iexcl;pido pero no se actualizar&Atilde;&iexcl;
+m&Atilde;&iexcl;s r&Atilde;&iexcl;pido que una vez cada
+milisegundo (1000000 ns).</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ver
+http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ClassicLadder_Ver_7.124
+para la &Atilde;&ordm;ltima versi&Atilde;&sup3;n.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">Cap&Atilde;tulos
+<i>Classicladder</i> en la documentaci&Atilde;&sup3;n de
+LinuxCNC para una descripci&Atilde;&sup3;n completa de la
+sintaxis <b>Classicladder</b> y ejemplos</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">http://wiki.linuxcnc.org/cgi-bin/wiki.pl?ClassicLadder_Ver_7.124</p>
+<hr>
+</body>
+</html>

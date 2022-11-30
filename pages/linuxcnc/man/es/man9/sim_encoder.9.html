@@ -1,0 +1,190 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:31 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SIM_ENCODER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SIM_ENCODER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#NOMBRADO">NOMBRADO</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">sim_encoder -
+codificador de cuadratura simulado</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+sim_encoder [num_chan=</b><i>num</i> <b>|
+names=</b><i>name1</i><b>[,</b><i>name2 ...</i><b>]]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_encoder</b>
+puede generar se&Atilde;&plusmn;ales en cuadratura como si
+fueran de un codificador. Tambi&Atilde;&copy;n genera un
+pulso de &Atilde;ndice una vez por revoluci&Atilde;&sup3;n.
+Se utiliza principalmente para pruebas y
+simulaci&Atilde;&sup3;n, para reemplazar hardware que puede
+no estar disponible. Tiene una frecuencia
+m&Atilde;&iexcl;xima limitada, al igual que todos los
+generadores de pulso basados en software.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_encoder</b>
+admite un m&Atilde;&iexcl;ximo de ocho canales. El
+n&Atilde;&ordm;mero de canales realmente cargados se
+establece mediante el argumento <b>num_chan =</b> cuando se
+carga el m&Atilde;&sup3;dulo. Alternativamente, especifique
+<b>names =</b> y nombres &Atilde;&ordm;nicos separados por
+comas.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+especificadores <b>num_chan =</b> y <b>names =</b> son
+mutuamente excluyentes. Si no se especifica <b>num_chan
+=</b> ni <b>names =</b>, el valor predeterminado es uno.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-encoder.make-pulses</b>
+(no de punto flotante)</p>
+
+<p style="margin-left:22%;">Genera los pulsos de cuadratura
+e &Atilde;ndice reales. Se debe llamar con la mayor
+frecuencia posible, para maximizar la tasa de conteo y
+minimizar la fluctuaci&Atilde;&sup3;n de fase. Funciona en
+todos los canales a la vez.</p>
+
+
+<p style="margin-left:11%;"><b>sim-encoder.update-speed</b>
+(usa punto flotante)</p>
+
+<p style="margin-left:22%;">Lee el comando <b>speed</b> y
+otros par&Atilde;&iexcl;metros y convierte los datos en un
+formato que pueda ser utilizado por <b>make-pulses</b>. Los
+cambios surten efecto solo cuando se ejecuta
+<b>update-speed</b>. Se puede (y se debe) llamar con menos
+frecuencia que <b>make-pulses</b>. Funciona en todos los
+canales a la vez.</p>
+
+<h2>NOMBRADO
+<a name="NOMBRADO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los nombres de
+pines y par&Atilde;&iexcl;metros tienen el prefijo:
+&Acirc;&nbsp;&Acirc;&nbsp;<b>sim-encoder.N.</b> para N=0,1,
+..., num-1 cuando se usa <b>num_chan=num</b>
+&Acirc;&nbsp;&Acirc;&nbsp;<b>nameN.</b> para nameN=name1,
+name2, ... cuando se usa <b>names=name1, name2, ...</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">El formato
+<b>sim-encoder.N.</b> se muestra en las siguientes
+descripciones.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-encoder.</b><i>N</i><b>.phase-A</b>
+bit out</p>
+
+<p style="margin-left:22%;">Una de las salidas en
+cuadratura.</p>
+
+
+<p style="margin-left:11%;"><b>sim-encoder.</b><i>N</i><b>.phase-B</b>
+bit out</p>
+
+<p style="margin-left:22%;">La otra salida en
+cuadratura.</p>
+
+
+<p style="margin-left:11%;"><b>sim-encoder.</b><i>N</i><b>.phase-Z</b>
+bit out</p>
+
+<p style="margin-left:22%;">El pulso &Atilde;ndice.</p>
+
+
+<p style="margin-left:11%;"><b>sim-encoder.</b><i>N</i><b>.speed</b>
+float in</p>
+
+<p style="margin-left:22%;">La velocidad deseada del
+codificador, en unidades de usuario por segundo. Esto se
+divide por <b>scale</b>, y el resultado se usa como la
+velocidad del codificador en revoluciones por segundo.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-encoder.</b><i>N</i><b>.ppr</b>
+u32 rw</p>
+
+<p style="margin-left:22%;">Los pulsos por
+revoluci&Atilde;&sup3;n del codificador simulado. Tenga en
+cuenta que esto es pulsos, no cuenta, por
+revoluci&Atilde;&sup3;n. Cada pulso o ciclo del codificador
+da como resultado cuatro recuentos, porque se cuenta cada
+borde. El valor predeterminado es 100 ppr, o 400 cuentas por
+revoluci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>sim-encoder.</b><i>N</i><b>.scale</b>
+float rw</p>
+
+<p style="margin-left:22%;">Factor de escala para la
+entrada <b>speed</b>. El valor de <b>speed</b> se divide por
+<b>scale</b> para obtener la velocidad real del codificador
+en revoluciones por segundo. Por ejemplo, si <b>scale</b>
+est&Atilde;&iexcl; configurado en 60, entonces <b>speed</b>
+est&Atilde;&iexcl; en revoluciones por minuto (RPM) en lugar
+de revoluciones por segundo. El valor predeterminado es
+1.00.</p>
+<hr>
+</body>
+</html>

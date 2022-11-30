@@ -1,0 +1,128 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:28 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LINEARDELTAKINS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">LINEARDELTAKINS</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#CINEM&Atilde;TICA">CINEM&Atilde;TICA</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">lineardeltakins
+- Cinem&Atilde;&iexcl;tica para un robot delta lineal</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="34%">
+
+
+<p style="margin-top: 1em"><b>loadrt
+lineardeltakins</b></p> </td>
+<td width="55%">
+</td></tr>
+</table>
+
+<h2>CINEM&Atilde;TICA
+<a name="CINEM&Atilde;TICA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El modelo
+cinem&Atilde;&iexcl;tico es apropiado para un
+dise&Atilde;&plusmn;o estilo rostock/kossel con tres
+articulaciones dispuestas en un tri&Atilde;&iexcl;ngulo
+equil&Atilde;&iexcl;tero. (0,0) es siempre el centro del
+volumen de trabajo. La articulaci&Atilde;&sup3;n 0
+est&Atilde;&iexcl; en (0, R) y las articulaciones
+posteriores est&Atilde;&iexcl;n a 120 grados en sentido
+horario (tenga en cuenta que la articulaci&Atilde;&sup3;n 0
+no est&Atilde;&iexcl; en cero radianes). La longitud del
+brazo es L.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las
+articulaciones 0-2 son los carros lineales. Los ejes ABC y
+UVW pasan sin cambios en las articulaciones 3-8, de modo
+que, por ejemplo, A todav&Atilde;a se puede usar para
+controlar una extrusora.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lineardeltakins.R</b>
+float in</p>
+
+<p style="margin-left:22%;">Di&Atilde;&iexcl;metro efectivo
+de la plataforma.</p>
+
+<p style="margin-left:22%; margin-top: 1em">R es diferente
+a la distancia desde el centro de la mesa hasta el centro de
+la correa/varilla lisa/extrusi&Atilde;&sup3;n sobre la que
+se montan las articulaciones. En el lenguaje delta RepRap, R
+es DELTA_RADIUS que se calcula como</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">DELTA_SMOOTH_ROD_OFFSET
+- DELTA_EFFECTOR_OFFSET - DELTA_CARRIAGE_OFFSET.</p>
+
+<p style="margin-left:11%;"><b>lineardeltakins.L</b> float
+in</p>
+
+<p style="margin-left:22%;">Longitud de la varilla que
+conecta el carro al efector. En el lenguaje delta RepRap, L
+es DELTA_DIAGONAL_ROD</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los valores R y
+L se pueden ajustar mientras se ejecuta LinuxCNC. Sin
+embargo, hacerlo mientras est&Atilde;&iexcl; en modo
+coordinado conducir&Atilde;&iexcl; a un cambio de paso en la
+posici&Atilde;&sup3;n de la articulaci&Atilde;&sup3;n, lo
+que generalmente provocar&Atilde;&iexcl; un error de
+seguimiento si est&Atilde;&iexcl; en modo de
+articulaci&Atilde;&sup3;n con la m&Atilde;&iexcl;quina
+encendida.</p>
+<hr>
+</body>
+</html>

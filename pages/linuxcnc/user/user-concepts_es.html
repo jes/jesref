@@ -1,0 +1,402 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Conceptos importantes para el usuario</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Conceptos importantes para el usuario</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:important-user-concepts"><p>Este capítulo cubre conceptos importantes de que deben ser entendidos por el usuario
+antes de intentar manejar una máquina CNC con código g.</p></div>
+<div class="paragraph"><p><a id="sec:trajectory-control"></a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_control_de_trayectoria">1. Control de Trayectoria</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_planificacion_de_trayectoria">1.1. Planificacion de trayectoria</h3>
+<div class="paragraph"><p>La planificación de trayectorias, en general, es el medio por el cual LinuxCNC sigue
+la ruta especificada por su programa de Código G, mientras opera dentro de los
+límites de la maquina.</p></div>
+<div class="paragraph"><p>Un programa de Código G nunca puede ser completamente obedecido. Por ejemplo,
+imagine que especifica un programa de solo de línea con el siguiente movimiento:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G1 X1 F10 (G1 es movimiento lineal, X1 es el destino, F10 es la velocidad)</code></pre>
+</div></div>
+<div class="paragraph"><p>En realidad, todo el movimiento no se puede hacer a F10, ya que la máquina
+debe acelerar desde el reposo, avanzar hacia X=1, y luego desacelerar para
+parar de nuevo. A veces, parte del movimiento se realiza a F10, pero para muchos
+movimientos, especialmente los cortos, nunca se alcanza en absoluto la velocidad
+de avance especificada.
+Tener movimientos cortos en su Código G puede hacer que su máquina se ralentice
+y luego acelere para los movimientos más largos si no se emplea
+<em>naive cam detector</em> con G64 Pn.</p></div>
+<div class="paragraph"><p>La aceleración y desaceleración básica descrita anteriormente no es compleja
+y no hay ningún compromiso que tomar. En el archivo INI se han especificado
+las restricciones de la máquina, como la velocidad y aceleración máxima de ejes,
+que deben ser obedecidas por el planificador de trayectoria.</p></div>
+<div class="paragraph"><p>Para obtener más información sobre las opciones ini del planificador vea la
+&lt;&lt;sec:traj-section,Sección Trayectoria en el capítulo INI.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_seguimiento_de_ruta">1.2. Seguimiento de ruta</h3>
+<div class="paragraph"><p>Un problema menos sencillo es el seguimiento de ruta. Cuando se programa una
+esquina en Código G, el planificador de trayectoria puede hacer varias cosas,
+todas ellas correctas según el caso:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Puede desacelerar hasta detenerse exactamente en las coordenadas de la esquina,
+y luego acelerar en la nueva dirección.
+</p>
+</li>
+<li>
+<p>
+También puede hacer lo que se llama fusión (blending), que consiste en mantener
+la velocidad de avance mientras pasa por la esquina, por lo que es necesario redondear
+dicha esquina para obedecer las restricciones de la máquina.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Puede ver que aquí si hay un compromiso; se puede reducir la velocidad para obtener
+un mejor seguimiento del camino, o mantener la velocidad con peor seguimiento.
+Dependiendo del corte particular, el material, las herramientas, etc, el programador
+puede querer comprometerse de una manera u otra.</p></div>
+<div class="paragraph"><p>Los movimientos rápidos también obedecen el control de trayectoria actual. Con
+movimientos suficientemente largos para alcanzar la velocidad máxima en una máquina
+con baja aceleración y si no se especifica la tolerancia de ruta, puede obtener una
+esquina bastante redonda.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_programacion_del_planificador">1.3. Programacion del planificador </h3>
+<div class="paragraph"><p>Los comandos de control de trayectoria son los siguientes:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G61</em> - (Modo de ruta exacta) visita el punto programado exactamente, aunque
+    eso signifique que la maquina podría detenerse temporalmente para cambiar de
+    dirección hacia el siguiente punto programado.
+</p>
+</li>
+<li>
+<p>
+<em>G61.1</em> - (Modo de parada exacta) le dice al planificador que se detenga
+    exactamente en cada final de segmento.
+</p>
+</li>
+<li>
+<p>
+<em>G64</em> - (Fusión sin modo de tolerancia) G64 es la configuración predeterminada
+    cuando se inicia LinuxCNC. G64 es simplemente fusión sin <em>naive cam detector</em>
+    habilitado. G64 y G64 P0 le dicen al planificador que sacrifique la
+    precisión de seguimiento de ruta para mantener la velocidad de avance. Esto
+    es necesario para algunos tipos de materiales o herramientas donde las paradas
+    exactas son dañinas y puede funciona bien siempre que el programador
+    no olvide que la ruta de la herramienta será algo más
+    curvilínea que lo que especifica el programa. Al usar movimientos G0
+    (rápidos) con G64, tenga cuidado con los movimientos a puntos seguros
+    (clareance) y permita suficiente distancia para evitar obstáculos en función
+    de las capacidades de aceleración de su máquina.
+</p>
+</li>
+<li>
+<p>
+<em>G64 P- Q-</em> - (Fusión con modo de tolerancia) Esto habilita <em>naive cam
+    detector</em> y permite fusiones con tolerancia. Si se programa, por ejemplo, G64 P0.05, se le
+    dice al planificador que se desea alimentación continua, pero en esquinas
+    programadas quiere que desacelere lo suficiente para que la ruta de la
+    herramienta pueda mantenerse a no mas de 0.05 unidades de usuario de la ruta
+    programada. La cantidad exacta de desaceleración depende de la geometría de
+    la esquina programada y las limitaciones de la máquina, pero lo único de lo
+    que el programador necesita preocuparse es de la tolerancia. Esto le da al
+    programador control total sobre el compromiso de seguimiento de camino. La
+    tolerancia de la fusión se puede cambiar a lo largo de todo el programa
+    según sea necesario. Tenga en cuenta que una especificación G64 P0 tiene
+    el mismo efecto que G64 solo, necesario para compatibilidad con los viejos
+    programas de G Code. Vea la &lt;&lt;gcode:g64,sección G64 del capítulo
+    de Código G.
+</p>
+</li>
+<li>
+<p>
+<em>Fusión sin tolerancia</em> - El punto controlado tocará cada movimiento
+    especificado en al menos un punto. La máquina nunca se moverá a una
+    velocidad tal que no pueda llegar a una parada exacta al final del
+    movimiento actual (o el próximo movimiento, si hace una pausa cuando la
+    fusión ya ha comenzado). La distancia desde el punto final del movimiento sera
+    tan grande como deba ser para mantener la mejor alimentación para el contorno.
+</p>
+</li>
+<li>
+<p>
+<em>Naive Cam Detector</em> - Varios movimientos G1 sucesivos que involucran solo a los
+    ejes XYZ y que se desvíen menos de una cantidad Q- de una línea recta que los
+    contenga, se fusionaran en una única línea recta. Este movimiento combinado
+    reemplaza los movimientos individuales G1 cuando se quiere fusionar con
+    tolerancia. Entre movimientos sucesivos, el punto controlado no se desviara más
+    de P- desde los puntos finales reales de los movimientos. El punto controlado
+    tocará al menos un punto en cada movimiento. La máquina nunca se moverá a una
+    velocidad tal que no puede llegar a una parada exacta al final del movimiento
+    actual (o siguiente movimiento, si hace una pausa cuando la fusión ya ha
+    comenzado). En movimientos G2/G3, que se muevan en el plano G17 (XY), cuando la
+    desviación máxima de un arco desde un línea recta es menor que la tolerancia
+    Q-, el arco se divide en dos líneas (desde el inicio del arco hasta el
+    punto medio y desde el punto medio hasta el final). Esas líneas están
+    entonces sujetas al algoritmo <em>Naive Cam Detector</em> para líneas. Por lo tanto,
+    casos de arco a línea, arco a arco y línea a arco, así como línea a línea,
+    podrán beneficiarse de <em>naive cam detector</em>. Esto mejora el rendimiento
+    de contorneado simplificando el camino.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>En la siguiente figura, la línea azul representa la velocidad real de la máquina.
+Las líneas rojas son la capacidad de aceleración de la máquina. Las líneas
+horizontales debajo de cada grafico son el movimiento planificado. La parte superior
+de la gráfica muestra cómo el planificador de trayectoria ralentizará la máquina
+cuando se encuentren movimientos cortos para mantenerse dentro de los límites de los
+ajuste de aceleración de la máquina para poder detenerse exactamente al final del
+próximo movimiento. La gráfica inferior muestra el efecto de Naive Cam Detector al
+combinar los movimientos y hacer un mejor trabajo manteniendo el velocidad según lo
+planeado.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/naive-cam.png" alt="Naive Cam Detector" />
+</div>
+<div class="title">Figura 1. Naive Cam Detector</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_planificacion_de_movimientos">1.4. Planificacion de movimientos</h3>
+<div class="paragraph"><p>Asegúrese de que los movimientos sean "lo suficientemente largos" para adaptarse a
+su máquina/material. Principalmente debido a la regla de que la máquina nunca se
+moverá a una velocidad tal que no pueda detenerse por completo al final del
+movimiento actual, hay una longitud de movimiento mínima que permitirá a la máquina
+mantener una velocidad de avance solicitada para un ajuste de aceleración dado.</p></div>
+<div class="paragraph"><p>Las fases de aceleración y desaceleración utilizan cada una la mitad de
+MAX_ACCELERATION del archivo ini. En una combinación que sea una inversión exacta,
+esto causara que la aceleración total del eje iguale el valor MAX_ACCELERATION del
+archivo ini. En otros casos, la aceleración real de la máquina es algo menor que
+esta aceleración ini.</p></div>
+<div class="paragraph"><p>Para mantener la velocidad de alimentación, el movimiento debe ser más largo que la
+distancia necesaria para acelerar de cero a la velocidad de avance deseada y luego
+detenerse de nuevo. Usando A como <strong>1/2</strong> del valor de MAX_ACCELERATION del archivo
+ini, y <strong>F</strong> como velocidad de avance <strong>en unidades por segundo</strong>, el tiempo de
+aceleración es <strong>t<sub>a</sub> = F/A</strong> y la distancia de aceleración es <strong>d<sub>a</sub> = F * t<sub>a</sub>/2</strong>. En
+desaceleración, el tiempo y la distancia es la misma, haciendo que la distancia
+crítica sea <strong>d = d<sub>a</sub> + d<sub>d</sub> = 2 * d<sub>a</sub> = F<sup>2</sup>/A</strong>.</p></div>
+<div class="paragraph"><p>Por ejemplo, para una velocidad de avance de 1 pulgada por segundo y una aceleración
+de <strong>10 pulgadas/seg<sup>2</sup></strong>, la distancia crítica es
+<strong>1<sup>2</sup>/10 = 1/10 = 0.1 pulgadas</strong>.</p></div>
+<div class="paragraph"><p>Para una velocidad de avance de 0.5 pulgadas por segundo, la distancia crítica es
+<strong>5<sup>2</sup>/100 = 25/100 = 0.025</strong> pulgadas.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_código_g">2. Código G</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_valores_predeterminados">2.1. Valores predeterminados</h3>
+<div class="paragraph"><p>Cuando LinuxCNC se arranca, se cargan muchos códigos G y M de manera predeterminada.
+Los códigos actuales activos G y M se pueden ver en la pestaña MDI de la ventana
+<em>Códigos G activos:</em> en la interfaz AXIS. Estos códigos G y M define el
+comportamiento de LinuxCNC y es importante que entienda qué hace cada uno de ellos
+antes de ejecutar LinuxCNC. Los valores predeterminados se pueden cambiar cuando se
+ejecuta un archivo G-Code y pueden quedar en un estado diferente al del comienzo de
+sesión de LinuxCNC. La mejor práctica es establecer los valores predeterminados
+necesarios para el trabajo en un preámbulo de su archivo G-Code, sin suponer que los
+valores predeterminados no han cambiado. Imprimir la página de
+<a href="../gcode/g-code_es.html#gcode:quick-reference-table">Referencia Rápida</a> de códigos G puede ayudarle a recordar que es
+cada uno.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_velocidad_de_alimentacion">2.2. Velocidad de Alimentacion</h3>
+<div class="paragraph"><p>La forma en la que se aplica la velocidad de alimentación depende de si un eje
+involucrado con el movimiento es un eje giratorio. Lea y comprenda la sección
+<a href="../gcode/machining-center_es.html#cha:cnc-machine-overview">Velocidad de Avance</a> si tiene un eje giratorio o un
+torno.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_offset_del_radio_de_la_herramienta">2.3. Offset del radio de la herramienta</h3>
+<div class="paragraph"><p>El offset del radio de la herramienta (G41/G42) requiere que la herramienta sea
+capaz de tocar en algún lugar a lo largo de cada movimiento programado sin estropear
+los dos movimientos adyacentes. Si eso no es posible con el diámetro actual de la
+herramienta, se obtendrá un error. Una herramienta de menor diámetro puede trabajar
+sin error en el mismo camino. Esto significa que puede programar una herramienta
+para pasar por un camino que es más estrecho que la herramienta sin ningún error
+aparente. Para más información, ver la Sección <a href="../gcode/tool-compensation_es.html#sec:cutter-compensation">Compensación de la Herramienta</a>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_homing">3. Homing</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Después de iniciar LinuxCNC, cada eje debe tener definida una posición home antes de
+ejecutar un programa o un comando MDI.</p></div>
+<div class="paragraph"><p>Si su máquina no tiene interruptores home, una marca de coincidencia en cada eje
+puede ayudar a colocar las coordenadas de la máquina en el mismo lugar.</p></div>
+<div class="paragraph"><p>Una vez que los ejes están en home, se usarán los límites software establecidos en
+el archivo ini.</p></div>
+<div class="paragraph"><p>Si desea desviarse del comportamiento predeterminado, o desea usar el interfaz
+Mini, necesitará configurar la opción NO_FORCE_HOMING = 1 en la sección [TRAJ] de su
+archivo ini. Se puede obtener más información sobre homing en <a href="../config/ini-homing_es.html#cha:homing-configuration">Velocidad de Avance</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cambios_de_herramientas">4. Cambios de herramientas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Hay varias opciones al hacer cambios de herramientas manuales. Ver la
+<a href="../config/ini-config_es.html#sec:emcio-section">Sección [EMCIO]</a> para obtener información sobre la
+configuración de estas opciones. Ver también las secciones
+<a href="../gcode/g-code_es.html#gcode:g28-g28.1">G28</a> y <a href="../gcode/g-code_es.html#gcode:g30-g30.1">G30</a> del capítulo de Código G.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sistemas_de_coordenadas">5. Sistemas de coordenadas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Los sistemas de coordenadas pueden ser confusos al principio. Antes de manejar una
+máquina CNC debe comprender los conceptos básicos de los sistemas de coordenadas
+utilizados por LinuxCNC. La información detallada sobre los sistemas de coordenadas
+está en la sección <a href="../gcode/coordinates_es.html#cha:coordinate-system">Sistema de Coordenadas</a> de
+este manual.</p></div>
+<div class="sect2">
+<h3 id="_coordenadas_maquina_g53">5.1. Coordenadas Maquina G53</h3>
+<div class="paragraph"><p>Al hacer una secuencia homing, LinuxCNC configura el sistema de coordenadas de la
+máquina, G53, a cero para cada uno de los eje en la secuencia.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Ningún otro sistema de coordenadas u offsets de herramientas se cambian por la
+secuencia homing.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>La única forma de moverse en el sistema de coordenadas de la máquina es cuando se
+programa un G53 en la misma línea que el movimiento. Normalmente se está en el
+sistema de coordenadas G54.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_coordenadas_de_usuario_g54_a_g59_3">5.2. Coordenadas de usuario - G54 a G59.3</h3>
+<div class="paragraph"><p>Normalmente se usa el sistema de coordenadas G54. Cuando se aplica un offset al
+actual sistema de coordenadas de usuario, una pequeña bola azul con líneas estará en
+el <a href="../gcode/coordinates_es.html#sec.machine-coordinate-system">origen de maquina</a> cuando su DRO esté
+mostrando <em>Posición: Relativa Actual</em> en Axis. Si sus offsets son temporales, use
+Zero Coordinate System del menú o programe la máquina con <em>G10 L2 P1 X0 Y0 Z0</em> al
+final de su archivo de código G. Cambie el número <em>P</em> para que se adapte al
+sistema de coordenadas en el que desea borrar el offset.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Los offsets almacenados en un sistema de coordenadas de usuario se conservan
+   cuando LinuxCNC se apaga.
+</p>
+</li>
+<li>
+<p>
+Usando el botón <em>Touch Off</em> en Axis, se establece un offset para el Sistema
+   de coordenadas elegido de usuario.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_cuando_este_perdido">5.3. Cuando este perdido</h3>
+<div class="paragraph"><p>Si tiene problemas para obtener 0,0,0 en el DRO cuando piense que
+debería mostrarse, puede que tenga algunos offsets programados y necesita
+eliminarlos.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Muévase al origen de la máquina con G53 G0 X0 Y0 Z0
+</p>
+</li>
+<li>
+<p>
+Borre cualquier offset de G92 con G92.1
+</p>
+</li>
+<li>
+<p>
+Use el sistema de coordenadas G54
+</p>
+</li>
+<li>
+<p>
+Establezca el sistema de coordenadas G54 para que sea el mismo que el
+   sistema de coordenadas máquina con G10 L2 P1 X0 Y0 Z0 R0
+</p>
+</li>
+<li>
+<p>
+Desactivar los offsets de herramienta con G49
+</p>
+</li>
+<li>
+<p>
+Activar la pantalla de coordenadas relativas desde el menú
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Ahora debe estar en el origen de la máquina X0 Y0 Z0 y el sistema de coordenadas
+relativo debe ser el mismo que el sistema de coordenadas de máquina.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:Machine-Configurations">6. Configuraciones de la maquina</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El siguiente diagrama muestra una fresadora típica que muestra la dirección del
+recorrido de la herramienta, la mesa y los interruptores de límite. Observe cómo la
+mesa se mueve en la dirección opuesta a las flechas del sistema de coordenadas
+cartesianas mostrado por la imagen <em>Dirección Herramienta</em>. Esto hace que la
+herramienta <em>se mueva</em> en el dirección correcta en relación con el material.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/mill-diagram_es.png" alt="Configuración de fresadora" />
+</div>
+<div class="title">Figura 2. Configuración de fresadora</div>
+</div>
+<div class="paragraph"><p>El siguiente diagrama muestra un torno típico que muestra la dirección del recorrido
+de la herramienta y los interruptores de límite.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/lathe-diagram_es.png" alt="Configuración de torno" />
+</div>
+<div class="title">Figura 3. Configuración de Torno</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

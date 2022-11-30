@@ -1,0 +1,200 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:48 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MUX_GENERIC</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MUX_GENERIC</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">mux_generic -
+choose one from several input values</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="61%">
+
+
+<p style="margin-top: 1em"><b>loadrt mux_generic
+config=&quot;bb8,fu12....&quot;</b></p> </td>
+<td width="28%">
+</td></tr>
+</table>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mux-gen.</b><i>NN</i>
+Depending on the data types can run in either a floating</p>
+
+<p style="margin-left:22%;">point or non-floating point
+thread.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mux-gen.</b><i>NN</i><b>.suppress-no-input</b>
+bit in</p>
+
+<p style="margin-left:22%;">This suppresses changing the
+output if all select lines are false. This stops unwanted
+jumps in output between transitions of input. but makes in00
+unavaliable.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.debounce-us</b>
+unsigned in</p>
+
+<p style="margin-left:22%;">sets debouce time in
+microseconds. eg. 100000 = a tenth of a second. The
+selection inputs must be stable this long before the output
+changes. This helps to ignore &rsquo;noisy&rsquo;
+switches.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.sel-bit-</b><i>MM</i>
+bit in (M=0..N) <b><br>
+mux-gen.</b><i>NN</i><b>.sel-int</b> unsigned in</p>
+
+<p style="margin-left:22%;">Together, these determine which
+<b>in</b><i>N</i> value is copied to <b>output</b>. The bit
+pins are interpreted as binary bits, and the result is
+simply added on to the integer pin input. It is expected
+that either one or the other would normally be used. Hower,
+the possibility exists to use a higher-order bit to
+&quot;shift&quot; the values set by the integer pin. The
+sel-bit pins are only created when the size of the mux_gen
+component is an integer power of two. This component (unlike
+mux16) does not offer the option of decoding gray-code,
+however the same effect can be achieved by arranging the
+order of the input values to suit.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.out-[bit/float/s32/u32]</b>
+variable-type out</p>
+
+<p style="margin-left:22%;">Follows the value of one of the
+<b>in</b><i>N</i> values according to the selection bits
+and/or the selection number. Values will be
+converted/truncated according to standard C rules. This
+means, for example that a float input greater than
+2147483647 will give an S32 output of -2147483648.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>NN</i><b>.in-[bit/float/s32/u32]-</b><i>MM</i>
+variable-type in</p>
+
+<p style="margin-left:22%;">The possible output values that
+are selected by the selection pins.</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mux-gen.</b><i>N</i><b>.elapsed</b>
+float r</p>
+
+<p style="margin-left:22%;">Current value of the internal
+debounce timer for debugging.</p>
+
+
+<p style="margin-left:11%;"><b>mux-gen.</b><i>N</i><b>.selected</b>
+s32 r</p>
+
+<p style="margin-left:22%;">Current value of the internal
+selection variable after conversion for debugging. Possibly
+useful for setting up gray-code switches.</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+is a more general version of the other multiplexing
+components. It allows the creation of arbitrary-size
+multiplexers (up to 1024 entries) and also supports
+differing data types on the input and output pins. The
+configuration string is a comma-separated list of
+code-letters and numbers, such as &quot;bb4,fu12&quot; This
+would create a 4-element bit-to-bit mux and a 12-element
+float-to-unsigned mux. The code letters are b = bit, f =
+float, s = signed integer, u = unsigned integer. The first
+letter code is the input type, the second is the output
+type. The codes are not case-sensitive. The order of the
+letters is significant but the position in the string is
+not. Do not insert any spaces in the config string. Any
+non-zero float value will be converted to a &quot;true&quot;
+output in bit form. Be wary that float datatypes can be
+very, very, close to zero and not actually be equal to
+zero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Each mux has
+its own HAL function and must be added to a thread
+separately. If neither input nor output is of type float
+then the function is base-thread (non floating-point) safe.
+Any mux_generic with a floating point input or output can
+only be added to a floating-point thread.</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Andy Pugh</p>
+<hr>
+</body>
+</html>

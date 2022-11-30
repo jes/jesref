@@ -1,0 +1,434 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>vfs11_vfd</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">vfs11_vfd</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#USO">USO</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>vfs11_vfd</b>
+- Componente de espacio de usuario HAL para drivers de
+frecuencia variable Toshiba-Schneider VF-S11</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>vfs11_vfd</b>
+[OPCIONES]</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+p&Atilde;&iexcl;gina del manual explica el componente
+<b>vfs11_vfd .</b> Este componente lee y escribe en el vfs11
+a trav&Atilde;&copy;s de una conexi&Atilde;&sup3;n
+Modbus.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>vfs11_vfd</b>
+es para usar con LinuxCNC.</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-n&nbsp;--name&nbsp;&lt;halname&gt;</b></p>
+
+<p style="margin-left:22%;">establecer el nombre del
+componente HAL</p>
+
+<p style="margin-left:11%;"><b>-d&nbsp;--debug</b></p>
+
+<p style="margin-left:22%;">Activar mensajes de
+depuraci&Atilde;&sup3;n. Tambi&Atilde;&copy;n se
+altern&Atilde;&sup3; enviando una se&Atilde;&plusmn;al USR1
+al proceso vfs11_vfd.</p>
+
+
+<p style="margin-left:11%;"><b>-m&nbsp;--modbus-debug</b></p>
+
+<p style="margin-left:22%;">Active los mensajes de
+depuraci&Atilde;&sup3;n Modbus. Esto har&Atilde;&iexcl; que
+todos los mensajes Modbus se impriman en hexadecimal en el
+terminal. Tambi&Atilde;&copy;n se activa al enviar una
+se&Atilde;&plusmn;al USR2 al proceso vfs11_vfd.</p>
+
+
+<p style="margin-left:11%;"><b>-I&nbsp;--ini&nbsp;&lt;nombre&nbsp;de&nbsp;archivo&gt;</b></p>
+
+<p style="margin-left:22%;">tomar la
+configuraci&Atilde;&sup3;n de este ini expediente. El valor
+predeterminado es la variable de entorno INI_FILE_NAME.</p>
+
+
+<p style="margin-left:11%;"><b>-S&nbsp;--section&nbsp;&lt;section-name&gt;</b></p>
+
+<p style="margin-left:22%;">tomar
+configuraci&Atilde;&sup3;n de esto secci&Atilde;&sup3;n en
+el archivo ini. El valor predeterminado es
+&rsquo;VFS11&rsquo;.</p>
+
+
+<p style="margin-left:11%;"><b>-r&nbsp;--report-device</b></p>
+
+<p style="margin-left:22%;">informar de las propiedades del
+dispositivo en la consola al inicio</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;name&gt;.acceleration-pattern&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">cuando sea verdadero,
+establezca los tiempos de aceleraci&Atilde;&sup3;n y
+desaceleraci&Atilde;&sup3;n como se define en los registros
+F500 y F501 respectivamente. Se utiliza en bucles PID para
+elegir tiempos de rampa m&Atilde;&iexcl;s cortos para evitar
+la oscilaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.alarm-code&nbsp;(s32,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">distinto de cero si la unidad
+est&Atilde;&iexcl; en estado de alarma. Mapa de bits que
+describe la informaci&Atilde;&sup3;n de alarma (consulte la
+descripci&Atilde;&sup3;n del registro FC91). Utilizar
+<i>rr-reset</i> (ver abajo) para borrar la alarma.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.at-speed&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">cuando la unidad
+est&Atilde;&iexcl; a la velocidad ordenada (ver
+<i>speed-tolerance</i> abajo)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.current-load-percentage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">reportado desde el VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.dc-brake&nbsp;&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">active el freno de CC.
+Tambi&Atilde;&copy;n apaga el husillo-on.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.enable&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">habilitar el VFD. Si es falso,
+todos los par&Atilde;&iexcl;metros operativos
+a&Atilde;&ordm;n se leen, pero se libera el control y se
+habilita el control del panel (sujeto a la
+configuraci&Atilde;&sup3;n del VFD).</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.err-reset&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">errores de reinicio (alarmas
+tambi&Atilde;&copy;n conocido como estado de disparo y
+parada de emergencia). Reiniciar el VFD puede causar un
+retraso de 2 segundos hasta que se reinicie y Modbus vuelva
+a funcionar.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.estop&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">ponga el VFD en estado de
+parada de emergencia. Ninguna operaci&Atilde;&sup3;n es
+posible hasta que se borre con <i>err-reset</i> o
+powercycling.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.frequency-command&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">frecuencia objetivo actual en
+HZ como se establece a trav&Atilde;&copy;s de la
+velocidad-command (que est&Atilde;&iexcl; en RPM), desde el
+VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.frequency-out&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">frecuencia de salida actual del
+VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.inverter-load-percentage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">informe de carga actual de
+VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.is-e-stopped&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">el VFD est&Atilde;&iexcl; en
+estado de parada de emergencia (parpadea &quot;E&quot; en el
+panel). Utilizar <i>err-reset</i> para reiniciar el VFD y
+borrar el estado de e-stop.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.is-stopped&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">verdadero cuando el VFD informa
+salida de 0 Hz</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.jog-mode&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">1 para ENCENDIDO y 0 para
+APAGADO, habilita el &rsquo;modo de avance&rsquo; del
+VF-S11. El control de velocidad est&Atilde;&iexcl;
+deshabilitado y la frecuencia de salida est&Atilde;&iexcl;
+determinada por el registro F262 (preestablecido a 5Hz).
+Esto podr&Atilde;a ser &Atilde;&ordm;til para la
+orientaci&Atilde;&sup3;n del husillo.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.max-rpm&nbsp;(float,&nbsp;R)</b></p>
+
+<p style="margin-left:22%;">l&Atilde;mite de RPM real
+basado en la frecuencia m&Atilde;&iexcl;xima que puede
+generar el VFD y los valores de la placa de
+identificaci&Atilde;&sup3;n del motor. Por ejemplo, si
+<i>placa de identificaci&Atilde;&sup3;n-HZ</i> es 50 y
+<i>placa de identificaci&Atilde;&sup3;n-RPM_</i> es 1410,
+pero el VFD puede generar hasta 80Hz, entonces
+<i>max-rpm</i> leer&Atilde;a como 2256 (80 * 1410/50). El
+l&Atilde;- mite de frecuencia se lee desde el VFD al inicio.
+Para aumentar el l&Atilde;mite de frecuencia superior, los
+par&Atilde;&iexcl;metros UL y FH deben cambiarse en el
+panel. Consulte el manual VF-S11 para obtener instrucciones
+sobre c&Atilde;&sup3;mo configurar la frecuencia
+m&Atilde;&iexcl;xima.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.modbus-ok&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">verdadero cuando la
+sesi&Atilde;&sup3;n Modbus se establece con
+&Atilde;&copy;xito y las &Atilde;&ordm;ltimas 10
+transacciones se devuelven sin error.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.motor-RPM&nbsp;(flotante,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">valor actual estimado de RPM,
+desde el VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.output-current-percentage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">de la VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.output-voltage-percentage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">de la VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.output-voltage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">de la VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.velocidad-comando&nbsp;(flotante,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">velocidad enviada a VFD en RPM.
+Es un error enviar una velocidad m&Atilde;&iexcl;s
+r&Atilde;&iexcl;pida que las RPM m&Atilde;&iexcl;ximas del
+motor establecidas en el VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.spindle-fwd&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">1 para FWD y 0 para REV,
+enviado a VFD</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.spindle-on&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">1 para ON y 0 para OFF enviado
+a VFD, solo encendido cuando se ejecuta</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.spindle-rev&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">1 para ENCENDIDO y 0 para
+APAGADO, solo encendido cuando se ejecuta</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.max-speed&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">ignore el
+par&Atilde;&iexcl;metro loop-time y ejecute Modbus al
+m&Atilde;&iexcl;ximo velocidad, a expensas de un mayor uso
+de la CPU. Uso sugerido durante el posicionamiento del
+husillo.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.status&nbsp;(s32,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Estado del variador del VFD
+(consulte el Manual de instrucciones de la
+funci&Atilde;&sup3;n de comunicaciones TOSVERT VF-S11,
+registre FD01). Un mapa de bits.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.trip-code&nbsp;(s32,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">c&Atilde;&sup3;digo de disparo
+si VF-S11 est&Atilde;&iexcl; en estado de disparo.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.error-count&nbsp;(s32,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">n&Atilde;&ordm;mero total de
+transacciones que devuelven un error Modbus</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;nombre&gt;.frequency-limit&nbsp;(float,&nbsp;RO)</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite superior
+le&Atilde;do desde la configuraci&Atilde;&sup3;n de VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.loop-time&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">con qu&Atilde;&copy; frecuencia
+se sondea el Modbus (intervalo predeterminado 0.1
+segundos)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.nameplate-HZ&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">Placa de
+identificaci&Atilde;&sup3;n Hz del motor (por defecto 50).
+Se utiliza para calcular la frecuencia objetivo (junto con
+<i>placa de identificaci&Atilde;&sup3;n-RPM</i> ) para un
+valor de RPM objetivo como lo indica la
+velocidad-comando.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.nameplate-RPM&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">RPM de la placa de
+identificaci&Atilde;&sup3;n del motor (predeterminado
+1410)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.rpm-limit&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">l&Atilde;mite suave de no
+exceder las RPM del motor (el valor predeterminado es
+<i>placa de identificaci&Atilde;&sup3;n-RPM</i> )</p>
+
+
+<p style="margin-left:11%;"><b>&lt;nombre&gt;.tolerance&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">tolerancia de velocidad (por
+defecto 0.01) para determinar si el husillo
+est&Atilde;&iexcl; a velocidad (0.01 significa: la
+frecuencia de salida est&Atilde;&iexcl; dentro del 1% de la
+frecuencia objetivo)</p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El controlador
+vfs11_vfd tiene prioridad sobre el control del panel
+mientras est&Atilde;&iexcl; habilitado (consulte
+<i>.enable</i> pin), deshabilitando efectivamente el panel.
+Despejando el <i>.enable</i> pin vuelve a habilitar el
+panel. Los pines y par&Atilde;&iexcl;metros a&Atilde;&ordm;n
+se pueden configurar, pero no se escribir&Atilde;&iexcl;n en
+el VFD hasta que se establezca el pin .enable. Los
+par&Atilde;&iexcl;metros operativos todav&Atilde;a se leen
+mientras el control del bus est&Atilde;&iexcl;
+desactivado.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Salir del
+controlador vfs11_vfd de forma controlada
+liberar&Atilde;&iexcl; el VFD del bus y
+restaurar&Atilde;&iexcl; el control del panel.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Consulte el
+Manual de integradores de LinuxCNC para obtener
+m&Atilde;&iexcl;s informaci&Atilde;&sup3;n. Para obtener una
+descripci&Atilde;&sup3;n detallada del registro de los VFD
+de Toshiba, consulte el &quot;Manual de instrucciones de la
+funci&Atilde;&sup3;n de comunicaciones TOSVERT VF-S11&quot;
+(n&Atilde;&ordm;mero de documento Toshiba E6581222) y el
+&quot;Manual de instrucciones TOSVERT VF-S11&quot;
+(n&Atilde;&ordm;mero de documento Toshiba E6581158).</p>
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Michael
+Haberler; basado en gs2_vfd por Steve Padnos y John
+Thornton.</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

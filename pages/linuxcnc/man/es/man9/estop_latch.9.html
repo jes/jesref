@@ -1,0 +1,213 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:26 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>ESTOP_LATCH</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">ESTOP_LATCH</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">estop_latch -
+Software ESTOP latch</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em"><b>loadrt estop_latch
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="11%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+can be used as a part of a simple software ESTOP chain.</p>
+
+<p style="margin-left:11%; margin-top: 1em">It has two
+states: &quot;OK&quot; and &quot;Faulted&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The initial
+state is &quot;Faulted&quot;. When faulted, the
+<b>out-ok</b> output is false, the <b>fault-out</b> output
+is true, and the <b>watchdog</b> output is unchanging.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The state
+changes from &quot;Faulted&quot; to &quot;OK&quot; when
+<b>all</b> these conditions are true:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="9%"></td>
+<td width="50%">
+
+
+<p><b>fault-in</b> is false</p></td>
+<td width="18%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="9%"></td>
+<td width="50%">
+
+
+<p><b>ok-in</b> is true</p></td>
+<td width="18%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="9%"></td>
+<td width="50%">
+
+
+<p><b>reset</b> changes from false to true</p></td>
+<td width="18%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">When
+&quot;OK&quot;, the <b>out-ok</b> output is true, the
+<b>fault-out</b> output is false, and the <b>watchdog</b>
+output is toggling.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The state
+changes from &quot;OK&quot; to &quot;Faulted&quot; when
+<b>any</b> of the following are true:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td width="9%"></td>
+<td width="25%">
+
+
+<p style="margin-top: 1em"><b>fault-in</b> is true</p></td>
+<td width="43%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="9%"></td>
+<td width="25%">
+
+
+<p><b>ok-in</b> is false</p></td>
+<td width="43%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">To facilitate
+using only a single fault source, <b>ok-in</b> and
+<b>fault-en</b> are both set to the non-fault-causing value
+when no signal is connected. For estop-latch to ever be able
+to signal a fault, at least one of these inputs must be
+connected.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Typically, an
+external fault or estop input is connected to
+<b>fault-in</b>, <b>iocontrol.0.user-request-enable</b> is
+connected to <b>reset</b>, and <b>ok-out</b> is connected to
+<b>iocontrol.0.emc-enable-in.</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>In more
+complex systems, it may be more appropriate to use
+classicladder to manage the software portion of the estop
+chain.</b></p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>estop-latch.</b><i>N</i></p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>estop-latch.</b>N</i><b>.ok-in</b>
+bit in (default: <i>true</i>) <b><br>
+estop-latch.</b><i>N</i><b>.fault-in</b> bit in (default:
+<i>false</i>) <b><br>
+estop-latch.</b><i>N</i><b>.reset</b> bit in <b><br>
+estop-latch.</b><i>N</i><b>.ok-out</b> bit out (default:
+<i>false</i>) <b><br>
+estop-latch.</b><i>N</i><b>.fault-out</b> bit out (default:
+<i>true</i>) <b><br>
+estop-latch.</b><i>N</i><b>.watchdog</b> bit out</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

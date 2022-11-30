@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph" id="cha:lathe-configuration"><p>﻿= Configuración de torno</p></div>
+<div class="sect1">
+<h2 id="_plano_predeterminado">1. Plano predeterminado</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Cuando el intérprete de LinuxCNC se escribió por primera vez, fue diseñado para fresadoras.
+Es por eso que el plano predeterminado es XY (G17). Un torno normal solo usa el
+plano XZ (G18). Para cambiar el plano predeterminado, coloque la siguiente línea en
+el archivo .ini en la sección RS274NGC.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>RS274NGC_STARTUP_CODE = G18</code></pre>
+</div></div>
+<div class="paragraph"><p>Lo anterior se puede sobrescribir en un programa de código g, por lo que siempre debe configurar cosas importantes
+en el preámbulo del archivo de código g.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración_ini">2. Configuración INI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las siguientes configuraciones .ini son necesarias para el modo torno en Axis además de
+o reemplazando a la configuración normal en el archivo .ini. Estas configuraciones históricas usan
+cinemática de identidad (trivkins) y <em>tres</em> articulaciones (0,1,2) correspondientes a
+coordenadas x, y, z. En estas configuraciones históricas se requiere la articulacion 1
+para el eje Y no utilizado. Las configuraciones de torno simuladas pueden usar estos
+ajustes históricos.
+Gmoccapy también usa las configuraciones mencionadas, pero ofrece configuraciones adicionales.
+Verifique la sección <a href="../gui/gmoccapy_es.html#cha:gmoccapy">gmoccapy</a> para más detalles.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = axis
+LATHE = 1
+...
+
+[KINS]
+KINEMATICS = trivkins
+JOINTS = 3
+
+[TRAJ]
+COORDINATES = X Z
+...
+
+[JOINT_0]
+...
+[JOINT_2]
+...
+[AXIS_X]
+...
+[AXIS_Z]
+...</code></pre>
+</div></div>
+<div class="paragraph"><p>Con la incorporación de joint_axes, se puede hacer una configuración más simple con solo
+las dos articulaciones requeridas especificando trivkins con el parámetro <em>coordinates=</em>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = axis
+LATHE = 1
+...
+
+[KINS]
+KINEMATICS = trivkins coordinates=xz
+JOINTS = 2
+
+[TRAJ]
+COORDINATES = X Z
+...
+
+[JOINT_0]
+...
+[JOINT_1]
+...
+[AXIS_X]
+...
+[AXIS_Z]
+...</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

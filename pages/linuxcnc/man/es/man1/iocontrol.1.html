@@ -1,0 +1,195 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>IOCONTROL</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">IOCONTROL</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PARAMETROS">PARAMETROS</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">iocontrol -
+acepta comandos de E/S NML, interactua con HAL en el espacio
+de usuario</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadusr io
+[-ini</b> <i>inifile</i><b>]</b></p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estos pines son
+creados por el controlador IO de espacio de usuario, que
+generalmente se encuentra en $LINUXCNC_HOME/bin/io</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las
+se&ntilde;ales se activan y desactivan en el espacio de
+usuario: si tiene requisitos de tiempo estrictos o
+simplemente necesita mas I/O, considere usar la I/O
+sincronizada en tiempo real proporcionada por <b>motion</b>
+(9).</p>
+
+<p style="margin-left:11%; margin-top: 1em">El archivo
+inifile se busca en el directorio desde donde se ejecuto
+halcmd, a menos que se especifique una ruta absoluta.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>iocontrol.0.coolant-flood</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE cuando se
+solicita refrigerante de inundacion</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.coolant-mist</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE cuando se
+solicita refrigerante de niebla</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.emc-enable-in</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Se debe activar FALSE
+cuando existe una condicion Estop externa.</p>
+
+<p style="margin-left:11%;"><b>iocontrol.0.lube</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE cuando se
+solicita lubricante. Este pin pasa a TRUE cuando el
+controlador sale de E-stop, y cuando el comando &quot;Lube
+On&quot; se envia al controlador. Es FALSE cuando el
+controlador recibe E-stop, y cuando se envia el comando
+&quot;Lube Off&quot;.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.lube_level</b></p>
+
+<p style="margin-left:22%;">(Bit, in.) Se debe poner en
+FALSE cuando el tanque de lubricacion esta vacio.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-change</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) Se debe poner en
+TRUE cuando se solicita un cambio de herramienta</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-changed</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Se debe poner en TRUE
+cuando se completa un cambio de herramienta.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-number</b></p>
+
+<p style="margin-left:22%;">(s32, Out) Numero de
+herramienta actual</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prep-number</b></p>
+
+<p style="margin-left:22%;">(s32, Out) El numero de la
+siguiente herramienta de la palabra T</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prep-pocket</b></p>
+
+<p style="margin-left:22%;">(s32, Out) Este es el numero de
+ranura (ubicacion en el almacenamiento del mecanismo de
+herramientas) de la herramienta solicitada por la palabra T
+mas reciente.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prepare</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE cuando se
+solicita la preparacion de la herramienta T<i>n</i></p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prepared</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Debe ponerse en TRUE
+cuando se completa la preparacion de una herramienta.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.user-enable-out</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) FALSE cuando existe
+una condicion de detencion interna</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.user-request-enable</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE cuando el
+usuario ha solicitado que se elimine la detencion</p>
+
+<h2>PARAMETROS
+<a name="PARAMETROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>iocontrol.0.tool-prep-index</b></p>
+
+<p style="margin-left:22%;">(s32, RO) indice de matriz
+interna de IO de la herramienta preparada solicitada por la
+palabra T mas reciente. 0 si no hay ninguna herramienta
+preparada. En maquinas con cambiador de herramientas random,
+este es el numero de ranura de la herramienta (es decir, el
+mismo que tool-prep-pocket pin). En maquinas de cambiador de
+herramientas no random, esto es un numero entero que
+corresponde a la ubicacion de la herramienta en la
+representacion interna de la tabla de herramientas. Este
+parametro vuelve a 0 despues de un cambio de herramienta con
+exito (M6).</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>motion&nbsp;fR
+(9)</b></p>
+<hr>
+</body>
+</html>

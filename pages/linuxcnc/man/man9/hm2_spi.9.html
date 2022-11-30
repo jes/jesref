@@ -1,0 +1,157 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:46 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HM2_SPI</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HM2_SPI</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#INTERFACE CONFIGURATION">INTERFACE CONFIGURATION</a><br>
+<a href="#REALTIME PERFORMANCE OF LINUX SPIDEV DRIVERS">REALTIME PERFORMANCE OF LINUX SPIDEV DRIVERS</a><br>
+<a href="#SPI CLOCK RATES">SPI CLOCK RATES</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_spi -
+LinuxCNC HAL driver for the Mesa Electronics SPI Anything IO
+boards, with HostMot2 firmware.</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt hm2_spi
+[config=</b><i>&quot;str[,str...]&quot;</i><b>]
+[spidev_path=path[,path...]]
+[spidev_rate=</b><i>rate[,rate...]</i><b>]</b></p> </td></tr>
+</table>
+
+<p style="margin-left:17%;"><b>config</b> [default:
+&quot;&quot;]</p>
+
+<p style="margin-left:28%;">HostMot2 config strings,
+described in the hostmot2(9) manpage.</p>
+
+<p style="margin-left:17%;"><b>spidev_path</b> [default:
+&quot;/dev/spidev1.0&quot;]</p>
+
+<p style="margin-left:28%;">The path to the spi device
+node, a character special device in /dev</p>
+
+<p style="margin-left:17%;"><b>spidev_rate</b> [default:
+24000]</p>
+
+<p style="margin-left:28%;">The desired rate of the SPI
+clock in kHz. If the exact specified clock is not available,
+a lower clock is used. Due to shortcomings in the spidev
+API, it is not possible for hal to report the actual clock
+used.</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_spi is a
+device driver that interfaces Mesa&rsquo;s SPI based
+Anything I/O boards (with the HostMot2 firmware) to the
+LinuxCNC HAL.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The supported
+boards are: 7I90HD.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The board must
+have a compatible firmware loaded on the board by the
+mesaflash(1) program.</p>
+
+<p style="margin-left:11%; margin-top: 1em">hm2_spi is only
+available when linuxcnc is configured with
+&quot;uspace&quot; realtime.</p>
+
+<h2>INTERFACE CONFIGURATION
+<a name="INTERFACE CONFIGURATION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">It is possible
+for one SPI bus to connect several devices; in this
+configuration, a master device has several chip select
+lines. In order to meet realtime deadlines, hm2_spi should
+be used on a dedicated SPI interface not shared with any
+other slaves.</p>
+
+<h2>REALTIME PERFORMANCE OF LINUX SPIDEV DRIVERS
+<a name="REALTIME PERFORMANCE OF LINUX SPIDEV DRIVERS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">As of kernel
+3.8, most or all kernel SPI drivers do not achieve the high
+realtime response rate required for a typical linuxcnc
+configuration. The driver was tested with a modified version
+of the spi-s3c64xx SPI driver on the Odroid U3 platform. The
+patched kernel resides
+<a href="https://github.com/jepler/odroid-linux/tree/odroid-3.8.13-rt">on
+github</a>.</p>
+
+<h2>SPI CLOCK RATES
+<a name="SPI CLOCK RATES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The maximum SPI
+clock of the 7i90 is documented as 50MHz. Other elements of
+the data path between HAL and the 7i90 may impose other
+limitations.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hostmot2(9)</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

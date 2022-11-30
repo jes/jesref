@@ -1,0 +1,172 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_signal_new</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_signal_new</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_signal_new,
+hal_signal_delete, hal_link, hal_unlink - Manipular
+se&Atilde;&plusmn;ales HAL</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hal_signal_new(const char
+*<i>signal_name</i>, hal_type_t <i>type</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hal_signal_delete(const char
+*<i>signal_name</i>)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hal_link(const char
+*<i>pin_name</i>, const char * <i>signal_name</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hal_unlink(const char
+*<i>pin_name</i>)</p> </td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>signal_name</i></p>
+
+<p style="margin-left:22%;">El nombre de la
+se&Atilde;&plusmn;al</p>
+
+<p style="margin-left:11%;"><i>pin_name</i></p>
+
+<p style="margin-left:22%;">El nombre del pin</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>type</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>El tipo de se&Atilde;&plusmn;al, como se especifica en
+<b>hal_type_t(3hal)</b>.</p> </td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_signal_new</b>
+crea un nuevo objeto de se&Atilde;&plusmn;al. Una vez que
+una se&Atilde;&plusmn;al ha sido creada, los pines se pueden
+vincular con <b>hal_link</b>. El objeto se&Atilde;&plusmn;al
+contiene el almacenamiento real para los datos de la
+se&Atilde;&plusmn;al. Los objetos pin vinculados a la
+se&Atilde;&plusmn;al tiene punteros que apuntan a los datos.
+&rsquo;name&rsquo; es el nombre de la nueva
+se&Atilde;&plusmn;al. No puede tener m&Atilde;&iexcl;s de
+HAL_NAME_LEN caracteres. Si ya hay una se&Atilde;&plusmn;al
+con el mismo nombre, fallar&Atilde;&iexcl; la llamada.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_link</b>
+vincula un pin a una se&Atilde;&plusmn;al. Si el pin ya
+est&Atilde;&iexcl; vinculado a la se&Atilde;&plusmn;al
+deseada, el comando tiene &Atilde;&copy;xito. Si el pin ya
+est&Atilde;&iexcl; vinculado a alguna otra
+se&Atilde;&plusmn;al, es un error. En cualquier caso, la
+conexi&Atilde;&sup3;n existente no es modificada. (Use
+&rsquo;hal_unlink&rsquo; para romper una
+conexi&Atilde;&sup3;n existente). Si la se&Atilde;&plusmn;al
+ya tiene otros pines vinculados, no se ven afectados: una
+se&Atilde;&plusmn;al puede ser vinculada a muchos pines,
+pero un pin puede vincularse a una sola
+se&Atilde;&plusmn;al.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_unlink</b>
+desvincula cualquier se&Atilde;&plusmn;al del pin
+especificado.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_signal_delete</b>
+elimina un objeto de se&Atilde;&plusmn;al. Cualquier pin
+vinculado al objeto queda desvinculado</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+c&Atilde;&sup3;digo de estado HAL.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_type_t(3hal)</b></p>
+<hr>
+</body>
+</html>

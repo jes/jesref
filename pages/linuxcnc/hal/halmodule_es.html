@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Crear Componentes Python de Espacio de Usuario</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Crear Componentes Python de Espacio de Usuario</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:halmodule">1. Uso Básico</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Un componente de espacio de usuario comienza creando sus pines y parámetros. Luego
+entra en un bucle que manejara periódicamente todas las salidas segun las
+entradas. El siguiente componente copia el valor visto en su pin de entrada
+(<em>passthrough.in</em>) a su pin de salida (<em>passthrough.out</em>) aproximadamente
+una vez por segundo.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">#</span></span><span style="color: #990000">!/</span>usr<span style="color: #990000">/</span>bin<span style="color: #990000">/</span>env python
+<span style="color: #008080">import</span> hal<span style="color: #990000">,</span> time
+h <span style="color: #990000">=</span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">component</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"passthrough"</span><span style="color: #990000">)</span>
+h<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"in"</span><span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_FLOAT<span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">)</span>
+h<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"out"</span><span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_FLOAT<span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_OUT<span style="color: #990000">)</span>
+h<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ready</span></span><span style="color: #990000">()</span>
+<span style="font-weight: bold"><span style="color: #008080">try:</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">while</span></span> <span style="color: #993399">1</span><span style="color: #990000">:</span>
+        time<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">sleep</span></span><span style="color: #990000">(</span><span style="color: #993399">1</span><span style="color: #990000">)</span>
+        h<span style="color: #990000">[</span><span style="color: #FF0000">'out'</span><span style="color: #990000">]</span> <span style="color: #990000">=</span> h<span style="color: #990000">[</span><span style="color: #FF0000">'in'</span><span style="color: #990000">]</span>
+<span style="color: #008080">except</span> KeyboardInterrupt<span style="color: #990000">:</span>
+    raise SystemExit</tt></pre></div></div>
+<div class="paragraph"><p>Copie el listado anterior en un archivo llamado "passthrough", hágalo
+ejecutable (<em>chmod +x</em>), y colóquelo en su <em>$PATH</em>. Luego, pruébelo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Halrun
+
+halcmd: loadusr passthrough
+
+halcmd: show pin
+
+    Component Pins:
+    Owner Type  Dir     Value  Name
+     03   float IN          0  passthrough.in
+     03   float OUT         0  passthrough.out
+
+halcmd: setp passthrough.in 3.14
+
+halcmd: show pin
+
+    Component Pins:
+    Owner Type  Dir     Value  Name
+     03   float IN       3.14  passthrough.in
+     03   float OUT      3.14  passthrough.out</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_componentes_de_espacio_de_usuario_y_retrasos">2. Componentes de espacio de usuario y retrasos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Si escribió el segundo "show pin" rápidamente, puede ver que <em>passthrough.out</em>
+todavía tenía su valor anterior de 0. Esto se debe a la llamada a
+<em>time.sleep(1)</em>, que hace que la asignación al pin de salida ocurra al
+menos una vez por segundo. Como este es un componente de espacio de usuario, la demora real
+entre asignaciones puede ser mucho más larga si
+la memoria utilizada por el componente passthrough se intercambia en el disco; la
+asignación se puede retrasar hasta que la memoria se intercambie nuevamente.</p></div>
+<div class="paragraph"><p>Por lo tanto, los componentes del espacio de usuario son adecuados para elementos interactivos con el usuario
+como los paneles de control (los retrasos en el rango de milisegundos no seran
+notados, y son aceptables demoras más largas), pero no para enviar pulsos de paso
+a una placa de control paso a paso (los retrasos siempre deben estar en el rango de
+microsegundos).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_crear_pines_y_parámetros">3. Crear pines y parámetros</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><code>h = hal.component("passthrough")</code></pre>
+</div></div>
+<div class="paragraph"><p>El componente en sí es creado por una llamada al constructor
+<em>hal.component</em>. Los argumentos son el nombre del componente HAL y
+(opcionalmente) el
+prefijo utilizado para los nombres de los pines y los parámetros. Si el prefijo no se
+especifica, se usa el nombre del componente.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>h.newpin("in", hal.HAL_FLOAT, hal.HAL_IN)</code></pre>
+</div></div>
+<div class="paragraph"><p>Los pines se crean mediante llamadas a métodos en el objeto componente. Los
+argumentos son: sufijo del nombre del pin, tipo de pin y dirección del pin. Para
+parámetros, los argumentos son: sufijo del nombre del parámetro, tipo de parámetro,
+y dirección del parámetro.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 1. Nombres de la opción .HAL</caption>
+<col width="42%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><strong>Tipos Pines y Parametros:</strong></p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT</p></td>
+<td align="left" valign="top"><p class="table">HAL_S32</p></td>
+<td align="left" valign="top"><p class="table">HAL_U32</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><strong>Direcciones de Pin:</strong></p></td>
+<td align="left" valign="top"><p class="table">HAL_IN</p></td>
+<td align="left" valign="top"><p class="table">HAL_OUT</p></td>
+<td align="left" valign="top"><p class="table">HAL_IO</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><strong>Direcciones de Parametros:</strong></p></td>
+<td align="left" valign="top"><p class="table">HAL_RO</p></td>
+<td align="left" valign="top"><p class="table">HAL_RW</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>El nombre completo del pin o parámetro se forma uniendo el prefijo y el
+sufijo con un ".", por lo que en el ejemplo, el pin creado se llama
+<em>passthrough.in</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>h.ready()</code></pre>
+</div></div>
+<div class="paragraph"><p>Una vez que se hayan creado todos los pines y parámetros, llame al
+método <em>.ready()</em>.</p></div>
+<div class="sect2">
+<h3 id="_cambiar_el_prefijo">3.1. Cambiar el Prefijo</h3>
+<div class="paragraph"><p>El prefijo se puede cambiar llamando al método <em>.setprefix()</em>. Los
+prefijo actuales se puede recuperar llamando al método <em>.getprefix()</em>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lectura_y_escritura_de_pines_y_parámetros">4. Lectura y Escritura de Pines y Parámetros</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para los pines y parámetros que también sean identificadores adecuados de Python, el
+valor puede ser accedido o establecido usando la sintaxis de atributo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>h.out = h.in</code></pre>
+</div></div>
+<div class="paragraph"><p>Para todos los pines, sean o no identificadores adecuados de Python,
+el valor puede ser accedido o establecido usando la sintaxis de subíndice:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>h['out'] = h['in']</code></pre>
+</div></div>
+<div class="sect2">
+<h3 id="_manejo_de_pines_de_salida_hal_out">4.1. Manejo de Pines de Salida (HAL_OUT)</h3>
+<div class="paragraph"><p>Periódicamente, generalmente en respuesta a un temporizador, todos los pines HAL_OUT deben
+ser "manejados" al asignarles un nuevo valor. Esto debe hacerse, sea
+o no el valor diferente al último asignado. Cuando un pin es
+conectado a una señal, su valor de salida anterior no se copia en la
+señal, por lo que el valor correcto solo aparecerá en la señal una vez que el
+componente asigna un nuevo valor.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_manejo_de_pines_bidireccionales_hal_io">4.2. Manejo de pines bidireccionales (HAL_IO)</h3>
+<div class="paragraph"><p>La regla anterior no se aplica a los pines bidireccionales. En cambio, un
+pin bidireccional solo debe ser manejado por el componente cuando el
+componente desea cambiar el valor. Por ejemplo, en el
+interfaz canónico de encoder, el componente solo establece el pin <em>index-enable</em>
+a <strong>FALSE</strong> (cuando se produce un pulso de índice y el valor anterior es
+<strong>TRUE</strong>), pero nunca, por si mismo, lo establece en <strong>TRUE</strong>. Llevando repetidamente el pin
+a <strong>FALSE</strong> puede hacer que el otro componente conectado actúe como si
+hubiese sido visto otro impulso de índice.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_salida">5. Salida</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Una solicitud <em>halcmd unload</em> para el componente se entrega como una
+excepción <em>KeyboardInterrupt</em>. Cuando llega una solicitud de descarga, el
+proceso debe o bien salir en poco tiempo o llamar al método <em>.exit()</em> en el componente,
+si un trabajo sustancial (como lectura o escritura de archivos) debe hacerse
+para completar el proceso de apagado.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_funciones_útiles">6. Funciones útiles</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_component_exists">6.1. component_exists</h3>
+<div class="paragraph"><p>Existencia del componente especificado en este momento<br />
+Ejemplo:<br />
+hal.component_exists("testpanel")<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_component_is_ready">6.2. component_is_ready</h3>
+<div class="paragraph"><p>Componente especificado listo en este momento<br />
+Ejemplo:<br />
+hal.component_is_ready("testpanel")<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_msg_level">6.3. get_msg_level</h3>
+<div class="paragraph"><p>Nivel msg de tiempo real actual.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_set_msg_level">6.4. set_msg_level</h3>
+<div class="paragraph"><p>Establecer nivel msg de tiempo real.<br />
+usado para informacion de depuracion.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_connect">6.5. connect</h3>
+<div class="paragraph"><p>Conecta un pin a una señal.<br />
+ejemplo:<br />
+hal.connect("pinname","signal_name")</p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_value">6.6. get_value</h3>
+<div class="paragraph"><p>leer pin, parametro o señal directamente.<br />
+ejemplo:<br />
+value = hal.get_value("iocontrol.0.emc-enable-in")<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_new_signal">6.7. new_signal</h3>
+<div class="paragraph"><p>Crea una nueva señal del tipo especificado.<br />
+ejemplo "+
+hal.new_sig("nombre-de-la-señal",hal.HAL_BIT)</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pin_has_writer">6.8. pin_has_writer</h3>
+<div class="paragraph"><p>El pin especificado tiene un pin de manejo conectado<br />
+Devuelve verdadero o falso.<br />
+h.in.pin_has_writer()</p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_name">6.9. get_name</h3>
+<div class="paragraph"><p>Obtener nombre de objeto HAL<br />
+h.in.get_name()<br />
+devuelve una cadena</p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_type">6.10. get_type</h3>
+<div class="paragraph"><p>Obtener tipo de objeto HAL<br />
+h.in.get_type()<br />
+devuelve un entero</p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_dir">6.11. get_dir</h3>
+<div class="paragraph"><p>Obtener tipo de direccion de objeto HAL<br />
+h.in.get_dir()<br />
+devuelve un entero</p></div>
+</div>
+<div class="sect2">
+<h3 id="_get">6.12. get</h3>
+<div class="paragraph"><p>Obtener valor del objeto HAL<br />
+h.in.get()</p></div>
+</div>
+<div class="sect2">
+<h3 id="_set">6.13. set</h3>
+<div class="paragraph"><p>Establecer valor del objeto HAL<br />
+h.out.set(10)</p></div>
+</div>
+<div class="sect2">
+<h3 id="_is_pin">6.14. is_pin</h3>
+<div class="paragraph"><p>el objeto es pin o parametro?<br />
+h.in.is_pin()<br />
+devuelve bool</p></div>
+</div>
+<div class="sect2">
+<h3 id="_sampler_base">6.15. sampler_base</h3>
+<div class="paragraph"><p>TODO<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_stream_base">6.16. stream_base</h3>
+<div class="paragraph"><p>TODO<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_stream">6.17. stream</h3>
+<div class="paragraph"><p>TODO<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_set_p">6.18. set_p</h3>
+<div class="paragraph"><p>Establecer un valor en cualquier pin HAL.<br />
+ejemplo:<br />
+hal.set_p("pinname","10")<br /></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_constantes">7. Constantes</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Úselas para especificar detalles con el valor que representan.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+HAL_BIT
+</p>
+</li>
+<li>
+<p>
+HAL_FLOAT
+</p>
+</li>
+<li>
+<p>
+HAL_S32
+</p>
+</li>
+<li>
+<p>
+HAL_U32
+</p>
+</li>
+<li>
+<p>
+HAL_IN
+</p>
+</li>
+<li>
+<p>
+HAL_OUT
+</p>
+</li>
+<li>
+<p>
+HAL_RO
+</p>
+</li>
+<li>
+<p>
+HAL_RW
+</p>
+</li>
+<li>
+<p>
+MSG_NONE
+</p>
+</li>
+<li>
+<p>
+MSG_ALL
+</p>
+</li>
+<li>
+<p>
+MSG_DBG
+</p>
+</li>
+<li>
+<p>
+MSG_ERR
+</p>
+</li>
+<li>
+<p>
+MSG_INFO
+</p>
+</li>
+<li>
+<p>
+MSG_WARN
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_información_del_sistema">8. Información del sistema</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Leer estas variables para obtener información sobre el sistema en tiempo real.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+is_kernelspace
+</p>
+</li>
+<li>
+<p>
+is_rt
+</p>
+</li>
+<li>
+<p>
+is_sim
+</p>
+</li>
+<li>
+<p>
+is_userspace
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usar_con_hal_glib_en_el_handler_gladevcp">9. Usar con hal_glib en el handler GladeVCP</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>GladeVCP usa la biblioteca hal_glib, que puede usarse para conectar una señal "observador" en un pin de entrada HAL.<br />
+Esta señal se puede usar para registrar una función a llamar cuando el pin HAL cambia de estado.<br /></p></div>
+<div class="paragraph"><p>Uno debe importar el módulo y el módulo hal:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">import</span></span> hal_glib
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> hal</tt></pre></div></div>
+<div class="paragraph"><p>Luego haga un pin y conecte una señal <em>value-changed</em> (el observador) a una llamada de función:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">class</span></span> HandlerClass<span style="color: #990000">:</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> halcomp<span style="color: #990000">,</span>builder<span style="color: #990000">,</span>useropts<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>example_trigger <span style="color: #990000">=</span> hal_glib<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">GPin</span></span><span style="color: #990000">(</span>halcomp<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'example-trigger'</span><span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">))</span>
+        self<span style="color: #990000">.</span>example_trigger<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'value-changed'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>_on_example_trigger_change<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Y tener una función que se llamará:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">_on_example_trigger_change</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>pin<span style="color: #990000">,</span>userdata<span style="color: #990000">=</span>None<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">"pin value changed to:"</span> <span style="color: #990000">%</span> <span style="color: #990000">(</span>pin<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">())</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">"pin name= %s"</span> <span style="color: #990000">%</span> <span style="color: #990000">(</span>pin<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_name</span></span><span style="color: #990000">())</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">"pin type= %d"</span> <span style="color: #990000">%</span> <span style="color: #990000">(</span>pin<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_type</span></span><span style="color: #990000">())</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># esto se puede llamar fuera de la función</span></span>
+        self<span style="color: #990000">.</span>example_trigger<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usar_con_hal_glib_en_el_handler_qtvcp">10. Usar con hal_glib en el handler QtVCP</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>QtVCP usa la biblioteca hal_glib, que puede usarse para conectar una señal "observador" en un pin de entrada HAL.<br />
+Esta señal se puede usar para registrar una función a llamar cuando el pin HAL cambia de estado.<br /></p></div>
+<div class="paragraph"><p>Uno debe importar el módulo hal:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">import</span></span> hal</tt></pre></div></div>
+<div class="paragraph"><p>Luego haga un pin y conecte una señal <em>value_changed</em> (el observador) a una llamada de función:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># **** INICIALIZAR **** #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># widgets permite el acceso a widgets desde los archivos qtvcp</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># en este punto, los widgets y los pines hal no están instanciados</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>hal <span style="color: #990000">=</span> halcomp
+        self<span style="color: #990000">.</span>testPin <span style="color: #990000">=</span> self<span style="color: #990000">.</span>hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'test-pin'</span><span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">)</span>
+        self<span style="color: #990000">.</span>testPin<span style="color: #990000">.</span>value_changed<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> s<span style="color: #990000">:</span> self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setTestPin</span></span><span style="color: #990000">(</span>s<span style="color: #990000">))</span></tt></pre></div></div>
+<div class="paragraph"><p>Y tener una función que se llamará.<br />
+Esto muestra formas de obtener el valor y la información del pin.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#######################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># funciones generales #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#######################</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">setTestPin</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> data<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">"Test pin value changed to:"</span> <span style="color: #990000">%</span> <span style="color: #990000">(</span>data<span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'halpin object ='</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">sender</span></span><span style="color: #990000">()</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'Halpin name: '</span><span style="color: #990000">,</span>self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">sender</span></span><span style="color: #990000">().</span><span style="font-weight: bold"><span style="color: #000000">text</span></span><span style="color: #990000">()</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'Halpin type: '</span><span style="color: #990000">,</span>self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">sender</span></span><span style="color: #990000">().</span><span style="font-weight: bold"><span style="color: #000000">get_type</span></span><span style="color: #990000">()</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># esto se puede llamar fuera de la función</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> self<span style="color: #990000">.</span>testPin<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ideas_de_proyectos">11. Ideas de proyectos</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+Crea un panel de control externo con botones, interruptores y
+   indicadores. Conecte todo a un microcontrolador, y conecte el
+   microcontrolador a la PC con una interfaz serie. Python tiene un muy
+   eficaz módulo de interfaz serie llamado
+   <a href="http://pyserial.sourceforge.net/">pyserial</a>
+   (Nombre del paquete de Ubuntu "python-serial", en el repositorio universo)
+</p>
+</li>
+<li>
+<p>
+Adjunte un módulo LCD compatible con <a href="http://lcdproc.omnipotent.net/">LCDProc</a>-
+   y úselo para mostrar una lectura digital con la información que elija
+   (Nombre del paquete de Ubuntu "lcdproc", en el repositorio universo)
+</p>
+</li>
+<li>
+<p>
+Crear un panel de control virtual utilizando cualquier biblioteca GUI compatible con
+   Python (gtk, qt, wxwindows, etc.)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Cinemática</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Cinemática</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:kinematics">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Cuando hablamos de máquinas CNC, solemos pensar en máquinas que
+se les ordena moverse a ciertas ubicaciones y realizar varias tareas.
+Para tener una vista unificada del espacio de la máquina, y para
+adaptarlo al punto de vista humano del espacio 3D, la mayoría de las máquinas (si no
+todas) usan un sistema de coordenadas común llamado Sistema de Coordenadas Cartesianas.</p></div>
+<div class="paragraph"><p>El sistema de coordenadas cartesianas se compone de tres ejes (X, Y, Z) cada uno
+perpendicular a los otros dos. <span class="footnote"><br />[La palabra "eje" es comúnmente
+(y erróneamente) usada cuando se habla de máquinas CNC, y se refieren a las direcciones de movimiento de la máquina]<br /></span>.</p></div>
+<div class="paragraph"><p>Cuando hablamos de un programa de código G (RS274/NGC) hablamos de un conjunto
+de comandos (G0, G1, etc.) que tienen posiciones cartesianas como parámetros (X- Y-
+Z-). Estas posiciones se refieren exactamente a las posiciones cartesianas. Parte del
+controlador de movimiento LinuxCNC es responsable de traducir esas posiciones
+en posiciones que corresponden a la Cinemática de la máquina. <span class="footnote"><br />[Cinemática: una función bidireccional para transformar del espacio cartesiano al espacio de articulaciones]<br /></span></p></div>
+<div class="sect2">
+<h3 id="_articulaciones_vs_ejes">1.1. Articulaciones vs. Ejes</h3>
+<div class="paragraph"><p>Una articulacion de una máquina CNC es uno de los grados físicos de libertad
+de la máquina. Este podría ser lineal (tornillos de avance) o rotativo (mesas rotativas,
+articulaciones de brazo de robot). Puede haber cualquier cantidad de articulaciones en una
+máquina dada. Por ejemplo, un brazo robot tipico tiene 6 articulaciones, y una
+fresadora simple típica tiene solo 3.</p></div>
+<div class="paragraph"><p>Hay ciertas máquinas donde las articulacions se disponen para que coincidan
+con los ejes cinemáticos (articulación 0 a lo largo del eje X, articulación 1 a lo largo del eje Y, articulación 2
+a lo largo del eje Z); a estas máquinas se les llama Máquinas cartesianas (o máquinas con
+ Cinemática Trivial). Estas son las máquinas más comunes
+utilizadas en el fresado, pero no son muy comunes en otros dominios (por ejemplo, soldadura: robots de tipo puma).</p></div>
+<div class="paragraph"><p>LinuxCNC admite nueve ejes con nombres: X Y Z A B C U V W. Los ejes X Y Z
+típicamente se refieren a las coordenadas cartesianas habituales. Los ejes A B C se refieren a
+coordenadas de rotación sobre los ejes X Y Z respectivamente. Los ejes U V W se refieren a
+coordenadas adicionales que comúnmente se hacen colineales a los ejes X Y Z respectivamente.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cinemática_trivial">2. Cinemática Trivial</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las máquinas más simples son aquellas en las que se coloca cada articulación
+a lo largo de uno de los ejes cartesianos. En estas máquinas, el mapeo de
+espacio cartesiano (el programa de código G) al espacio de articulaciones (los actuadores
+ de la máquina) es trivial. Es un mapeo simple 1:1.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pos-&gt;tran.x = joints[0];
+pos-&gt;tran.y = joints[1];
+pos-&gt;tran.z = joints[2];</code></pre>
+</div></div>
+<div class="paragraph"><p>En el fragmento de código de arriba se puede ver cómo se hace la asignación; la
+posición X es idéntica a la articulación 0, la posición Y a la de
+articulación 1, etc. Lo anterior se refiere a la cinemática directa (una
+dirección de la transformación).
+El siguiente fragmento de código se refiere a la cinemática inversa (o
+dirección inversa de la transformación):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>joints[0] = pos-&gt;tran.x;
+joints[1] = pos-&gt;tran.y;
+joints[2] = pos-&gt;tran.z;</code></pre>
+</div></div>
+<div class="paragraph"><p>En LinuxCNC, la cinemática de identidad (1:1) se implementa con el
+módulo cinemático <em>trivkins</em> extendido a 9 ejes. El valor por defecto de
+las relaciones entre las coordenadas del eje y los números de articulaciones son:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pos-&gt;tran.x = joints[0];
+pos-&gt;tran.y = joints[1];
+pos-&gt;tran.z = joints[2];
+pos-&gt;a      = joints[3];
+pos-&gt;b      = joints[4];
+pos-&gt;c      = joints[5];
+pos-&gt;u      = joints[6];
+pos-&gt;v      = joints[7];
+pos-&gt;w      = joints[8];</code></pre>
+</div></div>
+<div class="paragraph"><p>Del mismo modo, las relaciones predeterminadas para la cinemática inversa para trivkins
+son:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>joints[0] = pos-&gt;tran.x;
+joints[1] = pos-&gt;tran.y;
+joints[2] = pos-&gt;tran.z;
+joints[3] = pos-&gt;a;
+joints[4] = pos-&gt;b;
+joints[5] = pos-&gt;c;
+joints[6] = pos-&gt;u;
+joints[7] = pos-&gt;v;
+joints[8] = pos-&gt;w;</code></pre>
+</div></div>
+<div class="paragraph"><p>Es sencillo hacer la transformación para cinematica trivial (cinemática <em>trivkins</em>)
+o máquina cartesiana siempre que no haya omisiones en las letras de eje usadas.</p></div>
+<div class="paragraph"><p>Si a la máquina le falta una o más de las letras de eje, se vuelve un poco más complicado.
+Los problemas de las letras de eje omitidas se tratan utilizando el
+parámetro <em>coordinates=</em> con el módulo trivkins. Los números de articulaciones son
+asignados consecutivamente a cada coordenada especificada. Se puede describir un torno
+con <em>coordinates=xz</em> Las asignaciones de articulacions serán entonces:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>joints[0] = pos-&gt;tran.x
+joints[1] = pos-&gt;tran.z</code></pre>
+</div></div>
+<div class="paragraph"><p>Se recomienda el uso del parámetro <em>coordinates=</em> para configuraciones que omiten
+letras del eje. <span class="footnote"><br />[Históricamente, el módulo trivkins no contemplaba el
+parámetro <em>coordinates=</em> por lo que las configuraciones de torno a menudo se configuraran como
+máquinas XYZ. El eje Y no utilizado se configuró para que 1) hiciera home inmediatamente, 2) usara un
+lazo de realimentacion simple para conectar su pin HAL de comando de posición Hal a su pin HAL
+de retroalimentacion de posición, y 3) estaba oculto en las GUI de pantalla.
+Numerosas configuraciones sim usaron estos métodos para compartir archivos hal comunes.]<br /></span></p></div>
+<div class="paragraph"><p>El módulo cinemático <em>trivkins</em> también permite especificar la misma coordenada
+para más de una articulación. Esta característica puede ser útil en máquinas como un pórtico
+de dos motores independientes para la coordenada y. Tal máquina podría usar
+<em>coordenadas=xyyz</em> que da como resultado asignaciones de articulaciones:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>joints[0] = pos-&gt;tran.x
+joints[1] = pos-&gt;tran.y
+joints[2] = pos-&gt;tran.y
+joints[3] = pos-&gt;tran.z</code></pre>
+</div></div>
+<div class="paragraph"><p>Consulte la página man de trivkins para obtener más información.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cinemática_no_trivial">3. Cinemática no trivial</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Puede haber bastantes tipos de configuraciones de máquina (robots: puma, scara;
+hexápodos, etc.). Cada uno de ellos se configura utilizando articulacions lineales y giratorias.
+Estas articulaciones generalmente no coinciden con las coordenadas cartesianas y,
+por lo tanto, necesitamos una función cinemática que haga la
+conversión (en realidad 2 funciones: cinemática directa e inversa).</p></div>
+<div class="paragraph"><p>Para ilustrar lo anterior, analizaremos una maquina de cinemática simple llamada
+bípode (una versión simplificada del trípode, que es una version simplificada
+del hexápodo).</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="images/bipod.png" alt="Configuracion de Bipod" />
+</div>
+<div class="title">Figura 1. Configuración del bípode</div>
+</div>
+<div class="paragraph"><p>El Bipod del que estamos hablando es un dispositivo que consta de 2 motores
+colocado en una pared, de la cual cuelga un dispositivo usando un cable. Las
+articulaciones en este caso son las distancias desde los motores al dispositivo
+(llamadas AD y BD en la figura).</p></div>
+<div class="paragraph"><p>La posición de los motores está fijada por convención. El motor A está en
+(0,0), lo que significa que su coordenada X es 0, y su coordenada Y es
+también 0. El motor B se coloca en (Bx, 0), lo que significa que su coordenada X
+es Bx (y a la misma altura Y que el otro motor).</p></div>
+<div class="paragraph"><p>Nuestra herramienta estará en el punto D que se define por las distancias AD
+y BD, y por las coordenadas cartesianas Dx, Dy.</p></div>
+<div class="paragraph"><p>El trabajo de la cinemática es transformar a partir de longitudes de articulaciones (AD, BD)
+a coordenadas cartesianas (Dx, Dy) y viceversa.</p></div>
+<div class="sect2">
+<h3 id="_transformación_directa">3.1. Transformación directa</h3>
+<div class="paragraph"><p>Para transformar del espacio de articulaciones al espacio cartesiano utilizaremos algunas
+reglas de trigonometría (los triángulos rectángulos determinados por los puntos (0,0),
+(Dx, 0), (Dx, Dy) y el triángulo (Dx, 0), (Bx, 0) y (Dx, Dy).</p></div>
+<div class="paragraph"><p>Podemos ver fácilmente que:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-01.png" alt="images/kinematics-math-01.png" />
+</div>
+</div>
+<div class="paragraph"><p>asi como:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-02.png" alt="images/kinematics-math-02.png" />
+</div>
+</div>
+<div class="paragraph"><p>Si restamos una de la otra obtendremos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-03.png" alt="images/kinematics-math-03.png" />
+</div>
+</div>
+<div class="paragraph"><p>y por lo tanto:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-04.png" alt="images/kinematics-math-04.png" />
+</div>
+</div>
+<div class="paragraph"><p>A partir de ahí calculamos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-05.png" alt="images/kinematics-math-05.png" />
+</div>
+</div>
+<div class="paragraph"><p>Tenga en cuenta que el cálculo para y implica la raíz cuadrada de una
+diferencia, que puede dar como resultado un número no real. Si no hay
+una sola coordenada cartesiana para esta posición de articulacion, la posición
+se dice que es una singularidad. En este caso, la cinemática directa retorna -1.</p></div>
+<div class="paragraph"><p>Traducido al código actual:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>double AD2 = joints[0] * joints[0];
+double BD2 = joints[1] * joints[1];
+double x = (AD2 - BD2 + Bx * Bx) / (2 * Bx);
+double y2 = AD2 - x * x;
+if(y2 &lt; 0) return -1;
+pos-&gt;tran.x = x;
+pos-&gt;tran.y = sqrt(y2);
+return 0;</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_transformación_inversa">3.2. Transformación inversa</h3>
+<div class="paragraph"><p>La cinemática inversa es mucho más fácil en nuestro ejemplo, ya que podemos escribir
+directamente</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-06.png" alt="images/kinematics-math-06.png" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/kinematics-math-07.png" alt="images/kinematics-math-07.png" />
+</div>
+</div>
+<div class="paragraph"><p>o traducido al código real:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>double x2 = pos-&gt;tran.x * pos-&gt;tran.x;
+double y2 = pos-&gt;tran.y * pos-&gt;tran.y;
+joints[0] = sqrt(x2 + y2);
+joints[1] = sqrt((Bx - pos-&gt;tran.x)*(Bx - pos-&gt;tran.x) + y2);
+return 0;</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_detalles_de_implementación">4. Detalles de implementación</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Un módulo cinemático se implementa como un componente HAL, y tiene
+permitido exportar pines y parámetros. Consiste en varias funciones "C"
+(a diferencia de las funciones HAL):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>int kinematicsForward(const double *joint, EmcPose *world,
+const KINEMATICS_FORWARD_FLAGS *fflags,
+KINEMATICS_INVERSE_FLAGS *iflags)</code></pre>
+</div></div>
+<div class="paragraph"><p>Implementa la función cinemática directa.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>int kinematicsInverse(const EmcPose * world, double *joints,
+const KINEMATICS_INVERSE_FLAGS *iflags,
+KINEMATICS_FORWARD_FLAGS *fflags)</code></pre>
+</div></div>
+<div class="paragraph"><p>Implementa la función cinemática inversa.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>KINEMATICS_TYPE kinematicsType(void)</code></pre>
+</div></div>
+<div class="paragraph"><p>Devuelve el identificador de tipo de cinemática, típicamente <em>KINEMATICS_BOTH</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>int kinematicsHome(EmcPose *world, double *joint,
+KINEMATICS_FORWARD_FLAGS *fflags,
+KINEMATICS_INVERSE_FLAGS *iflags)</code></pre>
+</div></div>
+<div class="paragraph"><p>La función cinemática home establece todos sus argumentos a
+valores de la posición home conocida. Cuando se llama, estos deben establecerse,
+cuando se conocen, a valores iniciales de, por ejemplo, un archivo INI. Si la cinematica de
+home puede aceptar puntos de partida arbitrarios, estos valores iniciales
+deberían ser usados.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>int rtapi_app_main(void)
+void rtapi_app_exit(void)</code></pre>
+</div></div>
+<div class="paragraph"><p>Estas son las funciones estándar de configuración y desmontaje de los módulos RTAPI.</p></div>
+<div class="paragraph"><p>Cuando están contenidos en un solo archivo fuente, los módulos cinemáticos
+pueden ser compilados e instalados por <em>halcompile</em>. Consulte la página de manual de <em>halcompile(1)</em> o
+el manual de HAL para más información.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

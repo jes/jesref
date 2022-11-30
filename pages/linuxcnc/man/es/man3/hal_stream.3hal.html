@@ -1,0 +1,484 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_stream</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_stream</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#C&Atilde;DIGO DE MUESTRA">C&Atilde;DIGO DE MUESTRA</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_stream
+&nbsp;- streams en tiempo real sin bloqueo</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hal.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_create(hal_stream_t *stream, int comp_id, int
+key, int depth, const char *typestring); <br>
+void hal_stream_destroy(hal_stream_t *stream); <br>
+int hal_stream_attach(hal_stream_t *stream, int comp_id, int
+key, const char *typestring); <br>
+int hal_stream_detach(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_element_count(hal_stream_t *stream); <br>
+hal_type_t hal_stream_element_type(hal_stream_t *stream, int
+idx); <br>
+int hal_stream_depth(hal_stream_t *stream); <br>
+int hal_stream_maxdepth(hal_stream_t *stream); <br>
+int hal_stream_num_underruns(hal_stream_t *stream); <br>
+int hal_stream_num_overruns(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_read(hal_stream_t *stream, union hal_stream_data
+*buf, unsigned *sampleno); <br>
+bool hal_stream_readable(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_write(hal_stream_t *stream, union hal_stream_data
+*buf); <br>
+bool hal_stream_writable(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>#ifdef
+ULAPI</b> <br>
+void hal_stream_wait_writable(hal_stream_t *stream,
+sig_atomic_t *stop); <br>
+void hal_stream_wait_readable(hal_stream_t *stream,
+sig_atomic_t *stop); <b><br>
+#endif</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Un stream HAL
+proporciona una capacidad limitada para que dos componentes
+se comuniquen datos que no se ajustan al modelo de pines
+HAL. Un lector y un escritor deben acordar una <i>clave</i>
+(Identificador entero de 32 bits) y una estructura de datos
+especificada por <i>typestring</i> ser&Atilde;&iexcl;
+<b>hal_stream_create</b> y qu&Atilde;&copy; componente (el
+segundo cargado) <b>hal_stream_attach</b> a la secuencia ya
+creada.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La parte del
+espacio de usuario puede ser <b>halstreamer</b> o
+<b>halsampler.</b> En el caso de <b>halstreamer</b> la clave
+es 0x48535430 m&Atilde;&iexcl;s el n&Atilde;&ordm;mero de
+canal. En el caso de <b>halsampler</b> la clave es
+0x48534130 m&Atilde;&iexcl;s el n&Atilde;&ordm;mero de
+canal.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_create</b>
+<br>
+Crea el flujo dado, inicializando el <i>stream</i> que se
+pasa por referencia. Si es un error no diagnosticado si ya
+se ha creado una secuencia con la misma <i>key</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_destroy</b>
+<br>
+Destruye el stream dado. Es un error no diagnosticado si el
+stream todav&Atilde;a est&Atilde;&iexcl; conectada por otro
+componente. Es un error no diagnosticado si la secuencia se
+adjunt&Atilde;&sup3; con <b>hal_stream_attach</b> en lugar
+de creado con <b>hal_stream_create.</b> Es un error no
+diagnosticado si la llamada a <b>hal_stream_destroy</b> se
+omite.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_attach</b>
+<br>
+Adjunta la secuencia dada, que ya fue creada por
+<b>hal_stream_create.</b> Si se especifica typestring, esta
+llamada falla si no coincide con la cadena de texto con la
+que se cre&Atilde;&sup3; la secuencia. Si el argumento
+typetring es NULL, entonces se acepta cualquier
+typestring.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_detach</b>
+<br>
+Separa la secuencia dada. Es un error no diagnosticado si la
+secuencia se cre&Atilde;&sup3; con <b>hal_stream_create</b>
+en lugar de adjuntarla con <b>hal_stream_attach.</b> Es un
+error no diagnosticado si la llamada a
+<b>hal_stream_detach</b> se omite.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_element_count</b>
+<br>
+Devuelve el n&Atilde;&ordm;mero de pines.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_element_type</b>
+<br>
+Devuelve el tipo del n&Atilde;&ordm;mero de pin dado.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_readable</b>
+<br>
+Devuelve verdadero si la secuencia tiene al menos una
+muestra para leer</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_read</b>
+<br>
+Si la secuencia tiene una muestra para leer, la almacena en
+buf.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_writable</b>
+<br>
+Devuelve true si la secuencia tiene espacio para que se
+escriba al menos una muestra.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_depth</b>
+<br>
+Devuelve el n&Atilde;&ordm;mero de muestras que esperan ser
+le&Atilde;das.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_maxdepth</b>
+<br>
+Devuelve el argumento <b>depth</b> con el que se
+cre&Atilde;&sup3; la secuencia.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_num_overruns</b>
+<br>
+Devuelve un n&Atilde;&ordm;mero que se incrementa cada vez
+que <b>hal_stream_write</b> se llama sin espacio
+disponible.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_num_underruns</b>
+<br>
+Devuelve un n&Atilde;&ordm;mero que se incrementa cada vez
+que <b>hal_stream_read</b> se llama sin una muestra
+disponible.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_wait_readable</b>
+<br>
+Espera hasta que la stream sea legible o se establezca el
+indicador de detenci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_wait_writable</b>
+<br>
+Espera hasta que la stream se pueda escribir o se establezca
+el indicador de detenci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_read</b>
+<br>
+Lee un registro desde la stream. Si tiene
+&Atilde;&copy;xito, se almacena en el b&Atilde;&ordm;fer
+dado. Opcionalmente, se puede recuperar el
+n&Atilde;&ordm;mero de muestra. Si no hay muestra
+disponible, <i>num_underruns</i> se incrementa. Es un error
+no detectado si m&Atilde;&iexcl;s de un componente o
+funciones en tiempo real llaman a <b>hal_stream_read</b>
+concurrentemente</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_write</b>
+<br>
+Escribe un registro en la stream. Si tiene
+&Atilde;&copy;xito, se copi&Atilde;&sup3; del buffer dado.
+Si no hay espacio disponible, <i>num_overruns</i> se
+incrementa. En cualquier caso, el valor interno
+<i>sampleno</i> se incrementa. Es un error no detectado si
+m&Atilde;&iexcl;s de un componente o funciones en tiempo
+real llaman a <b>hal_stream_write</b> concurrentemente</p>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p style="margin-top: 1em"><i>stream</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">Un puntero a un objeto stream.
+En el caso de <b>hal_stream_create</b> y
+<b>hal_stream_attach</b> esta es una stream no inicializada;
+en otros casos, debe ser una stream creada o adjuntada por
+una llamada anterior y a&Atilde;&ordm;n no separada o
+destruida.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>hal_id</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Un identificador de componente HAL devuelto por una
+llamada anterior a <b>hal_init</b>.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>key</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>La clave para el segmento de memoria compartida.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>depth</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>El n&Atilde;&ordm;mero de muestras que pueden no leerse
+antes de que se pierdan muestras (desbordamiento)</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>typestring</i></p>
+
+<p style="margin-left:22%;">Una typestring es una cadena
+que no distingue entre may&Atilde;&ordm;sculas y
+min&Atilde;&ordm;sculas que consta de uno o
+m&Atilde;&iexcl;s de los siguientes tipos de caracteres:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>B</p></td>
+<td width="10%"></td>
+<td width="38%">
+
+
+<p>para bool / hal_bit_t</p></td>
+<td width="34%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>S</p></td>
+<td width="10%"></td>
+<td width="38%">
+
+
+<p>para int32_t / hal_s32_t</p></td>
+<td width="34%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>U</p></td>
+<td width="10%"></td>
+<td width="38%">
+
+
+<p>para uint32_t / hal_u32_t</p></td>
+<td width="34%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>F</p></td>
+<td width="10%"></td>
+<td width="38%">
+
+
+<p>para real_t / hal_float_t</p></td>
+<td width="34%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">Una typestring
+est&Atilde;&iexcl; limitada a 16 caracteres.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p style="margin-top: 1em"><i>buf</i></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">Un b&Atilde;&ordm;fer lo
+suficientemente grande como para contener todos los datos en
+una muestra.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>sampleno</i></p>
+
+<p style="margin-left:22%;">Si no es NULL, el
+&Atilde;&ordm;ltimo n&Atilde;&ordm;mero de muestra se
+almacena aqu&Atilde;. Brechas en esta secuencia indican que
+se produjo un desbordamiento entre la lectura anterior y
+esta. Si es NULL, el n&Atilde;&ordm;mero de muestra no se
+recupera.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>stop</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Puntero a un valor que se supervisa mientras espera. Si
+no es cero, la operaci&Atilde;&sup3;n de espera vuelve
+pronto. Esto permite que una llamada en espera sea terminada
+en forma segura en el caso de una se&Atilde;&plusmn;al.</p></td></tr>
+</table>
+
+<h2>C&Atilde;DIGO DE MUESTRA
+<a name="C&Atilde;DIGO DE MUESTRA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">En el
+&Atilde;&iexcl;rbol fuente debajo <i>src/hal/components</i>,
+<b>sampler.c</b> y <b>streamer.c</b> hay componentes en
+tiempo real que leen y escriben streams hal.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_read</b>,
+<b>hal_stream_readable</b>, <b>hal_stream_write</b>,
+<b>hal_stream_writable</b>, <b>hal_stream_element_count</b>,
+<b>hal_tream_pin_type</b>, <b>hal_stream_depth</b>,
+<b>hal_stream_maxdepth</b>, <b>hal_stream_num_underruns</b>,
+<b>hal_stream_num_underruns</b>,
+<b>hal_stream_num_underruns</b>,
+<b>hal_stream_num_underruns</b>, se pueden llamar desde
+c&Atilde;&sup3;digo en tiempo real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_wait_writable</b>,
+<b>hal_stream_wait_writable</b> se puede llamar desde el
+c&Atilde;&sup3;digo ULAPI.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Se pueden
+invocar otras funciones en cualquier contexto, incluidos los
+contextos en tiempo real.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_create</b>,
+<b>hal_stream_attach</b>, <b>hal_stream_read</b>,
+<b>hal_stream_write</b>, <b>hal_stream_detach</b>y
+<b>hal_stream_destroy</b> devuelven un c&Atilde;&sup3;digo
+de estado RTAPI. Los valores de retorno de otras funciones
+se explicaron anteriormente.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La sobrecarga
+de memoria de una secuencia puede ser grande. Cada elemento
+en un registro usa 8 bytes, y el n&Atilde;&ordm;mero de
+muestra impl&Atilde;cito tambi&Atilde;&copy;n usa 8 bytes.
+Como resultado, una stream que se usa para transportar
+valores de 8 bits usa el 94% de su memoria como sobrecarga.
+Sin embargo, para tama&Atilde;&plusmn;os de stream modestos,
+esta sobrecarga no es importante. (esta memoria es parte de
+su propia regi&Atilde;&sup3;n de memoria compartida y no
+cuenta en contra de la regi&Atilde;&sup3;n HAL de memoria
+compartida utilizada para pines, par&Atilde;&iexcl;metros y
+se&Atilde;&plusmn;ales)</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler</b>(9),
+<b>streamer</b>(9), <b>halsampler</b>(1),
+<b>halstreamer</b>(1)</p>
+<hr>
+</body>
+</html>

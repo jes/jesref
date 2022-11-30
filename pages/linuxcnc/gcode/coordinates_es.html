@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Sistemas de coordenadas</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Sistemas de coordenadas</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:coordinate-system">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Este capítulo describe los offsets tal como los utiliza LinuxCNC.
+Éstos incluyen:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Coordenadas de la máquina (G53)
+</p>
+</li>
+<li>
+<p>
+Nueve offsets del Sistema de Coordenadas (G54-G59.3)
+</p>
+</li>
+<li>
+<p>
+Offsets globales (G92) y locales (G52)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec.machine-coordinate-system">2. Sistema de Coordenadas de la Máquina</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Cuando se inicia LinuxCNC, las posiciones de cada eje definen el origen de la máquina. Cuando
+se hace home de un eje, el origen de la máquina para ese eje se establece en esa posición home.
+El origen máquina es el sistema de coordenadas de la máquina en el que se basan todos los demás
+sistemas de coordenadas. El código <a href="g-code_es.html#gcode:g53">G53</a> puede usarse para moverse en el Sistema de
+Coordenadas Máquina.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sistemas_de_coordenadas">3. Sistemas de coordenadas</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/offsets_es.png" alt="Ejemplo de sistemas de coordenadas" />
+</div>
+<div class="title">Figura 1. Ejemplo de sistemas de coordenadas</div>
+</div>
+<div class="paragraph"><p>Desplazamientos del sistema de coordenadas</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+G54 - usa el sistema de coordenadas 1
+</p>
+</li>
+<li>
+<p>
+G55 - usa el sistema de coordenadas 2
+</p>
+</li>
+<li>
+<p>
+G56 - usa el sistema de coordenadas 3
+</p>
+</li>
+<li>
+<p>
+G57 - usa el sistema de coordenadas 4
+</p>
+</li>
+<li>
+<p>
+G58 - usa el sistema de coordenadas 5
+</p>
+</li>
+<li>
+<p>
+G59 - usa el sistema de coordenadas 6
+</p>
+</li>
+<li>
+<p>
+G59.1 - usar el sistema de coordenadas 7
+</p>
+</li>
+<li>
+<p>
+G59.2 - usa el sistema de coordenadas 8
+</p>
+</li>
+<li>
+<p>
+G59.3 - usa el sistema de coordenadas 9
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Los offsets del sistema de coordenadas se utilizan para desplazar cada sistema de coordenadas desde
+el Sistema de Coordenadas de la Máquina. Esto permite que el código G se programe para piezas iguales
+sin importar la ubicación de la pieza en la máquina. El uso de offsets del sistema de coordenadas
+le permitirán mecanizar piezas en múltiples ubicaciones con el mismo código G.</p></div>
+<div class="paragraph"><p>Los valores de los offsets se almacenan en el archivo VAR solicitado por el
+archivo INI durante el inicio de LinuxCNC.</p></div>
+<div class="paragraph"><p>En el esquema de archivo VAR, el primer número de variable almacena el desplazamiento X,
+el segundo, el desplazamiento Y, y así sucesivamente para los nueve ejes. Hay juegos numerados
+así para cada uno de los offsets de sistema de coordenadas.</p></div>
+<div class="paragraph"><p>Cada una de las interfaces gráficas tiene una forma de establecer valores para estos
+offsets. También puede establecer estos valores editando el propio archivo VAR
+y reinicializando luego LinuxCNC para que lea los nuevos valores.
+Sin embargo, esta no es la forma recomendada. El uso de G10, G52, G92, G28.1,
+etc. son mejores formas de establecer las variables.</p></div>
+<div class="paragraph"><p>Ejemplo de parámetros G55.</p></div>
+<div class="paragraph"><p>| ====
+| Eje | Variable | Valor
+| X | 5241 | 2.000000
+| Y | 5242 | 1.000000
+| Z | 5243 | -2.000000
+| A | 5244 | 0,000000
+| B | 5245 | 0.000000
+| C | 5246 | 0.000000
+| U | 5247 | 0.000000
+| V | 5248 | 0.000000
+| W | 5249 | 0.000000
+| ====</p></div>
+<div class="paragraph"><p>Debería leer esto como mover las posiciones cero de G55 a X = 2
+unidades, Y = 1 unidad, y Z = -2 unidades desde la posición de cero absoluto.</p></div>
+<div class="paragraph"><p>Una vez que hay valores asignados, una llamada a G55 en un bloque de programa
+desplaza la referencia cero absoluta por los valores almacenados. La siguiente línea sería
+mover cada eje a la nueva posición cero. A diferencia de G53, G54 hasta
+G59.3 son comandos modales. Actuarán en todos los bloques de código después de que uno
+de ellos se ha establecido. El programa que podría ejecutarse usando
+offsets de fijaciones requeriría solo una coordenada de
+referencia para cada una de las ubicaciones y todo el trabajo se realizaria
+allí. El siguiente código se ofrece como un ejemplo de cómo hacer un cuadrado
+usando los offsets G55 que configuramos arriba.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G55; utilizar el sistema de coordenadas 2
+G0 X0 Y0 Z0
+G1 F2 Z-0.2000
+X1
+Y1
+X0
+Y0
+G0 Z0
+G54; utilizar el sistema de coordenadas 1
+G0 X0 Y0 Z0
+M2</code></pre>
+</div></div>
+<div class="paragraph"><p>En este ejemplo, el G54 cerca del final deja el sistema de coordenadas G54 con todos
+los offsets a cero para que haya un código modal basado en ejes absolutos de máquina.
+Este programa asume que lo hemos hecho y usamos el comando final
+como un comando para cero máquina. Hubiera sido posible usar G53
+y llegar al mismo lugar pero ese comando no habría sido modal y
+cualquier comando emitido después hubiera vuelto a usar los offsets G55
+porque ese sistema de coordenadas todavía estaría en vigor.</p></div>
+<div class="sect2">
+<h3 id="_sistema_de_coordenadas_predeterminado">3.1. Sistema de Coordenadas Predeterminado</h3>
+<div class="paragraph"><p>Otra variable en el archivo VAR se vuelve importante cuando pensamos
+sobre offsets. Esta variable es la 5220. En los archivos predeterminados,
+su valor se establece en 1.00000. Esto significa que cuando LinuxCNC se inicia,
+debería usar el primer sistema de coordenadas como el predeterminado. Si configura esto
+a 9.00000 usaría el noveno sistema de compensación como predeterminado al
+iniciar o reiniciar. Cualquier valor que no sea un entero (decimal realmente)
+entre 1 y 9, o si la variable 5220 falta, hará que LinuxCNC
+vuelva al valor predeterminado de 1.00000.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_configuración_de_offsets_del_sistema_de_coordenadas">3.2. Configuración de Offsets del Sistema de Coordenadas</h3>
+<div class="paragraph"><p>El comando G10 L2x se puede usar para establecer los offsets del sistema de coordenadas:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G10 L2 P (1-9)</em> - Establece los offsets a un valor. La posición actual es irrelevante.
+                         (vea <a href="g-code_es.html#gcode:g10-l2">G10 L2</a> para más detalles)
+</p>
+</li>
+<li>
+<p>
+<em>G10 L20 P (1-9)</em> - Establece los offsets de modo que la posición actual se convierte en un valor.
+                         (vea <a href="g-code_es.html#gcode:g10-l20">G10 L20</a> para más detalles)
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_offsets_locales_y_globales_a_id_sec_g52_and_g92_offsets_a">4. Offsets Locales y Globales <a id="sec:g52-and-g92-offsets"></a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_el_comando_g52_a_id_sec_g52_a">4.1. El comando G52 <a id="sec:g52"></a></h3>
+<div class="paragraph"><p><em>G52</em> se usa en un programa de pieza como un "Offset temporal del sistema de coordenadas local"
+dentro del sistema de coordenadas de la pieza de trabajo. Un ejemplo de uso
+es el caso cuando se mecanizan varias características idénticas en diferentes
+ubicaciones del material. Para cada una, <em>G52</em> programa un
+punto de referencia local dentro de las coordenadas de pieza, y un subprograma es
+llamado para maquinar la característica relativa a ese punto.</p></div>
+<div class="paragraph"><p>Los offsets de ejes <em>G52</em> se programan relativos a la coordenada de offset de la pieza de trabajo
+<em>G54</em> a <em>G59.3</em>. Como compensación local, <em>G52</em> se aplica
+después del offset de la pieza de trabajo, incluida la rotación. Por lo tanto, una característica parcial
+será mecanizada de forma idéntica en cada parte, independientemente de la orientación de la parte
+en el palet.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Atención</div>
+</td>
+<td class="content">En otros intérpretes de código g <em>G52</em>, como offset temporal, al establecer y salir del alcance localizado de una
+parte del programa, no persiste después del reinicio de la máquina, <em>M02</em> o <em>M30</em>.
+En LinuxCNC, <em>G52</em> comparte parámetros con <em>G92</em> que, por razones históricas, hace <strong>persistir</strong>
+a estos parámetros. Ver <a href="coordinates_es.html#sec:g92-persistence-cautions">G92 Precauciones con Persistencia</a> a continuación.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>La programación de <em>G52 X1 Y2</em> da offsets al sistema de coordenada actual de la pieza de trabajo,
+1 para X y 2 para Y. Por consiguiente, en el DRO,
+las coordenadas X e Y de la posición actual de la herramienta se reducirán en 1 y
+2, respectivamente. Los ejes sin establecer en el comando, como Z en el anterior
+ejemplo, no se verán afectados; cualquier offset Z <em>G52</em> anterior permanecerá
+en efecto o, si no lo habia, el offset Z será cero.</p></div>
+<div class="paragraph"><p>El desplazamiento local temporal puede cancelarse con <em>G52 X0 Y0</em>. Cualquier eje
+no puesto a cero explícitamente retendrá el offset anterior.</p></div>
+<div class="paragraph"><p><em>G52</em> comparte los mismos registros que <em>G92</em> y, por lo tanto,
+<em>G52</em> es visible en el DRO y vista previa etiquetado como <em>G92</em>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_los_comandos_g92_a_id_sec_g92_commands_a">4.2. Los Comandos G92<a id="sec:g92-commands"></a></h3>
+<div class="paragraph"><p><em>G92</em> se usa típicamente de dos maneras conceptualmente diferentes; como un
+"offset del sistema de coordenadas global" o como un "offset del sistema de coordenadas local".
+El conjunto de comandos <em>G92</em> incluye:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>G92</em>: este comando, cuando se usa con nombres de eje, establece valores para las
+    variables de offset
+</p>
+</li>
+<li>
+<p>
+<em>G92.1</em>: este comando establece valores cero para las variables G92.
+</p>
+</li>
+<li>
+<p>
+<em>G92.2</em>: este comando suspende G92, pero no pone a cero las
+    variables
+</p>
+</li>
+<li>
+<p>
+<em>G92.3</em>: este comando aplica los valores de offset que se suspendieron.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Como offset global, <em>G92</em> se usa para cambiar todas los sistemas de coordenadas de la pieza de trabajo,
+<em>G54</em> a <em>G59.3</em>. Un ejemplo de uso es cuando se mecanizan
+varias piezas idénticas en fijaciones con ubicaciones conocidas en un palet,
+pero la ubicación del palet puede cambiar entre lotes o entre máquinas.
+Cada offset de ubicación de la fijacion, relativo a un punto de referencia en el
+palet, está preestablecido en uno de los sistemas de coordenadas de pieza, de <em>G54</em>
+hasta <em>G59.3</em>, y <em>G92</em> se usa para "touch off" del punto de referencia en el palet.
+Luego, para cada parte, se selecciona el sistema de coordenadas de la pieza de trabajo correspondiente
+y se ejecuta el programa de pieza.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">La rotación del sistema de coordenadas de la pieza <em>G10 R-</em> es específica del
+intérprete <em>rs274ngc</em>, y el desplazamiento <em>G92</em> se aplica <em>después</em> de la
+rotación. Cuando se usa <em>G92</em> como offset global, las rotaciones del sistema de coordenadas
+de pieza pueden tener resultados inesperados.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Como sistema de coordenadas local, <em>G92</em> se usa como offset temporal
+dentro del sistema de coordenadas de la pieza de trabajo. Un ejemplo de uso es al
+mecanizar una pieza con varias características idénticas en diferentes
+ubicaciones. Para cada función, <em>G92</em> se usa para establecer un punto de referencia
+local, y se llama a un subprograma para mecanizar la característica a partir de
+ese punto.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Se desaconseja el uso de <em>G92</em> para programar con sistemas de coordenadas locales
+en un programa de pieza. En su lugar, vea <a href="coordinates_es.html#sec:g52"><em>G52</em></a>, un offset local
+del sistema de coordenadas es más intuitivo cuando se conoce el offset deseado relativo
+a la pieza de trabajo, pero es posible que no se conozca la ubicación actual de la herramienta.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>La programación <em>G92 X0 Y0 Z0</em> establece la ubicación actual de la herramienta en
+coordina X0, Y0 y Z0, sin movimiento. G92 <strong>no</strong> funciona desde
+coordenadas absolutas de la máquina. Funciona desde <strong>ubicación actual</strong>.</p></div>
+<div class="paragraph"><p><em>G92</em> también funciona desde la ubicación actual modificada por cualquier otro
+offset que esté vigente cuando se invoca <em>G92</em>. Mientras se
+testeaban las diferencias entre los offsets de trabajo y los actuales se
+encontró que un offset <em>G54</em> podría cancelar un <em>G92</em> y, por lo tanto,
+parecia que no habia offsets en vigor. Sin embargo, <em>G92</em> estaba
+todavía vigente para todas las coordenadas y produjo los offsets de trabajo esperados
+para los otros sistemas de coordenadas.</p></div>
+<div class="paragraph"><p>Por defecto, los offsets <em>G92</em> se restauran después de que se inicia la máquina.
+Los programadores que deseen un comportamiento tipo Fanuc, donde los offsets <em>G92</em> se
+borran al inicio de la máquina y después de un reinicio o finalización del programa, puede deshabilitar
+la persistencia <em>G92</em> configurando <em>DISABLE_G92_PERSISTENCE = 1</em> en el
+Sección <em>[RS274NGC]</em> del archivo <em>.ini</em>.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Es una buena práctica eliminar los offsets <em>G92</em> al final de su uso.
+con <em>G92.1</em> o <em>G92.2</em>. Al iniciar LinuxCNC con persistencia <em>G92</em>
+habilitada (el valor predeterminado), se aplicará cualquier offset en las variables <em>G92</em>
+cuando un eje tenga home. Ver <a href="coordinates_es.html#sec:g92-persistence-cautions">G92 Precauciones con Persistencia</a> a continuación.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuración_de_valores_g92">4.3. Configuración de valores G92</h3>
+<div class="paragraph"><p>Los comandos G92 funcionan desde la ubicación actual del eje y suman y restan
+correctamente para dar a la posición actual del eje el valor asignado por el
+comando G92. Los efectos funcionan a pesar de que haya offsets anteriores.</p></div>
+<div class="paragraph"><p>Por tanto, si el eje X muestra actualmente 2.0000 como su posición, un <em>G92 X0</em>
+establecerá un offset de -2.0000 para que la ubicación actual de X se convierta
+cero. Un <em>G92 X2</em> establecerá un offset de 0.0000 y la posición mostrada
+no cambiará. Un <em>G92 X5.0000</em> establecerá un offset de 3.0000 para que
+la posición actual visualizada se convierte en 5.0000.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_precauciones_de_persistencia_g92_a_id_sec_g92_persistence_cautions_a">4.4. Precauciones de Persistencia G92 <a id="sec:g92-persistence-cautions"></a></h3>
+<div class="paragraph"><p>Por defecto, los valores de un desplazamiento <em>G92</em> se guardarán en el archivo VAR
+y se restaurará después de un inicio o reinicio de la máquina.</p></div>
+<div class="paragraph"><p>Los parámetros G92 son:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+5210 - Activar/desactivar bandera (1.0 / 0.0)
+</p>
+</li>
+<li>
+<p>
+5211 - Offset eje X
+</p>
+</li>
+<li>
+<p>
+5212 - Offset eje Y
+</p>
+</li>
+<li>
+<p>
+5213 - Offset eje Z
+</p>
+</li>
+<li>
+<p>
+5214 - Offset eje A
+</p>
+</li>
+<li>
+<p>
+5215 - Offset eje B
+</p>
+</li>
+<li>
+<p>
+5216 - Offset eje C
+</p>
+</li>
+<li>
+<p>
+5217 - Offset eje U
+</p>
+</li>
+<li>
+<p>
+5218 - Offset eje V
+</p>
+</li>
+<li>
+<p>
+5219 - Offset eje W
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>donde 5210 es la bandera de habilitación <em>G92</em> (1 para habilitado, 0 para deshabilitado)
+y 5211 a 5219 son los offsets de eje. Si se ven posiciones inesperadas
+como resultado de un movimiento ordenado, resultado de almacenar un
+offset en un programa anterior y no borrarlos al final, entonces
+emita un G92.1 en la ventana MDI para borrar los offsets almacenados.</p></div>
+<div class="paragraph"><p>Si existen valores G92 en el archivo VAR cuando se inicia LinuxCNC,
+los valores en el archivo var se aplicarán a los valores de la ubicación actual
+de cada eje. Si esta es la posición home y la posición home esta
+establecida como cero máquina, todo será correcto. Una vez que home ha sido
+establecido usando interruptores de máquina reales, o moviendo cada eje a una
+posición inicial conocida y emitiendo un comando de home del eje, cualquier desplazamiento G92 será
+aplicado. Si tiene un G92 X1 en efecto cuando da home al eje X, el
+DRO leerá <em>X: 1.000</em> en lugar del esperado <em>X: 0.000</em> porque el
+G92 se aplicó al origen de máquina. Si emite un G92.1 y el DRO
+ahora lee todos los ceros, entonces tuvo un desplazamiento G92 vigente la última vez
+corrió LinuxCNC.</p></div>
+<div class="paragraph"><p>A menos que su intención sea usar los mismas offsets G92 en el próximo
+programa, la mejor práctica es emitir un G92.1 al final de cualquier
+archivos de código G donde utiliza offsets G92.</p></div>
+<div class="paragraph"><p>Cuando un programa se aborta durante el procesamiento y tiene offsets <em>G92</em> en
+efecto, el inicio hará que se activen nuevamente. Como salvaguarda, tenga
+siempre su preámbulo estableciendo el entorno como usted
+espera. Además, la persistencia <em>G92</em> puede deshabilitarse configurando
+<em>DISABLE_G92_PERSISTENCE = 1</em> en la sección <em>[RS274NGC]</em> del
+archivo <em>.ini</em>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_precauciones_de_interacción_g92_y_g52_a_id_sec_g92_g52_animation_cautions_a">4.5. Precauciones de Interacción G92 y G52 <a id="sec:g92-g52-animation-cautions"></a></h3>
+<div class="paragraph"><p><em>G52</em> y <em>G92</em> comparten los mismos registros de desplazamiento. A menos que
+la persistencia <em>G92</em> está deshabilitada en el archivo <em>.ini</em> (vea <a href="coordinates_es.html#sec:g92-commands">Comandos G92</a>),
+los offsets <em>G52</em> también persistirán después del reinicio de la máquina, <em>M02</em> o <em>M30</em>.
+Tenga en cuenta que un offset <em>G52</em> en efecto durante un programa
+abortado puede dar lugar a desplazamientos no deseados cuando se ejecuta el siguiente programa.
+Ver <a href="coordinates_es.html#sec:g92-persistence-cautions">G92 Precauciones con Persistence</a> más arriba.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_programas_de_muestra_usando_offsets">5. Programas de Muestra usando Offsets</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_programa_de_muestra_utilizando_offsets_de_coordenadas_de_pieza">5.1. Programa de Muestra utilizando Offsets de Coordenadas de Pieza</h3>
+<div class="paragraph"><p>Este proyecto de grabado de muestra moldea un conjunto de cuatro círculos de radio .1 en
+una forma aproximadamente de estrella alrededor de un círculo central. Podemos configurar el
+patrón de círculo individual como este.</p></div>
+<div class="paragraph"><p>-------------------------------------------------- -------------------
+G10 L2 P1 X0 Y0 Z0 (asegúrese de que G54 esté configurado en la máquina cero)
+G0 X-0.1 Y0 Z0
+G1 F1 Z-0.25
+G3 X-0.1 Y0 I0.1 J0
+G0 Z0
+M2
+-------------------------------------------------- -------------------</p></div>
+<div class="paragraph"><p>Podemos emitir un conjunto de comandos para crear offsets para los otros cuatro
+círculos, como esto:</p></div>
+<div class="paragraph"><p>-------------------------------------------------- ---------
+G10 L2 P2 X0.5 (compensa el valor de G55 X en 0,5 pulgadas)
+G10 L2 P3 X-0.5 (compensa el valor de G56 X en -0.5 pulgadas)
+G10 L2 P4 Y0.5 (compensa el valor G57 Y en 0.5 pulgadas)
+G10 L2 P5 Y-0.5 (compensa el valor G58 Y en -0.5 pulgadas)
+-------------------------------------------------- ---------</p></div>
+<div class="paragraph"><p>Los reunimos en el siguiente programa:</p></div>
+<div class="paragraph"><p>-------------------------------------------------- -------------------
+(un programa para fresar cinco círculos pequeños en forma de diamante)</p></div>
+<div class="paragraph"><p>G10 L2 P1 X0 Y0 Z0 (asegúrese de que G54 sea la máquina cero)
+G10 L2 P2 X0.5 (compensa el valor de G55 X en 0,5 pulgadas)
+G10 L2 P3 X-0.5 (compensa el valor de G56 X en -0.5 pulgadas)
+G10 L2 P4 Y0.5 (compensa el valor G57 Y en 0.5 pulgadas)
+G10 L2 P5 Y-0.5 (compensa el valor G58 Y en -0.5 pulgadas)</p></div>
+<div class="paragraph"><p>G54 G0 X-0.1 Y0 Z0 (círculo central)
+G1 F1 Z-0.25
+G3 X-0.1 Y0 I0.1 J0
+G0 Z0</p></div>
+<div class="paragraph"><p>G55 G0 X-0.1 Y0 Z0 (offset primer círculo)
+G1 F1 Z-0.25
+G3 X-0.1 Y0 I0.1 J0
+G0 Z0</p></div>
+<div class="paragraph"><p>G56 G0 X-0.1 Y0 Z0 (offset segundo círculo)
+G1 F1 Z-0.25
+G3 X-0.1 Y0 I0.1 J0
+G0 Z0</p></div>
+<div class="paragraph"><p>G57 G0 X-0.1 Y0 Z0 (offset tercer círculo)
+G1 F1 Z-0.25
+G3 X-0.1 Y0 I0.1 J0
+G0 Z0</p></div>
+<div class="paragraph"><p>G58 G0 X-0.1 Y0 Z0 (offset cuarto círculo)
+G1 F1 Z-0.25
+G3 X-0.1 Y0 I0.1 J0
+G54 G0 X0 Y0 Z0</p></div>
+<div class="paragraph"><p>M2
+-------------------------------------------------- -------------------</p></div>
+<div class="paragraph"><p>Ahora llega el momento en que podríamos aplicar un conjunto de offsets G92 a este
+programa. Verá que se está ejecutando en cada caso en Z0. Si la fresa
+estaban en la posición cero, un G92 Z1.0000 emitido al inicio del
+programa cambiaría todo una pulgada. También puede cambiar
+todo el patrón en el plano XY agregando algunos desplazamientos X e Y
+con G92. Si hace esto, debe agregar un comando G92.1 justo antes de
+M2 que finaliza el programa. Si no lo hace, otros programas que podría
+ejecutar después de este también usará ese desplazamiento G92. Además, lo harían
+en un nuevo inicio ya que se guardan los valores de G92 cuando se cierra LinuxCNC y serán
+recargados cuando se inicia de nuevo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_programa_de_muestra_usando_offsets_g52">5.2. Programa de muestra usando offsets G52</h3>
+<div class="paragraph"><p>(Para ser escrito)</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

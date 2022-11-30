@@ -1,0 +1,578 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:28 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>KINS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">KINS</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">kins -
+definiciones cinem&Atilde;&iexcl;ticas para LinuxCNC</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+trivkins (uso para la mayor&Atilde;a de las
+m&Atilde;&iexcl;quinas cartesianas)</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+corexykins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+genhexkins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+genserkins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+lineardeltakins (ver p&Atilde;&iexcl;gina de manual
+separada)</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+maxkins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+pentakins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+pumakins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+rosekins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+rotarydeltakins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+rotatekins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+scarakins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>carga
+tr&Atilde;podes tr&Atilde;pode</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+xyzac-trt-kins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+xyzbc-trt-kins</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+5axiskins</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">En lugar de
+exportar pines y funciones HAL, estos componentes
+proporcionan las definiciones cinem&Atilde;&iexcl;ticas
+directas e inversas para LinuxCNC.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>trivkins -
+cinem&Atilde;&iexcl;tica trivial generalizada</b> <br>
+Los n&Atilde;&ordm;meros de articulaci&Atilde;&sup3;n se
+asignan secuencialmente de acuerdo con las letras de eje
+especificadas con el par&Atilde;&iexcl;metro
+<b>coordinates=</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si se omite el
+par&Atilde;&iexcl;metro coordinates=, se asignan
+n&Atilde;&ordm;meros de articulaci&Atilde;&sup3;n
+<b>secuencialmente</b> a cada letra de eje conocida
+(&quot;xyzabcuvw&quot;). <br>
+Ejemplo: loadrt<b>trivkins</b> <br>
+Asigna todas las letras de los ejes a n&Atilde;&ordm;meros
+de articulaci&Atilde;&sup3;n en <br>
+secuencia:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&Acirc;&nbsp;&Acirc;&nbsp;&Acirc;&nbsp;x==articulaci&Atilde;&sup3;n0,
+y==articulaci&Atilde;&sup3;n1, z==articulaci&Atilde;&sup3;n2
+&Acirc;&nbsp;&Acirc;&nbsp;&Acirc;&nbsp;a==articulaci&Atilde;&sup3;n3,
+b==articulaci&Atilde;&sup3;n4, c==articulaci&Atilde;&sup3;n5
+&Acirc;&nbsp;&Acirc;&nbsp;&Acirc;&nbsp;u==articulaci&Atilde;&sup3;n6,
+v==articulaci&Atilde;&sup3;n7, w==articulaci&Atilde;&sup3;n8
+<br>
+Ejemplo: loadrt<b>trivkins coordinates= xyz</b> <br>
+Asignaciones: x==articulaci&Atilde;&sup3;n0,
+y==articulaci&Atilde;&sup3;n1, z==articulaci&Atilde;&sup3;n2
+<br>
+Ejemplo: loadrt<b>trivkins coordinates=xz</b> <br>
+Asigna: x==articulaci&Atilde;&sup3;n0,
+z==articulaci&Atilde;&sup3;n1 <br>
+Ejemplo: loadrt<b>trivkins coordinates=xyzy</b> <br>
+Asignaciones: x==articulaci&Atilde;&sup3;n0,
+y0==articulaci&Atilde;&sup3;n1,
+z==articulaci&Atilde;&sup3;n2, <br>
+y1==articulaci&Atilde;&sup3;n3</p>
+
+<p style="margin-left:11%; margin-top: 1em">El tipo de
+cinem&Atilde;&iexcl;tica predeterminado
+es<b>KINEMATICS_IDENTITY</b>. Las GUIs puede proporcionar
+caracter&Atilde;sticas especiales para configuraciones que
+utilizan este tipo de cinem&Atilde;&iexcl;tica
+predeterminada. Por ejemplo, la GUI Axis maneja
+autom&Atilde;&iexcl;ticamente las operaciones de modo de
+articulaci&Atilde;&sup3;n y mundial para que las
+distinciones entre las articulaciones y los ejes no sean
+visibles para el operador. Esto es factible ya que existe
+una correspondencia exacta entre un n&Atilde;&ordm;mero
+articulaci&Atilde;&sup3;n y su letra de eje correspondiente.
+<br>
+El tipo de cinem&Atilde;&iexcl;tica se puede establecer con
+el par&Atilde;&iexcl;metro <b>kinstype=</b>: <br>
+&Acirc;&nbsp;&Acirc;&nbsp;kinstype=<b>1</b> para
+KINEMATICS_IDENTITY (predeterminado si kinstype = <br>
+omitido) <br>
+&Acirc;&nbsp;&Acirc;&nbsp;kinstype=[<b>b</b>|<b>B</b>] para
+KINEMATICS_BOTH <br>
+&Acirc;&nbsp;&Acirc;&nbsp;kinstype=[<b>f</b>|<b>F</b>] para
+KINEMATICS_FORWARD_ONLY <br>
+&Acirc;&nbsp;&Acirc;&nbsp;kinstype=[<b>i</b>|<b>I</b>] para
+KINEMATICS_INVERSE_ONLY <br>
+Ejemplo: loadrt <b>trivkins coordinates=xyz
+kinstype=b</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Use
+kinstype=<b>B</b> (KINEMATICS_BOTH) para configuraciones que
+necesitan mover articulaciones de forma independiente (modo
+articulaci&Atilde;&sup3;n) o como movimientos coordinados
+(teleop) en coordenadas mundiales.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cuando se usa
+la GUI Axis con KINEMATICS_BOTH, la tecla
+&rsquo;<b>$</b>&rsquo; se usa para alternar entre los modos
+de articulaci&Atilde;&sup3;n y teleop (mundial).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Se puede usar
+una letra de eje m&Atilde;&iexcl;s de una vez
+(<b>duplicadas</b>) para asignar m&Atilde;&ordm;ltiples
+articulaciones a una sola letra de coordenadas de eje. <br>
+Ejemplo: coordinates=<b>xyyzw</b> kinstype=<b>B</b> <br>
+Asigna: x==articulaci&Atilde;&sup3;n0,
+y==articulaci&Atilde;&sup3;n1<b>AND</b>
+articulaci&Atilde;&sup3;n2, <br>
+z==articulaci&Atilde;&sup3;n3,
+w==articulaci&Atilde;&sup3;n4</p>
+
+<p style="margin-left:11%; margin-top: 1em">El ejemplo
+anterior ilustra una configuraci&Atilde;&sup3;n de
+p&Atilde;&sup3;rtico que usa letras de coordenadas
+<b>duplicadas</b> para indicar que dos articulaciones
+(articulaci&Atilde;&sup3;n1 y articulaci&Atilde;&sup3;n2)
+mueven un solo eje (y). El uso de kinstype=<b>B</b> permite
+alternar la configuraci&Atilde;&sup3;n entre los modos de
+operaci&Atilde;&sup3;n articulaci&Atilde;&sup3;n y mundial.
+Las opciones de configuraci&Atilde;&sup3;n de referencia
+est&Atilde;&iexcl;n disponibles para sincronizar el
+movimiento de referencia final para las articulaciones
+seleccionadas; consulte la documentaci&Atilde;&sup3;n
+de<tt>onfiguracion Homing</tt>.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>NOTES</b>
+para coordenadas <b>duplicadas</b>:</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cuando se
+utilizan letras de coordenadas <b>duplicadas</b>, la
+especificaci&Atilde;&sup3;n KINEMATICS_BOTH
+(kinstype=<b>B</b>) permite que una interfaz
+gr&Atilde;&iexcl;fica de usuario admita el offset de cada
+articulaci&Atilde;&sup3;n individual en <b>Modo
+articulaci&Atilde;&sup3;n</b>. Se requiere
+<b>precauci&Atilde;&sup3;n</b> en m&Atilde;&iexcl;quinas en
+las que el movimiento de una sola articulaci&Atilde;&sup3;n
+(en un articulaci&Atilde;&sup3;n especificada por una letra
+de coordenada <b>duplicada</b>) puede conducir a
+da&Atilde;&plusmn;os del p&Atilde;&sup3;rtico u otros
+resultados no deseados. Cuando se omite el
+par&Atilde;&iexcl;metro kinstype=, la operaci&Atilde;&sup3;n
+por defecto es KINEMATICS_IDENTITY (kinstype=<b>1</b>) y una
+interfaz gr&Atilde;&iexcl;fica de usuario puede permitir jog
+en funci&Atilde;&sup3;n de una letra de coordenada de eje
+seleccionada (o mediante una tecla del teclado) antes de
+completar el recorrido y la m&Atilde;&iexcl;quina
+a&Atilde;&ordm;n en<b>Modo articulaci&Atilde;&sup3;n</b>. La
+articulaci&Atilde;&sup3;n seleccionada
+depender&Atilde;&iexcl; de la implementaci&Atilde;&sup3;n de
+la interfaz gr&Atilde;&iexcl;fica de usuario, pero
+normalmente solo se mover&Atilde;&iexcl; una de las
+m&Atilde;&ordm;ltiples articulaciones del conjunto. En
+consecuencia, se recomienda especificar KINEMATICS_BOTH, ya
+que permite el soporte para un jog independiente e
+inequ&Atilde;voco de cada articulaci&Atilde;&sup3;n
+individual. Las m&Atilde;&iexcl;quinas que implementan el
+recorrido de referencia para todas las articulaciones
+(incluidas las disposiciones para sincronizar el movimiento
+de referencia final para m&Atilde;&ordm;ltiples
+articulaciones) pueden conectarse al arranque de la
+m&Atilde;&iexcl;quina y cambiar
+autom&Atilde;&iexcl;ticamente al modo<b>mundial</b> donde
+est&Atilde;&iexcl; disponible el jogging por
+coordenadas.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>corexykins -
+Cinematica CoreXY</b> <br>
+X = 0.5*(JOINT_0 + JOINT_1) <br>
+Y = 0.5*(JOINT_0 - JOINT_1) <br>
+Z = JOINT_2 <br>
+[KINS]JOINTS= debe especificar 3 o m&Atilde;&iexcl;s
+articulaciones (m&Atilde;&iexcl;ximo 9) <br>
+Si est&Atilde;&iexcl; habilitado por el n&Atilde;&ordm;mero
+de [KINS]JOINTS= especificado, <br>
+JOINT_3,4,5,6,7,8 corresponde a las coordenadas A, B, C, U,
+V, W <br>
+respectivamente.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>genhexkins-
+Cinem&Atilde;&iexcl;tica Hex&Atilde;&iexcl;podo</b> <br>
+Da seis grados de libertad en posici&Atilde;&sup3;n y
+orientaci&Atilde;&sup3;n (XYZABC). La ubicaci&Atilde;&sup3;n
+de las articulaciones de la base y la plataforma
+est&Atilde;&iexcl; definida por los par&Atilde;&iexcl;metros
+hal. La iteraci&Atilde;&sup3;n cinem&Atilde;&iexcl;tica
+hacia adelante est&Atilde;&iexcl; controlada por pines hal.
+<b><br>
+genhexkins.base.</b><i>N</i><b>.x <br>
+genhexkins.base.</b><i>N</i><b>.y <br>
+genhexkins.base.</b><i>N</i><b>.z <br>
+genhexkins.platform.</b><i>N</i><b>.x <br>
+genhexkins.platform.</b><i>N</i><b>.y <br>
+genhexkins.platform.</b><i>N</i><b>.z</b></p>
+
+<p style="margin-left:22%;">Par&Atilde;&iexcl;metros que
+describen las coordenadas de la
+articulaci&Atilde;&sup3;n<i>N-sima</i>.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.spindle-offset</b></p>
+
+<p style="margin-left:22%;">Se agreg&Atilde;&sup3; a todas
+las articulaciones las coordenadas Z para cambiar el origen
+de la m&Atilde;&iexcl;quina. Facilita el ajuste de la
+posici&Atilde;&sup3;n del husillo.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.base-n.</b><i>N</i><b>.x
+<br>
+genhexkins.base-n.</b><i>N</i><b>.y <br>
+genhexkins.base-n.</b><i>N</i><b>.z <br>
+genhexkins.platform-n.</b><i>N</i><b>.x <br>
+genhexkins.platform-n.</b><i>N</i><b>.y <br>
+genhexkins.platform-n.</b><i>N</i><b>.z</b></p>
+
+<p style="margin-left:22%;">Par&Atilde;&iexcl;metros que
+describen los vectores unitarios del eje de la
+articulaci&Atilde;&sup3;n <i>N-sima</i>. Se utiliza para
+calcular la correcci&Atilde;&sup3;n de la longitud del
+corredizo para articulaciones card&Atilde;&iexcl;nicas y
+actuadores no cautivos.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.screw-lead</b></p>
+
+<p style="margin-left:22%;">Paso del tornillo del corredizo
+del actuador, positivo para roscas a derecha. El valor
+predeterminado es 0 (correcci&Atilde;&sup3;n de longitud
+deshabilitada).</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.correction.</b><i>N</i></p>
+
+<p style="margin-left:22%;">Valores actuales de
+correcci&Atilde;&sup3;n de la longitud del corredizo para
+actuadores no cautivos con articulaciones
+card&Atilde;&iexcl;nicas.
+<b>genhexkins.convergence-criterion</b> Valor m&Atilde;nimo
+de error que finaliza las iteraciones con una
+soluci&Atilde;&sup3;n convergente.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.limit-iterations</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite de iteraciones,
+si las iteraciones excedidas se detienen sin
+convergencia.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.max-error</b></p>
+
+<p style="margin-left:22%;">Valor de error
+m&Atilde;&iexcl;ximo, si las iteraciones excedidas se
+detienen sin convergencia.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.last-iterations</b></p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero de
+iteraciones empleadas para la &Atilde;&ordm;ltima
+soluci&Atilde;&sup3;n de cinem&Atilde;&iexcl;tica
+directa.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.max-iterations</b></p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de iteraciones empleadas para una
+soluci&Atilde;&sup3;n convergente durante la
+sesi&Atilde;&sup3;n actual.</p>
+
+
+<p style="margin-left:11%;"><b>genhexkins.tool-offset</b></p>
+
+<p style="margin-left:22%;">offset TCP desde el origen de
+la plataforma a lo largo de Z para implementar la
+funci&Atilde;&sup3;n RTCP. Para evitar saltos de
+articulaciones cambie el offset de la herramienta solo
+cuando la plataforma no est&Atilde;&iexcl; inclinada.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>genserkins -
+cinem&Atilde;&iexcl;tica serial generalizada</b> <br>
+Cinem&Atilde;&iexcl;tica que puede modelar un manipulador
+general de eslabones en serie con hasta 6 articulaciones
+angulares.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La
+cinem&Atilde;&iexcl;tica utiliza la definici&Atilde;&sup3;n
+de Denavit-Hartenberg para la articulaci&Atilde;&sup3;n y
+los eslabones. Las definiciones de DH son las utilizadas por
+John J Craig en &quot;Introducci&Atilde;&sup3;n a la
+rob&Atilde;&sup3;tica: mec&Atilde;&iexcl;nica y
+control&quot;. Los par&Atilde;&iexcl;metros para el
+manipulador se definen mediante pines hal . Tenga en cuenta
+que esto utiliza una convenci&Atilde;&sup3;n a veces
+conocida como &quot;Par&Atilde;&iexcl;metros DH
+modificados&quot; y esto debe tenerse en cuenta al
+configurar el sistema. https://w.wiki/NcY <b><br>
+genserkins.A-</b><i>N</i> <b><br>
+genserkins.ALPHA-</b><i>N</i> <b><br>
+genserkins.D-</b><i>N</i></p>
+
+<p style="margin-left:22%;">Par&Atilde;&iexcl;metros que
+describen la geometr&Atilde;a de la
+articulaci&Atilde;&sup3;n<i>N-esima</i>th.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>maxkins-
+Ejemplo de cinem&Atilde;&iexcl;tica de 5 ejes</b> <br>
+Cinem&Atilde;&iexcl;tica de fresadora de mesa de 5 ejes de
+Chris Radek llamada &rsquo;max&rsquo; con cabezal basculante
+(eje B) y giratorio horizontal montado en la mesa (eje C).
+Proporciona movimiento UVW en el sistema de coordenadas
+girado. El archivo fuente, maxkins.c, puede ser un punto de
+partida &Atilde;&ordm;til para otros sistemas de 5 ejes.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pentakins -
+Cinematica Pentapod</b> <br>
+Da cinco grados de libertad en posici&Atilde;&sup3;n y
+orientaci&Atilde;&sup3;n (XYZAB). La ubicaci&Atilde;&sup3;n
+de la base y las articulaciones efectoras est&Atilde;&iexcl;
+definida por los par&Atilde;&iexcl;metros hal. La
+iteraci&Atilde;&sup3;n cinem&Atilde;&iexcl;tica hacia
+adelante est&Atilde;&iexcl; controlada por pines hal.
+<b><br>
+pentakins.base.</b><i>N</i><b>.x <br>
+pentakins.base.</b><i>N</i><b>.y <br>
+pentakins.base.</b><i>N</i><b>.z <br>
+pentakins.effector.</b><i>N</i><b>.r <br>
+pentakins.effector.</b><i>N</i><b>.z</b></p>
+
+<p style="margin-left:22%;">Par&Atilde;&iexcl;metros que
+describen el radio de la articulaci&Atilde;&sup3;n
+efectora<i>N</i>-esima y la posici&Atilde;&sup3;n axial.</p>
+
+
+<p style="margin-left:11%;"><b>pentakins.convergence-criterion</b></p>
+
+<p style="margin-left:22%;">Valor m&Atilde;nimo de error
+que finaliza las iteraciones con una soluci&Atilde;&sup3;n
+convergente.</p>
+
+
+<p style="margin-left:11%;"><b>pentakins.limit-iterations</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite de iteraciones,
+si las iteraciones excedidas se detienen sin
+convergencia.</p>
+
+<p style="margin-left:11%;"><b>pentakins.max-error</b></p>
+
+<p style="margin-left:22%;">Valor de error
+m&Atilde;&iexcl;ximo, si las iteraciones excedidas se
+detienen sin convergencia.</p>
+
+
+<p style="margin-left:11%;"><b>pentakins.last-iterations</b></p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero de
+iteraciones gastadas para la &Atilde;&ordm;ltima
+soluci&Atilde;&sup3;n de cinem&Atilde;&iexcl;tica
+directa.</p>
+
+
+<p style="margin-left:11%;"><b>pentakins.max-iterations</b></p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de iteraciones gastadas para una
+soluci&Atilde;&sup3;n convergente durante la
+sesi&Atilde;&sup3;n actual.</p>
+
+
+<p style="margin-left:11%;"><b>pentakins.tool-offset</b></p>
+
+<p style="margin-left:22%;">offset TCP desde el origen del
+efector a lo largo de Z para implementar la
+funci&Atilde;&sup3;n RTCP. Para evitar el salto de las
+articulaciones, cambie la herramienta de offset solo cuando
+la plataforma no est&Atilde;&copy; inclinada.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pumakins -
+cinem&Atilde;&iexcl;tica para robots con tipo puma</b> <br>
+Cinem&Atilde;&iexcl;tica para un robot estilo puma con 6
+articulaciones <b><br>
+pumakins.A2 <br>
+pumakins.A3 <br>
+pumakins.D3 <br>
+pumakins.D4</b></p>
+
+<p style="margin-left:22%;">Describen la geometr&Atilde;a
+del robot.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>rosekins -
+cinem&Atilde;&iexcl;tica para un motor rose usando una
+articulaci&Atilde;&sup3;n transversal, longitudinal y
+rotativa (3 articulaciones) <br>
+rotarydeltakins - cinem&Atilde;&iexcl;tica para una
+m&Atilde;&iexcl;quina rotatoria delta. Robot rotatorio delta
+(3 articulaciones) <br>
+rotatekins - Cinem&Atilde;&iexcl;tica rotada</b> <br>
+Los ejes X e Y se giran 45 grados en
+comparaci&Atilde;&sup3;n con las articulaciones 0 y 1.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>scarakins -
+cinem&Atilde;&iexcl;tica para robots tipo SCARA <br>
+scarakins.D1</b></p>
+
+<p style="margin-left:22%;">Distancia vertical desde el
+plano del suelo al centro del brazo interno.</p>
+
+<p style="margin-left:11%;"><b>scarakins.D2</b></p>
+
+<p style="margin-left:22%;">Distancia horizontal entre el
+eje de la articulaci&Atilde;&sup3;n [0] y el eje de la
+articulaci&Atilde;&sup3;n [1], es decir, la longitud del
+brazo interno.</p>
+
+<p style="margin-left:11%;"><b>scarakins.D3</b></p>
+
+<p style="margin-left:22%;">Distancia vertical desde el
+centro del brazo interno al centro del brazo externo. Puede
+ser positivo o negativo dependiendo de la estructura del
+robot.</p>
+
+<p style="margin-left:11%;"><b>scarakins.D4</b></p>
+
+<p style="margin-left:22%;">Distancia horizontal entre el
+eje de la articulaci&Atilde;&sup3;n [1] y el eje de la
+articulaci&Atilde;&sup3;n [2], es decir, La longitud del
+brazo externo.</p>
+
+<p style="margin-left:11%;"><b>scarakins.D5</b></p>
+
+<p style="margin-left:22%;">Distancia vertical desde el
+efector final hasta la punta de herramientas. Positivo
+significa que la punta de herramientas esta
+m&Atilde;&iexcl;s baja que el efector final, y es el caso
+normal.</p>
+
+<p style="margin-left:11%;"><b>scarakins.D6</b></p>
+
+<p style="margin-left:22%;">Distancia horizontal desde la
+l&Atilde;nea central del efector final (y las articulaciones
+de los ejes 2 y 3) y la punta de herramientas. Cero
+significa que la punta de herramientas est&Atilde;&iexcl; en
+la l&Atilde;nea central. Los valores distintos de cero deben
+ser positivos, si son negativos, introducen un offset de 180
+grados en el valor de la articulaci&Atilde;&sup3;n [3].</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>tripodkins -
+Cinem&Atilde;&iexcl;tica de tr&Atilde;pode</b> <br>
+Las articulaciones representan la distancia del punto
+controlado desde tres ubicaciones predefinidas (los
+motores), dando tres grados de libertad en
+posici&Atilde;&sup3;n (XYZ) <b><br>
+tripodkins.Bx <br>
+tripodkins.Cx <br>
+tripodkins.Cy</b></p>
+
+<p style="margin-left:22%;">La ubicaci&Atilde;&sup3;n de
+los tres motores es (0,0), (Bx, 0) y (Cx, Cy)</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xyzac-trt-kins
+- Fresadora de 5 ejes (mesa giratoria/basculante)</b> <br>
+Mesa inclinable (A) y giratoria horizontal montada en la
+mesa &Acirc;&copy; (5 articulaciones). La
+asignaci&Atilde;&sup3;n de articulaci&Atilde;&sup3;n
+predeterminada es X: 0, Y: 1, Z: 2, A: 3, C: 4. El mapeo de
+articulaci&Atilde;&sup3;n se puede alterar con el
+par&Atilde;&iexcl;metro de coordenadas de la misma manera
+que lo admite trivkins.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xyzbc-trt-kins
+- Fresa de 5 ejes (mesa giratoria / basculante)</b> <br>
+Mesa basculante (B) y giratoria horizontal montada en la
+mesa (eje C) (5 articulaciones). La asignaci&Atilde;&sup3;n
+de articulaci&Atilde;&sup3;n predeterminada es X: 0, Y: 1,
+Z: 2, A: 3, C: 4. El mapeo de articulaci&Atilde;&sup3;n se
+puede alterar con el par&Atilde;&iexcl;metro de coordenadas
+de la misma manera que lo admite trivkins.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>5axiskins -
+fresadora de puente de 5 ejes</b> <br>
+XYZBC (5 articulaciones)</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">Secci&Atilde;&sup3;n<i>Kinematics</i>
+en la documentaci&Atilde;&sup3;n de LinuxCNC</p>
+<hr>
+</body>
+</html>

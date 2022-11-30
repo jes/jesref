@@ -1,0 +1,183 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_shmem</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_shmem</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_shmem -
+Funciones para administrar bloques de memoria compartida</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:22%; margin-top: 1em">int
+rtapi_shmem_new(int <i>key</i>, int <i>module_id</i>,
+unsigned long int <i>size</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+rtapi_shmem_delete(int <i>shmem_id</i>, int
+<i>module_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+rtapi_shmem_getptr(int <i>shmem_id</i>, void
+**<i>ptr</i>)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="4%"></td>
+<td width="7%"></td>
+<td width="78%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><i>key</i></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>Identifica el bloque de memoria. La clave debe ser
+distinta de cero. Todos los m&Atilde;&sup3;dulos que deseen
+usar la misma memoria deben usar la misma clave.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>module_id</i></p>
+
+<p style="margin-left:22%;">Identificador del
+m&Atilde;&sup3;dulo devuelto por una llamada previa a
+<b>rtapi_init</b>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>size</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>El tama&Atilde;&plusmn;o deseado del bloque de memoria
+compartida, en bytes.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>ptr</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>El puntero al bloque de memoria compartida. Tenga en
+cuenta que el bloque puede estar mapeado en una
+direcci&Atilde;&sup3;n diferente para diferentes
+m&Atilde;&sup3;dulos.</p> </td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_shmem_new</b>
+asigna un bloque de memoria compartida. <i>key</i>
+identifica el bloque de memoria y no debe ser cero. Todos
+los m&Atilde;&sup3;dulos que deseen acceder a la misma
+memoria debe usar la misma clave. <i>module_id</i> es la ID
+del m&Atilde;&sup3;dulo que est&Atilde;&iexcl; realizando la
+llamada (consulte rtapi_init). El bloque
+tendr&Atilde;&iexcl; al menos <i>size</i> bytes, y puede ser
+redondeado. Asignar muchos bloques peque&Atilde;&plusmn;os
+puede ser muy derrochador. Cuando un bloque particular se
+asigna por primera vez, los primeros 4 bytes
+est&Atilde;&iexcl;n a cero. Asignaciones posteriores del
+mismo bloque por otros m&Atilde;&sup3;dulos o procesos no
+tocar&Atilde;&iexcl;n el contenido del bloque. Las
+aplicaciones pueden usar esos bytes para ver si necesitan
+que se inicialice el bloque, o si otro m&Atilde;&sup3;dulo
+ya lo hizo. En caso de &Atilde;&copy;xito, devuelve una ID
+entera positiva, que se utiliza para todas las llamadas
+subsiguientes relacionadas con el bloque. En caso de fracaso
+devuelve un c&Atilde;&sup3;digo de error negativo</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_shmem_delete</b>
+libera el bloque de memoria compartida asociado con
+<i>shmem_id</i>. <i>module_id</i> es la ID del
+m&Atilde;&sup3;dulo de llamada. Devuelve un
+c&Atilde;&sup3;digo de estado.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_shmem_getptr</b>
+establece <i>*ptr</i> para que apunte al bloque de memoria
+compartida asociado con <i>shmem_id</i>.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_shmem_getptr</b>
+puede llamarse desde el c&Atilde;&sup3;digo de usuario,
+c&Atilde;&sup3;digo de inicio/limpieza, o tareas en tiempo
+real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_shmem_new</b>
+y <b>rtapi_shmem_dete</b> no pueden llamarse desde tareas en
+tiempo real</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+<hr>
+</body>
+</html>

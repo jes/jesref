@@ -1,0 +1,140 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:37 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>sim_pin</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">sim_pin</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#NOTE">NOTE</a><br>
+<a href="#USAGE">USAGE</a><br>
+<a href="#EXAMPLE">EXAMPLE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_pin</b>
+- gui for displaying and setting one or more Hal inputs</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_pin</b>
+<i>[Options] name1</i> [<i>name2</i> [<i>name3</i> ...]]</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>Options</i>:
+<b><br>
+--help</b> (shows help text) <b><br>
+--title title_string</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">For bit items,
+the name may include a /mode= specifier: <i><br>
+namei</i><b>/mode=</b>[<b>pulse</b> | <b>toggle</b> |
+<b>hold</b>] <br>
+(default is toggle)</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Hal boolean
+items (bit) and numerical items (u32, s32, float) are
+supported.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the named
+input is a numerical type, the gui displays:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Entry</b>
+Entry widget for value or a valid Tcl expression. <b><br>
+Set</b> Pushbutton to set new value from Entry (or use
+&lt;RETURN&gt;) <b><br>
+Reset</b> Pushbutton to reset to the value present on
+initiation</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the input is
+a <b>bit</b> type, the gui shows a single pushbutton that is
+controlled by radio-button selectors:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">mode=<b>pulse</b>
+Pulse input to 1 for each pushbutton press <br>
+mode=<b>toggle</b> Toggle input for each pushbutton press
+<br>
+mode=<b>hold</b> Set input to 1 while pushbutton pressed</p>
+
+<p style="margin-left:11%; margin-top: 1em">If the bit item
+mode begins with an uppercase letter, the radio buttons for
+selecting other modes are not shown</p>
+
+<h2>NOTE
+<a name="NOTE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">LinuxCNC or a
+standalone Hal application must be running</p>
+
+<p style="margin-left:11%; margin-top: 1em">A named item
+can specify a <b>pin</b>, <b>param</b>, or <b>signal</b>.
+The named item must be writable:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pin IN or
+I/O</b> (and not connected to a signal with a writer)
+<b><br>
+param RW <br>
+signal connected to a writable pin</b></p>
+
+<h2>USAGE
+<a name="USAGE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim_pin</b>
+can be used interactively from a shell command line or
+started automatically from a configuration ini file.</p>
+
+<h2>EXAMPLE
+<a name="EXAMPLE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Example for ini
+file usage:</p>
+
+<p style="margin-left:11%; margin-top: 1em">[APPLICATIONS]
+<br>
+DELAY = 5 <br>
+APP = <b>sim_pin</b> \ <br>
+halui.machine.off/mode=pulse \ <br>
+ini.traj_arc_blend_enable \ <br>
+ motion-command-handler-tmax</p>
+<hr>
+</body>
+</html>

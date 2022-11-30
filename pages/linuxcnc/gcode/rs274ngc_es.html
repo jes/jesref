@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Diferencias RS274/NGC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Diferencias RS274/NGC</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:rs274ngc-programs">1. Cambios desde RS274/NGC</h2>
+<div class="sectionbody">
+<div class="dlist"><div class="title">Diferencias que cambian el significado de los programas RS274/NGC</div><dl>
+<dt class="hdlist1">
+Ubicación después de un cambio de herramienta
+</dt>
+<dd>
+<p>
+En LinuxCNC, la máquina no vuelve a su posición original
+después de un cambio de herramienta. Este cambio se realizó porque la nueva herramienta
+podría ser más larga que la herramienta anterior y, por lo tanto, el movimiento a la
+posición original de la máquina podría dejar la punta de la herramienta demasiado baja.
+</p>
+</dd>
+<dt class="hdlist1">
+Los parámetros de offset están en unidades de archivo ini
+</dt>
+<dd>
+<p>
+En LinuxCNC, los valores almacenados en parámetros para las ubicaciones home G28 y G30,
+, los sistemas de coordenadas P1 &#8230; P9 y el desplazamiento G92 son
+en "unidades de archivo ini". Este cambio se realizó porque de lo contrario el
+significado de una ubicación cambiaba dependiendo de si estaba activo G20 o G21
+cuando G28, G30, G10 L2 o G92.3 se programa.
+</p>
+</dd>
+<dt class="hdlist1">
+Las longitudes/diámetros de la tabla de herramientas están en unidades de archivo ini
+</dt>
+<dd>
+<p>
+En LinuxCNC, las longitudes de herramienta (compensaciones) y diámetros en la herramienta
+la tabla se especifica solo en unidades de archivo ini. Este cambio fue hecho
+porque de lo contrario la longitud de una herramienta y su diámetro
+cambiaban con G20 o G21 al iniciar
+los modos G43, G41, G42. Esto hizo imposible ejecutar el código G en
+unidades no nativas de la máquina, incluso cuando el código G era simple y
+bien formado (comenzando con G20 o G21, y sin cambió de unidades
+durante todo el programa), sin cambiar la tabla de herramientas.
+</p>
+</dd>
+<dt class="hdlist1">
+G84, G87 no implementado
+</dt>
+<dd>
+<p>
+G84 y G87 no se implementan actualmente, pero se pueden agregar a un
+lanzamiento futuro de LinuxCNC.
+</p>
+</dd>
+<dt class="hdlist1">
+G28, G30 con palabras de eje
+</dt>
+<dd>
+<p>
+Cuando G28 o G30 se programan con solo algunas palabras de eje presentes,
+LinuxCNC solo mueve los ejes nombrados. Esto es común en otros controles de máquinas.
+Para mover algunos ejes a un punto intermedio y luego
+mover todos los ejes al punto predefinido, escriba dos líneas de código G:
+</p>
+<div class="paragraph"><p>G0 X- Y- (ejes para mover al punto intermedio) G28 (mover todos los ejes
+al punto predefinido)</p></div>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adiciones_a_rs274_ngc">2. Adiciones a RS274/NGC</h2>
+<div class="sectionbody">
+<div class="dlist"><div class="title">Diferencias que no cambian el significado de los programas RS274 / NGC</div><dl>
+<dt class="hdlist1">
+Códigos de roscado G33, G76 
+</dt>
+<dd>
+<p>
+Estos códigos no están definidos en RS274/NGC.
+</p>
+</dd>
+<dt class="hdlist1">
+G38.2
+</dt>
+<dd>
+<p>
+La punta de la sonda no se retrae después de un movimiento G38.2. Este
+movimiento de retracción puede agregarse en una versión futura de LinuxCNC.
+</p>
+</dd>
+<dt class="hdlist1">
+G38.3 &#8230; G38.5
+</dt>
+<dd>
+<p>
+Estos códigos no están definidos en RS274/NGC
+</p>
+</dd>
+<dt class="hdlist1">
+O-codes
+</dt>
+<dd>
+<p>
+Estos códigos no están definidos en RS274/NGC
+</p>
+</dd>
+<dt class="hdlist1">
+M50 &#8230; M53 ajustes 
+</dt>
+<dd>
+<p>
+Estos códigos no están definidos en RS274/NGC
+</p>
+</dd>
+<dt class="hdlist1">
+M61..M66
+</dt>
+<dd>
+<p>
+Estos códigos no están definidos en RS274/NGC
+</p>
+</dd>
+<dt class="hdlist1">
+G43, G43.1
+</dt>
+<dd>
+<p>
+<em>Longitudes de herramienta negativas</em>
+</p>
+<div class="paragraph"><p>La especificación RS274 / NGC dice "se espera que" todas las longitudes de herramienta
+sean positivas. Sin embargo, G43 funciona para longitudes de herramienta negativas.</p></div>
+<div class="paragraph"><p><em>Herramientas de torno</em></p></div>
+<div class="paragraph"><p>La compensación de longitud de herramienta G43 puede compensar la herramienta tanto en la X
+y la Z. Esta característica es principalmente útil en tornos.</p></div>
+<div class="paragraph"><p><em>Longitudes de herramientas dinámicas</em></p></div>
+<div class="paragraph"><p>LinuxCNC permite la especificación de una longitud de herramienta calculada a través de G43.1 I K.</p></div>
+</dd>
+<dt class="hdlist1">
+G41.1, G42.1
+</dt>
+<dd>
+<p>
+LinuxCNC permite la especificación de un diámetro de herramienta y, si está en modo torno,
+orientación en el código G. El formato es G41.1 / G42.1 D L,
+donde D es el diámetro y L (si se especifica) es la orientación de la herramienta de torno.
+</p>
+</dd>
+<dt class="hdlist1">
+G43 sin palabra H
+</dt>
+<dd>
+<p>
+En ngc, esto no está permitido. En LinuxCNC, establece compensaciones de longitud para
+la herramienta cargada actualmente. Si no hay una herramienta cargada actualmente, es
+un error. Este cambio se realizó para que el usuario no tenga que
+especificar el número de herramienta en dos lugares para cada cambio de herramienta, y
+porque es consistente con la forma en que funciona G41/G42 cuando la palabra D
+no está especificada
+</p>
+</dd>
+<dt class="hdlist1">
+Ejes U, V y W
+</dt>
+<dd>
+<p>
+LinuxCNC permite máquinas con hasta 9 ejes definiendo un conjunto adicional
+de 3 ejes lineales conocidos como U, V y W
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph"><p><a id="cha:5-axis-kinematics"></a> </p></div>
+<h1 id="_cinemática_de_5_ejes">Cinemática de 5 ejes</h1>
+<div class="sect1">
+<h2 id="_introducción">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las máquinas herramienta con multiejes coordinados CNC controladas con LinuxCNC requieren un componente cinemático
+especial para cada tipo de máquina. Este capítulo describe algunas de las configuraciones de máquina de 5 ejes más
+populares y luego desarrolla las transformaciones directas (desde el trabajo hasta las coordenadas de articulacion) e
+inversa (desde la articulacion hasta el trabajo) en un proceso matemático general para dos tipos de máquina.</p></div>
+<div class="paragraph"><p>Se proporcionan los componentes cinemáticos y los modelos de simulación de vismach para demostrar su comportamiento en la
+pantalla de la computadora. También se dan ejemplos de datos de archivos HAL.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuraciones_de_máquinas_herramienta_de_5_ejes">2. Configuraciones de máquinas herramienta de 5 ejes</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>En esta sección tratamos con máquinas de fresado o enrutadores típicos de 5 ejes, con cinco articulaciones o grados de
+libertad, que se controlan en base a movimientos coordinados.</p></div>
+<div class="paragraph"><p>Las máquinas herramienta de 3 ejes no pueden cambiar la orientación de la herramienta. Las máquinas herramienta de 5 ejes
+utilizan dos ejes adicionales para dotar a la herramienta de corte de una orientación adecuada para el mecanizado
+eficiente de superficies de cualquier forma.</p></div>
+<div class="paragraph"><p>Las configuraciones típicas de máquinas herramienta de 5 ejes se muestran en las figs. 3, 5, 7 y 9-11 [1,2] en la sección Figuras.</p></div>
+<div class="paragraph"><p>La cinemática de las máquinas herramienta de 5 ejes es mucho más simple que la de los brazos robots de 6 ejes, puesto que
+3 de los ejes son normalmente ejes lineales y solo dos son ejes giratorios.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_orientación_y_localizacion_de_la_herramienta">3. Orientación y localizacion de la herramienta</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Generalmente se utilizan sistemas CAD/CAM para generar los modelos 3D CAD de la pieza de trabajo, así como los datos CAM
+para la entrada a la máquina CNC de 5 ejes. La herramienta o los datos de localizacion de la herramienta (CL, Cutter
+Location) se componen de la posición de la punta de la herramienta y la orientación de la misma en relación con el sistema
+de coordenadas de la pieza. Esa informacion la contienen dos vectores, como los generados por la mayoría de los sistemas CAM, y que se muestran en la Fig. 1,:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__1.png" alt="5-axis-figures/equation__1.png" />
+</div>
+</div>
+<div class="paragraph"><p>El vector K es equivalente al 3° vector de la matriz de pose E<sub>6</sub> que se usó en la cinemática del robot de 6 ejes en [3] y el vector Q es equivalente al 4° vector de E<sub>6</sub>. En MASTERCAM, por ejemplo, esta información está contenida en el archivo de salida intermedio ".nci".</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-1.png" alt="5-axis-figures/Figure-1.png" height="400" />
+</div>
+<div class="title">Figura 1. Datos de localizacion de la herramienta</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_matrices_de_translacion_y_rotación">4. Matrices de translacion y rotación</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las transformaciones homogéneas proporcionan una manera simple de describir las matemáticas de
+la cinemática de máquinas multieje. Una transformación del espacio H es una matriz 4x4 y puede representar
+transformaciones de translacion y rotación. Dado un punto x, y, z descrito por un vector u={x, y, z, 1}<sup>T</sup>, su
+transformación v está representada por la matriz producto.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__2.png" alt="5-axis-figures/equation__2.png" />
+</div>
+</div>
+<div class="paragraph"><p>Hay cuatro matrices de transformación fundamentales en las que se basa la cinemática de 5 ejes:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__3.png" alt="5-axis-figures/equation__3.png" />
+</div>
+</div>
+<div class="paragraph"><p>La matriz T(a,b,c) implica una traslación en las direcciones de coordenadas X, Y y Z, en las cantidades a, b y c respectivamente. Las matrices R implican rotaciones del ángulo theta alrededor de los ejes de coordenadas X, Y y Z, respectivamente. Los símbolos <em>C</em> y <em>S</em> se refieren a las funciones coseno y seno, respectivamente.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuraciones_de_5_ejes_con_mesas_giratorias_inclinables">5. Configuraciones  de 5 ejes con mesas giratorias/inclinables</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>En estas máquinas herramienta, los dos ejes giratorios se montan en la mesa de trabajo de la máquina. Se usan tipicamente dos formas:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Una mesa giratoria que gira alrededor del eje Z vertical (rotación C, secundaria) montado en una mesa basculante que gira alrededor del eje X o Y (rotación  A o B, primaria). La pieza de trabajo está montada en la mesa giratoria.
+</p>
+</li>
+<li>
+<p>
+Una mesa inclinable que gira alrededor del eje X o Y (rotación A o B, secundaria) está montada en una mesa giratoria que gira alrededor del eje Z (rotación C, primaria), con la pieza de trabajo en el mesa basculante.
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-2.png" alt="5-axis-figures/Figure-2.png" />
+</div>
+<div class="title">Figura 2. Configuración general y sistemas de coordenadas</div>
+</div>
+<div class="paragraph"><p>Se puede considerar que una máquina multieje consiste en una serie de eslabones conectados por articulaciones. Al
+asignar un sistema de coordenadas en cada eslabon de la máquina, y usando transformaciones homogéneas, podemos describir
+la posición relativa y la orientación entre estos sistemas de coordenadas.</p></div>
+<div class="paragraph"><p>Necesitamos describir una relación entre el sistema de coordenadas de la pieza de trabajo y el sistema de coordenadas de
+la herramienta. Esto se puede definir mediante una matriz de transformación <em><sup>w</sup>A<sub>t</sub></em>, que se puede encontrar mediante
+transformaciones sucesivas entre los diferentes elementos estructurales o eslabones de la máquina, cada uno con su propio
+sistema de coordenadas definido. En general, tal transformación puede verse de la siguiente manera:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__4.png" alt="5-axis-figures/equation__4.png" />
+</div>
+</div>
+<div class="paragraph"><p>donde cada matriz <em><sup>i-1</sup>A<sub>j</sub></em> es una matriz de traslacion <em>T</em> o una matriz de rotación <em>R</em> de la forma (2),(3).</p></div>
+<div class="paragraph"><p>La multiplicación de matrices es un proceso simple en el que los elementos de cada fila de la matriz A de la izquierda se
+multiplican por los elementos de cada columna de la matriz B de la derecha y se suman para obtener un elemento en la
+matriz resultante C, es decir.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__5.png" alt="5-axis-figures/equation__5.png" />
+</div>
+</div>
+<div class="paragraph"><p>En la Fig. 2 se muestra una configuración genérica con sistemas de coordenadas [4]. Incluye ejes giratorios/basculantes en
+mesa o en husillo. En una máquina herramienta se usan realmente solo dos de los tres ejes giratorios.</p></div>
+<div class="paragraph"><p>Primero desarrollaremos las transformaciones para el primer tipo de configuración mencionado anteriormente, es decir. un
+tipo de mesa inclinable/giratoria (la llamaremos "trt") sin offsets de ejes giratorios. Podemos darle el nombre de
+configuración xyzac-trt.</p></div>
+<div class="paragraph"><p>También desarrollamos las transformaciones para el mismo tipo (xyzac-trt), pero con offsets de eje giratorios.</p></div>
+<div class="paragraph"><p>Luego desarrollamos las transformaciones para una configuración xyzbc-trt con offsets de ejes giratorios.</p></div>
+<div class="sect2">
+<h3 id="_transformaciones_para_una_máquina_herramienta_xyzac_trt_con_offsets_de_pieza_de_trabajo">5.1. Transformaciones para una máquina herramienta xyzac-trt con offsets de pieza de trabajo</h3>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-3.png" alt="5-axis-figures/Figure-3.png" />
+</div>
+<div class="title">Figura 3. Modelo vismach de xyzac-trt con ejes de rotación coincidentes</div>
+</div>
+<div class="paragraph"><p>Tratamos aquí con una configuración simplificada en la que el eje basculante y el eje giratorio se cruzan en un punto
+llamado punto pivote como se muestra en la figura 4. Por lo tanto, los dos sistemas de coordenadas <em>O<sub>ws</sub></em> y <em>O<sub>wp</sub></em> de
+la fig. 2 son coincidentes.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-4.png" alt="5-axis-figures/Figure-4.png" height="400" />
+</div>
+<div class="title">Figura 4. Configuración mesa inclinable/giratoria</div>
+</div>
+<div class="sect3">
+<h4 id="_transformación_directa">5.1.1. Transformación directa</h4>
+<div class="paragraph"><p>La transformación puede definirse por la multiplicación secuencial de las matrices:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__6.png" alt="5-axis-figures/equation__6.png" />
+</div>
+</div>
+<div class="paragraph"><p>con las matrices construidas de la siguiente manera:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__7.png" alt="5-axis-figures/equation__7.png" />
+</div>
+</div>
+<div class="paragraph"><p>En estas ecuaciones, L<sub>x</sub>, L<sub>y</sub>, L<sub>z</sub> define los desplazamientos del punto pivote de los dos ejes giratorios A y C con
+relación al origen del sistema de coordenadas de la pieza. Además, P<sub>x</sub>, P<sub>y</sub>, P<sub>z</sub> son las distancias relativas del punto
+pivote a la posición de la punta de la herramienta, que también se pueden llamar las "coordenadas de articulacion" del
+punto pivote. El punto pivote está en la intersección de los dos ejes giratorios. Los signos de los términos S<sub>A</sub> y
+S<sub>C</sub> son diferentes a los de [2,3] dado que las rotaciones de la tabla son negativas con respecto a los ejes de
+coordenadas de la pieza de trabajo (tenga en cuenta que sen(-theta) = -sen(theta)), cos(-theta) = cos(theta)).</p></div>
+<div class="paragraph"><p>Cuando se multiplica de acuerdo con (5), obtenemos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__8.png" alt="5-axis-figures/equation__8.png" />
+</div>
+</div>
+<div class="paragraph"><p>Ahora podemos equiparar la tercera columna de esta matriz con nuestro vector de orientación de herramienta K, es decir:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__9.png" alt="5-axis-figures/equation__9.png" />
+</div>
+</div>
+<div class="paragraph"><p>A partir de estas ecuaciones podemos resolver los ángulos de rotación theta<sub>A</sub>, theta<sub>C</sub>. De la tercera fila encontramos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__10.png" alt="5-axis-figures/equation__10.png" />
+</div>
+</div>
+<div class="paragraph"><p>y al dividir la primera fila por la segunda fila encontramos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__11.png" alt="5-axis-figures/equation__11.png" />
+</div>
+</div>
+<div class="paragraph"><p>Estas relaciones se usan típicamente en el postprocesador CAM para convertir los vectores de orientación de la herramienta
+en ángulos de rotación.</p></div>
+<div class="paragraph"><p>Al igualar la última columna de (8) con el vector Q de posición de herramienta, podemos escribir:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__12.png" alt="5-axis-figures/equation__12.png" />
+</div>
+</div>
+<div class="paragraph"><p>El vector en el lado derecho también se puede escribir como el producto de una matriz y un vector, que da como resultado:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__13.png" alt="5-axis-figures/equation__13.png" />
+</div>
+</div>
+<div class="paragraph"><p>Esto se puede expandir para dar</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__14.png" alt="5-axis-figures/equation__14.png" />
+</div>
+</div>
+<div class="paragraph"><p>que es la "transformación directa" de la cinemática.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_transformación_inversa">5.1.2. Transformación inversa</h4>
+<div class="paragraph"><p>Podemos resolver para P de la ecuación (13) como <em>P = (<sup>Q</sup>A<sub>P</sub>)<sup>-1</sup> * Q</em>. Observando la matriz cuadrada, es una matriz
+4x4 homogénea que contiene una matriz de rotación R y un vector de translacion q, por lo que el inverso se puede escribir como:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__15.png" alt="5-axis-figures/equation__15.png" />
+</div>
+</div>
+<div class="paragraph"><p>donde R^T es la transpuesta de R (filas y columnas intercambiadas). Por lo tanto, obtenemos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__16.png" alt="5-axis-figures/equation__16.png" />
+</div>
+</div>
+<div class="paragraph"><p>Las ecuaciones que se necesitan para la "transformación inversa" de la cinemática se pueden escribir así:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__17.png" alt="5-axis-figures/equation__17.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transformaciones_para_una_máquina_xyzac_trt_con_offsets_en_ejes_rotativos">5.2. Transformaciones para una máquina xyzac-trt con offsets en ejes rotativos</h3>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-5.png" alt="5-axis-figures/Figure-5.png" />
+</div>
+<div class="title">Figura 5. Modelo vismach de xyzac-trt con offsets con ejes rotatorios (positivos)</div>
+</div>
+<div class="paragraph"><p>Tratamos aquí con una configuración extendida en la que el eje basculante y el eje rotativo no se cruzan en un punto, sino
+que tienen un desplazamiento D<sub>y</sub>. Además, también hay un desplazamiento z entre los dos sistemas de coordenadas <em>O<sub>ws</sub></em> y
+<em>O<sub>wp</sub></em> de la figura 2, llamado D<sub>z</sub>. En la fig. 5 se muestra un modelo vismach y los desplazamientos se muestran en la
+fig. 6 (desplazamientos positivos en este ejemplo). Para simplificar la configuración, los desplazamientos L<sub>x</sub>, L<sub>y</sub>,
+L<sub>z</sub> del caso anterior  no estan incluidos. Probablemente no sean necesarios si se usan los offsets G54 en LinuxCNC por
+medio de la función "touch of".</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-6.png" alt="5-axis-figures/Figure-6.png" height="350" />
+</div>
+<div class="title">Figura 6. Configuración inclinable/giratoria xyzac-trt, con offsets de ejes</div>
+</div>
+<div class="sect3">
+<h4 id="_transformación_directa_2">5.2.1. Transformación directa</h4>
+<div class="paragraph"><p>La transformación puede definirse por la multiplicación secuencial de las matrices:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__18.png" alt="5-axis-figures/equation__18.png" />
+</div>
+</div>
+<div class="paragraph"><p>con las matrices construidas de la siguiente manera:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__19.png" alt="5-axis-figures/equation__19.png" />
+</div>
+</div>
+<div class="paragraph"><p>En estas ecuaciones, D<sub>y</sub> y D<sub>z</sub> definen los desplazamientos del punto pivote de los ejes rotativos A relativos al origen
+del sistema de coordenadas de la pieza. Además, P<sub>x</sub>, P<sub>y</sub>, P<sub>z</sub> son las distancias relativas del punto pivote a la
+posición de la punta de la herramienta, que también se pueden llamar "coordenadas de articulacion" del punto pivote. El
+punto pivote está en el eje de rotación A.</p></div>
+<div class="paragraph"><p>Cuando se multiplica de acuerdo con (18), obtenemos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__20.png" alt="5-axis-figures/equation__20.png" />
+</div>
+</div>
+<div class="paragraph"><p>Ahora podemos equiparar la tercera columna de esta matriz con nuestro vector de orientación de herramienta K, es decir:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__21.png" alt="5-axis-figures/equation__21.png" />
+</div>
+</div>
+<div class="paragraph"><p>A partir de estas ecuaciones podemos resolver los ángulos de rotación theta<sub>A</sub>, theta<sub>C</sub>. De la tercera fila encontramos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__22.png" alt="5-axis-figures/equation__22.png" />
+</div>
+</div>
+<div class="paragraph"><p>y al dividir la segunda fila por la primera fila encontramos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__23.png" alt="5-axis-figures/equation__23.png" />
+</div>
+</div>
+<div class="paragraph"><p>Estas relaciones se usan típicamente en el postprocesador CAM para convertir los vectores de orientación de la herramienta en ángulos de rotación.</p></div>
+<div class="paragraph"><p>Al igualar la última columna de (21) con el vector de posición de herramienta Q, podemos escribir:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__24.png" alt="5-axis-figures/equation__24.png" />
+</div>
+</div>
+<div class="paragraph"><p>El vector en el lado derecho también se puede escribir como el producto de una matriz y un vector, que da como resultado:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__25.png" alt="5-axis-figures/equation__25.png" />
+</div>
+</div>
+<div class="paragraph"><p>que es la "transformación directa" de la cinemática.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_transformación_inversa_2">5.2.2. Transformación inversa</h4>
+<div class="paragraph"><p>Podemos resolver para P de la ecuación (25) como <em>P=(<sup>Q</sup>A<sub>P</sub>)<sup>-1</sup>*Q</em> usando (15) como antes.
+Por lo tanto obtenemos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__26.png" alt="5-axis-figures/equation__26.png" />
+</div>
+</div>
+<div class="paragraph"><p>Las ecuaciones que se necesitan para la "transformación inversa" de la cinemática se pueden escribir así:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__27.png" alt="5-axis-figures/equation__27.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transformaciones_para_una_máquina_xyzbc_trt_con_offsets_de_ejes_rotativos">5.3. Transformaciones para una máquina xyzbc-trt con offsets de ejes rotativos</h3>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-7.png" alt="5-axis-figures/Figure-7.png" />
+</div>
+<div class="title">Figura 7. modelo vismach de xyzbc-trt con compensaciones de eje rotacional (negativo)</div>
+</div>
+<div class="paragraph"><p>Tratamos aquí de nuevo con una configuración extendida en la que el eje de inclinación (alrededor del eje y) y el eje
+giratorio no se cruzan en un punto, pero tienen un desplazamiento D<sub>x</sub>. Además, también hay un desplazamiento z entre los
+dos sistemas de coordenadas <em>O<sub>ws</sub></em> y <em>O<sub>wp</sub></em> de la figura 2, llamado D<sub>z</sub>. Un modelo vismach se muestra en la fig. 7 (desplazamientos negativos en este ejemplo) y los desplazamientos positivos se muestran en la fig. 8.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-8.png" alt="5-axis-figures/Figure-8.png" height="350" />
+</div>
+<div class="title">Figura 8. Configuración inclinable/giratoria xyzbc-trt, con offsets de ejes</div>
+</div>
+<div class="sect3">
+<h4 id="_transformación_directa_3">5.3.1. Transformación directa</h4>
+<div class="paragraph"><p>La transformación puede definirse por la multiplicación secuencial de las matrices:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__28.png" alt="5-axis-figures/equation__28.png" />
+</div>
+</div>
+<div class="paragraph"><p>con las matrices construidas de la siguiente manera:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__29.png" alt="5-axis-figures/equation__29.png" />
+</div>
+</div>
+<div class="paragraph"><p>En estas ecuaciones D<sub>x</sub>, D<sub>z</sub> define los desplazamientos del punto pivote de los ejes giratorios B en relación con el
+origen del sistema de coordenadas de la pieza. Además, P<sub>x</sub>, P<sub>y</sub>, P<sub>z</sub> son las distancias relativas del punto pivote a
+la posición de la punta de la herramienta, que también se pueden llamar las "coordenadas de articulacion" del punto
+pivote. El punto pivote está en el eje rotativo B.</p></div>
+<div class="paragraph"><p>Cuando se multiplica de acuerdo con (29), obtenemos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__30.png" alt="5-axis-figures/equation__30.png" />
+</div>
+</div>
+<div class="paragraph"><p>Ahora podemos equiparar la tercera columna de esta matriz con nuestro vector de orientación de herramienta K, es decir:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__31.png" alt="5-axis-figures/equation__31.png" />
+</div>
+</div>
+<div class="paragraph"><p>A partir de estas ecuaciones podemos resolver los ángulos de rotación theta<sub>B</sub>, theta<sub>C</sub>. De la tercera fila encontramos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__32.png" alt="5-axis-figures/equation__32.png" />
+</div>
+</div>
+<div class="paragraph"><p>y al dividir la segunda fila por la primera fila encontramos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__33.png" alt="5-axis-figures/equation__33.png" />
+</div>
+</div>
+<div class="paragraph"><p>Estas relaciones se usan típicamente en el postprocesador CAM para convertir los vectores de orientación de la herramienta en ángulos de rotación.</p></div>
+<div class="paragraph"><p>Al igualar la última columna de (32) con el vector de posición de herramienta Q, podemos escribir:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__34.png" alt="5-axis-figures/equation__34.png" />
+</div>
+</div>
+<div class="paragraph"><p>El vector en el lado derecho también se puede escribir como el producto de una matriz y un vector que da como resultado:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__35.png" alt="5-axis-figures/equation__35.png" />
+</div>
+</div>
+<div class="paragraph"><p>que es la "transformación directa" de la cinemática.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_transformación_inversa_3">5.3.2. Transformación inversa</h4>
+<div class="paragraph"><p>Podemos resolver para P de la ecuación (37) como <em>P=(<sup>Q</sup>A<sub>P</sub>)<sup>-1</sup>*Q</em>. Con el mismo enfoque que antes, obtenemos:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__36.png" alt="5-axis-figures/equation__36.png" />
+</div>
+</div>
+<div class="paragraph"><p>Las ecuaciones que se necesitan para la "transformación inversa" de la cinemática se pueden escribir así:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__37.png" alt="5-axis-figures/equation__37.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ejemplos_de_mesa_giratoria_inclinable">6. Ejemplos de mesa giratoria/inclinable</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC incluye módulos cinemáticos para las topologías <em>xyzac-trt</em> y <em>xyzbc-trt</em>
+descrito en las matemáticas detalladas arriba. Para usuarios interesados, el código fuente
+está disponible en el árbol git en el directorio <em>src/emc/kinematics/</em>.</p></div>
+<div class="paragraph"><p>Los ejemplos de configuraciones de simulación de xyzac-trt y xyzbc-trt
+en las estan en Configuraciones de Ejemplo (<em>configs/sim/axis/vismach/5axis/table-rotary-tilting/</em>).</p></div>
+<div class="paragraph"><p>Las configuraciones de ejemplo incluyen los archivos ini requeridos y un subdirectorio de ejemplos
+con archivos g-code (.ngc). Estas configuraciones sim invocan un modelo tridimensional realista
+usando la utilidad vismach de LinuxCNC.</p></div>
+<div class="sect2">
+<h3 id="_modelos_de_simulación_de_vismach">6.1. Modelos de simulación de Vismach</h3>
+<div class="paragraph"><p>Vismach es una biblioteca de rutinas Python para mostrar una simulación dinámica de una máquina CNC en la pantalla de la
+PC. La secuencia de comandos python para una máquina en particular se carga en HAL y los datos se pasan a los pines HAL.
+El modelo de vismach de espacio de usuario se carga con un comando hal como:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadusr -W xyzac-trt-gui</code></pre>
+</div></div>
+<div class="paragraph"><p>y las conexiones se realizan usando comandos HAL como:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net  :table-x   joint.0.pos-fb xyzac-trt-gui.table-x
+net  :saddle-y  joint.1.pos-fb xyzac-trt-gui.saddle-y
+...</code></pre>
+</div></div>
+<div class="paragraph"><p>Consulte los archivos ini de simulación para obtener detalles sobre las conexiones HAL utilizadas para el modelo de vismach.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_offsets_de_longitud_de_la_herramienta">6.2. Offsets de longitud de la herramienta</h3>
+<div class="paragraph"><p>Para utilizar las herramientas de una tabla de forma secuencial con offset de la longitud de la herramienta aplicada
+automáticamente, se requiere un offset Z adicional. Para una herramienta que es más larga que la herramienta "maestra",
+que normalmente tiene una longitud de herramienta cero, LinuxCNC tiene una variable llamada "motion.tooloffset.z". Si esta
+variable se transfiere al componente cinemático (y a la secuencia de comandos vismach python), se puede tener en cuenta el
+offset Z adicional necesario para una nueva herramienta agregando la instrucción del componente, por ejemplo:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/equation__38.png" alt="5-axis-figures/equation__38.png" />
+</div>
+</div>
+<div class="paragraph"><p>La conexión HAL requerida (para xyzac-trt) es:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net :tool-offset motion.tooloffset.z xyzac-trt-kins.tool-offset</code></pre>
+</div></div>
+<div class="paragraph"><p>dónde:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>:tool-offset ---------------- nombre de la señal
+motion.tooloffset.z --------- pin de salida HAL del módulo motion de LinuxCNC
+xyzac-trt-kins.tool-offset -- pin HAL de entrada a xyzac-trt-kins</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_componentes_cinemáticos_personalizados">7. Componentes cinemáticos personalizados</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC implementa la cinemática utilizando un componente HAL que está cargado
+al inicio de LinuxCNC. El módulo cinemático más común, <em>trivkins</em>,
+implementa la cinemática de identidad (trivial) donde hay correspondencia uno-a-uno
+entre una letra de coordenadas del eje y una articulación del motor.
+Están disponibles módulos cinemáticos adicionales para sistemas más complejos (incluido <em>xyzac-trt</em>
+y <em>xyzbc-trt</em> descritos anteriormente).</p></div>
+<div class="paragraph"><p>Consulte la página de manual de kins (<strong>\$ man kins</strong>) para obtener descripciones breves de los
+módulos cinemáticos.</p></div>
+<div class="paragraph"><p>Los módulos cinemáticos proporcionados por LinuxCNC suelen escribirse en
+lenguaje C. Dado que se utiliza una estructura estándar, la creación de un módulo cinemático personalizado
+se facilita copiando un archivo fuente existente a un archivo de usuario
+con un nombre nuevo, modifícandolo y luego instálandolo.</p></div>
+<div class="paragraph"><p>La instalación se realiza utilizando halcompile:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo halcompile --install kinsname.c</code></pre>
+</div></div>
+<div class="paragraph"><p>donde "kinsname" es el nombre que se le da a su componente. El prefijo sudo es
+requerido para instalarlo y se le pedirá su contraseña de root. Ver la
+página del comando halcompile para obtener más información (<strong>\$ man halcompile</strong>)</p></div>
+<div class="paragraph"><p>Una vez compilado e instalado, puede hacer referencia a él en la configuración de su máquina.
+Esto se hace en el archivo ini de su directorio config. Por ejemplo, la especificación ini común:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[KINS]
+KINEMATICS = trivkins</code></pre>
+</div></div>
+<div class="paragraph"><p>seria reemplazada por</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[KINS]
+KINEMATICS = kinsname</code></pre>
+</div></div>
+<div class="paragraph"><p>donde "kinsname" es el nombre de su programa. Los pines HAL adicionales pueden
+ser creados por el módulo para elementos de configuración variable tales como
+D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>, offset de herramienta-offset utilizado en el módulo de cinemática xyzac-trt.
+Estos pines se pueden conectar a una señal para control dinámico
+o establecer conexiones HAL como:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># establecer los parámetros de offsets
+net :tool-offset motion.tooloffset.z xyzac-trt-kins.tool-offset
+setp xyzac-trt-kins.y-offset 0
+setp xyzac-trt-kins.z-offset 20</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_figuras">8. Figuras</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-9.png" alt="5-axis-figures/Figure-9.png" height="300" />
+</div>
+<div class="title">Figura 9. Configuración de mesa basculante/giratoria</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-10.png" alt="5-axis-figures/Figure-10.png" height="300" />
+</div>
+<div class="title">Figura 10. Configuración con inclinación de husillo/mesa</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="5-axis-figures/Figure-11.png" alt="5-axis-figures/Figure-11.png" height="300" />
+</div>
+<div class="title">Figura 11. Configuracion husillo oscilante / giratoria</div>
+</div>
+<div class="paragraph"><p>////////////////////////////////////////////////// ///
+== Referencias nope nope nope pdf nope
+////////////////////////////////////////////////// ///</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_referencias">9. REFERENCIAS</h2>
+<div class="sectionbody">
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+A Postprocessor Based on the Kinematics Model for General Five-Axis machine
+Tools: C-H She, R-S Lee, J Manufacturing Processes, V2 N2, 2000.
+</p>
+</li>
+<li>
+<p>
+NC Post-processor for 5-axis milling of table-rotating/tilting type: YH Jung,
+DW Lee, JS Kim, HS Mok, J Materials Processing Technology,130-131 (2002)
+641-646.
+</p>
+</li>
+<li>
+<p>
+3D 6-DOF Serial Arm Robot Kinematics, RJ du Preez, SA-CNC-CLUB, Dec.
+5, 2013.
+</p>
+</li>
+<li>
+<p>
+Design of a generic five-axis postprocessor based on generalized kinematics
+model of machine tool: C-H She, C-C Chang, Int. J Machine Tools &amp; Manufacture,
+47 (2007) 537-545.
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

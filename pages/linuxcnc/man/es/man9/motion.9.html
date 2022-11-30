@@ -1,0 +1,1160 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:29 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MOTION</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MOTION</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#PINES DE MOTION">PINES DE MOTION</a><br>
+<a href="#PINES DE EJE">PINES DE EJE</a><br>
+<a href="#PINES de articulaci&Atilde;&sup3;n">PINES de articulaci&Atilde;&sup3;n</a><br>
+<a href="#Pines de articulaci&Atilde;&sup3;n posthome">Pines de articulaci&Atilde;&sup3;n posthome</a><br>
+<a href="#Pines de desbloqueo JOINT">Pines de desbloqueo JOINT</a><br>
+<a href="#PINES DE HUSILLO">PINES DE HUSILLO</a><br>
+<a href="#PAR&Atilde;METROS DE MOVIMIENTO">PAR&Atilde;METROS DE MOVIMIENTO</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">motion - acepta
+comandos NML de movimiento, interact&Atilde;&ordm;a con HAL
+en tiempo real</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+motmod [base_period_nsec=</b><i>period</i><b>]
+[base_thread_fp=</b><i>0 or 1</i><b>]
+[servo_period_nsec=</b><i>period</i><b>]
+[traj_period_nsec=</b><i>period</i><b>]
+[num_joints=</b><i>[1-16]</i><b>]
+[num_dio=</b><i>[1-64]</i><b>]
+[num_aio=</b><i>[1-64]</i><b>]
+[num_spindles=</b><i>[1-8]</i><b>]
+[unlock_joints_mask=</b><i>jointmask</i><b>]
+[num_extrajoints=</b><i>[0-16]</i><b>]</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+l&Atilde;mites para los siguientes elementos se configuran
+en tiempo de compilaci&Atilde;&sup3;n: <b><br>
+num_joints</b>: establece el n&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de articulaciones <br>
+EMCMOT_MAX_JOINTS. <b><br>
+num_dio</b>: establece el n&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de entradas digitales <br>
+EMCMOT_MAX_DIO. <b><br>
+num_aio</b>: establece el n&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de entradas anal&Atilde;&sup3;gicas
+<br>
+EMCMOT_MAX_AIO. <b><br>
+num_spindles</b>: establece el n&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de husillos <br>
+EMCMOT_MAX_SPINDLES.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Opcionalmente,
+el n&Atilde;&ordm;mero de E/S digitales se establece con
+num_dio y el de anal&Atilde;&sup3;gicas con num_aio. El
+valor predeterminado es 4 para cada uno.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los nombres de
+pines que comienzan con &quot;<b>joint</b>&quot; o
+&quot;<b>axis</b>&quot; son le&Atilde;dos y actualizados por
+la funci&Atilde;&sup3;n <b>motion-controller</b>.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Por defecto, el
+hilo base no admite punto flotante. El paso a paso por
+software, el conteo software de codificador y el pwm
+software no utilizan punto flotante. <b>base_thread_fp</b>
+se puede usar para habilitar el punto flotante en el hilo
+base (por ejemplo, para el control de motor de CC sin
+escobillas).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los pines y
+par&Atilde;&iexcl;metros son creados por el
+m&Atilde;&sup3;dulo en tiempo real<b>motmod</b>. Este
+m&Atilde;&sup3;dulo proporciona una interfaz HAL para el
+lanificador de movimiento de LinuxCNC.
+B&Atilde;&iexcl;sicamente,<b>motmod</b> toma una lista de
+puntos de referencia o waypoints y genera una secuencia
+correcta de posiciones correspondientes de
+articulaci&Atilde;&sup3;nes, conformes con las restricciones
+de la maquina, que alimentan los drivers de los motores.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El
+par&Atilde;&iexcl;metro opcional <b>num_extrajoints</b>
+especifica una cierta cantidad de articulaciones que
+participan en el homing, pero que no son utilizadas por las
+transformaciones cinem&Atilde;&iexcl;ticas.
+Despu&Atilde;&copy;s del homing, el control de una
+articulaci&Atilde;&sup3;n &rsquo;extra&rsquo; se transfiere
+a un pin hal (joint.N.posthome-cmd) y se ignora el valor
+retroalimentado del motor. Las articulaciones
+&rsquo;extra&rsquo; deben ser manejadas por
+planificadores/controladores de movimiento independientes
+(normalmente usando componentes hal limit3). Las
+articulaciones adicionales pueden estar sin home solo cuando
+el movimiento est&Atilde;&iexcl; desactivado.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El valor
+m&Atilde;&iexcl;ximo de <b>num_extrajoints</b> es igual al
+valor de <b>num_joints</b> (tenga en cuenta que el uso del
+valor m&Atilde;&iexcl;ximo no permitir&Atilde;a ninguna
+operaci&Atilde;&sup3;n en coordenadas mundiales). El valor
+de <b>num_joints</b> debe ser igual a la suma del
+n&Atilde;&ordm;mero de articulaciones utilizadas para los
+c&Atilde;&iexcl;lculos cinem&Atilde;&iexcl;ticos
+m&Atilde;&iexcl;s el n&Atilde;&ordm;mero de articulaciones
+&rsquo;extra&rsquo;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El
+par&Atilde;&iexcl;metro <b>num_joints</b> se establece
+convencionalmente utilizando la configuraci&Atilde;&sup3;n
+del archivo ini <b>[KINS]JOINTS =</b>valor.
+<b>num_extrajoints</b> se establece mediante el
+par&Atilde;&iexcl;metro motmod adicional <b>[EMCMOT] motmod
+num_extrajoints=</b>value. La numeraci&Atilde;&sup3;n de
+pines Hal para todas las articulaciones est&Atilde;&iexcl;
+basada en cero [<b>0 ... num_joints-1</b>]. Cuando se
+especifican, a las articulaciones &rsquo;extra&rsquo; se les
+asigna el &Atilde;&ordm;ltimo<b>num_extrajoints</b> en la
+secuencia de numeraci&Atilde;&sup3;n. Por ejemplo, al
+especificar [KINS]JOINTS=5 y [EMCMOT] motmod
+num_extrajoints=2 para una configuraci&Atilde;&sup3;n
+trivkins de 3 articulaciones <b>[KINS]KINEMATICS= trivkins
+coordinates=xyz</b>, se utiliza las articulaciones 0,1,2
+para las articulaciones cinem&Atilde;&iexcl;ticas y las
+articulaciones 3,4 para las articulaciones
+&rsquo;extra&rsquo;.</p>
+
+<h2>PINES DE MOTION
+<a name="PINES DE MOTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>motion-command-handler.time</b>
+OUT S32</p>
+
+<p style="margin-left:22%;">Tiempo (en clocks de CPU) para
+el m&Atilde;&sup3;dulo de movimiento
+motion-command-handler</p>
+
+<p style="margin-left:11%;"><b>motion-controller.time</b>
+OUT S32</p>
+
+<p style="margin-left:22%;">Tiempo (en clocks de CPU) para
+el m&Atilde;&sup3;dulo de movimiento motion-controller.</p>
+
+<p style="margin-left:11%;"><b>motion.adaptive-feed</b> IN
+FLOAT</p>
+
+<p style="margin-left:22%;">Cuando la
+alimentaci&Atilde;&sup3;n adaptativa est&Atilde;&iexcl;
+habilitada con M52 P1, la velocidad comandada se multiplica
+por este valor. Este efecto es multiplicativo con los
+valores de ajuste de alimentaci&Atilde;&sup3;n de nivel NML
+y motion.feed-hold. Los valores negativos son
+v&Atilde;&iexcl;lidos y ejecutar&Atilde;&iexcl;n la ruta del
+c&Atilde;&sup3;digo G a la inversa.</p>
+
+
+<p style="margin-left:11%;"><b>motion.analog-in-</b><i>NN</i>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Estos pines son utilizados por
+el modo wait-for-input M66 Enn (input de entrada
+analogica).</p>
+
+
+<p style="margin-left:11%;"><b>motion.analog-out-</b><i>NN</i>
+OUT float</p>
+
+<p style="margin-left:22%;">Estos pines son utilizados por
+M67-68 (salida analogica) .</p>
+
+<p style="margin-left:11%;"><b>motion.coord-error</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando el movimiento ha
+encontrado un error, tal como exceder un l&Atilde;mite
+soft</p>
+
+<p style="margin-left:11%;"><b>motion.coord-mode</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando el movimiento
+est&Atilde;&iexcl; en &quot;modo coordinado&quot;, en
+oposici&Atilde;&sup3;n al &quot;modo teleop&quot;</p>
+
+<p style="margin-left:11%;"><b>motion.current-vel</b> OUT
+float</p>
+
+<p style="margin-left:22%;">Velocidad cartesiana actual</p>
+
+
+<p style="margin-left:11%;"><b>motion.digital-in-</b><i>NN</i>
+IN BIT</p>
+
+<p style="margin-left:22%;">Estos pines son utilizados por
+el modo M66 Pnn de espera para entrada digital.</p>
+
+
+<p style="margin-left:11%;"><b>motion.digital-out-</b><i>NN</i>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Estos pines est&Atilde;&iexcl;n
+controlados por las palabras M62 a M65, de salida
+digital.</p>
+
+<p style="margin-left:11%;"><b>motion.distance-to-go</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Distancia restante en el
+movimiento actual</p>
+
+<p style="margin-left:11%;"><b>motion.enable</b> IN BIT</p>
+
+<p style="margin-left:22%;">Si este bit se pone FALSE, el
+movimiento se detiene, la m&Atilde;&iexcl;quina se coloca en
+el estado &quot;m&Atilde;&iexcl;quina apagada&quot; y se
+muestra un mensaje para el operador. Para movimiento normal,
+ponga este bit a TRUE.</p>
+
+<p style="margin-left:11%;"><b>motion.eoffset-active</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Indica que las compensaciones
+externas est&Atilde;&iexcl;n activas (no son cero)</p>
+
+<p style="margin-left:11%;"><b>motion.eoffset-limited</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Indica que el movimiento con
+offsets externos estaba limitado por una
+restricci&Atilde;&sup3;n de l&Atilde;mite soft
+([AXIS_L]MIN_LIMIT, MAX_LIMIT).</p>
+
+<p style="margin-left:11%;"><b>motion.feed-hold</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Cuando Feed Stop Control
+est&Atilde;&iexcl; habilitado con M53 P1, y este bit es
+TRUE, la velocidad de avance se establece en 0.</p>
+
+<p style="margin-left:11%;"><b>motion.feed-inhibit</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Cuando este pin es TRUE, se
+inhibe el movimiento de la m&Atilde;&iexcl;quina (esto
+incluye jog y avances y r&Atilde;&iexcl;pidos programados,
+tambi&Atilde;&copy;n conocidos como movimientos
+traverse).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Si la
+m&Atilde;&iexcl;quina est&Atilde;&iexcl; realizando un
+movimiento sincronizado del husillo cuando este pin se
+vuelve TRUE, el movimiento sincronizado del husillo
+finalizar&Atilde;&iexcl; y se inhibir&Atilde;&iexcl;n los
+siguientes movimientos (esto es para evitar
+da&Atilde;&plusmn;os a la m&Atilde;&iexcl;quina, la
+herramienta o la pieza de trabajo).</p>
+
+<p style="margin-left:22%; margin-top: 1em">Si la
+m&Atilde;&iexcl;quina est&Atilde;&iexcl; en medio de un
+movimiento (sin husillo sincronizado) cuando este pin se
+vuelve TRUE, la m&Atilde;&iexcl;quina
+desacelerar&Atilde;&iexcl; hasta detenerse a la tasa de
+aceleraci&Atilde;&sup3;n m&Atilde;&iexcl;xima permitida.</p>
+
+<p style="margin-left:22%; margin-top: 1em">El movimiento
+se reanuda cuando este pin se vuelve FALSE.</p>
+
+<p style="margin-left:11%;"><b>motion.homing-inhibit</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Si este bit es TRUE, el inicio
+de cualquier movimiento home de articulaci&Atilde;&sup3;n
+(incluido &quot;Home Todos&quot;) no se permite y se informa
+un error. De manera predeterminada, el homing se permite en
+modo articulaci&Atilde;&sup3;n siempre que el movimiento
+est&Atilde;&copy; habilitado.</p>
+
+<p style="margin-left:11%;"><b>motion.in-position</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE si la
+m&Atilde;&iexcl;quina est&Atilde;&iexcl; en
+posici&Atilde;&sup3;n (es decir, actualmente no se mueve
+hacia la posici&Atilde;&sup3;n ordenada).</p>
+
+<p style="margin-left:11%;"><b>motion.motion-enabled</b>
+OUT BIT <b><br>
+motion.motion-type</b> OUT S32</p>
+
+<p style="margin-left:22%;">Estos valores estan en
+src/emc/nml_intf/motion_types.h</p>
+
+<p style="margin-left:32%;">0: inactivo (sin
+movimiento)</p>
+
+<p style="margin-left:32%; margin-top: 1em">1: traverse
+(jog, avance o rapido)</p>
+
+<p style="margin-left:32%; margin-top: 1em">2: avance
+lineal</p>
+
+<p style="margin-left:32%; margin-top: 1em">3: avance
+arco</p>
+
+<p style="margin-left:32%; margin-top: 1em">4: cambio de
+herramienta</p>
+
+<p style="margin-left:32%; margin-top: 1em">5: sondeo</p>
+
+<p style="margin-left:32%; margin-top: 1em">6: Desbloqueo
+rotatorio para traverse</p>
+
+<p style="margin-left:11%;"><b>motion.on-soft-limit</b> OUT
+BIT <b><br>
+motion.probe-input</b> IN BIT</p>
+
+<p style="margin-left:22%;">G38.n usa el valor en este pin
+para determinar cu&Atilde;&iexcl;ndo ha hecho contacto la
+sonda. TRUE para el contacto de sonda cerrado (en contacto),
+FALSE para el contacto de la sonda abierto.</p>
+
+<p style="margin-left:11%;"><b>motion.program-line</b> OUT
+S32</p>
+
+<p style="margin-left:22%;">L&Atilde;nea del programa
+actual durante la ejecuci&Atilde;&sup3;n. Cero si no se
+est&Atilde;&iexcl; ejecutando o entre l&Atilde;neas durante
+ejecucion a pasos.</p>
+
+<p style="margin-left:11%;"><b>motion.requested-vel</b> OUT
+float</p>
+
+<p style="margin-left:22%;">La velocidad actual solicitada
+en unidades de usuario por segundo. Este valor es la
+configuraci&Atilde;&sup3;n de la palabra F del archivo de
+c&Atilde;&sup3;digo G, posiblemente reducida para acomodarse
+a los l&Atilde;mites de velocidad y aceleraci&Atilde;&sup3;n
+de la m&Atilde;&iexcl;quina. El valor en este pin no refleja
+el ajuste de alimentaci&Atilde;&sup3;n ni
+ning&Atilde;&ordm;n otro ajuste.</p>
+
+
+<p style="margin-left:11%;"><b>motion.servo.last-period</b>
+OUT U32</p>
+
+<p style="margin-left:22%;">El n&Atilde;&ordm;mero de
+clocks de CPU entre invocaciones del hilo servo. Por lo
+general, este n&Atilde;&ordm;mero dividido por la velocidad
+de la CPU proporciona el tiempo en segundos y se puede usar
+para determinar si el controlador de movimiento en tiempo
+real cumple con sus limitaciones de tiempo</p>
+
+<p style="margin-left:11%;"><b>motion.teleop-mode</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">El modo de movimiento es teleop
+( disponible jogging coordinado de ejes).</p>
+
+<p style="margin-left:11%;"><b>motion.tooloffset.L</b> OUT
+float</p>
+
+<p style="margin-left:22%;">offset de herramienta actual
+para cada eje donde (<b>L</b> es la letra del eje, una de
+entre:<b>x y z a b c u v w</b>)</p>
+
+<p style="margin-left:11%;"><b>motion.tp-reverse</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Se invierte la
+planificaci&Atilde;&sup3;n de trayectoria
+(ejecuci&Atilde;&sup3;n inversa)</p>
+
+<h2>PINES DE EJE
+<a name="PINES DE EJE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(<b>L</b> es la
+letra del eje, una de entre:<b>x y z a b c u v w</b>)
+<b><br>
+axis.</b><i>L</i><b>.eoffset</b> OUT float</p>
+
+<p style="margin-left:22%;">Offset externo actual.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-clear</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Borrar solicitud de offset
+externa</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-count</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Entrada de cuenta para offset
+externo. Los recuentos de offset se transfieren a un
+registro interno. El offset externo aplicado es el producto
+de los recuentos en registro y el valor de eoffset-scale. El
+registro es <b>reseteado a cero en cada inicio de
+m&Atilde;&iexcl;quina</b>. Si la m&Atilde;&iexcl;quina se
+apaga con un offset externo activo, el pin eoffset-count
+debe establecerse en cero antes de reiniciar.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-enable</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Habilitacion para offset
+externo (tambi&Atilde;&copy;n requiere la
+configuraci&Atilde;&sup3;n del archivo ini
+[AXIS_L]OFFSET_AV_RATIO)</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-request</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Pin de depuraci&Atilde;&sup3;n
+para el offset externo solicitado.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.eoffset-scale</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Escala para offset externo.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-accel-fraction</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Establece la
+aceleraci&Atilde;&sup3;n para el jogging de volante en una
+fracci&Atilde;&sup3;n del valor ini max_acceleration para el
+eje. Se ignoran los valores mayores que 1 o menores que
+cero.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-counts</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Con&Atilde;&copy;ctese al pin
+&quot;recuentos&quot; de un codificador externo para usar un
+volante de jog f&Atilde;sico.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-enable</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Cuando es TRUE (y en modo
+manual), cualquier cambio en &quot;jog-counts&quot;
+dar&Atilde;&iexcl; lugar a un movimiento. Cuando es FALSE,
+&quot;jog-counts&quot; se ignora.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-scale</b>
+IN float</p>
+
+<p style="margin-left:22%;">Establece la distancia
+recorrida para cada recuento en &quot;jog-counts&quot;, en
+unidades de m&Atilde;&iexcl;quina.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.jog-vel-mode</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Cuando es FALSE (el valor
+predeterminado), el volante funciona en modo de
+posici&Atilde;&sup3;n. El eje se mover&Atilde;&iexcl;
+exactamente jog-scale unidades para cada recuento,
+independientemente de cu&Atilde;&iexcl;nto tiempo pueda
+tomar. Cuando es TRUE, la rueda funciona en modo de
+velocidad; el movimiento se detiene cuando la rueda se
+detiene, incluso si eso significa que el movimiento ordenado
+no se ha completado.</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.kb-jog-active</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">(planificador libre de eje
+activo (teclado o halui))</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.pos-cmd</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n comandada
+del eje. Puede haber varios offsets entre el eje y las
+coordenadas del motor; backlash, de error de tornillo y de
+home. Las compensaciones externas se informan por separado
+(eje.<b>L</b>.eoffset).</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.teleop-pos-cmd</b>
+OUT float <b><br>
+axis.</b><i>L</i><b>.teleop-tp-enable</b> OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando el
+&quot;planificador teleop&quot; est&Atilde;&iexcl;
+habilitado para este eje</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.teleop-vel-cmd</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Velocidad comandada del eje</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.teleop-vel-lim</b>
+OUT float</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de velocidad para
+el planificador teleop</p>
+
+
+<p style="margin-left:11%;"><b>axis.</b><i>L</i><b>.wheel-jog-active</b>
+OUT BIT</p>
+
+<h2>PINES de articulaci&Atilde;&sup3;n
+<a name="PINES de articulaci&Atilde;&sup3;n"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>N</b> es el
+n&Atilde;&ordm;mero articulaci&Atilde;&sup3;n (<b>0</b>
+...<b>num_joints-1</b>)) <br>
+(<b>Nota:</b> los pines marcados<b>(DEBUG)</b> sirven como
+ayudas de depuraci&Atilde;&sup3;n y <br>
+est&Atilde;&iexcl;n sujetos a cambios o
+eliminaci&Atilde;&sup3;n en cualquier momento). <b><br>
+joint.</b><i>N</i><b>.joint-acc-cmd</b> OUT FLOAT
+<b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Aceleraci&Atilde;&sup3;n
+comandada de la articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.active</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE cuando esta
+articulaci&Atilde;&sup3;n est&Atilde;&iexcl; activa</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.amp-enable-out</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE si el amplificador para
+esta articulaci&Atilde;&sup3;n debe estar habilitado</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.amp-fault-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Debe ponerse en TRUE si se
+detecta un fallo externo del amplificador de esta
+articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.backlash-corr</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Valor bruto de backlash o
+compensacion de tornillo</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.backlash-filt</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Valor filtrado de backlash o
+compensacion de tornillo (respetando los l&Atilde;mites de
+movimiento)</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.backlash-vel</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Velocidad de backlash o
+compensacion de tornillo</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.coarse-pos-cmd</b>
+OUT FLOAT <b>(DEBUG) <br>
+joint.</b><i>N</i><b>.error</b> OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE cuando esta
+articulaci&Atilde;&sup3;n ha encontrado un error, como la
+activacion de un interruptor de l&Atilde;mite</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.f-error</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Error de seguimiento actual</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.f-error-lim</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite de error de
+seguimiento</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.f-errored</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE cuando esta
+articulaci&Atilde;&sup3;n ha excedido el l&Atilde;mite de
+error de seguimiento</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.faulted</b>
+OUT BIT <b>(DEBUG) <br>
+joint.</b><i>N</i><b>.free-pos-cmd</b> OUT FLOAT
+<b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n comandad
+por &quot;planificador libre&quot; para esta
+articulaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.free-tp-enable</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE cuando el
+&quot;planificador libre&quot; est&Atilde;&iexcl; habilitado
+para esta articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.free-vel-lim</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite de velocidad para
+el planificador libre</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.home-state</b>
+OUT S32 <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Estatus de la
+m&Atilde;&iexcl;quina de estados de homing</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.home-sw-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Debe hacerse TRUE si el
+interruptor home para esta articulaci&Atilde;&sup3;n
+est&Atilde;&iexcl; cerrado</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.homed</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE si la
+articulaci&Atilde;&sup3;n ha sido homeada</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.homing</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE si la
+articulaci&Atilde;&sup3;n est&Atilde;&iexcl; actualmente
+homeada</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.in-position</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">TRUE si la
+articulaci&Atilde;&sup3;n est&Atilde;&iexcl; utilizando el
+&quot;planificador libre&quot; y se ha detenido</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.index-enable</b>
+IO BIT</p>
+
+<p style="margin-left:22%;">Debe estar conectado al pin
+index-enable del codificador de la articulaci&Atilde;&sup3;n
+para permitir homing al pulso index.</p>
+
+<p style="margin-left:11%;"><b>joint.N.is-unlocked</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Indica que la
+articulaci&Atilde;&sup3;n est&Atilde;&iexcl; desbloqueada
+(ver PINES DE DESBLOQUEO DE ARTICULACION).</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-accel-fraction</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Establece la
+aceleraci&Atilde;&sup3;n para jog de volante en una
+fracci&Atilde;&sup3;n del ini max_acceleration para la
+articulaci&Atilde;&sup3;n. Se ignoran los valores mayores
+que 1 o menores que cero.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-counts</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Con&Atilde;&copy;ctese al pin
+&quot;counts&quot; de un codificador externo para usar un
+volante jog f&Atilde;sico.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-enable</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Cuando es TRUE (y en modo
+manual), cualquier cambio en &quot;jog-counts&quot;
+dar&Atilde;&iexcl; lugar a un movimiento. Cuando es FALSE,
+&quot;jog-counts&quot; se ignora.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-scale</b>
+IN FLOAT</p>
+
+<p style="margin-left:22%;">Establece la distancia
+recorrida para cada cuenta en &quot;jog-counts&quot;, en
+unidades de m&Atilde;&iexcl;quina.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.jog-vel-mode</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Cuando es FALSE (el valor
+predeterminado), el volante jog funciona en modo de
+posici&Atilde;&sup3;n. La articulaci&Atilde;&sup3;n se
+mover&Atilde;&iexcl; exactamente jog-scale unidades para
+cada cuenta, independientemente de cu&Atilde;&iexcl;nto
+tiempo pueda tomar. Cuando es TRUE, la rueda funciona en
+modo de velocidad; el movimiento se detiene cuando la rueda
+se detiene, incluso si eso significa que el movimiento
+ordenado no se ha completado.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.kb-jog-active</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">(planificador libre de jogging
+de articulaci&Atilde;&sup3;n activo (teclado o halui))</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.motor-offset</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">offset del motor de la
+articulaci&Atilde;&sup3;n establecido cuando se homea la
+articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.motor-pos-cmd</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n comandada
+para esta articulaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.motor-pos-fb</b>
+IN float</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n real de
+esta articulaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.neg-hard-limit</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite hard negativo
+para la articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.neg-lim-sw-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Debe ponerse en TRUE si se
+dispara el interruptor de l&Atilde;mite negativo para esta
+articulaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-cmd</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n comandada
+de la articulaci&Atilde;&sup3;n (en oposici&Atilde;&sup3;n
+al motor). Puede haber varios offsets entre las coordenadas
+de la articulaci&Atilde;&sup3;n y del motor; backlash, error
+de tornillo y offset de home.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-fb</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Retroalimentaci&Atilde;&sup3;n
+de la posici&Atilde;&sup3;n de articulaci&Atilde;&sup3;n.
+Este valor se calcula a partir de la posici&Atilde;&sup3;n
+real del motor menos las compensaciones de articulaciones.
+&Atilde;til para la visualizaci&Atilde;&sup3;n de
+m&Atilde;&iexcl;quinas.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-hard-limit</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">L&Atilde;mite hard positivo
+para la articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.pos-lim-sw-in</b>
+IN BIT</p>
+
+<p style="margin-left:22%;">Debe ponerse en TRUE si se
+dispara el interruptor de l&Atilde;mite positivo para esta
+articulaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.unlock</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE si el eje es una
+articulaci&Atilde;&sup3;n con bloqueo (generalmente una
+rotativa) y se ordena un movimiento (ver PINES DE DESBLOQUEO
+DE LA ARTICULACION)</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.joint-vel-cmd</b>
+OUT FLOAT <b>(DEBUG)</b></p>
+
+<p style="margin-left:22%;">Velocidad comandada de la
+articulaci&Atilde;&sup3;n</p>
+
+
+<p style="margin-left:11%;"><b>joint.</b><i>N</i><b>.wheel-jog-active</b>
+OUT BIT <b>(DEBUG)</b></p>
+
+<h2>Pines de articulaci&Atilde;&sup3;n posthome
+<a name="Pines de articulaci&Atilde;&sup3;n posthome"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Cada
+articulaci&Atilde;&sup3;n designada como
+articulaci&Atilde;&sup3;n &rsquo;extra&rsquo;
+est&Atilde;&iexcl; provista de un pin hal
+<b>joint.N.posthome-cmd</b>. El valor del pin se ignora
+antes del homing. Despu&Atilde;&copy;s del homing, el valor
+del pin aumenta con el valor de offset del motor y se enruta
+a <b>joint.N.motor-pos-cmd</b>.</p>
+
+<h2>Pines de desbloqueo JOINT
+<a name="Pines de desbloqueo JOINT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los pines de
+articulaci&Atilde;&sup3;n utilizados para desbloquear una
+articulaci&Atilde;&sup3;n
+(<b>joint.N.unlock</b>,<b>joint.N.is-unlocked</b>), se crean
+de acuerdo con el
+par&Atilde;&iexcl;metro<b>unlock_joints_mask=</b>jointmask
+para motmod. Estos pines pueden ser necesarios para bloquear
+los indexadores (generalmente una articulaci&Atilde;&sup3;n
+rotativa)</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los bits de la
+m&Atilde;&iexcl;scara articulaci&Atilde;&sup3;n son: (lsb)0:
+articulaci&Atilde;&sup3;n0, 1: articulaci&Atilde;&sup3;n1,
+2: articulaci&Atilde;&sup3;n2, ... <br>
+Ejemplo: loadrt motmod ...<b>unlock_joints_mask=</b>0x38
+crea pines de <br>
+desbloqueo para las articulaciones 3,4,5</p>
+
+<h2>PINES DE HUSILLO
+<a name="PINES DE HUSILLO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(<b>M</b> es el
+n&Atilde;&ordm;mero de husillo (<b>0</b>
+...<b>num_spindles-1</b>)) <b><br>
+spindle.M.amp-fault-in</b> IN BIT</p>
+
+<p style="margin-left:22%;">Debe ponerse a TRUE si se
+detecta un fallo externa con el amplificador para este
+husillo</p>
+
+<p style="margin-left:11%;"><b>spindle.M.at-speed</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">El movimiento se
+detendr&Atilde;&iexcl; hasta que este pasador sea TRUE, en
+las siguientes condiciones: antes del primer movimiento de
+alimentaci&Atilde;&sup3;n despu&Atilde;&copy;s de cada
+arranque del husillo o cambio de velocidad; antes del
+comienzo de cada cadena de movimiento spindle-synchronized
+y, si est&Atilde;&iexcl; en modo CSS, en cada
+transici&Atilde;&sup3;n rapid-&gt;feed.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.brake</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando se debe aplicar el
+freno del husillo</p>
+
+<p style="margin-left:11%;"><b>spindle.M.forward</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando el huso debe girar
+hacia adelante</p>
+
+<p style="margin-left:11%;"><b>spindle.M.index-enable</b>
+I/O BIT</p>
+
+<p style="margin-left:22%;">Para el correcto funcionamiento
+de los movimientos sincronizados del cabezal, esta
+se&Atilde;&plusmn;al debe estar conectada al pin
+index-enable del codificador del husillo.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.inhibit</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, la velocidad
+del husillo se establece y se mantiene en 0.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.is-orientad</b> IN
+BIT</p>
+
+<p style="margin-left:22%;">Pin de confirmacion
+spindle-orient. Completa el ciclo de
+orientaci&Atilde;&sup3;n. Si spindle-orient era TRUE cuando
+se confirm&Atilde;&sup3; spindle-is-orientd, se borra el pin
+spindle-orient y se activa el pin spindle-locked.
+Adem&Atilde;&iexcl;s, se afirma el pin spindle-brake de
+freno.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.locked</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Pin de orientacion de husillo
+completada. Limpiado por cualquiera de M3, M4, M5.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.on</b> OUT BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando el husillo debe
+girar</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">Indica el inicio del ciclo de
+orientaci&Atilde;&sup3;n del husillo. Establecido por M19.
+Autorizado por cualquiera de M3, M4, M5.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Si
+spindle-orient-fault no es cero durante spindle-orient true,
+el comando M19 falla con un mensaje de error.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient-angle</b>
+OUT FLOAT</p>
+
+<p style="margin-left:22%;">Orientaci&Atilde;&sup3;n
+deseada del husillo para M19. Valor del
+par&Atilde;&iexcl;metro de palabra M19 R m&Atilde;&iexcl;s
+el valor del par&Atilde;&iexcl;metro ini
+[RS274NGC]ORIENT_OFFSET.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient-fault</b>
+IN S32</p>
+
+<p style="margin-left:22%;">Entrada del c&Atilde;&sup3;digo
+de fallo para el ciclo de orientaci&Atilde;&sup3;n.
+Cualquier valor que no sea cero har&Atilde;&iexcl; que el
+ciclo de orientaci&Atilde;&sup3;n se cancele.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.orient-mode</b>
+OUT BIT</p>
+
+<p style="margin-left:22%;">Modo de rotaci&Atilde;&sup3;n
+deseado del husillo. Refleja la palabra del
+par&Atilde;&iexcl;metro M19 P.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.reverse</b> OUT
+BIT</p>
+
+<p style="margin-left:22%;">TRUE cuando el eje debe girar
+en inverso.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.revs</b> IN
+FLOAT</p>
+
+<p style="margin-left:22%;">Para el correcto funcionamiento
+de los movimientos sincronizados del husillo, esta
+se&Atilde;&plusmn;al debe conectarse al pin de
+posici&Atilde;&sup3;n del codificador del husillo.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-cmd-rps</b>
+FLOAT OUT</p>
+
+<p style="margin-left:22%;">Velocidad del husillo comandada
+en unidades de revoluciones por segundo</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-in</b> IN
+FLOAT</p>
+
+<p style="margin-left:22%;">Retroalimentaci&Atilde;&sup3;n
+de velocidad real del husillo en revoluciones por segundo.
+Se utiliza para los modos G96 (velocidad de superficie
+constante) y G95 (avance por revoluci&Atilde;&sup3;n).</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out</b> OUT
+FLOAT</p>
+
+<p style="margin-left:22%;">Velocidad del husillo deseada
+en rotaciones por minuto</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out-abs</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Velocidad del husillo deseada
+en rotaciones por minuto, siempre positiva
+independientemente de la direcci&Atilde;&sup3;n del
+husillo.</p>
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out-rps</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Velocidad del husillo deseada
+en rotaciones por segundo</p>
+
+
+<p style="margin-left:11%;"><b>spindle.M.speed-out-rps-abs</b>
+OUT float</p>
+
+<p style="margin-left:22%;">Velocidad del husillo deseada
+en rotaciones por segundo, siempre positiva
+independientemente de la direcci&Atilde;&sup3;n del
+husillo.</p>
+
+<h2>PAR&Atilde;METROS DE MOVIMIENTO
+<a name="PAR&Atilde;METROS DE MOVIMIENTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Muchos de los
+par&Atilde;&iexcl;metros sirven como ayudas para la
+depuraci&Atilde;&sup3;n y est&Atilde;&iexcl;n sujetos a
+cambios o eliminaci&Atilde;&sup3;n en cualquier momento.
+<b><br>
+motion-command-handler.tmax</b> RW S32</p>
+
+<p style="margin-left:22%;">Muestra
+informaci&Atilde;&sup3;n sobre el tiempo de
+ejecuci&Atilde;&sup3;n de estas funciones HAL en clocks de
+CPU</p>
+
+
+<p style="margin-left:11%;"><b>motion-command-handler.tmax-increased</b>
+RO S32 <b><br>
+motion-controller.tmax</b> RW S32</p>
+
+<p style="margin-left:22%;">Muestra
+informaci&Atilde;&sup3;n sobre el tiempo de
+ejecuci&Atilde;&sup3;n de estas funciones HAL en clocks de
+CPU</p>
+
+
+<p style="margin-left:11%;"><b>motion-controller.tmax-increased</b>
+RO BIT <b><br>
+motion.debug-</b><i>*</i></p>
+
+<p style="margin-left:22%;">Estos valores se utilizan con
+fines de depuraci&Atilde;&sup3;n.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Generalmente,
+estas funciones se agregan al hilo servo en el orden que se
+muestra. <b><br>
+motion-command-handler</b></p>
+
+<p style="margin-left:22%;">Procesa comandos de movimiento
+provenientes del espacio del usuario. El pin llamado
+<b>motion-command-handler.time</b> y los
+par&Atilde;&iexcl;metros <b>motion-command-handler.tmax,
+tmax-Increment</b> se crean para esta
+funci&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%;"><b>motion-controller</b></p>
+
+<p style="margin-left:22%;">Ejecuta el controlador de
+movimiento LinuxCNC. El pin llamado
+<b>motion-controller.time</b> y los par&Atilde;&iexcl;metros
+<b>motion-controller.tmax,tmax-increased</b> se crean para
+esta funci&Atilde;&sup3;n.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+p&Atilde;&iexcl;gina del manual est&Atilde;&iexcl;
+incompleta. <br>
+La identificaci&Atilde;&sup3;n de pines categorizados con
+<b>(DEBUG)</b> es dudosa.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">iocontrol (1),
+milltask (1)</p>
+<hr>
+</body>
+</html>

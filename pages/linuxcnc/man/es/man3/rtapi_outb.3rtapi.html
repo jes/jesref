@@ -1,0 +1,166 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_outb</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_outb</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_outb,
+rtapi_inb - Realizar E/S de hardware</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">void rtapi_outb(unsigned char
+<i>byte</i>, unsigned int <i>port</i>)</p></td>
+<td width="6%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="83%">
+
+
+<p style="margin-top: 1em">unsigned char rtapi_inb(unsigned
+int <i>port</i>)</p></td>
+<td width="6%">
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="6%"></td>
+<td width="5%"></td>
+<td width="60%">
+</td>
+<td width="18%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>port</i></p></td>
+<td width="5%"></td>
+<td width="60%">
+
+
+<p>La direcci&Atilde;&sup3;n del puerto de E/S</p></td>
+<td width="18%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>byte</i></p></td>
+<td width="5%"></td>
+<td width="60%">
+
+
+<p>El byte que se escribir&Atilde;&iexcl; en el puerto.</p></td>
+<td width="18%">
+</td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_outb</b>
+escribe un byte en un puerto de E/S hardware.
+<b>rtapi_inb</b> lee un byte de un puerto de E/S
+hardware.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde el c&Atilde;&sup3;digo de inicio/limpieza y desde las
+tareas en tiempo real. No disponible en componentes de
+espacio de usuario.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_inb</b>
+devuelve el byte le&Atilde;do del puerto de E/S dado</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La
+direcci&Atilde;&sup3;n de E/S debe estar dentro de una
+regi&Atilde;&sup3;n previamente asignada por
+<b>rtapi_request_region</b>. De lo contrario, otro
+m&Atilde;&sup3;dulo en tiempo real o el n&Atilde;&ordm;cleo
+Linux podr&Atilde;a intentar acceder a la
+regi&Atilde;&sup3;n de E/S al mismo tiempo.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_region(3rtapi)</b></p>
+<hr>
+</body>
+</html>

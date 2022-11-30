@@ -1,0 +1,331 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_module_param</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_module_param</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+<a href="#Interpretaci&Atilde;&sup3;n de cadenas de licencia">Interpretaci&Atilde;&sup3;n de cadenas de licencia</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_module_param
+- Especificaci&Atilde;&sup3;n de par&Atilde;&iexcl;metros de
+m&Atilde;&sup3;dulo</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+<p style="margin-top: 1em">RTAPI_MP_INT(<i>var</i>,
+<i>description</i>)</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+<p style="margin-top: 1em">RTAPI_MP_LONG(<i>var</i>,
+<i>description</i>)</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+<p style="margin-top: 1em">RTAPI_MP_STRING(<i>var</i>,
+<i>description</i>)</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+<p style="margin-top: 1em">RTAPI_MP_ARRAY_INT(<i>var</i>,
+<i>num</i>, <i>description</i>)</p></td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+<p style="margin-top: 1em">RTAPI_MP_ARRAY_LONG(<i>var</i>,
+<i>num</i>, <i>description</i>)</p></td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+
+<p style="margin-top: 1em">RTAPI_MP_ARRAY_STRING(<i>var</i>,
+<i>num</i>, <i>description</i>)</p></td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+
+<p style="margin-top: 1em">MODULE_LICENSE(<i>license</i>)</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+
+<p style="margin-top: 1em">MODULE_AUTHOR(<i>author</i>)</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+
+<p style="margin-top: 1em">MODULE_DESCRIPTION(<i>description</i>)</p> </td>
+<td width="22%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="67%">
+
+
+
+<p style="margin-top: 1em">EXPORT_FUNCTION(<i>function</i>)</p> </td>
+<td width="22%">
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="4%"></td>
+<td width="7%"></td>
+<td width="76%">
+</td>
+<td width="2%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><i>var</i></p></td>
+<td width="7%"></td>
+<td width="76%">
+
+
+<p>La variable donde se debe almacenar el
+par&Atilde;&iexcl;metro.</p> </td>
+<td width="2%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>description</i></p>
+
+<p style="margin-left:22%;">Una breve
+descripci&Atilde;&sup3;n del par&Atilde;&iexcl;metro o
+m&Atilde;&sup3;dulo.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p><i>num</i></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>El n&Atilde;&ordm;mero m&Atilde;&iexcl;ximo de valores
+para un par&Atilde;&iexcl;metro array</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>license</i></p>
+
+<p style="margin-left:22%;">La licencia del
+m&Atilde;&sup3;dulo, por ejemplo &quot;GPL&quot;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>author</i></p></td>
+<td width="2%"></td>
+<td width="32%">
+
+
+<p>El autor del m&Atilde;&sup3;dulo.</p></td>
+<td width="46%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>function</i></p>
+
+<p style="margin-left:22%;">El puntero a la
+funci&Atilde;&sup3;n que se va a exportar.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estas macros
+son formas port&Atilde;&iexcl;tiles de declarar los
+par&Atilde;&iexcl;metros de m&Atilde;&sup3;dulos del
+n&Atilde;&ordm;cleo. Deben utilizarse en el
+&Atilde;&iexcl;mbito global y no ir&Atilde;&iexcl;n seguidos
+de un punto y coma de terminacion. Deben usarse
+despu&Atilde;&copy;s de que se haya definido la variable o
+funci&Atilde;&sup3;n asociada.</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">EXPORT_FUNCTION
+hace que un s&Atilde;mbolo est&Atilde;&copy; disponible para
+un componente que se cargue posteriormente. No
+est&Atilde;&iexcl; relacionado con las funciones hal, que se
+describen en hal_export_funct(3hal)</p>
+
+<h2>Interpretaci&Atilde;&sup3;n de cadenas de licencia
+<a name="Interpretaci&Atilde;&sup3;n de cadenas de licencia"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>MODULE_LICENSE</b>
+sigue la definici&Atilde;&sup3;n de cadenas de licencia del
+n&Atilde;&ordm;cleo. Notablemente, &quot;GPL&quot; indica
+&quot;GNU General Public License v2 <i>o
+posterior</i>&quot;. (&Atilde;&copy;nfasis nuestro).</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>&quot;GPL&quot;</b></p></td>
+<td width="4%"></td>
+<td width="58%">
+
+
+<p>GNU General Public License v2 or later</p></td>
+<td width="20%">
+</td></tr>
+</table>
+
+
+<p style="margin-left:11%;"><b>&quot;GPL&nbsp;v2&quot;</b></p>
+
+<p style="margin-left:22%;">GNU General Public License
+v2</p>
+
+
+<p style="margin-left:11%;"><b>&quot;GPL&nbsp;and&nbsp;additional&nbsp;rights&quot;</b></p>
+
+<p style="margin-left:22%;">GNU General Public License v2
+rights and more</p>
+
+
+<p style="margin-left:11%;"><b>&quot;Dual&nbsp;BSD/GPL&quot;</b></p>
+
+<p style="margin-left:22%;">GNU General Public License v2
+or BSD license choice</p>
+
+
+<p style="margin-left:11%;"><b>&quot;Dual&nbsp;MIT/GPL&quot;</b></p>
+
+<p style="margin-left:22%;">GNU General Public License v2
+or MIT license choice</p>
+
+
+<p style="margin-left:11%;"><b>&quot;Dual&nbsp;MPL/GPL&quot;</b></p>
+
+<p style="margin-left:22%;">GNU General Public License v2
+or Mozilla license choice</p>
+
+
+<p style="margin-left:11%;"><b>&quot;Proprietary&quot;</b></p>
+
+<p style="margin-left:22%;">Productos no libres</p>
+
+<p style="margin-left:11%; margin-top: 1em">Todav&Atilde;a
+es una buena pr&Atilde;&iexcl;ctica incluir un bloque de
+licencia que indique al autor, fecha de copyright y
+exenci&Atilde;&sup3;n de responsabilidad de la
+garant&Atilde;a seg&Atilde;&ordm;n lo recomendado por la GNU
+GPL.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">No disponible
+en el c&Atilde;&sup3;digo de espacio de usuario.</p>
+<hr>
+</body>
+</html>

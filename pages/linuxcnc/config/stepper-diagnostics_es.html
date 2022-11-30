@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Diagnósticos para steppers</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Diagnósticos para steppers</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:stepper-diagnostics"><p>:ini:ini
+:hal:hal
+:ngc:ngc</p></div>
+<div class="paragraph"><p>Muchas veces lo que se obtiene no es lo que espera; pero todo es cuestión de
+experiencia. Aprender de la experiencia aumenta la comprensión
+del todo. La mejor manera de diagnosticar problemas es dividir y conquistar.
+Con esto quiero decir si puede eliminar la mitad de las variables de la ecuación,
+cada vez encontrará el problema más rápido. En el mundo real esto
+no siempre es el caso, pero generalmente es una buena manera de comenzar.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_problemas_comunes">1. Problemas comunes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_el_stepper_se_mueve_solo_un_paso">1.1. El Stepper se mueve solo un paso</h3>
+<div class="paragraph"><p>La razón más común en una nueva instalación para que un motor paso a paso haga
+esto es que se han intercambiado las señales de paso y dirección. Si presiona el
+jog hacia adelante y hacia atrás, alternativamente, y el motor se mueve
+un paso cada vez, y en la misma dirección, ahí está la prueba.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_los_steppers_no_se_mueven_en_absoluto">1.2. Los steppers no se mueven en absoluto</h3>
+<div class="paragraph"><p>Muchos drivers tienen un pin de activación o necesitan una bomba de carga para activar
+su salida.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_distancia_no_correcta">1.3. Distancia no correcta</h3>
+<div class="paragraph"><p>Si le ordena al eje que se mueva una distancia específica y se
+mueve a otra distancia, entonces su ajuste de escala es incorrecto.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mensajes_de_error">2. Mensajes de error</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_error_de_seguimiento">2.1. Error de seguimiento</h3>
+<div class="paragraph"><p>El concepto de error de seguimiento es extraño cuando se habla de motores de pasos.
+Como son sistemas de lazo abierto, no hay retroalimentacion de posición
+para hacerle saber si realmente está fuera de rango. LinuxCNC
+calcula si puede mantener el cumplimiento del movimiento solicitado y, si no, entonces
+da un error de seguimiento. Los erroresde seguimiento generalmente son el resultado de
+uno de los siguientes problemas en sistemas paso a paso.</p></div>
+<div class="paragraph"><p> - FERROR demasiado pequeño
+ - MIN_FERROR demasiado pequeño
+ - MAX_VELOCITY demasiado rápida
+ - MAX_ACCELERATION demasiado rápida
+ - BASE_PERIOD demasiado largo
+ - Backlash agregado a un eje</p></div>
+<div class="paragraph"><p>Cualquiera de los anteriores puede hacer que los pulsos en tiempo real no pueda mantenerse conforme
+a la tasa de pasos solicitada. Esto puede suceder si no ejecutó la prueba de latencia
+el tiempo suficiente para obtener un buen número para el Asistente Stepconf,
+o si configura la Velocidad Máxima o la Aceleración Máxima demasiado alta.</p></div>
+<div class="paragraph"><p>Si agregó backlash, debe aumentar STEPGEN_MAXACCEL hasta que
+duplique MAX_ACCELERATION en la sección AXIS del archivo INI para
+cada eje al que se agregó. LinuxCNC utiliza una "aceleración adicional" en una
+inversión para tener en cuenta el backlash. Sin corrección de backlash,
+la aceleración del generador de pasos será solo un pequeño porcentaje mayor que la  aceleración
+planificada del movimiento.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_error_rtapi">2.2. Error RTAPI</h3>
+<div class="paragraph"><p>Usted puede recibir este error:</p></div>
+<div class="paragraph"><p>    RTAPI: ERROR: retraso inesperado en tiempo real en la tarea n</p></div>
+<div class="paragraph"><p>Rtapi genera este error basándose en una indicación de RTAI de que
+se violó el tiempo limite. Suele ser una indicación de que BASE_PERIOD
+en la sección [EMCMOT] del archivo ini está configurado demasiado bajo. Debería correr
+la prueba de latencia durante un período prolongado de tiempo para ver si tiene algun
+retraso que causarían este problema. Si utilizó el Asistente Stepconf,
+ejecútelo de nuevo y pruebe el jitter del período base nuevamente, y ajuste Base
+Period Maximum Jitter en la página Información Básica de la máquina. Usted debe
+dejar la prueba en funcionamiento durante un período prolongado de tiempo para encontrar
+si algún hardware causa problemas intermitentes.</p></div>
+<div class="paragraph"><p>LinuxCNC rastrea el número de ciclos de CPU entre invocaciones de
+hilos en tiempo real. Si algún elemento de su hardware está causando demoras o
+sus hilos en tiempo real se configuran demasiado rápido, obtendrá este error.</p></div>
+<div class="paragraph"><p>NOTA: Este error solo se muestra una vez por sesión. Si tuviera su
+BASE_PERIOD demasiado bajo, podría obtener cientos de miles de mensajes de error
+por segundo si se mostrara más de uno.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pruebas">3. Pruebas</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_temporización_de_pasos">3.1. Temporización de pasos</h3>
+<div class="paragraph"><p>Si tiene un eje que termina en una ubicación incorrecta durante
+movimientos múltiples, es probable que no tenga los tiempos de mantenimiento de dirección
+o de timing de pasos correctos para sus drivers. En cada cambio de dirección
+puede estar perdiendo un paso o más. Si los motores se saturan, es
+también es posible que tenga el conjunto MAX_ACCELERATION o MAX_VELOCITY
+demasiado alto para ese eje.</p></div>
+<div class="paragraph"><p>El siguiente programa probará la configuración correcta del eje Z.
+Copie el programa en su directorio ~/emc2/nc_files y asígnele un nombre
+como TestZ.ngc o similar. Ponga a cero su máquina con Z = 0.000 en la
+parte superior de la mesa. Cargue y ejecute el programa. Hará 200 movimientos de ida y vuelta
+de 0.5 a 1". Si tiene un problema de configuración, encontrará que
+la posición final no terminará en las 0.500" que la pantalla muestra.
+Para probar otro eje, simplemente reemplace la Z con la letra de eje a probar en las
+líneas G0.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>    (programa de prueba para ver si el eje Z pierde posición)
+    (msg, prueba 1 de configuración del eje Z)
+    G20 #1000=100 (bucle 100 veces)
+    (este bucle tiene retrasos después de los movimientos)
+    (prueba ajustes de velocidad y aceleracion)
+    o100 while [#1000]
+    G0 Z1.000
+    G4 P0.250
+    G0 Z0.500
+    G4 P0.250
+    #1000 = [#1000 - 1]
+    o100 endwhile
+    (msg, prueba 2 de la configuración del eje Z, S para continuar)
+    M1 (para aquí)
+    #1000=100 (bucle 100 veces)
+    (el siguiente ciclo no tiene demoras después de los movimientos)
+    (prueba los tiempos de retención de dirección del controlador y también la aceleración máxima)
+    o101 while [#1000]
+    G0 Z1.000
+    G0 Z0.500
+    #1000 = [#1000 - 1]
+    o101 endwhile
+    (msg, Listo ... Z debe estar exactamente .5" sobre la mesa)
+    M2</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

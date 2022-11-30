@@ -1,0 +1,184 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:47 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MAX31855</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MAX31855</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">max31855 -
+Support for the MAX31855 Thermocouple-to-Digital converter
+using bitbanged spi</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt max31855
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]
+[personality=</b><i>P,P,...</i><b>]</b></p> </td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The component
+requires at least 3 pins to bitbang spi protocol, for
+example:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+max31855 personality=1</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>setp
+hm2_6i25.0.gpio.023.is_output true <br>
+setp hm2_6i25.0.gpio.024.is_output true</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>net
+spi.clk.in hm2_6i25.0.gpio.023.out max31855.0.clk.out <br>
+net spi.cs.in hm2_6i25.0.gpio.024.out max31855.0.cs.out <br>
+net spi.data0.in hm2_6i25.0.gpio.033.in_not
+max31855.0.data.0.in</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>addf
+max31855.0.bitbang-spi servo-thread</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">The MAX31855
+supports a range of -270C to 1800C, however linearization
+data is only available for the -200C to 1350C range, beyond
+which raw temperature is returned.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Temperature
+pins are provided for readings in Celsius, Fahrenheit and
+Kelvin, temperature values are not updated while a fault
+condition is present.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The personality
+parameter is used to indicate the number of sensors.
+Multiple sensors share the clk and cs pins, but connect to
+discrete data input pins. A maximum of 15 sensors are
+supported.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>max31855.</b><i>N</i><b>.bitbang-spi</b>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>max31855.</b><i>N</i><b>.data.</b><i>M</i><b>.in</b>
+bit in (M=0..( personality &amp; 0xf ))</p>
+
+<p style="margin-left:22%;">Pin(s) connected to data
+out.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.cs.out</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin connected to cs, pulled low
+to shift data, pulled high for data refresh.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.clk.out</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin connected to clk.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.temp-celsius.</b><i>M</i>
+float out (M=0..( personality &amp; 0xf ))</p>
+
+<p style="margin-left:22%;">Temperature output values in
+Celsius.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.temp-fahrenheit.</b><i>M</i>
+float out (M=0..( personality &amp; 0xf ))</p>
+
+<p style="margin-left:22%;">Temperature in Fahrenheit.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.temp-kelvin.</b><i>M</i>
+float out (M=0..( personality &amp; 0xf ))</p>
+
+<p style="margin-left:22%;">Temperature in Kelvin.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.fault.</b><i>M</i>
+bit out (M=0..( personality &amp; 0xf ))</p>
+
+<p style="margin-left:22%;">Fault condition detected.</p>
+
+
+<p style="margin-left:11%;"><b>max31855.</b><i>N</i><b>.fault-flags.</b><i>M</i>
+u32 out (M=0..( personality &amp; 0xf ))</p>
+
+<p style="margin-left:22%;">Fault flags: 0x1 = open sensor,
+0x2 short to gnd, 0x3 short to vcc.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Joseph
+Calderon</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

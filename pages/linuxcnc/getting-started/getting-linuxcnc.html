@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Getting LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Getting LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:getting-linuxcnc"><p>This section describes the recommended way to download
+and make a fresh install of LinuxCNC.  There are also
+<a href="#_alternate_install_methods">Alternate Install Methods</a> for the
+adventurous.  If you have an existing install that you want to upgrade,
+go to the <a href="updating-linuxcnc.html#cha:updating-linuxcnc">Updating LinuxCNC</a> section instead.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">LinuxCNC requires a special kernel with real-time extensions. There are
+three possibilities here: preempt-rt, RTAI or Xenomai. In addition there
+are two versions of LinuxCNC which work with these kernels. See the table
+below for details.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Fresh installs of LinuxCNC are most easily created using the Live/Install
+Image.  This is a hybrid ISO filesystem image that can be written to a
+USB storage device or a DVD and used to boot a computer.  At boot time you
+will be given a choice of booting the "Live" system (to run LinuxCNC
+without making any permanent changes to your computer) or booting the
+Installer (to install LinuxCNC and its operating system onto your
+computer&#8217;s hard drive).</p></div>
+<div class="paragraph"><p>The outline of the process looks like this:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Download the Live/Install Image.
+</p>
+</li>
+<li>
+<p>
+Write the image to a USB storage device or DVD.
+</p>
+</li>
+<li>
+<p>
+Boot the Live system to test out LinuxCNC.
+</p>
+</li>
+<li>
+<p>
+Boot the Installer to install LinuxCNC.
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_download_the_image">1. Download the image</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This section describes some methods for downloading the Live/Install
+Image.</p></div>
+<div class="sect2">
+<h3 id="_normal_download">1.1. Normal Download</h3>
+<div class="paragraph"><p>For x86 PCs Download the Live/Install CD by clicking here:</p></div>
+<div class="paragraph"><p><a href="http://www.linuxcnc.org/iso/linuxcnc-2.8.4-buster.iso">http://www.linuxcnc.org/iso/linuxcnc-2.8.4-buster.iso</a></p></div>
+<div class="paragraph"><p>For the Raspberry Pi a complete SD card image is available here:</p></div>
+<div class="paragraph"><p><a href="http://www.linuxcnc.org/iso/linuxcnc-2.8.1-pi4.zip">http://www.linuxcnc.org/iso/linuxcnc-2.8.1-pi4.zip</a> (this will auto-update
+to 2.8.4 )</p></div>
+<div class="paragraph"><p>This can be installed using the normal Pi
+<a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">install process</a>
+including with the Raspberry Pi Imager app.</p></div>
+<div class="paragraph"><p>This SD image is reported not to work with the Raspberry Pi4 8GB model.
+Note also that this version of the SD image limits available memory to
+3GB as this is necessary to persuade it to run with both WiFi and USB
+working  on some versions of the Pi. You can experiment with removing
+this limit by editing the config-rt.txt file in the boot directory. If
+you can&#8217;t boot after the change then the file can be edited back by
+mounting the SD card in a a different computer (maybe even a Pi with a
+USB card reader)</p></div>
+</div>
+<div class="sect2">
+<h3 id="_download_using_zsync">1.2. Download using zsync</h3>
+<div class="paragraph"><p>zsync is a download application that efficiently resumes interrupted
+downloads and efficiently transfers large files with small modifications
+(if you have an older local copy).  Use zsync if you have trouble
+downloading the image using the <a href="getting-linuxcnc.html#_normal_download">Normal Download</a>
+method.</p></div>
+<div class="olist arabic"><div class="title">zsync in Linux</div><ol class="arabic">
+<li>
+<p>
+Install zsync using Synaptic or, by running the following in a <a href="../common/linux-faq.html#faq:terminal">terminal</a>
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install zsync</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Then run this command to download the iso to your computer
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>zsync http://www.linuxcnc.org/iso/linuxcnc-2.8.4-buster.iso</code></pre>
+</div></div>
+<div class="paragraph"><p>or</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>zsync http://www.linuxcnc.org/iso/linuxcnc-2.8.1-pi4.zip.zsync</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="paragraph"><div class="title">zsync in Windows</div><p>There is a Windows port of zsync. It works as a console application. It can be
+downloaded from:</p></div>
+<div class="paragraph"><p><a href="https://www.assembla.com/spaces/zsync-windows/documents">https://www.assembla.com/spaces/zsync-windows/documents</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_verify_the_image">1.3. Verify the image</h3>
+<div class="paragraph"><p>(This step is unnecessary if you used zsync)</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+After downloading, verify the checksum of the image to ensure integrity.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>md5sum linuxcnc-2.8.4-buster.iso</code></pre>
+</div></div>
+<div class="paragraph"><p>or</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>sha256sum linuxcnc-2.8.4-buster.iso</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Then compare to these checksums
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>md5sum: 8a6e6abd2c792c3e06fbee0ed049ed41
+sha256sum: 0bfeac3ddfe1bdbf5ca4dad84eeec165741d3f253a16b75e4405c06b7b489700</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="paragraph"><div class="title">Verify md5sum on Windows or Mac</div><p>Windows and Mac OS X do not come with an md5sum program, but there are
+alternatives.  More information can be found at:
+<a href="https://help.ubuntu.com/community/HowToMD5SUM">How To MD5SUM</a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_write_the_image_to_a_bootable_device">2. Write the image to a bootable device</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The Raspbery Pi image is a completes SD card image and should be
+written to an SD card in
+<a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">the normal way</a></p></div>
+<div class="paragraph"><p>The LinuxCNC Live/Install ISO Image is a hybrid ISO image which can
+be written directly to a USB storage device (flash drive) or a DVD and
+used to boot a computer.  The image is too large to fit on a CD.</p></div>
+<div class="olist arabic"><div class="title">Writing the image to a USB storage device in Linux</div><ol class="arabic">
+<li>
+<p>
+Connect a USB storage device (for example a flash drive or thumb
+  drive type device).
+</p>
+</li>
+<li>
+<p>
+Determine the device file corresponding to the USB flash drive.
+  This information can be found in the output of <code>dmesg</code> after
+  connecting the device.  <code>/proc/partitions</code> may also be helpful.
+</p>
+</li>
+<li>
+<p>
+Use the <code>dd</code> command to write the image to your USB storage device.
+  For example, if your storage device showed up as <code>/dev/sde</code>,
+  then use this command:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>dd if=linuxcnc-2.8.4-buster.iso of=/dev/sde</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">Writing the image to a USB storage device in Mac OSX</div><ol class="arabic">
+<li>
+<p>
+Open a terminal and type
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>diskutil list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Insert the USB and note the name of the new disk that appears, eg
+  /dev/disk5
+</p>
+</li>
+<li>
+<p>
+unmount the USB. The number found above should be substitued in place
+  of the N
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>diskutil unmountDisk /dev/diskN</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Transfer the data with dd, as for Linux above. Note that the disk name
+  has an added "r" at the begining
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo dd if=/path-to.iso of=/dev/rdiskN bs=1m</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Note that this may take a long time to complete and there will be no
+  feedback during the process.
+</p>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">Writing the image to a DVD in Linux</div><ol class="arabic">
+<li>
+<p>
+Insert a blank DVD into your burner. A <em>CD/DVD Creator</em> or <em>Choose Disc Type</em>
+  window will pop up. Close this, as we will not be using it.
+</p>
+</li>
+<li>
+<p>
+Browse to the downloaded image in the file browser.
+</p>
+</li>
+<li>
+<p>
+Right click on the ISO image file and choose Write to Disc.
+</p>
+</li>
+<li>
+<p>
+Select the write speed. It is recommended that you write at the lowest
+  possible speed.
+</p>
+</li>
+<li>
+<p>
+Start the burning process.
+</p>
+</li>
+<li>
+<p>
+If a <em>choose a file name for the disc image</em> window pops up, just pick OK.
+</p>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">Writing the image to a DVD in Windows</div><ol class="arabic">
+<li>
+<p>
+Download and install Infra Recorder, a free and open source image
+  burning program: <a href="http://infrarecorder.org/">http://infrarecorder.org/</a>
+</p>
+</li>
+<li>
+<p>
+Insert a blank CD in the drive and select Do nothing or Cancel if an
+  auto-run dialog pops up.
+</p>
+</li>
+<li>
+<p>
+Open Infra Recorder, and select the
+ <em>Actions</em> menu, then <em>Burn image</em>.
+</p>
+</li>
+</ol></div>
+<div class="olist arabic"><div class="title">Writing the image to a DVD in Mac OSX</div><ol class="arabic">
+<li>
+<p>
+Download the .iso file
+</p>
+</li>
+<li>
+<p>
+Right-click on the file in the Finder window and select "Burn to disc"
+  (The option to burn to disc  will only appear if the machine has an
+  optical drive fitted or connected)
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_testing_linuxcnc">3. Testing LinuxCNC</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>With the USB storage device plugged in or the DVD in the DVD drive,
+shut down the computer then turn the computer back on. This will boot
+the computer from the Live/Install Image and choose the Live boot option.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">If the system does not boot from the DVD or USB stick it might be
+necesary to change the boot order in the PC BIOS.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Once the computer has booted up you can try out LinuxCNC without installing
+it. You can not create custom configurations or modify most system
+settings in a Live session, but you can (and should) run the latency test.</p></div>
+<div class="paragraph"><p>To try out LinuxCNC: from the Applications/CNC menu pick LinuxCNC. A
+dialog box will open from which you can choose one of many sample
+configurations. At this point it only really makes sense to pick a "sim"
+configuration. Some of the sample configurations include onscreen
+3D simulated machines, look for "Vismach" to see these.</p></div>
+<div class="paragraph"><p>To see if your computer is suitable for software step pulse generation
+run the Latency Test as shown <a href="../config/stepconf.html#latency-test">here</a>.</p></div>
+<div class="paragraph"><p>At the time of writing the Live-Image is only available with the
+preempt-rt kernel and a matching LinuxCNC. On some hardware this might
+not offer good enough latency. There is an experimental version available
+using the RTAI realtime kernel which will often give better latency.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_linuxcnc">4. Installing LinuxCNC</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>To install LinuxCNC from the LiveCD select <em>Install (Graphical)</em> at bootup.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_updates_to_linuxcnc">5. Updates to LinuxCNC </h2>
+<div class="sectionbody">
+<div class="paragraph"><p>With the normal install the Update Manager will notify you of updates
+to LinuxCNC when you go on line and allow you to easily upgrade with no
+Linux knowledge needed.
+It is OK to upgrade everything except the operating system when asked to.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">Do not upgrade the operating system if prompted to do so. You
+should accept OS <em>updates</em> however, especially security updates.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_problems">6. Install Problems</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In rare cases you might have to reset the BIOS to default settings if
+during the Live CD install it cannot recognize the hard drive
+during the boot up.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternate_install_methods">7. Alternate Install Methods</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The easiest, preferred way to install LinuxCNC is to use the Live/Install
+Image as described above.  That method is as simple and reliable as we
+can make it, and is suitable for novice users and experienced users alike.
+However, this will typically replace any existing operating system.</p></div>
+<div class="paragraph"><p>In addition, for experienced users who are familiar with Debian system
+administration (finding install images, manipulating apt sources, changing
+kernel flavors, etc), new installs are supported on following platforms:
+("amd64" means "64-bit", and is not specific to AMD processors, it will
+run on any 64-bit x86 system)</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<col width="20%" />
+<thead>
+<tr>
+<th align="left" valign="top"> Distribution   </th>
+<th align="left" valign="top"> Architecture  </th>
+<th align="left" valign="top"> kernel     </th>
+<th align="left" valign="top"> package name    </th>
+<th align="left" valign="top"> Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Buster</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">simulation only</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Buster</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; armhf</p></td>
+<td align="left" valign="top"><p class="table">preemp-rt</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">machine control &amp; simulation</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Buster</p></td>
+<td align="left" valign="top"><p class="table">amd64</p></td>
+<td align="left" valign="top"><p class="table">RTAI</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc</p></td>
+<td align="left" valign="top"><p class="table">machine control (known issues)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Jessie</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">simulation only</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Wheezy</p></td>
+<td align="left" valign="top"><p class="table">i386</p></td>
+<td align="left" valign="top"><p class="table">RTAI</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc</p></td>
+<td align="left" valign="top"><p class="table">machine control &amp; simulation</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Wheezy</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Preempt-RT</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">machine control &amp; simulation</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Debian Wheezy</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">simulation only</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Ubuntu Precise</p></td>
+<td align="left" valign="top"><p class="table">i386</p></td>
+<td align="left" valign="top"><p class="table">RTAI</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc</p></td>
+<td align="left" valign="top"><p class="table">machine control &amp; simulation</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Ubuntu Precise</p></td>
+<td align="left" valign="top"><p class="table">amd64 &amp; i386</p></td>
+<td align="left" valign="top"><p class="table">Stock</p></td>
+<td align="left" valign="top"><p class="table">linuxcnc-uspace</p></td>
+<td align="left" valign="top"><p class="table">simulation only</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">LinuxCNC v2.8 is not supported on Ubuntu Lucid or older.</td>
+</tr></table>
+</div>
+<div class="paragraph"><div class="title">Preempt-RT kernels</div><p>The Preempt-rt kernels are available for Debian from the regular
+debian.org archive. The preempt-rt kernel for RaspBerry Pi is available
+from the LinuxCNC repository.  The package is called <code>linux-image-rt-*</code>
+Simply install the package in the same way as any other package from the
+Synaptic Package manager or with apt-get at the command-line.</p></div>
+<div class="paragraph"><div class="title">RTAI Kernels</div><p>The RTAI kernels are available for download from the linuxcnc.org
+debian archive.  The apt source is:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Debian Buster: <code>deb http://linuxcnc.org buster base</code>
+</p>
+</li>
+<li>
+<p>
+Debian Wheezy: <code>deb http://linuxcnc.org wheezy base</code>
+</p>
+</li>
+<li>
+<p>
+Ubuntu Precise: <code>deb http://linuxcnc.org precise base</code>
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Debian Wheezy and Ubuntu Precise are both extremely old, and
+are out of their support period. It is strongly advised not to use either
+for a new install, and to seriously consider upgrading an existing
+installation.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>The Buster / RTAI package is only available on amd64, but there are very
+few surviving systems that can not run a 64-bit OS.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">There are known issues with the 64-bit RTAI 5.2 kernel with
+this version of LinuxCNC. The system will occasionally lock solid.
+However, this has, so far, been seen only during system exit. While
+running the system appears to be stable. But should nevertheless be
+considered experimental at this point.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">If you decide to use the RTAI 5.2 kernel and see a problem outside the
+circumstances described above then please report it immediately to the
+project developers.</td>
+</tr></table>
+</div>
+<div class="sect2">
+<h3 id="_installing_on_debian_buster_with_preempt_rt_kernel">7.1. Installing on Debian Buster (with Preempt-RT kernel)</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Install Debian Buster (Debian 10), amd64 verison.
+You can download the installer here:
+  <a href="https://www.debian.org/releases/buster/">https://www.debian.org/releases/buster/</a>
+</p>
+</li>
+<li>
+<p>
+After burning the iso and booting up if you don&#8217;t want Gnome desktop select
+  <em>Advanced Options</em> &gt; <em>Alternative desktop environments</em> and pick the one you
+  like. Then select <em>Install</em> or <em>Graphical Install</em>.
+</p>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">Do not enter a root password, if you do sudo is disabled and you won&#8217;t
+be able to complete the following steps.</td>
+</tr></table>
+</div>
+</li>
+<li>
+<p>
+Run the following in a <a href="../common/linux-faq.html#faq:terminal">terminal</a> to bring the machine up to
+  date with the latest packages.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update
+sudo apt-get dist-upgrade</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Install the Preempt-RT kernel and modules
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-rt-amd64</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Re-boot, and select the Linux 4.19.0-9-rt-amd64 kernel (the exact
+kernel version might be different, look for the "-rt" suffix. This might be
+hidden in the "Advanced options for Debian Buster" sub-menu in Grub.
+When you
+  log in, verify that `PREEMPT RT`is reported by the following command.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>uname -v</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Open Applications Menu &gt; System &gt; Synaptic Package Manager search for
+  <em>linux-image</em> and right click on the original non-rt  and select
+  <em>Mark for Complete Removal</em>. Reboot.
+  This is to force the system to boot from the RT kernel. If you prefer
+  to retain both kernels then the other kernels need not be deleted, but
+  grub boot configuration changes will be needed beyond the scope of this
+  document.
+</p>
+</li>
+<li>
+<p>
+Add the LinuxCNC Archive Signing Key to your apt keyring by running
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef
+Alternate keyserver: keyserver.ubuntu.com</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Add the apt repository:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code> echo deb http://linuxcnc.org/ buster base 2.8-rtpreempt | sudo tee /etc/apt/sources.list.d/linuxcnc.list
+ echo deb-src http://linuxcnc.org/ buster base 2.8-rtpreempt | sudo tee -a /etc/apt/sources.list.d/linuxcnc.list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Update the package list from linuxcnc.org
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Install uspace (a reboot may be required prior to installing uspace)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc-uspace</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Optionally you can install mesaflash if your using a Mesa card.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt install mesaflash</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="cha:Installing-RTAI">7.2. Installing on Debian Buster (with experimental RTAI kernel)</h3>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">This kernel has known stability problems. It appears to run
+reliably once LinuxCNC is loaded. However kernel panics have been seen
+at system shut-down.</td>
+</tr></table>
+</div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+This kernel and LinuxCNC version can be installed on top of the LiveDVD
+  install, or alternatively on a fresh Install of Debian Buster 64-bit
+  as described above
+</p>
+</li>
+<li>
+<p>
+Add the LinuxCNC Archive Signing Key to your apt keyring (Not
+  necessary if switching the realtime mode of a LinuxCNC Live-CD image)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef
+Alternate keyserver: keyserver.ubuntu.com</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Add the apt repository:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code> echo deb http://linuxcnc.org/ buster base 2.8-rt | sudo tee /etc/apt/sources.list.d/linuxcnc.list
+ echo deb-src http://linuxcnc.org/ buster base 2.8-rt | sudo tee -a /etc/apt/sources.list.d/linuxcnc.list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Update the package list from linuxcnc.org
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Install the new realtime kernel, RTAI and the rtai version of linuxcnc
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="paragraph"><p>Reboot the machine, ensuring that the system boots from the new 4.19.195-rtai kernel.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_installing_on_raspbian_10">7.3. Installing on Raspbian 10</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Download a stock Raspbian image to an SD card and install in the
+  <a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">usual way</a>
+</p>
+</li>
+<li>
+<p>
+Boot the Pi and open a terminal
+</p>
+</li>
+<li>
+<p>
+Add the LinuxCNC Archive Signing Key to your apt keyring
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef
+Alternate keyserver: keyserver.ubuntu.com</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Add the apt repository:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code> echo deb http://linuxcnc.org/ buster base 2.8-rtpreempt | sudo tee /etc/apt/sources.list.d/linuxcnc.list</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Update the package list from linuxcnc.org
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+install the realtime kernel
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-4.19.71-rt24-v7l+</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Install linuxcnc (a reboot may be required prior to installing)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc-uspace</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_installing_on_ubuntu_precise">7.4. Installing on Ubuntu Precise</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Install Ubuntu Precise 12.04 x86 (32-bit). Any flavor should
+  work (regular Ubuntu, Xubuntu, Lubuntu, etc). 64-bit (AMD64)
+  is currently not supported. You can download the installer here:
+  <a href="http://releases.ubuntu.com/precise/">http://releases.ubuntu.com/precise/</a>
+  Note the warnings that this release is out of support. But is is a way
+  to install LinuxCNC with a well-tested RTAI kernel.
+</p>
+</li>
+<li>
+<p>
+Run the following to  bring the machine up to date with the latest packages
+  in Ubuntu Precise.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update
+sudo apt-get dist-upgrade</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Add the LinuxCNC Archive Signing Key to your apt keyring by running
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-key adv --keyserver hkp://keys.openpgp.org --recv-key 3cb9fd148f374fef
+Alternate keyserver: keyserver.ubuntu.com</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Add a new apt source
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo add-apt-repository "deb http://linuxcnc.org/ precise base 2.8-rt"</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Fetch the package list from linuxcnc.org.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get update</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Install the RTAI kernel and modules by running
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-image-3.4-9-rtai-686-pae rtai-modules-3.4-9-rtai-686-pae</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+If you want to be able to build LinuxCNC from source using the git repo,
+  also run
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linux-headers-3.4-9-rtai-686-pae</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reboot, and make sure you boot into the rtai kernel. When you log in,
+  verify that the kernel name is 3.4-9-rtai-686-pae.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>uname -r</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Run
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo apt-get install linuxcnc</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

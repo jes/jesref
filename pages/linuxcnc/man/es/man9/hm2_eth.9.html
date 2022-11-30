@@ -1,0 +1,368 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HM2_ETH</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HM2_ETH</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONFIGURACI&Atilde;N DE INTERFAZ">CONFIGURACI&Atilde;N DE INTERFAZ</a><br>
+<a href="#P&Atilde;RDIDA DE PAQUETES">P&Atilde;RDIDA DE PAQUETES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_eth -
+Controlador HAL de LinuxCNC para las tarjetas Mesa
+Electronics Ethernet Anything IO, con firmware HostMot2.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt hm2_eth
+[config=</b><i>&quot;str[,str...]&quot;</i><b>]
+[board_ip=</b><i>ip[,ip...]</i><b>]
+[board_mac=</b><i>mac[,mac...]</i><b>]</b></p> </td></tr>
+</table>
+
+<p style="margin-left:17%;"><b>config</b> [predeterminado:
+&quot;&quot;]</p>
+
+<p style="margin-left:28%;">Cadenas de
+configuraci&Atilde;&sup3;n de HostMot2, descritas en la
+p&Atilde;&iexcl;gina de manual de hostmot2 (9).</p>
+
+<p style="margin-left:17%;"><b>board_ip</b>
+[predeterminado: &quot;&quot;]</p>
+
+<p style="margin-left:28%;">La direcci&Atilde;&sup3;n IP de
+la (s) tarjeta (s), separadas por comas. En una tarjeta
+nueva, la direcci&Atilde;&sup3;n es 192.168.1.121.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_eth es un
+controlador de dispositivo que interconecta tarjetas
+Mesa&rsquo;s ethernet based Anything I/O (con el firmware
+HostMot2) y LinuxCNC HAL</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las tarjetas
+compatibles son: 7i76E, 7I80DB, 7I80HD, 7i92, 7i93,
+7i96.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La tarjeta debe
+tener su hardware cargado en la tarjeta mediante el programa
+mesaflash (1).</p>
+
+<p style="margin-left:11%; margin-top: 1em">hm2_eth solo
+est&Atilde;&iexcl; disponible cuando linuxcnc
+est&Atilde;&iexcl; configurado con &quot;uspace&quot; en
+tiempo real.</p>
+
+<h2>CONFIGURACI&Atilde;N DE INTERFAZ
+<a name="CONFIGURACI&Atilde;N DE INTERFAZ"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_eth debe
+usarse en una interfaz de red dedicada, con solo un cable
+entre la PC y la tarjeta. Las interfaces de red
+inal&Atilde;&iexcl;mbricas y USB no son adecuadas.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Estas
+instrucciones asumen que su interfaz de red dedicada es
+&quot;eth1&quot;, 192.168.1/24 es una red privada no
+utilizada, que la tarjeta hostmot2 est&Atilde;&iexcl;
+utilizando la direcci&Atilde;&sup3;n predeterminada de
+192.168.1.121, que est&Atilde;&iexcl; utilizando Debian 7 o
+similar, y que no usa iptables. Si alguno de estos es falso,
+usted necesita modificar las instrucciones en consecuencia.
+Despu&Atilde;&copy;s de seguir todas las instrucciones,
+reinicie para que los cambios surtan efecto.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Es
+particularmente importante verificar que la red 192.168.1/24
+no sea la red privada utilizada por su enrutador de
+Internet, porque este es un valor de uso com&Atilde;&ordm;n.
+Si usa otra red, tambi&Atilde;&copy;n
+necesitar&Atilde;&iexcl; reconfigurar la tarjeta hostmot2
+para usar una direcci&Atilde;&sup3;n IP en esa red
+utilizando la utilidad mesaflash (1) y cambiar la
+configuraci&Atilde;&sup3;n de puentes. Por lo general,
+elegir&Atilde;&iexcl; una de las redes en el
+<a href="http://en.wikipedia.org/wiki/IPv4#Private_networks">espacio
+privado de direcciones IPv4.</a> Una alternativa
+com&Atilde;&ordm;n es la direcci&Atilde;&sup3;n PC
+10.10.10.1, y la direcci&Atilde;&sup3;n hostmot2
+10.10.10.10.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El uso de la
+interfaz Ethernet dedicada mientras linuxcnc se
+est&Atilde;&iexcl; ejecutando puede causar
+violaci&Atilde;&sup3;n de garant&Atilde;as en tiempo real.
+hm2_eth mitigar&Atilde;&iexcl; autom&Atilde;&iexcl;ticamente
+la mayor&Atilde;a de causas accidentales de
+interferencia.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Configurar
+red con direcci&Atilde;&sup3;n est&Atilde;&iexcl;tica</b>
+<br>
+Agregue estas l&Atilde;neas al archivo
+/etc/network/interfaces para configurar eth1 con una
+direcci&Atilde;&sup3;n est&Atilde;&iexcl;tica:</p>
+
+<p style="margin-left:11%; margin-top: 1em">auto eth1 <br>
+iface eth1 inet static <br>
+address 192.168.1.1 <br>
+hardware-irq-coalesce-rx-usecs 0</p>
+
+<h2>P&Atilde;RDIDA DE PAQUETES
+<a name="P&Atilde;RDIDA DE PAQUETES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Si bien
+Ethernet es bastante resistente al ruido
+el&Atilde;&copy;ctrico, muchos sistemas tienen una
+recepci&Atilde;&sup3;n de paquetes 100% perfecta. El
+controlador hm2_eth tiene una capacidad limitada para
+manejar paquetes perdidos. La p&Atilde;&copy;rdida de
+paquetes se detecta transmitiendo un recuento de paquetes
+esperados de lectura o escritura con cada solicitud y
+verificando el valor con cada respuesta de lectura. Cuando
+se detecta un paquete perdido, el pin <b>packet-error</b> se
+activa en ese ciclo, se aumenta el pin
+<b>packet-error-level</b> , y si alcanza un umbral, entonces
+se se&Atilde;&plusmn;ala un error de E/S de bajo nivel
+permanente.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Sin embargo, no
+todas las funciones especiales de hm2 saben
+c&Atilde;&sup3;mo recuperarse adecuadamente de la
+p&Atilde;&copy;rdida de paquetes. Por ejemplo, la
+funci&Atilde;&sup3;n especial del encoder no gestiona
+correctamente la funci&Atilde;&sup3;n de &Atilde;ndice
+cuando se pierden paquetes. El autor cree que esto puede
+conducir a fallas raras en home-to-index, lo que puede tener
+graves consecuencias.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Por otro lado,
+los sistemas pid-stepper se ejecutar&Atilde;&iexcl;n
+correctamente durante per&Atilde;odos prolongados de tiempo
+con p&Atilde;&copy;rdida de paquetes del orden de .01%,
+siempre que el error de siguimiento se aument&Atilde;&sup3;
+lo suficiente como para tener retroalimentaci&Atilde;&sup3;n
+de posici&Atilde;&sup3;n obsoleta no desencadena error de
+seguimiento. Alterando la configuraci&Atilde;&sup3;n HAL
+para que durante la p&Atilde;&copy;rdida transitoria de
+paquetes el valor de retroalimentaci&Atilde;&sup3;n de
+movimiento y pid es igual al valor del comando, en lugar del
+valor de retroalimentaci&Atilde;&sup3;n obsoleto, parece
+mejorar la sinton&Atilde;a. Esto puede ser logrado con un
+componente <b>mux2 (9)</b> para cada se&Atilde;&plusmn;al de
+retroalimentaci&Atilde;&sup3;n, utilizando
+<b>packet-error</b> como entrada <b>sel</b> del mux2.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">Adem&Atilde;&iexcl;s
+de los pines documentados en <b>hostmot2</b>(9)<b>,</b>
+hm2_eth<b>(9)</b> crea pines adicionales: <br>
+(bit, out)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-error</p>
+
+<p style="margin-left:22%;">Este pin es VERDADERO cuando el
+ciclo m&Atilde;&iexcl;s reciente detect&Atilde;&sup3; un
+error de lectura o escritura, y FALSO en otros momentos.</p>
+
+<p style="margin-left:11%;">(s32, out)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-error-level</p>
+
+<p style="margin-left:22%;">Este pin muestra el nivel de
+error actual, con n&Atilde;&ordm;meros m&Atilde;&iexcl;s
+altos que indican un mayor n&Atilde;&ordm;mero de errores
+detectados recientemente. El nivel de error siempre
+est&Atilde;&iexcl; en el rango de 0 a paquete-error-limit,
+inclusive.</p>
+
+<p style="margin-left:11%;">(bit, out)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-error-exceeded</p>
+
+<p style="margin-left:22%;">Este pin es VERDADERO cuando el
+nivel de error actual es igual al m&Atilde;&iexcl;ximo, y
+FALSO en otros momentos.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">Adem&Atilde;&iexcl;s
+de los par&Atilde;&iexcl;metros documentados en
+<b>hostmot2</b>(9)<b>,</b> hm2_eth<b>(9)</b> crea
+par&Atilde;&iexcl;metros adicionales: <br>
+(s32, rw)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-error-decrement</p>
+
+<p style="margin-left:22%;">La cantidad deducida de
+<i>packet-error-level</i> en un ciclo sin errores de lectura
+o escritura detectados, sin bajar de cero.</p>
+
+<p style="margin-left:11%;">(s32, rw)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-error-increment</p>
+
+<p style="margin-left:22%;">La cantidad agregada a
+<i>packet-error-level</i> en un ciclo sin deteccion de
+errores de lectura o escritura, sin sobrepasar
+packet-error-limit.</p>
+
+<p style="margin-left:11%;">(s32, rw)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-error-limit</p>
+
+<p style="margin-left:22%;">El nivel en el que un error de
+lectura o escritura detectado se trata como error
+permanente. Cuando se alcanza este nivel de error, el pin
+<i>io-error</i> de la tarjeta se convierte en VERDADERO y la
+condici&Atilde;&sup3;n debe restablecerse manualmente.</p>
+
+<p style="margin-left:11%;">(s32, rw)
+hm2_<i>&lt;BoardType&gt;</i>.<i>&lt;BoardNum&gt;</i>.packet-read-timeout</p>
+
+<p style="margin-left:22%;">El tiempo que debe transcurrir
+antes de que se agote el tiempo de espera de una solicitud
+de lectura. Si el valor es menor o igual a 0, se interpreta
+como el 80% del per&Atilde;odo del hilo. Si el valor es
+inferior a 100, se interpreta como un porcentaje del
+per&Atilde;odo del hilo. De lo contrario, se interpreta como
+un tiempo en nanosegundos. En En cualquier caso, el tiempo
+de espera nunca es inferior a 100 microsegundos.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Establecer este
+valor demasiado bajo puede causar errores de lectura
+espurios. Configur&Atilde;&iexcl;ndolo demasiado alto puede
+causar errores de retraso en tiempo real.</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_eth usa una
+cadena de iptables llamada &quot;hm2-eth-rules-output&quot;
+para controlar el acceso a la interfaz de red mientras hal
+se est&Atilde;&iexcl; ejecutando. La cadena se crea si no
+existe, y se inserta un salto a ella al comienzo de la
+cadena OUTPUT si ya no est&Atilde;&iexcl; all&Atilde;. Si
+tiene una configuraci&Atilde;&sup3;n de iptables existente,
+puede insertar un salto directo OUTPUT a
+hm2-eth-rules-output en un orden apropiado para su red
+local</p>
+
+<p style="margin-left:11%; margin-top: 1em">En la salida
+(normal), hm2_eth eliminar&Atilde;&iexcl; las reglas.
+Despu&Atilde;&copy;s de un CRASH, puede borrar manualmente
+las reglas con <b>sudo iptables -F hm2-eth-rules-output</b>;
+Las reglas tambi&Atilde;&copy;n se eliminan mediante un
+reinicio.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&quot;hardware-irq-coalesce-rx-usecs&quot;
+disminuye el tiempo de espera para recibir un paquete en la
+mayor&Atilde;a de los sistemas, pero al menos en algunos NIC
+Marvel-chipset es da&Atilde;&plusmn;ino. Si la l&Atilde;nea
+no mejora el rendimiento del sistema, qu&Atilde;tela. Un
+reinicio es necesario para que el valor se restablezca a su
+valor predeterminado de encendido. Esto requiere que se
+instale el paquete ethtool.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Algunas
+funciones hostmot2, como uart, est&Atilde;&iexcl;n
+codificadas de una manera que provoca latencia cuando se usa
+con hm2_eth.</p>
+
+<p style="margin-left:11%; margin-top: 1em">En la 7i92, los
+pines HAL para los LED se llaman CR01..CR04, pero las
+serigraf&Atilde;as son CR3..CR6. Dependiendo del firmware
+FPGA, los LED pueden inicialmente estar bajo el control del
+motor ethernet. Esto se puede cambiar hasta el ciclo de
+encendido con</p>
+
+<p style="margin-left:11%; margin-top: 1em">elbpcom
+01D914000000</p>
+
+<p style="margin-left:11%; margin-top: 1em">Dependiendo de
+la versi&Atilde;&sup3;n del firmware, este controlador puede
+causar el error de hardware de que LED se
+encender&Atilde;&iexcl; aunque el controlador y el hardware
+funcionen normalmente. Seg&Atilde;&ordm;n los informes, esto
+se solucionar&Atilde;&iexcl; en futuras actualizaciones de
+bitfiles de Mesa.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hostmot2</b>(9),<b>elbpcom</b>(1)</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

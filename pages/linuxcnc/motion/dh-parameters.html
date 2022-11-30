@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph"><p><a id="cha:dh-parameters"></a> </p></div>
+<h1 id="_setting_up_modified_denavit_hartenberg_dh_parameters_for">Setting up "modified" Denavit-Hartenberg (DH) parameters for</h1>
+<div class="paragraph"><p><em>genserkins</em></p></div>
+<div class="sect1">
+<h2 id="_prelude">1. Prelude</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC supports a number of kinematics modules including one that
+supports a generalized set of serial kinematics commonly specified via
+Denavit-Hartenberg parameters.</p></div>
+<div class="paragraph"><p>This document illustrates a method to set up the DH-parameters for a
+Mitsubishi RV-6SDL in LinuxCNC using <em>genserkins</em> kinematics.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">This document does not cover the creation of a <em>vismach</em> model which,
+while certainly very useful, requires just as much careful modeling
+if it is to match the <em>genserkins</em> model derived in this document.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">There may be errors and/or shortcomings&#8201;&#8212;&#8201;use at your own risk!</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_general">2. General</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>With the proliferation of industrial robots comes an increased
+interest to control used robots with LinuxCNC.  A common type of robot
+used in industry and manufacturing is the "serial manipulator"
+designed as a series of motorized joints connected by rigid links.
+Serial robots often have six joints as required for the six degrees of
+freedom needed to both position (XYZ) and orient (ABC or pitch, roll,
+yaw) an object in space.  Often these robots have an arm structure
+that extends from a base to an end-effector.</p></div>
+<div class="paragraph"><p>Control of such a serial robot requires the calculation of the
+end-effector&#8217;s position and orientation in relation to a reference
+coordinate system when the joint angles are known (<strong>forward
+kinematics</strong>) and also the more complex reverse calculation of the
+required joint angles for a given end-effector position and
+orientation in relation to the reference coordinate system (<strong>inverse
+kinematics</strong>).  The standard mathematical tools used for these
+calculations are matrices which are basically tables of parameters and
+formulas that make it easier to handle the rotations and translations
+involved in forward and inverse kinematics calculations.</p></div>
+<div class="paragraph"><p>Detailed familiarity with the math is not required for a serial robot
+since LinuxCNC provides a kinematics module that implements an
+algorithm called <em>genserkins</em> to calculate the forward and inverse
+kinematics for a generic serial robot.  In order to control a specific
+serial robot, <em>genserkins</em> must be provided with data so that it can
+build a mathematical model of the robot&#8217;s mechanical structure and
+thus do the math.</p></div>
+<div class="paragraph"><p>The required data needs to be in a standardized form that has been
+introduced by Jacques Denavit and Richard Hartenberg back in the
+fifties and are called the DH-Parameters.  Denavit and Hartenberg used
+four parameters to describe how one joint is linked to the next.
+These parameters describe basically two rotations (<em>alpha</em> and
+<em>theta</em>) and two translations (<em>a</em> and <em>d</em>).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modified_dh_parameters">3. Modified DH-Parameters</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>As is often the case, this "standard" has been modified by other
+authors who have introduced "modified DH-parameters" and one must be
+very careful because <em>genserkins</em> uses "modified DH-parameters" as
+described in the publication "Introduction to Robotics, Mechanics and
+Control" by John J. Craig.  Beware there is a lot of information to be
+found on <em>DH-parameters</em> but rarely does the author define which
+convention is actually used.  In addition, some people have found it
+necessary to change the parameter named <em>a</em> to <em>r</em> and have thus added
+to the confusion.  This document adheres to the convention in the
+above mentioned publication by Craig with the difference that joint
+and parameter enumeration begins with the number <em>0</em> in order to be
+consistent with <em>genserkins</em> and its HAL pins.</p></div>
+<div class="paragraph"><p>Standard and Modified DH-Parameters consist of four numeric values for
+each joint (<em>a</em>, <em>d</em>, <em>alpha</em> and <em>theta</em>) that describe how the
+coordinate system (CS) sitting in one joint has to be moved and
+rotated to be aligned with the next joint.  Aligned means that the
+Z-axis of our CS coincides with the axis of rotation of the joint and
+points in the positive direction such that, using the right hand rule
+with the thumb pointing in the positive direction of the Z-axis, the
+fingers point in the positive direction of rotation of the joint.
+It becomes clear that in order to do this, one must decide on
+the positive directions of all joints before starting to derive the
+parameters!</p></div>
+<div class="paragraph"><p>The difference between "standard" and "modified" notations is in how
+the parameters are allocated to the links.  Using the "standard"
+DH-Parameters in <em>genserkins</em> will <strong>not</strong> give the correct mathematical
+model.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modified_dh_parameters_as_used_in_em_genserkins_em">4. Modified DH-Parameters as used in <em>genserkins</em></h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Note that <em>genserkins</em> does not handle offsets to theta-values&#8201;&#8212;&#8201;theta
+is the joint variable that is <strong>controlled</strong> by LinuxCNC.  With the CS
+aligned with the joint, a rotation around its Z-Axis is identical to
+the rotation commanded to that joint by LinuxCNC. This makes it
+impossible to define the 0° position of our robots joints arbitrarily.</p></div>
+<div class="paragraph"><p>The three configurable parameters are:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+<strong>alpha</strong> : positive or negative rotation (in radians) around the X-axis
+of the "current coordinate system"
+</p>
+</li>
+<li>
+<p>
+<strong>a</strong> : positive distance, along X, between two joint axes specified in
+<em>machine units</em> (mm or inch) defined in the system&#8217;s ini file.
+</p>
+</li>
+<li>
+<p>
+<strong>d</strong> : positive or negative length along Z (also in <em>machine units</em>)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>The parameter sets are always derived in the same order and a set is
+completed by setting the d-parameter.  This does not leave the Z-axis
+of our CS aligned with the next joint!  This may seem confusing but
+sticking to this rule will yield a working set of parameters.  Once
+the <strong>d</strong>-parameter is set, the X-axis of our-CS needs to point to the
+axis of the next joint.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_numbering_of_joints_and_parameters">5. Numbering of joints and parameters</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The first joint in LinuxCNC is joint-0 (because in software
+counting starts with 0) while most publications start with the number
+<em>1</em>.  That goes for all the parameters as well.  That is, numbering
+starts with a-0, alpha-0, d-0 and ends with a-5, alpha-5 and d-5.  Keep
+this in mind when following a publication to set up <em>genserkins</em>
+parameters.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_start">6. How to start</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Convention is to start by placing the reference-CS in the base of
+the robot with it&#8217;s Z-axis coinciding with the axis of the first joint
+and its X-axis pointing toward the next joint&#8217;s axis.</p></div>
+<div class="paragraph"><p>This will also result in the DRO values in LinuxCNC being referenced
+to that point.  Having done so sets a-0 and alpha-0 to 0.  The above
+mentioned publication (Craig) also sets d-0 to 0, which is confusing
+when a displacement offset is needed in order to have the
+reference-CS at the bottom of the base.  Setting d-0 = to the
+displacement gives correct results.  In this manner, the first set of
+parameters are alpha-0 = 0, a-0 = 0, d0 = displacement, and the X-axis
+of the CS points to the axis of the next joint (joint-1).</p></div>
+<div class="paragraph"><p>Derivation of the net set (alpha-1, a-1, d-1) follows&#8201;&#8212;&#8201;always using
+the same sequence all the way to the sixth set (alpha-5, a-5, d-5).</p></div>
+<div class="paragraph"><p>And thus, the TCP-CS of the end-effector is sitting in the center of the
+hand flange.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_special_cases">7. Special cases</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If the next joint-axis is parallel to the last then one could
+arbitrarily choose a value for the d-parameter but there is no
+point in setting it other than 0.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_detailed_example_rv_6sl">8. Detailed Example (RV-6SL)</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Described below is a method to derive the required "modified
+DH-parameters" for a Mitsubishi RV-6SDL and how to set the parameters
+in the HAL file to be used with the <em>genserkins</em> kinematics in
+LinuxCNC.  The necessary dimensions are best taken from a dimensional
+drawing provided by the manufacturer of the robot.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-001.jpg" alt="rv-6sl/rv-6sl-001.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-002.jpg" alt="rv-6sl/rv-6sl-002.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-003.jpg" alt="rv-6sl/rv-6sl-003.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-004.jpg" alt="rv-6sl/rv-6sl-004.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-005.jpg" alt="rv-6sl/rv-6sl-005.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-006.jpg" alt="rv-6sl/rv-6sl-006.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-007.jpg" alt="rv-6sl/rv-6sl-007.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-008.jpg" alt="rv-6sl/rv-6sl-008.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-009.jpg" alt="rv-6sl/rv-6sl-009.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-010.jpg" alt="rv-6sl/rv-6sl-010.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-011.jpg" alt="rv-6sl/rv-6sl-011.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-012.jpg" alt="rv-6sl/rv-6sl-012.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-013.jpg" alt="rv-6sl/rv-6sl-013.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-014.jpg" alt="rv-6sl/rv-6sl-014.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-015.jpg" alt="rv-6sl/rv-6sl-015.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-016.jpg" alt="rv-6sl/rv-6sl-016.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-017.jpg" alt="rv-6sl/rv-6sl-017.jpg" />
+</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="rv-6sl/rv-6sl-018.jpg" alt="rv-6sl/rv-6sl-018.jpg" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_credits">9. Credits</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Thanks to user Aciera for all text and the graphics
+for the RV-6SL robot!</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

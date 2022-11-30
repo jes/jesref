@@ -1,0 +1,1998 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>GUI AXIS</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>GUI AXIS</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:axis-gui">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>AXIS es una interfaz gráfica para LinuxCNC que cuenta con vista previa y backplot. Está escrito en Python y utiliza
+Tk y OpenGL para mostrar la interfaz de usuario.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis_es.png" alt="Ventana AXIS" />
+</div>
+<div class="title">Figura 1. Ventana de AXIS</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_primeros_pasos">2. Primeros pasos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Si su configuración no está configurada actualmente para usar AXIS,
+puede cambiarlo editando el archivo .ini. En la
+sección <em>[DISPLAY]</em> indiquelo con la linea <em>DISPLAY = axis</em>.</p></div>
+<div class="paragraph"><p>La configuracion de ejemplo <em>sim/axis.ini</em> ya está configurada para usar AXIS como su interfaz de usuario.</p></div>
+<div class="sect2">
+<h3 id="_una_sesión_típica">2.1. Una sesión típica</h3>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Inicie LinuxCNC.
+</p>
+</li>
+<li>
+<p>
+Reinicie E-STOP (F1) y encienda la alimentación de la máquina (F2).
+</p>
+</li>
+<li>
+<p>
+Haga Homing de todos los ejes.
+</p>
+</li>
+<li>
+<p>
+Cargue el archivo g-code.
+</p>
+</li>
+<li>
+<p>
+Utilice el gráfico de vista previa para verificar que el programa es correcto.
+</p>
+</li>
+<li>
+<p>
+Cargue el material.
+</p>
+</li>
+<li>
+<p>
+Establezca el offset adecuado para cada eje haciendo jogging y usando la tecla Touch Off según sea necesario.
+</p>
+</li>
+<li>
+<p>
+Ejecute el programa.
+</p>
+</li>
+</ol></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Ejecutar el mismo programa de nuevo dependera de su configuración y requisitos.
+Es posible que deba cargar más material y establecer offsets o desplazarse y
+establecer un nuevo offset y luego ejecutar el programa de nuevo. Si la ubicacion del material es
+siempre la misma, entonces es posible que solo tenga que volver a ejecutar el programa. Ver la seccion
+<a href="#sub:axis-machine-menu">Menu Maquina</a> para obtener más información sobre el comando de ejecución.</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pantalla_axis">3. Pantalla AXIS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La ventana de AXIS contiene los siguientes elementos:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Un área de visualización que muestra uno de los siguientes elementos:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+una vista previa del archivo cargado (en este caso,
+   <em>axis.ngc</em>), así como la ubicación actual del
+   <em>punto controlado</em> de la máquina. Más adelante, esta área mostrará el camino
+   por el que la máquina se ha movido, llamado <em>backplot</em>
+</p>
+</li>
+<li>
+<p>
+una lector grande que muestra la posición actual y todos los offsets.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Una barra de menús y una barra de herramientas que le permiten realizar varias acciones
+</p>
+</li>
+<li>
+<p>
+Una pestaña de <em>control manual (F3)</em> - que te permite
+ mover la máquina, encender o apagar el husillo y el refrigerante,
+ si se incluye en el archivo ini.
+</p>
+</li>
+<li>
+<p>
+Una pestaña <em>MDI</em> - donde los programas con código G se pueden ingresar manualmente,
+ una línea a la vez. También muestra los <em>Códigos G activos</em> que son
+ los códigos G modales en vigor.
+</p>
+</li>
+<li>
+<p>
+<em>Feed Override</em> - que le permite escalar la velocidad de los movimientos programados.
+ El máximo predeterminado es 120% y se puede configurar a un valor diferente
+ en el archivo ini. Consulte la <a href="../config/ini-config_es.html#sec:display-section">Sección de visualización</a> del
+ archivo INI para más información.
+</p>
+</li>
+<li>
+<p>
+<em>Spindle Override</em> - que le permite
+ escalar la velocidad del husillo hacia arriba o hacia abajo.
+</p>
+</li>
+<li>
+<p>
+<em>Jog Speed</em> - que te permite configurar la velocidad de jog
+ dentro de los límites establecidos en el archivo ini. Ver la
+ <a href="../config/ini-config_es.html#sec:display-section">Sección de visualización</a> del archivo INI para obtener más información.
+</p>
+</li>
+<li>
+<p>
+<em>Velocidad máxima</em> - que le permite restringir la velocidad máxima de todos
+ los movimientos programados (excepto movimiento sincronizados del husillo).
+</p>
+</li>
+<li>
+<p>
+Una zona de visualización de texto que muestra el G-Code cargado.
+</p>
+</li>
+<li>
+<p>
+Una barra de estado que muestra el estado de la máquina. En la pantalla
+ mostrada, la máquina está encendida, no tiene una herramienta insertada y la
+ la posición mostrada es <em>Relativa</em> (mostrando todos los offsets) y <em>Actual</em>
+ (mostrando la posición retroalimentada).
+</p>
+</li>
+</ul></div>
+<div class="sect2">
+<h3 id="_elementos_del_menú">3.1. Elementos del menú</h3>
+<div class="paragraph"><p>Algunos elementos del menú pueden estar en gris dependiendo de cómo tenga su
+archivo .ini configurado. Para más información sobre configuración vea el
+&lt;&lt;cha:ini-configuration,Capítulo INI.</p></div>
+<div class="ulist"><div class="title">Menú Archivo</div><ul>
+<li>
+<p>
+<em>Abrir &#8230;</em>- abre un cuadro de diálogo estándar para abrir un archivo de código g para cargar en AXIS. Si
+    ha configurado LinuxCNC para usar un programa de filtro, también puede abrirlo.
+    Consulte la <a href="../config/ini-config_es.html#sec:filter-section">sección FILTRO</a> de la configuración INI
+    para más información.
+</p>
+</li>
+<li>
+<p>
+<em>Archivos recientes</em>- muestra una lista de los archivos abiertos recientemente.
+</p>
+</li>
+<li>
+<p>
+<em>Editar &#8230;</em>- abre el archivo de código G actual para editarlo si tienes un editor
+    configurado en su archivo ini. Consulte la sección <a href="../config/ini-config_es.html#sec:display-section">sección DISPLAY</a>
+    para obtener más información sobre la especificación del editor a usar.
+</p>
+</li>
+<li>
+<p>
+<em>Recargar</em>- vuelve a cargar el archivo de código g actual. Si lo edita, debe recargarlo
+    para que los cambios se actualizen. Si detiene un archivo y quiere empezar
+    desde el principio, vuelva a cargar el archivo. La recarga de la barra de herramientas es la misma
+    qu la del menu.
+</p>
+</li>
+<li>
+<p>
+<em>Guardar gcode como &#8230;</em> - Guarda el archivo actual con un nuevo nombre.
+</p>
+</li>
+<li>
+<p>
+<em>Propiedades</em>- la suma de los movimientos rápidos y de avance. No tiene en cuenta
+    modos de aceleración, fusion o ruta para que el tiempo reportado nunca
+    sea menor que el tiempo de ejecución real.
+</p>
+</li>
+<li>
+<p>
+<em>Editar tabla de herramientas &#8230;</em> - Igual que Editar si ha definido un editor.
+   Puede abrir la tabla de herramientas y editarla.
+</p>
+</li>
+<li>
+<p>
+<em>Recargar tabla de herramientas</em>: después de editar la tabla de herramientas, debe volve a cargarla.
+</p>
+</li>
+<li>
+<p>
+<em>Editor Ladder</em> - Si has cargado Classic Ladder puedes editarlo desde
+   aquí. Vea el capítulo &lt;&lt;cha:classicladder,Classicladder
+   para más información.
+</p>
+</li>
+<li>
+<p>
+<em>Salir</em> - Termina la sesión actual de LinuxCNC.
+</p>
+</li>
+</ul></div>
+<div class="ulist" id="sub:axis-machine-menu"><div class="title">Menú de Máquina</div><ul>
+<li>
+<p>
+<em>Toggle Emergency Stop F1</em>- cambia el estado de la parada de emergencia.
+</p>
+</li>
+<li>
+<p>
+<em>Toggle Machine Power F2</em> - Cambiar el estado de encendido de la máquina si
+   la parada de emergencia no está encendida.
+</p>
+</li>
+<li>
+<p>
+<em>Ejecutar programa</em>- Ejecuta el programa actualmente cargado desde el principio.
+</p>
+</li>
+<li>
+<p>
+<em>Ejecutar desde la línea seleccionada</em> - seleccione la línea desde la que desea comenzar.
+   Use con precaución ya que esto moverá la herramienta a la posición esperada en
+   la línea y luego se ejecutará el resto del código.
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Aviso</div>
+</td>
+<td class="content">No use <em>Ejecutar desde la línea seleccionada</em> si su programa de código g contiene subrutinas.</td>
+</tr></table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Step</em> - Un solo paso a través de un programa.
+</p>
+</li>
+<li>
+<p>
+<em>Pausa</em> - Pausa un programa.
+</p>
+</li>
+<li>
+<p>
+<em>Resume</em> - reanudar la ejecución de una pausa.
+</p>
+</li>
+<li>
+<p>
+<em>Stop</em> - Detiene un programa en ejecución. Cuando se selecciona ejecutar después de una parada, el programa
+           comenzará desde el principio.
+</p>
+</li>
+<li>
+<p>
+<em>Stop en M1</em> - Si se alcanza un M1, y esto esta activo, la ejecución del programa
+    parará en la línea M1. Presione Resume para continuar.
+</p>
+</li>
+<li>
+<p>
+<em>Saltar líneas con "/"</em> - Si una línea comienza con <em>/</em> y esto está activo,
+   la línea se saltará.
+</p>
+</li>
+<li>
+<p>
+<em>Borrar historial de MDI</em>: borra la ventana del historial de MDI.
+</p>
+</li>
+<li>
+<p>
+<em>Copiar desde el historial de MDI</em>: copia el historial MDI al portapapeles
+</p>
+</li>
+<li>
+<p>
+<em>Pegar al historial de MDI</em> - Pegar desde el portapapeles a la ventana del historial MDI
+</p>
+</li>
+<li>
+<p>
+<em>Calibración</em>: inicia el asistente de calibración (emccalib.tcl).
+   La calibración lee el archivo HAL y para cada <em>setp</em> que usa una variable
+   del archivo ini que se encuentra en las secciones [AXIS_L], [JOINT_N] o [TUNE],
+   crea una entrada que puede ser editada y probada.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar configuración HAL</em>- abre la ventana de configuración HAL donde puede
+   monitorear componentes HAL, pines, parámetros, señales, funciones y subprocesos.
+</p>
+</li>
+<li>
+<p>
+<em>HAL Meter</em>- abre una ventana donde puede monitorear un solo Pin HAL, señal o
+    Parámetro.
+</p>
+</li>
+<li>
+<p>
+<em>HAL Scope</em>- abre un osciloscopio virtual que permite seguir valores HAL en función del tiempo.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar estado de LinuxCNC</em>- abre una ventana que muestra el estado de LinuxCNC.
+</p>
+</li>
+<li>
+<p>
+<em>Establecer nivel de depuración</em>- abre una ventana donde se pueden ver los niveles de depuración y se pueden configurar algunos.
+</p>
+</li>
+<li>
+<p>
+<em>Homing</em> - home uno o todos los ejes.
+</p>
+</li>
+<li>
+<p>
+<em>Unhoming</em> - Deshacer home de uno o todos los ejes.
+</p>
+</li>
+<li>
+<p>
+<em>Sistema de coordenadas cero</em>- establece todos los offsets a cero en el sistema de coordenadas elegido.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><a id="axis:tool-touch-off"></a> </p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Tool touch off to workpiece</em> - Al realizar Touch Off, el valor
+ingresado es relativo al sistema de coordenadas de la pieza actual (<em>G5x</em>),
+modificado por el offset del eje (<em>G92</em>). Cuando se completa el Touch Off,
+la coordenada relativa para el eje elegido se convertirá en el valor ingresado.
+Consulte &lt;&lt;gcode:g10-l10,G10 L10 en el capítulo de código G.
+</p>
+</li>
+<li>
+<p>
+<em>Tool touch off to fixture</em> - Al realizar Touch Off, el valor ingresado
+es relativo al noveno (<em>G59.3</em>) sistema de coordenadas, con el offset del eje
+(<em>G92</em>) ignorado. Esto es útil cuando hay un accesorio para Tool touch off en una
+ubicación fija en la máquina, con el noveno (<em>G59.3</em>) sistema de coordenadas establecido
+de tal manera que la punta de una herramienta de longitud cero esté en el origen del montaje cuando
+las coordenadas relativas son 0. Consulte &lt;&lt;gcode:g10-l11,G10 L11 en el capítulo de códigos G.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title">Menú Ver</div><ul>
+<li>
+<p>
+<em>Vista superior</em> - la vista superior (o vista Z) muestra la previsualizacion del código G mirando en direccion
+  del eje Z de positivo a negativo. Esta vista es la mejor para mirar el plano XY.
+</p>
+</li>
+<li>
+<p>
+<em>Vista superior girada</em> - la vista superior girada (o vista Z girada) también se muestra
+  el código G mirando a lo largo del eje Z de positivo a negativo. Pero a veces
+  es conveniente mostrar los ejes X e Y girados 90 grados para ajustarse al
+  mostrar mejor Este punto de vista es también mejor para mirar X y Y.
+</p>
+</li>
+<li>
+<p>
+<em>Vista lateral</em> - la vista lateral (o vista X) muestra el código G mirando hacia adelante
+  El eje X de positivo a negativo. Esta vista es mejor para mirar a Y &amp; Z.
+</p>
+</li>
+<li>
+<p>
+<em>Vista frontal</em> - la vista frontal (o vista en Y) muestra el código G mirando hacia adelante
+  El eje Y de negativo a positivo. Esta vista es mejor para mirar X y Z.
+</p>
+</li>
+<li>
+<p>
+<em>Vista en perspectiva</em> - la vista en perspectiva (o vista P) muestra el código G
+  mirando la pieza desde un punto de vista ajustable, por defecto a X+, Y-,
+  Z+. La posición es ajustable usando el mouse y el selector de arrastrar/rotar.
+  Esta vista es una vista de compromiso, y si bien hace un buen trabajo al tratar de
+  mostrar tres (¡hasta nueve!) ejes en una pantalla bidimensional, a menudo habrá
+  alguna característica que es difícil de ver o que requiere un cambio en el punto de vista. Esta vista
+  es la mejor cuando le gustaría ver los tres (a nueve) ejes a la vez.
+</p>
+</li>
+</ul></div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Punto de vista</div>
+<div class="paragraph"><p>El menú de selección de pantalla AXIS <em>Ver</em> se refiere a las vistas <em>Superior</em>, <em>Delantera</em> y <em>Lateral</em>.
+Estos términos son correctos si la máquina CNC tiene su eje Z vertical, con
+Z positivo hacia arriba. Esto es cierto para las fresadoras verticales, que es probablemente la
+aplicación más popular, y también es cierto para casi todas las máquinas EDM, e incluso
+tornos verticales de torreta, donde la pieza gira debajo de la herramienta.</p></div>
+<div class="paragraph"><p>Los términos <em>Superior</em>, <em>Delantera</em> y <em>Lateral</em> pueden ser confusos, sin embargo, en otras
+máquinas CNC, como un torno estándar, donde el eje Z es horizontal, o
+una fresa horizontal (de nuevo donde el eje Z es horizontal) o incluso un
+torno vertical de torreta invertido, donde la pieza gira sobre la herramienta y la
+dirección positiva del eje Z es hacia abajo!</p></div>
+<div class="paragraph"><p>Solo recuerde que el eje Z positivo está (casi) siempre <em>alejandose</em> de la pieza.
+Familiarícese con el diseño de su máquina e interprete la pantalla según sea necesario.</p></div>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Mostrar pulgadas</em> - establece la escala de la pantalla AXIS en pulgadas.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar MM</em>: establece la escala de la pantalla AXIS en milímetros.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar programa</em> - la vista previa del programa de código G cargado puede ser completamente
+    desactivada si lo desea.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar Rapidos</em> - la vista previa del programa de código G cargado siempre mostrará el
+    avance (G1, G2, G3) en color blanco. Pero la vision de movimientos rápidos (G0)
+    ,en cian, se puede desactivar si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Fusion alfa</em> - esta opción hace que la vista previa de programas complejos sea más fácil de ver, pero
+    puede hacer que la vista previa se muestre más lentamente.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar Plot en vivo</em> - El resaltado de las rutas de avance (G1, G2, G3) a medida que la herramienta se mueve
+    se puede desactivar si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar herramienta</em> - la visualización del cono/cilindro de la herramienta se puede desactivar si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar extensiones</em> - la visualización de las extensiones (recorrido máximo en cada dirección del eje)
+    del programa de código G cargado se puede desactivar si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar Offsets</em> - Se puede mostrar la ubicación de origen del offset del montaje seleccionado (G54-G59.3)
+    como un conjunto de tres líneas ortogonales, roja, azul y verde.
+    Esta visualización de origen de offset (o punto cero) se puede desactivar si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar límites de máquina</em> - los límites máximos de desplazamiento de la máquina para cada eje, según lo establecido en
+    el archivo ini, se muestran como una caja rectangular dibujada en líneas discontinuas rojas. Esto
+    es útil cuando se carga un nuevo programa de código G, o cuando se comprueba si
+    se necesitaría mucho offset del montaje para llevar el programa de código G dentro de
+    los límites de recorrido de su máquina. Puede apagarse si no es necesario.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar Velocidad</em> - Una visualización de la velocidad a veces es útil para ver qué tan cerca está funcionando
+    su máquina de la velocidad de diseño. Puede ser desactivado si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar distancia a recorrer</em> - Distancia a recorrer es un elemento muy útil que conocer cuando se ejecuta un
+    programa de código G desconocido por primera vez. En combinación con los
+    controles de anulación de velocidad rápida y  de avance, se puede evitar el daño a herramientas
+    y/o a la máquina. Una vez que el programa de código G
+    se ha depurado y se está ejecutando sin problemas, la pantalla Distancia a ir
+    se puede desactivar si se desea.
+</p>
+</li>
+<li>
+<p>
+<em>Limpiar Plot en vivo</em> - a medida que la herramienta se desplaza en la pantalla Axis, se resalta la ruta del código G.
+    Para repetir el programa, o para ver mejor un área de interés,
+    las rutas previamente resaltadas se pueden borrar.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar posición ordenada</em>: esta es la posición a la que intentará ir LinuxCNC. Una vez que el movimiento
+    se ha detenido, esta es la posición que intentará mantener LinuxCNC.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar posición actual</em>: la posición real es la posición medida, leída desde los
+    codificadores o desde el sistema simulado por los generadores de pasos. Esto puede diferir
+    ligeramente de la posición ordenada por muchas razones, incluyendo afinacion del PID,
+    restricciones físicas, o cuantización de la posición.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar posición de la máquina</em>: esta es la posición en coordenadas sin compensación, según lo establecido por Homing.
+</p>
+</li>
+<li>
+<p>
+<em>Mostrar posición relativa</em>: esta es la posición de la máquina modificada por las compensaciones <em>G5x</em>, <em>G92</em> y <em>G43</em>.
+.Menú de ayuda
+</p>
+</li>
+<li>
+<p>
+<em>Acerca de Axis</em> - Todos sabemos lo que es esto.
+</p>
+</li>
+<li>
+<p>
+<em>Referencia rápida</em>: muestra las teclas de método abreviado del teclado.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_botones_de_la_barra_de_herramientas">3.2. Botones de la barra de herramientas</h3>
+<div class="paragraph"><p>De izquierda a derecha en la pantalla de Axis, los botones de la barra de herramientas (atajos de teclado mostrados [entre corchetes]) son:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_estop.png" alt="Stop de Emergencia" />
+</span> Stop de Emergencia [F1] (también llamado E-Stop)
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_power.png" alt="Encendido de Maquina" />
+</span> Encendido de Maquina [F2]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_open.png" alt="Abrir archivo de código G" />
+</span> Abrir archivo de código G [O]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_reload.png" alt="Recargar archivo actual" />
+</span> Recargar archivo actual [Ctrl-R]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_run.png" alt="Comenzar a ejecutar el archivo actual" />
+</span> Comenzar a ejecutar el archivo actual [R]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_step.png" alt="Ejecutar línea siguiente" />
+</span> Ejecutar línea siguiente [T]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_pause.png" alt="Pausar ejecución - Reanudar ejecución" />
+</span> Pausar ejecución [P] Reanudar ejecución [S]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_stop.png" alt="Detener la ejecución del programa" />
+</span> Detener la ejecución del programa [ESC]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_blockdelete.png" alt="Saltar lineas" />
+</span> Saltar lineas con "/" [Alt-M- /]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_optpause.png" alt="Pausa Opcional" />
+</span> Pausa Opcional [Alt-M-1]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_zoomin.png" alt="Zoom +" />
+</span> Zoom (mas)
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_zoomout.png" alt="Zoom -" />
+</span> Zoom (menos)
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_axis_z.png" alt="Vista superior" />
+</span> Vista superior
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_axis_z2.png" alt="Vista superior girada" />
+</span> Vista superior girada
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_axis_x.png" alt="Vista lateral" />
+</span> Vista lateral
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_axis_y.png" alt="Vista frontal" />
+</span> Vista frontal
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_axis_p.png" alt="Vista en perspectiva" />
+</span> Vista en perspectiva
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_rotate.png" alt="Alternar entre los modos arrastrar/rotar" />
+</span> Alternar entre los modos de arrastrar/rotar [D]
+</p>
+</li>
+<li>
+<p>
+<span class="image">
+<img src="images/tool_clear.png" alt="Limpiar backplot en vivo" />
+</span> Limpiar backplot en vivo [Ctrl-K]
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_área_de_visualización_gráfica">3.3. Área de visualización gráfica</h3>
+<div class="paragraph"><div class="title">Visualizacion de coordenadas</div><p>En la esquina superior izquierda de la pantalla del programa está la visualizacion de las coordenadas
+de posicion para cada eje. A la derecha del número, un símbolo de origen
+<span class="image">
+<img src="images/axis-homed.png" alt="el símbolo de origen se muestra si el eje ha sido localizado" />
+</span> que se muestra si el eje ha sido dotado de home.</p></div>
+<div class="paragraph"><p>Una símbolo de límite <span class="image">
+<img src="images/axis-limit.png" alt="símbolo de límite" />
+</span> se muestra en el lado derecho del
+número de coordenada de posición, si el eje está en uno de sus interruptores de límite.</p></div>
+<div class="paragraph"><p>Para interpretar correctamente los números de coordenadas de posición, consulte el indicador <em>Posición:</em>
+en la barra de estado. Si la posición es <em>Máquina actual</em>, entonces
+el número mostrado está en el sistema de coordenadas de la máquina. Si se muestra
+<em>Relative Actual</em>, entonces el número mostrado está en la coordenada del sistema con desplazamiento.
+Cuando las coordenadas mostradas son relativas y se ha establecido un desplazamiento,
+la pantalla incluirá un marcador <a href="../gcode/coordinates_es.html#sec.machine-coordinate-system"><em>origen de máquina</em></a>
+<span class="image">
+<img src="images/axis-machineorigin.png" alt="Origen maquina cian" />
+</span> cian.</p></div>
+<div class="paragraph"><p>Si la posición es <em>Comandada</em>, entonces la coordenada exacta dada en un comando de código G
+es la mostrada. Si es <em>Actual</em>, entonces es la posición real a la que la máquina
+se ha movido. Estos valores pueden ser diferentes de la posición ordenada
+debido al error de seguimiento, banda muerta, resolución del codificador o tamaño de paso.
+Por ejemplo, si ordena un movimiento a X 0.0033 en su fresadora, pero el paso de
+su motor paso a paso o su resolucion de encoder es 0.00125,
+la posición <em>Comandada</em> podría ser 0.0033, pero la posición <em>Actual</em> será 0.0025 (2 pasos)
+o 0.00375 (3 pasos).</p></div>
+<div class="paragraph"><div class="title">Plot de Vista Previa</div><p>Cuando se carga un archivo,se muestra una vista previa en el área de visualización.
+Los movimientos rápidos (como los producidos por el comando <em>G0</em>) se muestran como
+lineas cian. Los movimientos a velocidad de avance (como los producidos por el comando <em>G1</em>)
+se muestran como líneas blancas sólidas. Dwells (como los producidos por el comando <em>G4</em>)
+se muestran como pequeñas marcas <em>X</em> rosadas.</p></div>
+<div class="paragraph"><p>Movimientos G0 (rápido), antes de un movimiento de alimentación
+no se mostrará en el plot de vista previa.
+Los movimientos rápidos después de una T&lt;n&gt; (Cambio de herramienta) no se mostrarán en la
+vista previa hasta después del primer movimiento de alimentación.
+Para desactivar cualquiera de estas funciones, programe un G1 sin ningún movimiento antes de los movimientos G0.</p></div>
+<div class="paragraph"><div class="title">Dimensiones (fisicas necesarias) del programa</div><p>Se muestran las <em>dimensiones</em> resultantes del programa en cada eje.
+En los extremos, se indican los valores de coordenadas mínimo y máximo.
+En el medio, se muestra la diferencia entre las coordenadas, o dimension.</p></div>
+<div class="paragraph"><p>Cuando algunas coordenadas exceden los <em>límites soft</em> del archivo .ini,
+la dimensión <em>culpable</em> se muestra en un color diferente y está encerrada en un cuadro.
+En la figura de abajo se sobrepasa el límite soft máximo en
+el eje X, que se indica en el cuadro que rodea el valor de la coordenada.
+El mínimo recorrido X del programa es -1.95, el recorrido máximo de X es 1.88,
+y el programa requiere 3,83 pulgadas de recorrido X.
+Para que el movimiento programado esté dentro del recorrido de la máquina en este caso,
+haga jog a la izquierda y vuelva a hacer Touch Off X.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis-outofrange.png" alt="Se muestran las extensiones del programa en el eje x" />
+</div>
+</div>
+<div class="paragraph"><div class="title">Herramienta Cono</div><p>Cuando no se ha cargado ninguna herramienta, la ubicación de la punta de la herramienta esta
+indicada por un <em>cono de herramienta</em>.
+La <em>herramienta cono</em> no proporciona orientación sobre la forma, longitud, o radio de una herramienta real.</p></div>
+<div class="paragraph"><p>Cuando se carga una herramienta (por ejemplo, con el comando MDI <em>T1 M6</em>),
+el cono cambia a un cilindro que muestra el diámetro de la herramienta, dado en el archivo de tabla de herramientas.</p></div>
+<div class="paragraph"><div class="title">Backplot</div><p>Cuando la máquina se mueve, deja un rastro en pantalla llamado backplot.
+El color de la línea indica el tipo de movimiento:
+Amarillo para jogs, verde claro para movimientos rápidos,
+rojo para movimientos rectos a velocidad de avance
+y magenta para movimientos circulares a velocidad de avance.</p></div>
+<div class="paragraph"><div class="title">Cuadrícula</div><p>Axis puede, opcionalmente, mostrar una cuadrícula en las vistas ortogonales. Habilite
+o deshabilite la cuadrícula usando <em>Cuadrícula</em> en el menu <em>Ver</em>. Cuando esta
+habilitada, la cuadrícula se muestra en las vistas superior y superior girada. Cuando
+el sistema de coordenadas no esta girado, la cuadrícula se muestra también en las vistas frontal y
+lateral. Los preajustes en el menú <em>Grid</em> están controlados
+por el elemento  del archivo ini <code>[DISPLAY]GRIDS</code>. Si no se especifica, el valor predeterminado es
+<code>10mm 20mm 50mm 100mm 1in 2in 5in 10in</code>.</p></div>
+<div class="paragraph"><p>Especificar una cuadrícula muy pequeña puede disminuir el rendimiento.</p></div>
+<div class="paragraph"><div class="title">Interaccion</div><p>Al hacer clic izquierdo en una parte del plot de vista previa,la línea será resaltada
+tanto en las pantallas gráficas como en las de texto.
+Al hacer clic izquierdo en un área vacía, se eliminará el resaltado.</p></div>
+<div class="paragraph"><p>Al arrastrar con el botón izquierdo del ratón presionado,
+la trama de vista previa se desplazará (panorámico).</p></div>
+<div class="paragraph"><p>Al arrastrar con Mayús y el botón izquierdo del ratón presionado,
+o arrastrando con la rueda del ratón presionada,
+La trama de vista previa se rotará.
+Cuando una línea está resaltada,
+el centro de rotación es el centro de la línea.
+De lo contrario, el centro de rotación es
+el centro de todo el plot.</p></div>
+<div class="paragraph"><p>Al girar la rueda del ratón,
+o arrastrando con el botón derecho del ratón presionado,
+o arrastrando con Control y presionando el botón izquierdo del ratón,
+el plot de vista previa se acercará o alejará.</p></div>
+<div class="paragraph"><p>Al hacer clic en uno de los iconos de <em>Vista predefinida</em>,
+o presionando <em>V</em>, se pueden seleccionar varias vistas preestablecidas.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_área_de_visualización_de_texto">3.4. Área de visualización de texto</h3>
+<div class="paragraph"><p>Al hacer clic izquierdo en una línea del programa, la línea se resaltará,
+tanto en las pantallas gráficas como en las de texto.</p></div>
+<div class="paragraph"><p>Cuando el programa se está ejecutando, la línea que se está ejecutando actualmente es
+resaltada en rojo. Si el usuario no ha seleccionado ninguna línea,
+la pantalla de texto se desplazará automáticamente para mostrar la línea actual.</p></div>
+<div class="paragraph"><p>Líneas actuales y seleccionadas</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis-currentandselected_es.png" alt="Líneas actuales y seleccionadas" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_control_manual">3.5. Control manual</h3>
+<div class="paragraph"><p>Mientras la máquina está encendida pero no ejecuta un programa,
+los elementos de la pestaña <em>Control Manual</em> se pueden utilizar para
+mover la máquina o controlar su husillo y el refrigerante.</p></div>
+<div class="paragraph"><p>Cuando la máquina no está encendida, o cuando se está ejecutando un programa,
+los controles manuales no están disponibles.</p></div>
+<div class="paragraph"><p>Muchos de los elementos descritos a continuación no son útiles en todas las máquinas.
+Cuando AXIS detecta que un pin en particular no está conectado en HAL,
+se elimina el elemento correspondiente en la pestaña Control manual.
+Por ejemplo, si el pin HAL <em>motion.spindle-brake</em> no está conectado,
+entonces el botón <em>Freno</em> no aparecerá en la pantalla.
+Si la variable de entorno <em>AXIS_NO_AUTOCONFIGURE</em> está establecida,
+este comportamiento está deshabilitado y todos los elementos aparecerán.</p></div>
+<div class="paragraph"><div class="title">El grupo Axis</div><p><em>Axis</em> le permite mover manualmente la máquina.
+Esta acción se conoce como <em>jogging</em>.
+Primero, seleccione el eje a mover haciendo clic en él.
+Luego, haga clic y manténga presionado el botón <em>+</em> o <em>-</em>
+dependiendo de la dirección de movimiento deseada.
+Los primeros cuatro ejes también pueden ser movidos por
+las teclas de flecha (X e Y),
+Teclas PAGE UP y PAGE DOWN (Z),
+y las teclas [and] (A).</p></div>
+<div class="paragraph"><p>Si se selecciona <em>Continuo</em>, el movimiento continuará
+mientras se presiona el botón o la tecla.
+Si se selecciona otro valor,
+la máquina se moverá exactamente la distancia mostrada
+cada vez que se hace clic en el botón o se presiona la tecla.
+Por defecto, los valores disponibles son <em>0.1000, 0.0100, 0.0010, 0.0001</em></p></div>
+<div class="paragraph"><p>Consulte la &lt;&lt;sec:display-section, sección DISPLAY para obtener más información sobre la configuración
+los incrementos.</p></div>
+<div class="paragraph"><div class="title">Homing</div><p>Si la máquina dispone de micros de home y una secuencia definida para homing
+de todos los ejes, en el botón mostrara <em>Home All</em>. El botón <em>Home All</em> o
+las teclas Ctrl-HOME llevará a home todos los ejes utilizando la secuencia.
+La tecla HOME llevará a home el eje actual, incluso si esta definida una secuencia de inicio.</p></div>
+<div class="paragraph"><p>Si su máquina tiene interruptores home y no se define una secuencia de inicio o
+no todos los ejes tienen una secuencia home, el botón mostrara <em>Home</em> y
+solo llevara a home el eje seleccionado. Cada eje debe ser seleccionado y llevado a home por separado.</p></div>
+<div class="paragraph"><p>Si su máquina no tiene interruptores home definidos en la
+configuración, el botón <em>Home</em> establecerá la posición actual del eje seleccionado
+como la posición absoluta 0 para ese eje y
+activara el bit <em>is-homed</em> para ese eje.</p></div>
+<div class="paragraph"><p>Consulte el &lt;&lt;cha:homing-configuration,Capítulo de configuración de Homing para obtener más información.</p></div>
+<div class="paragraph"><div class="title">Touch Off</div><p>Al presionar <em>Touch Off</em> o la tecla END, el <em>offset G5x</em> para el
+el eje actual se cambia para que el valor del eje actual sea el
+valor específicado. Las expresiones se pueden ingresar usando las reglas para los
+programas rs274ngc, excepto que las variables no pueden ser referidas.
+El valor resultante se muestra como un número.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/touchoff_es.png" alt="Touch Off" />
+</div>
+<div class="title">Figura 2. Touch Off</div>
+</div>
+<div class="paragraph"><p>Consulte también las opciones <em>Tool touch off to workpiece</em> y <em>Tool touch off to fixture</em>
+en el menú Machine.</p></div>
+<div class="paragraph"><div class="title">Anulacion de Límites</div><p>Pulsando Anulacion de Límites, se permitirá jog temporalmente en la máquina
+mas alla de un final de carrera físico. Esta casilla solo está disponible
+cuando se dispara un interruptor de límite. La anulación desaparece después de un jog. Si
+El eje está configurado con interruptores de límite positivo y negativo separados,
+LinuxCNC permitirá el jog solo en la dirección correcta. <em>La anulación de límites
+no permite un jog más allá de un límite soft. La única manera de deshabilitar un límite soft
+en un eje es con unhome.</em></p></div>
+<div class="paragraph"><div class="title">El grupo del husillo.</div><p>Los botones de la primera fila seleccionan la dirección de giro del husillo;
+en sentido contrario a las agujas del reloj, detenido y en el sentido de las agujas del reloj.
+El sentido antihorario solo aparece si el pin <em>motion.spindle-reverse</em> está en el archivo HAL (
+por ejemlo, <em>net trick-axis motion.spindle-reverse</em>). Los botones en la
+siguiente fila aumentan o disminuyen la velocidad de rotación.
+La casilla de verificación en la tercera fila permite que el freno del husillo sea
+accionado o liberado. Dependiendo de la configuración de su máquina,pueden no aparecer todos
+los elementos en este grupo. Presionando el botón de arranque del husillo
+se establece la velocidad <em>S</em> en 1.</p></div>
+<div class="paragraph"><div class="title">El grupo de refrigerante</div><p>Dos botones permiten encender los refrigerantes <em>Mist</em> y <em>Flood</em>
+y apagarlos. Dependiendo de la configuración de su máquina, puede no aparecer todos los elementos en
+este grupo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_mdi">3.6. MDI</h3>
+<div class="paragraph"><p>MDI permite que los comandos de código G se ingresen manualmente.
+Cuando la máquina no está encendida, o cuando un programa está
+en ejecución, los controles MDI no están disponibles.</p></div>
+<div class="paragraph"><p>La pestaña MDI</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis-mdi_es.png" alt="pestaña MDI" />
+</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Historial</em> - Muestra los comandos MDI que se han escrito anteriormente en esta sesión.
+</p>
+</li>
+<li>
+<p>
+<em>Comando MDI</em> - Esto le permite ingresar un comando de código g para ser ejecutado. Ejecute el
+    comando pulsando Intro o haciendo clic en <em>Go</em>.
+</p>
+</li>
+<li>
+<p>
+<em>Códigos G activos</em> - Se muestran los <em>códigos modales</em> que están activos en el intérprete.
+    Por ejemplo, <em>G54</em> indica que el <em>offset G54</em> se aplica a todas
+    las coordenadas que se introduzcan. En modo Auto los G-Códigos Activos representan
+    los códigos después la lectura por el intérprete.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_porcentaje_de_alimentacion">3.7. Porcentaje de alimentacion</h3>
+<div class="paragraph"><p>Al mover este control deslizante (feed override), se puede modificar la velocidad de alimentación programada.
+Por ejemplo, si un programa solicita <em>F60</em> y el control deslizante se establece en 120%,
+entonces la velocidad de alimentación resultante será 72.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_porcentaje_de_velocidad_del_husillo">3.8. Porcentaje de velocidad del husillo</h3>
+<div class="paragraph"><p>Al mover este control deslizante (Spindle Speed Override), la velocidad del husillo programada puede ser
+modificada. Por ejemplo, si un programa solicita S8000 y el control deslizante es
+establecido en 80%, entonces la velocidad del husillo resultante será 6400. Este elemento
+solo aparece cuando el pin HAL <em>motion.spindle-speed-out</em> está conectado.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_velocidad_de_jog">3.9. Velocidad de Jog</h3>
+<div class="paragraph"><p>Al mover este control deslizante, se puede modificar la velocidad de joging.
+Por ejemplo, si el control deslizante se establece en 1 pulgada/min, entonces un avance de .01 pulgadas
+tardara aproximadamente .6 segundos, o 1/100 de minuto. Cerca del lado izquierdo
+(jog lento) los valores están espaciados muy cerca, mientras que cerca del
+lado derecho (jogs rápidos) están espaciados mucho más separados, permitiendo una
+amplia gama de velocidades de jog con control fino cuando sea importante.</p></div>
+<div class="paragraph"><p>En las máquinas con un eje giratorio, se muestra un segundo control deslizante de velocidad de desplazamiento.
+Este control deslizante establece la velocidad de desplazamiento de los ejes giratorios (A, B y C).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_velocidad_máxima">3.10. Velocidad máxima</h3>
+<div class="paragraph"><p>Al mover este control deslizante, se puede establecer la velocidad máxima. Esto limita la
+velocidad máxima para todos los movimientos programados, excepto en movimientos sincronizados con el husillo.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_controles_del_teclado">4. Controles del teclado</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Casi todas las acciones en AXIS se pueden realizar con el teclado.
+La lista completa de atajos de teclado se puede encontrar en AXIS Quick
+Reference, que se puede mostrar seleccionando Ayuda&gt; Quick Reference.
+Muchos de los accesos directos no están disponibles cuando se está en modo MDI.</p></div>
+<div class="paragraph"><p>Teclas de porcentaje de alimentación</p></div>
+<div class="paragraph"><p>Las teclas de anulación de la alimentación se comportan de manera diferente cuando están en modo manual.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">En el teclado <em>Español de España</em>, el simbolo " ' " se refiere al signo de acentuacion junto a la tecla
+"P". Este signo precisa doble pulsacion de dicha tecla.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Las teclas ',1,2,3,4,5,6,7 y 8 seleccionarán un eje si está programado. Si tiene 3
+eje ' seleccionará el eje 0, 1 seleccionará el eje 1, y 2 seleccionará
+eje 2. El resto de las teclas numéricas establecerán el porcentaje de alimentación.
+Al ejecutar un programa, ',1,2,3,4,5,6,7,8,9,0 establecerán el porcentaje de alimentación
+a 0% - 100%.</p></div>
+<div class="paragraph"><p>Los métodos abreviados de teclado más utilizados se muestran en la siguiente tabla</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 1. Atajos de teclado más comunes</caption>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="center" valign="top"> Pulsar tecla       </th>
+<th align="left" valign="top"> Acción tomada                                   </th>
+<th align="center" valign="top"> Modo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">F1</p></td>
+<td align="left" valign="top"><p class="table">Stop de emergencia</p></td>
+<td align="center" valign="top"><p class="table">Todos</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">F2</p></td>
+<td align="left" valign="top"><p class="table">Encender/apagar la máquina</p></td>
+<td align="center" valign="top"><p class="table">Todos</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">`, 1 .. 9, 0</p></td>
+<td align="left" valign="top"><p class="table">Establecer porcentaje alimentación de 0% a 100%</p></td>
+<td align="center" valign="top"><p class="table">Varía</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">X, `</p></td>
+<td align="left" valign="top"><p class="table">Activar primer eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Y, 1</p></td>
+<td align="left" valign="top"><p class="table">Activar segundo eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Z, 2</p></td>
+<td align="left" valign="top"><p class="table">Activar tercer eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">A, 3</p></td>
+<td align="left" valign="top"><p class="table">Activar cuarto eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">I</p></td>
+<td align="left" valign="top"><p class="table">Seleccion incremento jog</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">C</p></td>
+<td align="left" valign="top"><p class="table">Jog continuo</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Control-Inicio</p></td>
+<td align="left" valign="top"><p class="table">Realizar secuencia homing</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Fin</p></td>
+<td align="left" valign="top"><p class="table">Touch off: offset G5x para el eje activo</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Izquierda, Derecha</p></td>
+<td align="left" valign="top"><p class="table">Jog primer eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Arriba, Abajo</p></td>
+<td align="left" valign="top"><p class="table">Jog segundo eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Pg Arriba, Pg Dn</p></td>
+<td align="left" valign="top"><p class="table">Jog tercer eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">[,]</p></td>
+<td align="left" valign="top"><p class="table">Jog cuarto eje</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">O</p></td>
+<td align="left" valign="top"><p class="table">Abrir archivo</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Control-R</p></td>
+<td align="left" valign="top"><p class="table">Recargar archivo</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">R</p></td>
+<td align="left" valign="top"><p class="table">Ejecutar archivo</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">P</p></td>
+<td align="left" valign="top"><p class="table">Pausar ejecución</p></td>
+<td align="center" valign="top"><p class="table">Auto</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">S</p></td>
+<td align="left" valign="top"><p class="table">Reanudar ejecución</p></td>
+<td align="center" valign="top"><p class="table">Auto</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">ESC</p></td>
+<td align="left" valign="top"><p class="table">Detener ejecucion</p></td>
+<td align="center" valign="top"><p class="table">Auto</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Control-K</p></td>
+<td align="left" valign="top"><p class="table">Borrar backplot</p></td>
+<td align="center" valign="top"><p class="table">Manual/auto</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">V</p></td>
+<td align="left" valign="top"><p class="table">Ciclo entre vistas preestablecidas</p></td>
+<td align="center" valign="top"><p class="table">Manual/auto</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Shift-izda, dcha</p></td>
+<td align="left" valign="top"><p class="table">Eje X, rapido</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Shift-Up, Abajo</p></td>
+<td align="left" valign="top"><p class="table">Eje Y, rapido</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Shift-PgUp, PgDn</p></td>
+<td align="left" valign="top"><p class="table">Eje Z, rápido</p></td>
+<td align="center" valign="top"><p class="table">Manual</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">@</p></td>
+<td align="left" valign="top"><p class="table">conmutar actual/comandado</p></td>
+<td align="center" valign="top"><p class="table">Todos</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">#</p></td>
+<td align="left" valign="top"><p class="table">conmutar relativo/máquina</p></td>
+<td align="center" valign="top"><p class="table">Todos</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mostrar_estado_de_linuxcnc_linuxcnctop">5. Mostrar estado de LinuxCNC (linuxcnctop)</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>AXIS incluye un programa llamado <em>linuxcnctop</em> que muestra algunos de los
+detalles del estado de LinuxCNC. Puedes ejecutar este programa mediante Maquina &gt;
+Mostrar estado de LinuxCNC</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis-emc-status_es.png" alt="Status LinuxCNC" />
+</div>
+<div class="title">Figura 3. Ventana de estado de LinuxCNC</div>
+</div>
+<div class="paragraph"><p>El nombre de cada elemento se muestra en la columna izquierda. El valor actual
+se muestra en la columna derecha. Si el valor ha cambiado recientemente,
+se muestra sobre un fondo rojo.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_interfaz_mdi">6. Interfaz MDI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>AXIS incluye un programa llamado <code>mdi</code> que permite la entrada en modo texto de
+comandos MDI a una sesión de LinuxCNC en ejecución. Puede ejecutar este programa
+abriendo un terminal y escribiendo</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>mdi</code></pre>
+</div></div>
+<div class="paragraph"><p>Una vez que se está ejecutando, muestra el mensaje <em>MDI&gt;</em>. Cuando se ingresa una linea en blanco,
+se muestra la posición actual de la máquina.
+Cuando se ingresa un comando, se envía a LinuxCNC para ser ejecutado.
+Para salir de mdi, pulse Ctrl-c en el terminal.</p></div>
+<div class="paragraph"><p>Esta es una sesión de muestra de mdi.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ mdi
+MDI&gt;
+(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+MDI&gt; G1 F5 X1
+MDI&gt;
+(0.5928500000000374, 0.0, 0.0, 0.0, 0.0, 0.0)
+MDI&gt;
+(1.0000000000000639, 0.0, 0.0, 0.0, 0.0, 0.0)</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_axis_remote">7. axis-remote</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>AXIS incluye un programa llamado <em>axis-remote</em> que puede enviar ciertos
+comandos a un AXIS en ejecución. Los comandos disponibles se muestran ejecutando
+<em>help-axis</em> y ayuda a verificar si AXIS se está ejecutando
+(<em>--ping</em>), cargando un archivo por nombre, recargando el archivo cargado actualmente
+archivo (<em>--reload</em>), y hacer que AXIS salga (<em>--quit</em>).</p></div>
+<div class="paragraph"><p><a id="sec:manual-tool-change"></a> </p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cambio_de_herramienta_manual">8. Cambio de herramienta manual</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC incluye un componente HAL de espacio de usuario llamado <em>hal_manualtoolchange</em>,
+que muestra una ventana que le indica qué herramienta se espera cuando
+se emite el comando <em>M6</em>. Después de presionar el botón OK, la ejecución
+del programa continuará.</p></div>
+<div class="paragraph"><p>El componente hal_manualtoolchange incluye un pin hal para un botón que
+se puede conectar a un botón físico para completar el cambio de herramienta y
+eliminar el indicador de ventana (hal_manualtoolchange.change_button).</p></div>
+<div class="paragraph"><p>El archivo de configuración de HAL <em>configs /sim/axis_manualtoolchange.hal</em>
+muestra los comandos HAL necesarios para usar este componente.</p></div>
+<div class="paragraph"><p>hal_manualtoolchange se puede usar incluso cuando AXIS no se usa como GUI.
+Este componente es más útil si tiene herramientas predefinidas y
+usa la tabla de herramientas</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Nota importante: los rápidos no se mostrarán en la vista previa después de
+emitir un T&lt;n&gt; hasta el siguiente movimiento de alimentación después de M6.
+Esto puede ser muy confuso para la mayoría de los usuarios.
+Para desactivar esta función para el cambio de herramienta actual,
+programe un G1 sin movimiento después de T&lt;n&gt;.</td>
+</tr></table>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/manual-tool-change_es.png" alt="Ventana de cambio de herramientas manual" />
+</div>
+<div class="title">Figura 4. Ventana de cambio de herramientas manual</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_módulos_de_python">9. Módulos de Python</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>AXIS incluye varios módulos Python que pueden ser útiles para otros. Para más
+información sobre uno de estos módulos, use <em>pydoc &lt;nombre del módulo&gt;</em> o lea el
+código fuente. Estos módulos incluyen:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>emc</em> proporciona acceso a los canales de comando, estado y error de LinuxCNC
+</p>
+</li>
+<li>
+<p>
+<em>gcode</em> proporciona acceso al intérprete rs274ngc
+</p>
+</li>
+<li>
+<p>
+<em>rs274</em> proporciona herramientas adicionales para trabajar con archivos rs274ngc
+</p>
+</li>
+<li>
+<p>
+<em>hal</em> permite la creación de componentes HAL de espacio de usuario escritos en Python
+</p>
+</li>
+<li>
+<p>
+<em>_togl</em> proporciona un widget OpenGL que puede usarse en aplicaciones Tkinter
+</p>
+</li>
+<li>
+<p>
+<em>minigl</em> proporciona acceso al subconjunto de OpenGL utilizado por AXIS
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para utilizar estos módulos en sus propios scripts, debe asegurarse de que
+el directorio donde residen está en la ruta de módulos de Python. Cuando se ejecuta una
+versión instalada de LinuxCNC, esto debería suceder automáticamente. Cuando
+ejecutando una RIP, esto se puede hacer mediante el guion <em>scripts/rip-environment</em>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usando_axis_en_el_modo_torno">10. Usando AXIS en el modo Torno</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Incluyendo la línea <em>LATHE = 1</em>
+en la sección [DISPLAY] del archivo ini, AXIS selecciona el modo de torno.
+El eje <em>Y</em> no se muestra en las lecturas de coordenadas, la vista se cambia
+mostrando el eje Z extendido hacia la derecha y el eje X que se extiende hacia
+en la parte inferior de la pantalla. Varios controles (como los de
+vistas preestablecidas) se eliminan. Se reemplazan las lecturas de coordenadas para X
+con diámetro y radio.</p></div>
+<div class="paragraph"><p>Al presionar <em>V</em> se hace zoom para mostrar el archivo completo, si hay uno cargado.</p></div>
+<div class="paragraph"><p>En el modo de torno, se muestra la forma de la herramienta cargada (si existe).</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis-lathe-tool.png" alt="Forma de herramienta del torno" />
+</div>
+<div class="title">Figura 5. La forma de la herramienta del torno</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usando_axis_en_el_modo_de_corte_de_espuma">11. Usando AXIS en el modo de corte de espuma</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Incluyendo la línea <em>FOAM = 1</em>
+En la sección [DISPLAY] del archivo ini, AXIS selecciona el modo de corte de espuma.
+En la vista previa del programa, los movimientos XY se muestran en un plano, y los movimientos UV
+en otro. En el plot en vivo, se dibujan líneas entre los puntos correspondientes en
+el plano XY y el plano UV. Los comentarios especiales (XY_Z_POS) y (UV_Z_POS)
+establecen las coordenadas Z de estos planos, que por defecto son 0 y 1,5 unidades de máquina.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/axis-foam_es.png" alt="Modo de corte de espuma" />
+</div>
+<div class="title">Figura 6. Modo de corte de espuma.</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración_avanzada">12. Configuración avanzada</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Cuando se inicia AXIS, se crean los pines HAL para la GUI y se ejecuta
+el archivo HAL nombrado en <em>[HAL]POSTGUI_HALFILE</em> en el archivo ini. Solo
+se puede utilizar un archivo POSTGUI. Coloque todos los comandos HAL que se conecten a los pines HAL GUI
+en el archivo de postgui HAL.</p></div>
+<div class="paragraph"><p>Para obtener más información sobre la configuración del archivo ini que puede cambiar la forma en que AXIS
+trabaja, consulte la sección &lt;&lt; sec:display-section,Seccion Display&gt;&gt; del capitulo de configuración INI.</p></div>
+<div class="sect2">
+<h3 id="_filtros_de_programa">12.1. Filtros de programa</h3>
+<div class="paragraph"><p>AXIS tiene la capacidad de enviar archivos cargados a través de un <em>programa de filtro</em>.
+Este filtro puede realizar cualquier tarea deseada: algo tan simple como asegurarse
+el archivo termina con <em>M2</em>, o algo tan complicado como generar
+Código G de una imagen.</p></div>
+<div class="paragraph"><p>La sección <em>[FILTER]</em> del archivo ini controla cómo funcionan los filtros.
+Primero, para cada tipo de archivo, escriba una línea <em>PROGRAM_EXTENSION</em>.
+Luego, especifique el programa a ejecutar para cada tipo de archivo.
+Este programa recibe el nombre del archivo de entrada como su primer argumento,
+y debe escribir el código rs274ngc en la salida estándar. Esta salida es lo que
+se mostrará en el área de texto, se previsualizará en el área de visualización y
+sera ejecutado por LinuxCNC con <em>Run</em>. Las siguientes líneas agregan soporte para el
+convertidor de <em>imagen a gcode</em> incluido con LinuxCNC:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[FILTER]
+PROGRAM_EXTENSION = .png,.gif Imagen de profundidad en escala de grises
+png = image-to-gcode
+gif = image-to-gcode</code></pre>
+</div></div>
+<div class="paragraph"><p>También es posible especificar un intérprete:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>PROGRAM_EXTENSION = .py Script Python
+py = python</code></pre>
+</div></div>
+<div class="paragraph"><p>De esta manera, cualquier script de Python se puede abrir, y su salida es
+tratada como g-code. Un ejemplo de este script está disponible en
+<em>nc_files/holecircle.py</em>. Este script crea g-code para perforar una
+serie de agujeros a lo largo de la circunferencia de un círculo.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/holes.png" alt="Agujeros circulares" />
+</div>
+<div class="title">Figura 7. Agujeros circulares</div>
+</div>
+<div class="paragraph"><p>Si la variable de entorno AXIS_PROGRESS_BAR está establecida, entonces las líneas
+escriben al stderr del formulario</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>FILTER_PROGRESS=%d</code></pre>
+</div></div>
+<div class="paragraph"><p>establecerá la barra de progreso de AXIS en el porcentaje dado. Esta característica
+debe ser utilizada por cualquier filtro que se ejecute durante mucho tiempo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_la_base_de_datos_de_recursos_x">12.2. La base de datos de recursos X</h3>
+<div class="paragraph"><p>Los colores de la mayoría de los elementos de la interfaz de usuario AXIS pueden ser
+personalizado a través de la base de datos de recursos X. El archivo de ejemplo
+<em>axis_light_background</em> cambia los colores de la ventana de backplot a
+<em>líneas oscuras en fondo blanco</em>, y también sirve como una referencia para elementos configurables
+en el área de visualización. El archivo de ejemplo <em>axis_big_dro</em> cambia la
+posición de lectura a una fuente de tamaño más grande. Para utilizar estos archivos:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>xrdb -merge /usr/share/doc/emc2/axis_light_background
+
+xrdb -merge /usr/share/doc/emc2/axis_big_dro</code></pre>
+</div></div>
+<div class="paragraph"><p>Para obtener información sobre los otros elementos que se pueden configurar en Tk
+aplicaciones Tk, ver las páginas del manual de Tk.</p></div>
+<div class="paragraph"><p>Dado que los entornos de escritorio modernos hacen algunas configuraciones automáticamente
+en la base de datos de recursos X que afectan adversamente a AXIS, estos ajustes son ignorados por defecto.
+Para hacer que los elementos de la base de datos de recursos X se anulen,
+los valores predeterminados de AXIS incluyen la siguiente línea en sus Recursos X:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>    *Axis*optionLevel: widgetDefault</code></pre>
+</div></div>
+<div class="paragraph"><p>esto hace que las opciones integradas se creen en el nivel de opción
+<em>widgetDefault</em>, de modo que X Resources (que son nivel <em>userDefault</em>)
+puededan anularlas</p></div>
+</div>
+<div class="sect2">
+<h3 id="_axisrc">12.3. ~/.axisrc</h3>
+<div class="paragraph"><p>Si existe, el contenido de <code>~/.axisrc</code> se ejecuta como
+código fuente Python justo antes de la interfaz gráfica de usuario de AXIS.
+Los detalles de lo que se puede escribir en <code>~/.axisrc</code> están sujetos
+a cambios durante el ciclo de desarrollo.</p></div>
+<div class="paragraph"><p>Lo siguiente agrega Control-Q como método abreviado de teclado para Salir.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>root_window.bind("&lt;Control-q&gt;", "destroy .")
+help2.append(("Control-Q", "Quit"))</code></pre>
+</div></div>
+<div class="paragraph"><p>Lo siguiente detiene el cuadro de diálogo "¿Realmente desea salir?".</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>root_window.tk.call("wm","protocol",".","WM_DELETE_WINDOW","destroy .")</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_user_command_file">12.4. USER_COMMAND_FILE</h3>
+<div class="paragraph"><p>Puede especificarse un archivo python específico de configuración con un archivo ini
+configurando <em>[DISLAY]USER_COMMAND_FILE=filename.py</em>. Al igual que un archivo <code>~/.axisrc</code>,
+este archivo corre justo antes de que se muestre la GUI de AXIS. Este archivo
+es específico de una configuración de archivo ini, no del directorio de inicio del usuario.
+Cuando se especifica este archivo, se ignora un archivo <code>~/.axisrc</code> existente.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_user_live_update">12.5. user_live_update()</h3>
+<div class="paragraph"><p>La gui Axis incluye una función no-op (marcador de posición) llamada
+<em>user_live_update()</em> que se ejecuta al final de la funcion update()
+de su clase LivePlotter. Esta función puede ser implementada
+dentro de los script python <code>~/.axisrc</code> o <em>[DISPLAY]USER_COMMAND_FILE</em>
+para realizar acciones personalizadas periódicas. Los detalles de lo que puede
+lograrse cos esta función dependerán de la implementacion de la gui Axis
+y sujeto a cambios durante el ciclo de desarrollo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_editor_externo">12.6. Editor externo</h3>
+<div class="paragraph"><p>Las opciones de menú Archivo &gt; Editar &#8230; y Archivo &gt; Editar tabla de herramientas &#8230; estaran
+disponible después de definir el editor en la sección ini [DISPLAY].
+Los valores útiles incluyen EDITOR=gedit y EDITOR=gnome-terminal -e vim.
+Para obtener más información, consulte la sección <a href="../config/ini-config_es.html#sec:display-section">Sección display</a>
+del capítulo de Configuración INI.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_panel_de_control_virtual">12.7. Panel de control virtual</h3>
+<div class="paragraph"><p>AXIS puede mostrar un panel de control virtual personalizado en la zona derecha.
+Puede programar botones, indicadores, pantallas de datos y más cosas.
+Para más información, consulte los capitulos &lt;&lt;cha:pyvcp,PyVCP y
+&lt;&lt;cha:glade-vcp,GladeVCP.</p></div>
+</div>
+<div class="sect2">
+<h3 id="axis:preview-control">12.8. Control de vista previa</h3>
+<div class="paragraph"><p>Se pueden insertar comentarios especiales en el archivo de Código G para controlar cómo
+se comporta la vista previa de AXIS. En el caso de que quiera limitar el
+dibujo de la vista previa utiliza estos comentarios especiales, cualquier cosa entre
+(AXIS,hide) y (AXIS,show) no se dibujará durante la vista previa.
+(AXIS,hide) y (AXIS,show) deben usarse en pares con, (AXIS,hide)
+primero. Cualquier cosa después de (AXIS,stop) no se dibujará durante la
+vista previa.</p></div>
+<div class="paragraph"><p>Estos comentarios son útiles para limpiar la visualización de vista previa (por
+ejeplo, mientras se depura un archivo g-code más grande, se puede deshabilitar la
+vista previa de ciertas partes que ya están trabajando bien).</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+(AXIS,hide) Detiene la vista previa (debe ser la primera)
+</p>
+</li>
+<li>
+<p>
+(AXIS,show) Reanuda la vista previa (debe seguir un hide)
+</p>
+</li>
+<li>
+<p>
+(AXIS,stop) Detiene la vista previa desde aquí hasta el final del archivo.
+</p>
+</li>
+<li>
+<p>
+(AXIS,notify, el_texto) Muestra el_texto como una pantalla de información.
+Esta pantalla puede ser útil en la vista previa de Axis cuando
+los comentarios (debug,message) no se muestran.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_axisui">12.9. Pines Axisui</h3>
+<div class="paragraph"><p>Para mejorar la interacción de AXIS con jogwheels físicos, el eje
+actualmente seleccionado en la GUI también se reporta en un pin con un nombre
+como <em>axisui.jog.x</em>. Uno de estos pines es <em>VERDADERO</em> y el resto son
+<em>FALSO</em>. Están diseñados para controlar los pines de habilitacion de movimiento jog.</p></div>
+<div class="paragraph"><div class="title">Axisui Pins</div><p>El eje tiene pines Hal para indicar qué botón de selección de jog está seleccionado en el
+Pestaña <em>Control manual</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Tipo Dir Nombre
+bit  OUT axisui.jog.x
+bit  OUT axisui.jog.y
+bit  OUT axisui.jog.z
+bit  OUT axisui.jog.a
+bit  OUT axisui.jog.b
+bit  OUT axisui.jog.c
+bit  OUT axisui.jog.u
+bit  OUT axisui.jog.v
+bit  OUT axisui.jog.w</code></pre>
+</div></div>
+<div class="paragraph"><p>Axis tiene un pin Hal para indicar el incremento de jog seleccionado en <em>Control Manual</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Tipo  Dir Nombre
+float OUT axisui.jog.increment</code></pre>
+</div></div>
+<div class="paragraph"><p>Axis tiene pines de entrada Hal para borrar las notificaciones emergentes de errores e
+información.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Tipo  Dir Nombre
+bit   IN  axisui.notifications-clear
+bit   IN  axisui.notifications-clear-error
+bit   IN  axisui.notifications-clear-info</code></pre>
+</div></div>
+<div class="paragraph"><p>Axis tiene un pin de entrada Hal que deshabilita/habilita la función <em>Pausa/Reanudar</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Tipo  Dir Nombre
+bit   IN  axisui.resume-inhibit</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sugerencias_de_personalización_de_axis">13. Sugerencias de personalización de Axis</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Axis es un código bastante grande y difícil de penetrar. Esto es útil
+para mantener el código estable pero dificulta la personalización.<br />
+Aquí mostraremos fragmentos de código para modificar comportamientos o imágenes de la pantalla.
+Tenga en cuenta que el código interno de AXIS puede cambiar de vez en cuando.<br />
+No se garantiza que estos fragmentos continúen funcionando; pueden necesitar ajustes.</p></div>
+<div class="sect2">
+<h3 id="_la_función_de_actualización">13.1. La función de actualización</h3>
+<div class="paragraph"><p>Hay una función en Axis llamada user_live_update que se llama
+cada vez que Axis se actualiza solo. Puede usar esto para actualizar sus propias funciones.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>
+<span style="font-style: italic"><span style="color: #9A1900"># función de actualización continua</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">user_live_update</span></span><span style="color: #990000">():</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'i am printed every update...'</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_deshabilitar_el_cuadro_de_diálogo_cerrar">13.2. Deshabilitar el cuadro de diálogo Cerrar</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># disable the do you want to close dialog</span></span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"wm"</span><span style="color: #990000">,</span><span style="color: #FF0000">"protocol"</span><span style="color: #990000">,</span><span style="color: #FF0000">"."</span><span style="color: #990000">,</span><span style="color: #FF0000">"WM_DELETE_WINDOW"</span><span style="color: #990000">,</span><span style="color: #FF0000">"destroy ."</span><span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_la_fuente_del_texto">13.3. Cambiar la fuente del texto</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># cambiar la fuente</span></span>
+
+font <span style="color: #990000">=</span> <span style="color: #FF0000">'sans 11'</span>
+fname<span style="color: #990000">,</span>fsize <span style="color: #990000">=</span> font<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">split</span></span><span style="color: #990000">()</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'font'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'TkDefaultFont'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-family'</span><span style="color: #990000">,</span>fname<span style="color: #990000">,</span><span style="color: #FF0000">'-size'</span><span style="color: #990000">,</span>fsize<span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># rehace el texto en pestañas para que cambien el tamaño de la nueva fuente predeterminada</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.tabs'</span><span style="color: #990000">,</span><span style="color: #FF0000">'itemconfigure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'manual'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">' Manual - F3 '</span><span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.tabs'</span><span style="color: #990000">,</span><span style="color: #FF0000">'itemconfigure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'mdi'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">' MDI - F5 '</span><span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.right'</span><span style="color: #990000">,</span><span style="color: #FF0000">'itemconfigure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'preview'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">' Preview '</span><span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.right'</span><span style="color: #990000">,</span><span style="color: #FF0000">'itemconfigure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'numbers'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">' DRO '</span><span style="color: #990000">)</span>
+
+
+<span style="font-style: italic"><span style="color: #9A1900"># la fuente gcode es independiente</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.bottom.t.text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-foreground'</span><span style="color: #990000">,</span><span style="color: #FF0000">'blue'</span><span style="color: #990000">)</span>
+<span style="font-style: italic"><span style="color: #9A1900">#root_window.tk.call('.pane.bottom.t.text','configure','-foreground','blue','-font',font)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#root_window.tk.call('.pane.bottom.t.text','configure','-foreground','blue','-font',font,'-height','12')</span></span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_modificar_velocidad_rápida_con_atajos_de_teclado">13.4. Modificar velocidad rápida con atajos de teclado</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># use control + ` o 1-0 como atajos de teclado para acelerar y mantener ` o 1-0 para avance</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># también agrega texto a la referencia rápida en la ayuda</span></span>
+
+help1<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">insert</span></span><span style="color: #990000">(</span><span style="color: #993399">10</span><span style="color: #990000">,(</span><span style="color: #FF0000">"Control+ `,1..9,0"</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #000000">_</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"Establecer ajuste de rápidos de 0% a 100%"</span><span style="color: #990000">)),)</span>
+
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-quoteleft&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-1&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">10</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-2&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">20</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-3&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">30</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-4&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">40</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-5&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">50</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-6&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">60</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-7&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">70</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-8&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">80</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-9&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">90</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Control-Key-0&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_rapidrate</span></span><span style="color: #990000">(</span><span style="color: #993399">100</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-quoteleft&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-1&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">10</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-2&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">20</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-3&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">30</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-4&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">40</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-5&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">50</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-6&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">60</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-7&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">70</span><span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-8&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">80</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-9&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">90</span><span style="color: #990000">))</span>
+root_window<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'&lt;Key-0&gt;'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> event<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #000000">set_feedrate</span></span><span style="color: #990000">(</span><span style="color: #993399">100</span><span style="color: #990000">))</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_leer_el_archivo_ini">13.5. Leer el archivo INI</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># leer un elemento del archivo ini</span></span>
+
+machine <span style="color: #990000">=</span> inifile<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">find</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'EMC'</span><span style="color: #990000">,</span><span style="color: #FF0000">'MACHINE'</span><span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'machine name ='</span><span style="color: #990000">,</span>machine</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_leer_el_estado_de_linuxcnc">13.6. Leer el estado de linuxcnc</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># El estado de linuxcnc se puede leer desde s.</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">print</span></span> s<span style="color: #990000">.</span>actual_position
+<span style="font-weight: bold"><span style="color: #0000FF">print</span></span> s<span style="color: #990000">.</span>paused</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_la_vista_actual">13.7. Cambiar la vista actual</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># establecer la vista de la vista previa</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># las vistas válidas son view_x view_y view_y2 view_z view_z2 view_p</span></span>
+
+command<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">set_view_z</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_crear_nuevos_pines_axisui_hal">13.8. Crear nuevos pines AXISUI HAL</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">user_hal_pins</span></span><span style="color: #990000">():</span>
+    comp<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'my-new-in-pin'</span><span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">)</span>
+    comp<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ready</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_crear_nuevos_componentes_y_pines_hal">13.9. Crear nuevos componentes y pines HAL</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># crear un componente</span></span>
+
+mycomp <span style="color: #990000">=</span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">component</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'my_component'</span><span style="color: #990000">)</span>
+mycomp<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'idle-led'</span><span style="color: #990000">,</span>hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">,</span>hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">)</span>
+mycomp<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'pause-led'</span><span style="color: #990000">,</span>hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">,</span>hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">)</span>
+mycomp<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ready</span></span><span style="color: #990000">()</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># pines de conexión</span></span>
+
+hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">new_sig</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'idle-led'</span><span style="color: #990000">,</span>hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">)</span>
+hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'halui.program.is-idle'</span><span style="color: #990000">,</span><span style="color: #FF0000">'idle-led'</span><span style="color: #990000">)</span>
+hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'my_component.idle-led'</span><span style="color: #990000">,</span><span style="color: #FF0000">'idle-led'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># establecer un pin</span></span>
+
+hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">set_p</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'my_component.pause-led'</span><span style="color: #990000">,</span><span style="color: #FF0000">'1'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># obtener un pin de rama 2,8+</span></span>
+
+value <span style="color: #990000">=</span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_value</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'halui.program.is-idle'</span><span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'value is a'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #000000">type</span></span><span style="color: #990000">(</span>value<span style="color: #990000">),</span><span style="color: #FF0000">'value of'</span><span style="color: #990000">,</span>value</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_pestañas_con_pines_hal">13.10. Cambiar pestañas con pines HAL</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># los pines hal de un panel GladeVCP no estarán listos cuando se ejecute user_live_update</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># para leerlos necesita ponerlos en un bloque try/except</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># el siguiente ejemplo supone 5 botones HAL en un panel GladeVCP utilizado para cambiar</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># las pestañas en la pantalla Axis.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># los nombres de los botones son 'manual-tab', 'mdi-tab', 'preview-tab', 'dro-tab', 'user0-tab'</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># la pestaña user_0, si existe, sería la primera pestaña incrustada GladeVCP</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># para la rama linuxCNC 2.8+</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">user_live_update</span></span><span style="color: #990000">():</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">try</span></span><span style="color: #990000">:</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_value</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'gladevcp.manual-tab'</span><span style="color: #990000">):</span>
+            root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.tabs'</span><span style="color: #990000">,</span><span style="color: #FF0000">'raise'</span><span style="color: #990000">,</span><span style="color: #FF0000">'manual'</span><span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_value</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'gladevcp.mdi-tab'</span><span style="color: #990000">):</span>
+            root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.tabs'</span><span style="color: #990000">,</span><span style="color: #FF0000">'raise'</span><span style="color: #990000">,</span><span style="color: #FF0000">'mdi'</span><span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_value</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'gladevcp.preview-tab'</span><span style="color: #990000">):</span>
+            root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.right'</span><span style="color: #990000">,</span><span style="color: #FF0000">'raise'</span><span style="color: #990000">,</span><span style="color: #FF0000">'preview'</span><span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_value</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'gladevcp.numbers-tab'</span><span style="color: #990000">):</span>
+            root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.right'</span><span style="color: #990000">,</span><span style="color: #FF0000">'raise'</span><span style="color: #990000">,</span><span style="color: #FF0000">'numbers'</span><span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_value</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'gladevcp.user0-tab'</span><span style="color: #990000">):</span>
+            root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.right'</span><span style="color: #990000">,</span><span style="color: #FF0000">'raise'</span><span style="color: #990000">,</span><span style="color: #FF0000">'user_0'</span><span style="color: #990000">)</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">except</span></span><span style="color: #990000">:</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">pass</span></span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_agregar_un_botón_de_inicio_goto">13.11. Agregar un botón de inicio GOTO</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">goto_home</span></span><span style="color: #990000">(</span>axis<span style="color: #990000">):</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> s<span style="color: #990000">.</span>interp_state <span style="color: #990000">==</span> linuxcnc<span style="color: #990000">.</span>INTERP_IDLE<span style="color: #990000">:</span>
+        home <span style="color: #990000">=</span> inifile<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">find</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'JOINT_'</span> <span style="color: #990000">+</span> <span style="font-weight: bold"><span style="color: #000000">str</span></span><span style="color: #990000">(</span>inifile<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">find</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'TRAJ'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'COORDINATES'</span><span style="color: #990000">).</span><span style="font-weight: bold"><span style="color: #000000">upper</span></span><span style="color: #990000">().</span><span style="font-weight: bold"><span style="color: #000000">index</span></span><span style="color: #990000">(</span>axis<span style="color: #990000">)),</span> <span style="color: #FF0000">'HOME'</span><span style="color: #990000">)</span>
+        mode <span style="color: #990000">=</span> s<span style="color: #990000">.</span>task_mode
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> s<span style="color: #990000">.</span>task_mode <span style="color: #990000">!=</span> linuxcnc<span style="color: #990000">.</span>MODE_MDI<span style="color: #990000">:</span>
+            c<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">mode</span></span><span style="color: #990000">(</span>linuxcnc<span style="color: #990000">.</span>MODE_MDI<span style="color: #990000">)</span>
+        c<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">mdi</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'G53 G0 '</span> <span style="color: #990000">+</span> axis <span style="color: #990000">+</span> home<span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># hacer un botón para home del eje Y</span></span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'button'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.homey'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Home Y'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-command'</span><span style="color: #990000">,</span><span style="color: #FF0000">'goto_home Y'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span><span style="color: #FF0000">'2'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># colocar el botón</span></span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'grid'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.homey'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-column'</span><span style="color: #990000">,</span><span style="color: #FF0000">'1'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-row'</span><span style="color: #990000">,</span><span style="color: #FF0000">'7'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-columnspan'</span><span style="color: #990000">,</span><span style="color: #FF0000">'2'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-padx'</span><span style="color: #990000">,</span><span style="color: #FF0000">'4'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-sticky'</span><span style="color: #990000">,</span><span style="color: #FF0000">'w'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># cualquier función llamada desde tcl debe agregarse a TclCommands</span></span>
+TclCommands<span style="color: #990000">.</span>goto_home <span style="color: #990000">=</span> goto_home
+commands <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">TclCommands</span></span><span style="color: #990000">(</span>root_window<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_agregar_botón_al_marco_manual">13.12. Agregar botón al marco manual</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># crea un nuevo botón y ponerlo en el marco manual</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'button'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mybutton'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'My Button'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-command'</span><span style="color: #990000">,</span><span style="color: #FF0000">'mybutton_clicked'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span><span style="color: #FF0000">'2'</span><span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'grid'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mybutton'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-column'</span><span style="color: #990000">,</span><span style="color: #FF0000">'1'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-row'</span><span style="color: #990000">,</span><span style="color: #FF0000">'6'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-columnspan'</span><span style="color: #990000">,</span><span style="color: #FF0000">'2'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-padx'</span><span style="color: #990000">,</span><span style="color: #FF0000">'4'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-sticky'</span><span style="color: #990000">,</span><span style="color: #FF0000">'w'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># lo anterior envía el comando "mybutton_clicked" cuando se hace clic</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># otras opciones son vincular un comando de pulsar o soltar (o ambos) al botón</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># estos pueden ser adicionales o en lugar del comando seleccionado</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># si en lugar de eliminar '-command', 'mybutton_clicked', de la primera línea</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># Botón-1 = botón izquierdo del mouse, 2 = derecho o 3 = medio</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'bind'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mybutton'</span><span style="color: #990000">,</span><span style="color: #FF0000">'&lt;Button-1&gt;'</span><span style="color: #990000">,</span><span style="color: #FF0000">'mybutton_pressed'</span><span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'bind'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mybutton'</span><span style="color: #990000">,</span><span style="color: #FF0000">'&lt;ButtonRelease-1&gt;'</span><span style="color: #990000">,</span><span style="color: #FF0000">'mybutton_released'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># funciones llamadas desde los botones</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">mybutton_clicked</span></span><span style="color: #990000">():</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'mybutton was clicked'</span>
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">mybutton_pressed</span></span><span style="color: #990000">():</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'mybutton was pressed'</span>
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">mybutton_released</span></span><span style="color: #990000">():</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'mybutton was released'</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># cualquier función llamada desde tcl debe agregarse a TclCommands</span></span>
+
+TclCommands<span style="color: #990000">.</span>mybutton_clicked <span style="color: #990000">=</span> mybutton_clicked
+TclCommands<span style="color: #990000">.</span>mybutton_pressed <span style="color: #990000">=</span> mybutton_pressed
+TclCommands<span style="color: #990000">.</span>mybutton_released <span style="color: #990000">=</span> mybutton_released
+commands <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">TclCommands</span></span><span style="color: #990000">(</span>root_window<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_lectura_de_variables_internas">13.13. Lectura de variables internas</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># las siguientes variables pueden leerse desde la instancia de vars</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">print</span></span> vars<span style="color: #990000">.</span>machine<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">()</span>
+<span style="font-weight: bold"><span style="color: #0000FF">print</span></span> vars<span style="color: #990000">.</span>emcini<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">()</span>
+</tt></pre></div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>active_codes            = StringVar
+block_delete            = BooleanVar
+brake                   = BooleanVar
+coord_type              = IntVar
+display_type            = IntVar
+dro_large_font          = IntVar
+emcini                  = StringVar
+exec_state              = IntVar
+feedrate                = IntVar
+flood                   = BooleanVar
+grid_size               = DoubleVar
+has_editor              = IntVar
+has_ladder              = IntVar
+highlight_line          = IntVar
+interp_pause            = IntVar
+interp_state            = IntVar
+ja_rbutton              = StringVar
+jog_aspeed              = DoubleVar
+jog_speed               = DoubleVar
+kinematics_type         = IntVar
+linuxcnctop_command     = StringVar
+machine                 = StringVar
+max_aspeed              = DoubleVar
+max_maxvel              = DoubleVar
+max_queued_mdi_commands = IntVar
+max_speed               = DoubleVar
+maxvel_speed            = DoubleVar
+mdi_command             = StringVar
+metric                  = IntVar
+mist                    = BooleanVar
+motion_mode             = IntVar
+on_any_limit            = BooleanVar
+optional_stop           = BooleanVar
+override_limits         = BooleanVar
+program_alpha           = IntVar
+queued_mdi_commands     = IntVar
+rapidrate               = IntVar
+rotate_mode             = BooleanVar
+running_line            = IntVar
+show_distance_to_go     = IntVar
+show_extents            = IntVar
+show_live_plot          = IntVar
+show_machine_limits     = IntVar
+show_machine_speed      = IntVar
+show_program            = IntVar
+show_pyvcppanel         = IntVar
+show_rapids             = IntVar
+show_tool               = IntVar
+show_offsets            = IntVar
+spindledir              = IntVar
+spindlerate             = IntVar
+task_mode               = IntVar
+task_paused             = IntVar
+task_state              = IntVar
+taskfile                = StringVar
+teleop_mode             = IntVar
+tool                    = StringVar
+touch_off_system        = StringVar
+trajcoordinates         = StringVar
+tto_g11                 = BooleanVar
+view_type               = IntVar</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_ocultar_widgets">13.14. Ocultar widgets</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># ocultar un widget</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># use 'grid' o 'pack' dependiendo de cómo se colocó originalmente</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'grid'</span><span style="color: #990000">,</span><span style="color: #FF0000">'forget'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.jogf.zerohome.tooltouch'</span><span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_una_etiqueta">13.15. Cambiar una etiqueta</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># cambiar la etiqueta de un widget</span></span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'setup_widget_accel'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mist'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Downdraft'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># asegúrese de que aparezca (solo es necesario en este caso si el botón de niebla estaba oculto)</span></span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'grid'</span><span style="color: #990000">,</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mist'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-column'</span><span style="color: #990000">,</span><span style="color: #FF0000">'1'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-row'</span><span style="color: #990000">,</span><span style="color: #FF0000">'5'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-columnspan'</span><span style="color: #990000">,</span><span style="color: #FF0000">'2'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-padx'</span><span style="color: #990000">,</span><span style="color: #FF0000">'4'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-sticky'</span><span style="color: #990000">,</span><span style="color: #FF0000">'w'</span><span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_redirigir_un_comando_existente">13.16. Redirigir un comando existente</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># secuestrar un comando existente</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># originalmente el botón de niebla llama a la función de niebla</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.tabs.fmanual.mist'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-command'</span><span style="color: #990000">,</span><span style="color: #FF0000">'hijacked_command'</span><span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># La nueva función</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">hijacked_command</span></span><span style="color: #990000">():</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'hijacked mist command'</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># agrega la función a TclCommands</span></span>
+
+TclCommands<span style="color: #990000">.</span>hijacked_command <span style="color: #990000">=</span> hijacked_command
+commands <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">TclCommands</span></span><span style="color: #990000">(</span>root_window<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_el_color_dro">13.17. Cambiar el color DRO</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># cambiar la pantalla dro</span></span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.pane.top.right.fnumbers.text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-foreground'</span><span style="color: #990000">,</span><span style="color: #FF0000">'green'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-background'</span><span style="color: #990000">,</span><span style="color: #FF0000">'black'</span><span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_los_botones_de_la_barra_de_herramientas">13.18. Cambiar los botones de la barra de herramientas</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># cambiar los botones de la barra de herramientas</span></span>
+
+buW <span style="color: #990000">=</span> <span style="color: #FF0000">'3'</span>
+buH <span style="color: #990000">=</span> <span style="color: #FF0000">'2'</span>
+boW <span style="color: #990000">=</span> <span style="color: #FF0000">'3'</span>
+
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.machine_estop'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'ESTOP'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.machine_power'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'POWER'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.file_open'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'OPEN'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.reload'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'RELOAD'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.program_run'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'RUN'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.program_step'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'STEP'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.program_pause'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'PAUSE'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.program_stop'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'STOP'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.program_blockdelete'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Skip /'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.program_optpause'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'M1'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_zoomin'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Zoom+'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_zoomout'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Zoom-'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_z'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Top X'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_z2'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Top Y'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_x'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Right'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_y'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Front'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.view_p'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'3D'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.rotate'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Rotate'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span>
+root_window<span style="color: #990000">.</span>tk<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'.toolbar.clear_plot'</span><span style="color: #990000">,</span><span style="color: #FF0000">'configure'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-image'</span><span style="color: #990000">,</span><span style="color: #FF0000">''</span><span style="color: #990000">,</span><span style="color: #FF0000">'-text'</span><span style="color: #990000">,</span><span style="color: #FF0000">'Clear'</span><span style="color: #990000">,</span><span style="color: #FF0000">'-width'</span><span style="color: #990000">,</span>buW<span style="color: #990000">,</span><span style="color: #FF0000">'-height'</span><span style="color: #990000">,</span>buH<span style="color: #990000">,</span><span style="color: #FF0000">'-borderwidth'</span><span style="color: #990000">,</span>boW<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

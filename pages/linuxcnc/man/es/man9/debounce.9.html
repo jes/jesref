@@ -1,0 +1,116 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:26 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>DEBOUNCE</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">DEBOUNCE</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">debounce -
+filtro para entradas digitales ruidosas</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+debounce cfg=</b><i>size[,size,...]</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Crea grupos
+antirrebote con el n&Atilde;&ordm;mero de filtros
+especificado por (<i>size</i>). Cada filtro en el mismo
+grupo tiene la misma frecuencia de muestreo y retraso. Por
+ejemplo, cfg=2,3 crea dos grupos de filtros con 2 filtros en
+el primer grupo y 3 filtros en el segundo grupo.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El filtro
+antirrebote funciona incrementando un contador cada vez que
+la entrada es verdadera, y decrementando el contador cuando
+es falsa. Si el contador disminuye a cero, la salida se
+establece como falsa y el contador ignora m&Atilde;&iexcl;s
+decrementos. Si el contador aumenta hasta un umbral, la
+salida se establece como verdadera y el contador ignora
+m&Atilde;&iexcl;s incrementos. Si el contador
+est&Atilde;&iexcl; entre cero y el umbral, la salida
+conserva su estado anterior. El umbral determina la cantidad
+de filtrado; un umbral de 1 no filtra en absoluto, y un
+umbral de N requiere que haya una se&Atilde;&plusmn;al
+presente en N muestras antes de que cambie el estado de la
+salida.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>debounce.</b><i>G</i></p>
+
+<p style="margin-left:22%;">Muestrear todos los pines de
+entrada en el grupo G y actualizar los pines de salida.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>debounce.</b><i>G</i>
+<b>.</b><i>F</i><b>.in</b> bit in</p>
+
+<p style="margin-left:22%;">Pin de entrada F en el grupo
+G.</p>
+
+
+<p style="margin-left:11%;"><b>debounce.</b><i>G</i><b>.</b><i>F</i><b>.out</b>
+bit out</p>
+
+<p style="margin-left:22%;">El F-esimo pin de salida en el
+grupo G. Refleja la &Atilde;&ordm;ltima entrada
+&quot;estable&quot; vista en el pin de entrada
+correspondiente.</p>
+
+
+<p style="margin-left:11%;"><b>debounce.</b><i>G</i><b>.delay</b>
+S32 rw</p>
+
+<p style="margin-left:22%;">Establece la cantidad de
+filtrado para todos los pines en el grupo G.</p>
+<hr>
+</body>
+</html>

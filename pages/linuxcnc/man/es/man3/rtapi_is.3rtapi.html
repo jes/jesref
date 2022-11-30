@@ -1,0 +1,115 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_is</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_is</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_is -
+detalles de la configuraci&Atilde;&sup3;n de rtapi</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="40%">
+
+
+<p style="margin-top: 1em">int rtapi_is_kernelspace()</p></td>
+<td width="49%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="40%">
+
+
+<p style="margin-top: 1em">int rtapi_is_realtime()</p></td>
+<td width="49%">
+</td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_is_kernelspace()</b>
+devuelve distinto de cero cuando los m&Atilde;&sup3;dulos
+rtapi se ejecutan en el espacio del kernel (por ejemplo,
+bajo rtai) y cero cuando se ejecuta en el espacio de usuario
+(p. ej., bajo uspace).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_is_realtime()</b>
+devuelve distinto de cero cuando es capaz de ejecutarse con
+garant&Atilde;as de tiempo real. Para rtai, esto siempre
+devuelve un valor distinto de cero (pero en realidad la
+carga de los m&Atilde;&sup3;dulos en tiempo real
+fallar&Atilde;&iexcl;n si no se ejecutan bajo el kernel
+apropiado). Para uspace, esto devuelve un valor distinto de
+cero cuando el n&Atilde;&ordm;cleo en ejecuci&Atilde;&sup3;n
+indica que es capaz de rendimiento en tiempo real. Si
+<b>rtapi_app</b> no es setuid root, esto devuelve un valor
+distinto de cero a pesar de que <b>rtapi_app</b> no
+podr&Atilde;&iexcl; obtener la programaci&Atilde;&sup3;n en
+tiempo real o acceso al hardware; por ejemplo, intentar
+<b>loadrt</b> un controlador de hardware
+fallar&Atilde;&iexcl;.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde el espacio de usuario o desde el c&Atilde;&sup3;digo
+de configuraci&Atilde;&sup3;n en tiempo real.
+<b>rtapi_is_realtime()</b> puede realizar E/S del sistema de
+archivos.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Cero para
+falso, distinto de cero para verdadero.</p>
+<hr>
+</body>
+</html>

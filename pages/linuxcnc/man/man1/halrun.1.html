@@ -1,0 +1,233 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:34 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HALRUN</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HALRUN</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#EXAMPLES">EXAMPLES</a><br>
+<a href="#HISTORY">HISTORY</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halrun -
+manipulate the LinuxCNC HAL from the command line</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun</b>
+<i>-h</i></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun
+[</b><i>-I</i>] [<i>halcmd_opts</i>]
+[<i>filename[.hal|.tcl]</i>]</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun</b>
+<i>-T</i> [<i>halcmd_opts</i>]
+[<i>filename[.hal|.tcl]</i>]</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun</b>
+<i>-U</i></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>halrun</b></i>
+is a convenience script used to manipulate the HAL (Hardware
+Abstraction Layer) from the command line. When invoked,
+<b>halrun</b>:</p>
+
+<p style="margin-left:11%; margin-top: 1em">Sets up the
+realtime environment. <br>
+Executes a command interpreter (<b>halcmd</b> or
+<b>haltcl</b>). <br>
+(Optionally) runs an interactive session. <br>
+Tears down the realtime environment.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If no filename
+is specified, an interactive session is started. <br>
+The session will use <b>halcmd</b>(1) unless -T is specified
+in <br>
+which case <b>haltcl</b>(1) will be used.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If a filename
+is specified and neither the -I nor the -T option <br>
+is included, the filename will be processed by the command
+<br>
+interpreter corresponding to the filename extension
+(<b>halcmd</b> <br>
+or <b>haltcl</b>). After processing, the realtime
+environment <br>
+will be torn down.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If a filename
+is specified and the -I or -T option is included, <br>
+the file is processed by the appropriate command interpreter
+and <br>
+then an interactive session is started for <b>halcmd</b> or
+<b><br>
+haltcl</b> according to the -I or -T option.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd_opts</b></p>
+
+<p style="margin-left:22%;">When a .hal file is specified,
+the <b>halcmd_opts</b> are passed to <b>halcmd</b>. See the
+man page for <b>halcmd</b>(1). When a .tcl file is
+specified, the only valid options are: <br>
+-i inifile <br>
+-f filename[.tcl|.hal] (alternate means of specifying a
+file)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-I</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Run an interactive <b>halcmd</b> session</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-T</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Run an interactive <b>haltcl</b> session.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-U</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Forcibly cause the realtime environment to exit. It
+releases the HAL mutex, requests that all HAL components
+unload, and stops the realtime system. <b>-U</b> must be the
+only commandline argument.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-h</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>display a brief help screen and exit</p></td></tr>
+</table>
+
+<h2>EXAMPLES
+<a name="EXAMPLES"></a>
+</h2>
+
+
+<h2>HISTORY
+<a name="HISTORY"></a>
+</h2>
+
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">None known at
+this time.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Original
+version by John Kasunich, as part of the LinuxCNC Enhanced
+Machine Controller project. Now includes major contributions
+by several members of the project.</p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs to
+the LinuxCNC bug tracker &lang; URL:
+http://sf.net/p/emc/bugs/ &rang; .</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2003 John Kasunich. <br>
+This is free software; see the source for copying
+conditions. There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd</b>(1),
+<b>haltcl</b>(1)</p>
+<hr>
+</body>
+</html>

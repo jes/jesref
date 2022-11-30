@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>MB2HAL</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>MB2HAL</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:mb2hal">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>MB2HAL is a generic userspace HAL component to communicate with one or more Modbus devices.
+So far, there are two options to comunicate with a Modbus device:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+One option is to create a HAL component as a driver see
+<a href="http://wiki.linuxcnc.org/cgi-bin/wiki.pl?VFD_Modbus">VFD Modbus</a>.
+</p>
+</li>
+<li>
+<p>
+Another option is to use Classic Ladder which has Modbus built in see
+<a href="../ladder/classic-ladder.html#cha:classicladder">ClassicLadder</a>.
+</p>
+</li>
+<li>
+<p>
+Now there is a third option that consists of a "generic" driver configured by text file, this is called MB2HAL.
+Why MB2HAL ?
+Consider using Mb2hal if:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+You have to write a new driver and you don&#8217;t know anything about programming.
+</p>
+</li>
+<li>
+<p>
+You need to use Classic Ladder "only" to manage the Modbus connections.
+</p>
+</li>
+<li>
+<p>
+You have to discover and configure first time the Modbus transactions. Mb2hal have debug levels to facilitate the low level protocol debug.
+</p>
+</li>
+<li>
+<p>
+You have more than one device to connect. Mb2hal is very efficient managing multiple devices, transactions and links. Currently i am
+monitoring two axis drivers using a Rs232 port, a VFD driver using another Rs232 port, and a remote I/O using TCP/IP.
+</p>
+</li>
+<li>
+<p>
+You want a protocol to connect your Arduino to HAL. Look the included sample configuration file, sketch and library for Arduino Modbus.
+</p>
+</li>
+</ul></div>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">2. Usage</h2>
+<div class="sectionbody">
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Create a config file from the example below
+</p>
+</li>
+<li>
+<p>
+Set component name (optional)
+</p>
+<div class="paragraph"><p>Set <code>HAL_MODULE_NAME=mymodule</code> (default <code>HAL_MODULE_NAME=mb2hal</code>)</p></div>
+</li>
+<li>
+<p>
+Load the modbus HAL userspace component
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+Default component name: <code>loadusr -W mb2hal config=config_file.ini</code>
+</p>
+</li>
+<li>
+<p>
+Custom component name: <code>loadusr -Wn mymodule mb2hal config=config_file.ini</code>
+</p>
+</li>
+</ol></div>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">3. Options</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_init_section">3.1. Init Section</h3>
+<div class="paragraph"><p><code>[MB2HAL_INIT]</code></p></div>
+<div class="tableblock">
+<table rules="none"
+width="100%"
+frame="void"
+cellspacing="0" cellpadding="4">
+<col width="11%" />
+<col width="7%" />
+<col width="12%" />
+<col width="67%" />
+<thead>
+<tr>
+<th align="left" valign="top">Value </th>
+<th align="left" valign="top"> Type </th>
+<th align="left" valign="top"> Required </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>INIT_DEBUG</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Debug level of init and INI file parsing.</p>
+<p class="table">0 = silent<br />
+1 = error messages (default)<br />
+2 = OK confirmation messages<br />
+3 = debugging messages<br />
+4 = maximum debugging messages (only in transactions)<br /></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>HAL_MODULE_NAME</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">HAL module (component) name. Defaults to "mb2hal".</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SLOWDOWN</code></p></td>
+<td align="left" valign="top"><p class="table">Float</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Insert a delay of "FLOAT seconds" between transactions in order to not to have a lot of logging
+and facilitate the debugging.
+Useful when using <code>DEBUG=3</code> (NOT <code>INIT_DEBUG=3</code>). It affects ALL transactions. Use "0.0" for normal activity.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>TOTAL_TRANSACTIONS</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">Yes</p></td>
+<td align="left" valign="top"><p class="table">The number of total Modbus transactions. There is no maximum.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transaction_sections">3.2. Transaction Sections</h3>
+<div class="paragraph"><p>One transaction section is required per transaction, starting at <code>[TRANSACTION_00]</code> and counting up sequentially.
+If there is a new link (not transaction), you must provide the REQUIRED parameters 1st time.
+Warning: Any OPTIONAL parameter not specified are copied from the previous transaction.</p></div>
+<div class="tableblock">
+<table rules="none"
+width="100%"
+frame="void"
+cellspacing="0" cellpadding="4">
+<col width="11%" />
+<col width="7%" />
+<col width="12%" />
+<col width="67%" />
+<thead>
+<tr>
+<th align="left" valign="top">Value            </th>
+<th align="left" valign="top"> Type </th>
+<th align="left" valign="top"> Required </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>LINK_TYPE</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">Yes</p></td>
+<td align="left" valign="top"><p class="table">You must specify either a "serial" or "tcp" link for the first transaction.
+Later transactions will use the previous transaction link if not specified.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>TCP_IP</code></p></td>
+<td align="left" valign="top"><p class="table">IP address</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=tcp</code></p></td>
+<td align="left" valign="top"><p class="table">The Modbus slave device IP address. Ignored if <code>LINK_TYPE=serial</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>TCP_PORT</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">The Modbus slave device TCP port. Defaults to 502.  Ignored if <code>LINK_TYPE=serial</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SERIAL_PORT</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=serial</code></p></td>
+<td align="left" valign="top"><p class="table">The serial port. For example "/dev/ttyS0". Ignored if <code>LINK_TYPE=tcp</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SERIAL_BAUD</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=serial</code></p></td>
+<td align="left" valign="top"><p class="table">The baud rate. Ignored if <code>LINK_TYPE=tcp</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SERIAL_BITS</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=serial</code></p></td>
+<td align="left" valign="top"><p class="table">Data bits. One of 5,6,7,8. Ignored if <code>LINK_TYPE=tcp</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SERIAL_PARITY</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=serial</code></p></td>
+<td align="left" valign="top"><p class="table">Data parity. One of: even, odd, none. Ignored if <code>LINK_TYPE=tcp</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SERIAL_STOP</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=serial</code></p></td>
+<td align="left" valign="top"><p class="table">Stop bits. One of 1, 2. Ignored if <code>LINK_TYPE=tcp</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>SERIAL_DELAY_MS</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">If <code>LINK_TYPE=serial</code></p></td>
+<td align="left" valign="top"><p class="table">Serial port delay in ms between transactions of this section only.
+In ms. Defaults to 0. Ignored if <code>LINK_TYPE=tcp</code>.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>MB_SLAVE_ID</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">Yes</p></td>
+<td align="left" valign="top"><p class="table">Modbus slave number.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>FIRST_ELEMENT</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">Yes</p></td>
+<td align="left" valign="top"><p class="table">The first element address.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>NELEMENTS</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">Unless <code>PIN_NAMES</code> is specified</p></td>
+<td align="left" valign="top"><p class="table">The number of elements. It is an error to specify both
+<code>NELEMENTS</code> and <code>PIN_NAMES</code>. The pin names will be sequential numbers e.g. <code>mb2hal.plcin.01</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>PIN_NAMES</code></p></td>
+<td align="left" valign="top"><p class="table">List</p></td>
+<td align="left" valign="top"><p class="table">Unless <code>NELEMENTS</code> is specified</p></td>
+<td align="left" valign="top"><p class="table">A list of element names.
+These names will be used for the pin names, e.g. mb2hal.plcin.cycle_start.
+NOTE: there must be no white space characters in the list.
+Example: <code>PIN_NAMES=cycle_start,stop,feed_hold</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>MB_TX_CODE</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">Yes</p></td>
+<td align="left" valign="top"><p class="table">Modbus transaction function code (see <a href="https://modbus.org/specs.php">specifications</a>):</p>
+<p class="table">• fnct_01_read_coils<br />
+• fnct_02_read_discrete_inputs<br />
+• fnct_03_read_holding_registers<br />
+• fnct_04_read_input_registers     <br />
+• fnct_05_write_single_coil<br />
+• fnct_06_write_single_register<br />
+• fnct_15_write_multiple_coils<br />
+• fnct_16_write_multiple_registers<br /></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>MB_RESPONSE_TIMEOUT_MS</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Response timeout for this transaction. In ms. Defaults to 500 ms. This is how much to wait for 1st byte before raise an error.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>MB_BYTE_TIMEOUT_MS</code></p></td>
+<td align="left" valign="top"><p class="table">Integer</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Byte timeout for this transaction. In ms. Defaults to 500 ms. This is how much to
+wait from byte to byte before raise an error.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>HAL_TX_NAME</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Instead of giving the transaction number, use a name. Example: <code>mb2hal.00.01</code>
+could become <code>mb2hal.plcin.01</code>. The name must not exceed 28 characters. NOTE: when using names be careful that
+you don&#8217;t end up with two transactions using the same name.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>MAX_UPDATE_RATE</code></p></td>
+<td align="left" valign="top"><p class="table">Float</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Maximum update rate in Hz. Defaults to 0.0 (0.0 = as soon as available = infinit).
+NOTE: This is a maximum rate and the actual rate may be lower. If you want to calculate it in ms use (1000 / required_ms).
+Example: 100 ms = <code>MAX_UPDATE_RATE=10.0</code>, because 1000.0 ms / 100.0 ms = 10.0 Hz.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>DEBUG</code></p></td>
+<td align="left" valign="top"><p class="table">String</p></td>
+<td align="left" valign="top"><p class="table">No</p></td>
+<td align="left" valign="top"><p class="table">Debug level for this transaction only. See <code>INIT_DEBUG</code> parameter above.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_error_codes">3.3. Error codes</h3>
+<div class="paragraph"><p>While debugging transactions, note the returned "<code>ret[]</code>" value correspond to:</p></div>
+<div class="paragraph"><p>Modbus protocol exceptions:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+0x01 - ILLEGAL_FUNCTION        - the FUNCTION code received in the query is not allowed or invalid.
+</p>
+</li>
+<li>
+<p>
+0x02 - ILLEGAL_DATA_ADDRESS    - the DATA ADDRESS received in the query is not an allowable address for the slave or is invalid.
+</p>
+</li>
+<li>
+<p>
+0x03 - ILLEGAL_DATA_VALUE      - a VALUE contained in the data query field is not an allowable value or is invalid.
+</p>
+</li>
+<li>
+<p>
+0x04 - SLAVE_DEVICE_FAILURE    - SLAVE (or MASTER) device unrecoverable FAILURE while attempting to perform the requested action.
+</p>
+</li>
+<li>
+<p>
+0x04 - SERVER_FAILURE          - (see above).
+</p>
+</li>
+<li>
+<p>
+0x05 - ACKNOWLEDGE             - This response is returned to PREVENT A TIMEOUT in the master.
+                                   A long duration of time is required to process the request in the slave.
+</p>
+</li>
+<li>
+<p>
+0x06 - SLAVE_DEVICE_BUSY       - The slave (or server) is BUSY. Retrasmit the request later.
+</p>
+</li>
+<li>
+<p>
+0x06 - SERVER_BUSY             - (see above).
+</p>
+</li>
+<li>
+<p>
+0x07 - NEGATIVE_ACKNOWLEDGE    - Unsuccessful programming request using function code 13 or 14.
+</p>
+</li>
+<li>
+<p>
+0x08 - MEMORY_PARITY_ERROR     - SLAVE parity error in MEMORY.
+</p>
+</li>
+<li>
+<p>
+0x0A (-10) - GATEWAY_PROBLEM_PATH    - Gateway path(s) not available.
+</p>
+</li>
+<li>
+<p>
+0x0B (-11) - GATEWAY_PROBLEM_TARGET  - The target device failed to repond (generated by master, not slave).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Program or connection:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+0x0C (-12) - COMM_TIME_OUT
+</p>
+</li>
+<li>
+<p>
+0x0D (-13) - PORT_SOCKET_FAILURE
+</p>
+</li>
+<li>
+<p>
+0x0E (-14) - SELECT_FAILURE
+</p>
+</li>
+<li>
+<p>
+0x0F (-15) - TOO_MANY_DATAS
+</p>
+</li>
+<li>
+<p>
+0x10 (-16) - INVALID_CRC
+</p>
+</li>
+<li>
+<p>
+0x11 (-17) - INVALID_EXCEPTION_CODE
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_config_file">4. Example config file</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Click <a href="mb2hal_HOWTO.ini">here</a> to download.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">#This .INI file is also the HELP, MANUAL and HOW-TO file for mb2hal.</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#Load the modbus HAL userspace module as the examples below,</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#change to match your own HAL_MODULE_NAME and .ini file name</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Using HAL_MODULE_NAME=mb2hal or nothing (default): loadusr -W mb2hal config=config_file.ini</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Using HAL_MODULE_NAME=mymodule: loadusr -Wn mymodule mb2hal config=config_file.ini</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># ++++++++++++++++++++++++</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># Common section</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># ++++++++++++++++++++++++</span></span>
+<span style="font-weight: bold"><span style="color: #000000">[MB2HAL_INIT]</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Debug level of init and INI file parsing.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># 0 = silent.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># 1 = error messages (default).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># 2 = OK confirmation messages.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># 3 = debugging messages.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># 4 = maximum debugging messages (only in transactions).</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">INIT_DEBUG</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">3</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: HAL module (component) name. Defaults to "mb2hal".</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_MODULE_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">mb2hal</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Insert a delay of "FLOAT seconds" between transactions in order</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#to not to have a lot of logging and facilitate the debugging.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Useful when using DEBUG=3 (NOT INIT_DEBUG=3)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#It affects ALL transactions.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Use "0.0" for normal activity.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SLOWDOWN</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0.0</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED: The number of total Modbus transactions. There is no maximum.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">TOTAL_TRANSACTIONS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">7</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># ++++++++++++++++++++++++</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># Transactions</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># ++++++++++++++++++++++++</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#One transaction section is required per transaction, starting at 00 and counting up sequentially.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#If there is a new link (not transaction), you must provide the REQUIRED parameters 1st time.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Warning: Any OPTIONAL parameter not specified are copied from the previous transaction.</span></span>
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_00]</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED: You must specify either a "serial" or "tcp" link for the first transaction.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Later transaction will use the previous transaction link if not specified.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">LINK_TYPE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">tcp</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then REQUIRED (only 1st time): The Modbus slave device ip address.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then IGNORED</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">TCP_IP</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">192.168.2.10</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then OPTIONAL.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#The Modbus slave device tcp port. Defaults to 502.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">TCP_PORT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">502</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then REQUIRED (only 1st time).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#The serial port.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_PORT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">/dev/ttyS0</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then REQUIRED (only 1st time).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#The baud rate.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_BAUD</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">115200</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then REQUIRED (only 1st time).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Data bits. One of 5,6,7,8.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_BITS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">8</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then REQUIRED (only 1st time).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Data parity. One of: even, odd, none.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_PARITY</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">none</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then REQUIRED (only 1st time).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Stop bits. One of 1, 2.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_STOP</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">2</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=serial then OPTIONAL:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#if LINK_TYPE=tcp then IGNORED</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Serial port delay between for this transaction only.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#In ms. Defaults to 0.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_DELAY_MS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">10</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED (only 1st time).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Modbus slave number.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_SLAVE_ID</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED: The first element address.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED unless PIN_NAMES is specified: The number of elements.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#It is an error to specify both NELEMENTS and PIN_NAMES</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#The pin names will be sequential numbers e.g mb2hal.plcin.01</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#NELEMENTS=4</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED unless NELEMENTS is specified: A list of element names.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#these names will be used for the pin names, e.g mb2hal.plcin.cycle_start</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#NOTE: there must be no white space characters in the list</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">PIN_NAMES</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">cycle_start,stop,feed_hold</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#REQUIRED: Modbus transaction function code (see www.modbus.org specifications).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#    fnct_02_read_discrete_inputs     (02 = 0x02)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#    fnct_03_read_holding_registers   (03 = 0x03)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#    fnct_04_read_input_registers     (04 = 0x04)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#    fnct_06_write_single_register    (06 = 0x06)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#    fnct_15_write_multiple_coils     (15 = 0x0F)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#    fnct_16_write_multiple_registers (16 = 0x10)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># Created pins:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># fnct_02_read_discrete_inputs:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     mb2hal.m.n         (bit out)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># fnct_03_read_holding_registers:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># fnct_04_read_input_registers:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     mb2hal.m.n.float   (float out)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     mb2hal.m.n.int     (s32 out)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># fnct_06_write_single_register:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     mb2hal.m.n         (float in)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     NELEMENTS needs to be 1 or PIN_NAMES must contain just one name.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># fnct_15_write_multiple_coils:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     mb2hal.m.n         (bit in)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># fnct_16_write_multiple_registers:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#     mb2hal.m.n         (float in)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># m = HAL_TX_NAME or transaction number if not set, n = element number (NELEMENTS) or name from PIN_NAMES</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># Example: mb2hal.00.01.&lt;type&gt; (transaction=00, second register=01 (00 is the first one))</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#          mb2hal.TxName.01.&lt;type&gt; (HAL_TX_NAME=TxName, second register=01 (00 is the first one))</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_03_read_holding_registers</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Response timeout for this transaction. In INTEGER ms. Defaults to 500 ms.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#This is how much to wait for 1st byte before raise an error.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_RESPONSE_TIMEOUT_MS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">500</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Byte timeout for this transaction. In INTEGER ms. Defaults to 500 ms.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#This is how much to wait from byte to byte before raise an error.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_BYTE_TIMEOUT_MS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">500</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Instead of giving the transaction number, use a name.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Example: mb2hal.00.01 could become mb2hal.plcin.01</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#The name must not exceed 28 characters.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#NOTE: when using names be careful that you dont end up with two transactions</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#using the same name.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">remoteIOcfg</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Maximum update rate in HZ. Defaults to 0.0 (0.0 = as soon as available = infinit).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#NOTE: This is a maximum rate and the actual rate may be lower.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#If you want to calculate it in ms use (1000 / required_ms).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#Example: 100 ms = MAX_UPDATE_RATE=10.0, because 1000.0 ms / 100.0 ms = 10.0 Hz</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0.0</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#OPTIONAL: Debug level for this transaction only.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#See INIT_DEBUG parameter above.</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">DEBUG</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#While DEBUGGING transactions note the returned "ret[]" value correspond to:</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#/* Modbus protocol exceptions */</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#ILLEGAL_FUNCTION        -0x01 the FUNCTION code received in the query is not allowed or invalid.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#ILLEGAL_DATA_ADDRESS    -0x02 the DATA ADDRESS received in the query is not an allowable address for the slave or is invalid.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#ILLEGAL_DATA_VALUE      -0x03 a VALUE contained in the data query field is not an allowable value or is invalid.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#SLAVE_DEVICE_FAILURE    -0x04 SLAVE (or MASTER) device unrecoverable FAILURE while attempting to perform the requested action.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#SERVER_FAILURE          -0x04 (see above).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#ACKNOWLEDGE             -0x05 This response is returned to PREVENT A TIMEOUT in the master.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#                              A long duration of time is required to process the request in the slave.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#SLAVE_DEVICE_BUSY       -0x06 The slave (or server) is BUSY. Retrasmit the request later.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#SERVER_BUSY             -0x06 (see above).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#NEGATIVE_ACKNOWLEDGE    -0x07 Unsuccessful programming request using function code 13 or 14.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#MEMORY_PARITY_ERROR     -0x08 SLAVE parity error in MEMORY.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#GATEWAY_PROBLEM_PATH    -0x0A (-10) Gateway path(s) not available.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#GATEWAY_PROBLEM_TARGET  -0x0B (-11) The target device failed to repond (generated by master, not slave).</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#/* Program or connection */</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#COMM_TIME_OUT           -0x0C (-12)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#PORT_SOCKET_FAILURE     -0x0D (-13)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#SELECT_FAILURE          -0x0E (-14)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#TOO_MANY_DATAS          -0x0F (-15)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#INVALID_CRC             -0x10 (-16)</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#INVALID_EXCEPTION_CODE  -0x11 (-17)</span></span>
+
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_01]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_02_read_discrete_inputs</span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1280</span>
+<span style="font-weight: bold"><span style="color: #0000FF">NELEMENTS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">8</span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">readStatus</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0.0</span>
+
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_02]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_15_write_multiple_coils</span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">150</span>
+<span style="font-weight: bold"><span style="color: #0000FF">NELEMENTS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">10</span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">remoteIOout</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0.0</span>
+
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_03]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">LINK_TYPE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">serial</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_PORT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">/dev/ttyS0</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_BAUD</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">115200</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_BITS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">8</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_PARITY</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">none</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_STOP</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">2</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SERIAL_DELAY_MS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">50</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_SLAVE_ID</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_03_read_holding_registers</span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">NELEMENTS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">2</span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">XDrive01</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0.0</span>
+<span style="font-weight: bold"><span style="color: #0000FF">DEBUG</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_04]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_04_read_input_registers</span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">12</span>
+<span style="font-weight: bold"><span style="color: #0000FF">NELEMENTS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">3</span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">XDrive02</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">10.0</span>
+<span style="font-weight: bold"><span style="color: #0000FF">DEBUG</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_05]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_06_write_single_register</span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">20</span>
+<span style="font-weight: bold"><span style="color: #0000FF">NELEMENTS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">XDrive03</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">0.0</span>
+<span style="font-weight: bold"><span style="color: #0000FF">DEBUG</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span>
+
+<span style="font-weight: bold"><span style="color: #000000">[TRANSACTION_06]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MB_TX_CODE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">fnct_16_write_multiple_registers</span>
+<span style="font-weight: bold"><span style="color: #0000FF">FIRST_ELEMENT</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">55</span>
+<span style="font-weight: bold"><span style="color: #0000FF">NELEMENTS</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">8</span>
+<span style="font-weight: bold"><span style="color: #0000FF">HAL_TX_NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">XDrive04</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAX_UPDATE_RATE</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">10.0</span>
+<span style="font-weight: bold"><span style="color: #0000FF">DEBUG</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900">1</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pins">5. Pins</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_fnct_02_read_discrete_inputs">5.1. fnct_02_read_discrete_inputs</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+mb2hal.m.n <em>bit out</em>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_fnct_03_read_holding_registers">5.2. fnct_03_read_holding_registers</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+mb2hal.m.n.float <em>float out</em>
+</p>
+</li>
+<li>
+<p>
+mb2hal.m.n.int <em>s32 out</em>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_fnct_04_read_input_registers">5.3. fnct_04_read_input_registers</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+mb2hal.m.n.float <em>float out</em>
+</p>
+</li>
+<li>
+<p>
+mb2hal.m.n.int <em>s32 out</em>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_fnct_06_write_single_register">5.4. fnct_06_write_single_register</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+mb2hal.m.n <em>float in</em>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><code>NELEMENTS</code> needs to be 1 or <code>PIN_NAMES</code> must contain just one name.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_fnct_15_write_multiple_coils">5.5. fnct_15_write_multiple_coils</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+mb2hal.m.n <em>bit in</em>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_fnct_16_write_multiple_registers">5.6. fnct_16_write_multiple_registers</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+mb2hal.m.n <em>float in</em>
+</p>
+</li>
+</ul></div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph"><p>m = <code>HAL_TX_NAME</code> or transaction number if not set, n = element number (<code>NELEMENTS</code>) or name from <code>PIN_NAMES</code></p></div>
+<div class="paragraph"><p>Example:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>mb2hal.00.01.&lt;type&gt;</code> (transaction=00, second register=01 (00 is the first one))
+</p>
+</li>
+<li>
+<p>
+<code>mb2hal.TxName.01.&lt;type&gt;</code> (HAL_TX_NAME=TxName, second register=01 (00 is the first one))
+</p>
+</li>
+</ul></div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

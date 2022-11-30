@@ -1,0 +1,220 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:35 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LATENCY-HISTOGRAM</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">LATENCY-HISTOGRAM</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">latency-histogram
+- plot a histogram of machine latency</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>latency-histogram</b>
+[<b>-?|--help</b>] [<b>--base</b> <i>nS</i>] [<b>--servo</b>
+<i>nS</i>] [<b>--bbinsize</b> <i>nS</i>] [<b>--sbinsize</b>
+<i>nS</i>] [<b>--bbins</b> <i>nS</i>] [<b>--sbins</b>
+<i>nS</i>] [<b>--logscale</b> <i>0|1</i>] [<b>--text</b>
+<i>note</i>] [<b>--show</b>] [<b>--nobase</b>]
+[<b>--verbose</b>] [<b>--nox</b>]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The latency
+test is important when configuring a LinuxCNC system. An
+adjunct to the standard latency-test latency-histogram plots
+the distribution of latency. This can be useful to get a
+feel for how frequent the high latency excursions are.</p>
+
+<p style="margin-left:11%; margin-top: 1em">LinuxCNC and
+Hal should not be running, stop with <i>halrun -U</i>. Large
+number of bins and/or small binsizes will slow updates. For
+single thread, specify <b>--nobase</b> (and options for
+servo thread). Measured latencies outside of the +/- bin
+range are reported with special end bars. Use <b>--show</b>
+to show count for the off-chart [pos|neg] bin</p>
+
+<p style="margin-left:11%; margin-top: 1em">More details:
+https://linuxcnc.org/docs/html/install/latency-test.html</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-?</b>,
+<b>--help</b></p>
+
+<p style="margin-left:22%;">Show options and exit.</p>
+
+<p style="margin-left:11%;"><b>--base</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">base thread interval, default:
+25000, min: 5000</p>
+
+<p style="margin-left:11%;"><b>--servo</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">servo thread interval, default:
+1000000, min: 25000</p>
+
+<p style="margin-left:11%;"><b>--bbinsize</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">base bin size, default: 100</p>
+
+<p style="margin-left:11%;"><b>--sbinsize</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">servo bin size, default:
+100</p>
+
+<p style="margin-left:11%;"><b>--bbins</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">base bins, default: 200</p>
+
+<p style="margin-left:11%;"><b>--sbins</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">servo bins, default: 200</p>
+
+<p style="margin-left:11%;"><b>--logscale</b>
+<i>0|1</i></p>
+
+<p style="margin-left:22%;">y axis log scale, default:
+1</p>
+
+<p style="margin-left:11%;"><b>--text</b> <i>note</i></p>
+
+<p style="margin-left:22%;">additional note, default:
+&quot;&quot;</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>--show</b></p></td>
+<td width="2%"></td>
+<td width="46%">
+
+
+<p>show count of undisplayed bins</p></td>
+<td width="32%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>--nobase</b></p>
+
+<p style="margin-left:22%;">servo thread only</p>
+
+<p style="margin-left:11%;"><b>--verbose</b></p>
+
+<p style="margin-left:22%;">progress and debug</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>--nox</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>no gui, display elapsed,min,max,sdev for each thread</p></td></tr>
+</table>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>latency-plot</b>(1),
+<b>latency-test</b>(1), <b>linuxcnc</b>(1)</p>
+
+<p style="margin-left:11%; margin-top: 1em">Much more
+information about LinuxCNC and HAL is available in the
+LinuxCNC and HAL User Manuals, found at
+<i>/usr/share/doc/linuxcnc/</i>.</p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">None known at
+this time.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This man page
+written by andypugh, as part of the LinuxCNC project.</p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs at
+https://github.com/LinuxCNC/linuxcnc/issues</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2020 andypugh. <br>
+This is free software; see the source for copying
+conditions. There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<hr>
+</body>
+</html>

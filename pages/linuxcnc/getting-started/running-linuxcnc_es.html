@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Ejecutando LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Ejecutando LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:running-emc">1. Invocando LinuxCNC</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Después de la instalación, LinuxCNC comienza como cualquier otro programa de Linux:
+ejecutelo desde una <a href="../common/linux-faq_es.html#faq:terminal">terminal</a> mediante el comando <em>linuxcnc</em>,
+o selecciónelo en el menú Aplicaciones &gt; CNC.</p></div>
+<div class="paragraph"><p><a id="sec:config-launcher"></a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_selector_de_configuración">2. Selector de Configuración</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Al iniciar LinuxCNC desde el menú CNC o desde la línea de comandos, sin
+especificar un archivo ini, se inicia el cuadro de diálogo Selector de Configuración.</p></div>
+<div class="paragraph"><p>El diálogo selector de configuración permite al usuario elegir una de las
+configuraciones existentes (Mis Configuraciones) o seleccionar una nueva (Configuraciones
+de ejemplo) para copiarla a su directorio de inicio. Las configuraciones copiadas
+aparecerá en Mis configuraciones en la próxima invocación del Selector de Configuración.</p></div>
+<div class="paragraph"><p>El selector de configuración ofrece una selección de configuraciones organizada asi:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Mis configuraciones</em> - Configuraciones de usuario ubicadas en ~/linuxcnc/configs
+</p>
+</li>
+<li>
+<p>
+<em>Configuraciones de ejemplo</em> - Estas configuraciones, cuando se seleccionan, se copian en
+    ~/linuxcnc/configs. Una vez que copie una configuración, si usa el
+    selector, selecciónela desde <em>Mis configuraciones</em>.
+    Los nombres corresponden a los directorios bajo ../configs/
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>sim</em> - Configuraciones que incluyen hardware simulado. Pueden ser usadas
+   para probar o aprender cómo funciona LinuxCNC.
+</p>
+</li>
+<li>
+<p>
+<em>by_interface</em> - Configuraciones organizadas por tipo de GUI.
+</p>
+</li>
+<li>
+<p>
+<em>by_machine</em> - Configuraciones organizadas por tipo de máquina.
+</p>
+</li>
+<li>
+<p>
+<em>apps</em> - aplicaciones que no requieren iniciar linuxcnc pero pueden ser
+   útiles para pruebas o aplicaciones como <a href="../gui/pyvcp_es.html#cha:pyvcp">PyVCP o    &lt;&lt;cha:glade-vcp</a>
+</p>
+</li>
+<li>
+<p>
+<em>attic</em> - Configuraciones obsoletas o históricas.
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<div class="paragraph"><p>Las configuraciones en sim suelen ser el punto de partida más útil para
+usuarios nuevos y están organizadas en torno a las siguientes guis soportadas:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>axis</em> - Gui de teclado y mouse
+</p>
+</li>
+<li>
+<p>
+<em>gmoccapy</em> - Gui de Pantalla táctil
+</p>
+</li>
+<li>
+<p>
+<em>gscreen</em> - Gui de Pantalla táctil
+</p>
+</li>
+<li>
+<p>
+<em>pyvcp_demo</em> - Paneles de Control Virtuales Python
+</p>
+</li>
+<li>
+<p>
+<em>qtvcp_screens</em> - Guis diseñadas con Qt5 y Python
+</p>
+</li>
+<li>
+<p>
+<em>tklinuxcnc</em> - Gui de teclado y mouse (ya no se mantiene)
+</p>
+</li>
+<li>
+<p>
+<em>touchy</em> - Gui de Pantalla táctil
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Un directorio de configuración de GUI puede contener subdirectorios con
+configuraciones que ilustran situaciones especiales o incrustación
+de otras aplicaciones.</p></div>
+<div class="paragraph"><p>Las configuraciones <em>by_interface</em> están organizadas en torno a interfaces hardware comunes
+compatibles como:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+general mechatronics
+</p>
+</li>
+<li>
+<p>
+mesa
+</p>
+</li>
+<li>
+<p>
+parport
+</p>
+</li>
+<li>
+<p>
+pico
+</p>
+</li>
+<li>
+<p>
+pluto
+</p>
+</li>
+<li>
+<p>
+servotogo
+</p>
+</li>
+<li>
+<p>
+vigilant
+</p>
+</li>
+<li>
+<p>
+vitalsystems
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Estas configuraciones pueden requerir el uso de hardware relacionado como
+puntos de partida para un sistema.</p></div>
+<div class="paragraph"><p>Las configuraciones <em>by_machine</em> están organizadas alrededor de sistemas completos
+conocidos como:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+boss
+</p>
+</li>
+<li>
+<p>
+cooltool
+</p>
+</li>
+<li>
+<p>
+plasmac
+</p>
+</li>
+<li>
+<p>
+scortbot erIII
+</p>
+</li>
+<li>
+<p>
+sherline
+</p>
+</li>
+<li>
+<p>
+smithy
+</p>
+</li>
+<li>
+<p>
+tormach
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es posible que se requiera un sistema completo para usar estas configuraciones.</p></div>
+<div class="paragraph"><p>Los elementos de <em>aplicaciones</em> son típicamente utilidades que no requieren iniciar linuxcnc o demostraciones
+de aplicaciones que pueden usarse con linuxcnc:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+info: crea un archivo con información del sistema que puede ser útil para
+  diagnóstico de problemas
+</p>
+</li>
+<li>
+<p>
+gladevcp - Ejemplo de aplicaciones de gladevcp.
+</p>
+</li>
+<li>
+<p>
+halrun - Inicia halrun en un <a href="../common/linux-faq_es.html#faq:terminal">terminal</a>.
+</p>
+</li>
+<li>
+<p>
+latency: aplicaciones para investigar la latencia
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+latency-test: prueba estándar
+</p>
+</li>
+<li>
+<p>
+latency-plot - grafico de barras
+</p>
+</li>
+<li>
+<p>
+latency-histogram - histograma
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+parport - Aplicaciones para probar el puerto paralelo.
+</p>
+</li>
+<li>
+<p>
+pyvcp - Ejemplo de aplicaciones pyvcp.
+</p>
+</li>
+<li>
+<p>
+xhc-hb04 - Aplicaciones para probar un MPG inalámbrico USB xhc-hb04
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">En el directorio de aplicaciones, solo se ofrecen para copiar en el directorio de usuario
+las aplicaciones que se pueden modificar de forma útil por el usuario.</td>
+</tr></table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/configuration-selector_es.png" alt="Selector de Configuración de LinuxCNC" />
+</div>
+<div class="title">Figura 1. Selector de Configuración de LinuxCNC<a id="cap:LinuxCNC-Configuration-Selector"></a></div>
+</div>
+<div class="paragraph"><p>Haga clic en cualquiera de las configuraciones enumeradas
+para mostrar información específica al respecto.
+Haga doble clic en una configuración o haga clic en Aceptar
+para comenzar la configuración.</p></div>
+<div class="paragraph"><p>Para agregar un icono en el escritorio que iniciara directamente una configuración
+sin mostrar la pantalla del Selector, seleccione <em>Crear Acceso Directo en Escritorio</em>
+y luego haga clic en <em>Aceptar</em>.</p></div>
+<div class="paragraph"><p>Cuando seleccione una configuración de la sección Configuraciones de Muestra,
+automáticamente se colocará una copia de esa configuración en el
+directorio ~/linuxcnc/configs.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_próximos_pasos_en_la_configuración">3. Próximos pasos en la configuración</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Después de encontrar la configuración de muestra que use
+el mismo interfaz de hardware que su máquina (o un simulador)
+y guardar una copia en su directorio de inicio,
+puede personalizarlo según los detalles de su máquina.
+Consulte el Manual del integrador para temas sobre la configuración.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuraciones_del_simulador">4. Configuraciones del simulador</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Todas las configuraciones enumeradas en Configuraciones de Muestra/sim
+están destinadas a ejecutarse en cualquier ordenador. No se requiere
+soporte de hardware específico y no es necesario tiempo real.</p></div>
+<div class="paragraph"><p>Estas configuraciones son útiles para estudiar
+capacidades u opciones individuales. Las configuraciones en sim están organizadas
+de acuerdo con la interfaz gráfica de usuario utilizada en la
+demostración. El directorio para Axis contiene la mayor cantidad
+de opciones y subdirectorios porque es la GUI más probada.
+Las capacidades demostradas con cualquier GUI específica pueden estar
+disponibles en otras GUIs también.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_recursos_de_configuración">5. Recursos de configuración</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El selector de configuración copia todos los archivos necesarios para
+una configuración a un nuevo subdirectorio de ~/linuxcnc/configs.
+Cada directorio creado incluirá al menos un archivo ini (nombre_fichero.ini)
+que se usa para describir una configuración específica.</p></div>
+<div class="paragraph"><p>Los archivos de recursos dentro del directorio copiado
+incluyen típicamente uno o más archivos ini (nombre_fichero.ini) para
+configuraciones relacionadas y un archivo de tabla de herramientas (nombre_archivo_herramientas.tbl).
+Además, los recursos pueden incluir archivos hal (nombre_fichero.hal,
+nombre_fichero.tcl), un archivo README para describir el directorio, e
+información específica de configuración en un archivo de texto con nombre de
+una configuración específica (inifilename.txt). Estos dos últimos
+archivos se muestran cuando se utiliza el selector de configuración.</p></div>
+<div class="paragraph"><p>Las configuraciones de ejemplo suministradas pueden especificar archivos HAL
+en el archivo de configuración ini que no están presentes en el
+directorio copiado porque se encuentran en la
+biblioteca de sistema Hallib. Estos archivos se pueden copiar al
+directorio de configuración de usuario y ser alterados, según se requiera, por el
+usuario para modificaciones o pruebas. Puesto que el directorio de configuración
+del usuario es el primero donde se buscan archivos HAL, las modificaciones locales
+serán prevalentes.</p></div>
+<div class="paragraph"><p>El selector de configuración crea un enlace simbólico en el
+directorio de configuración de usuario (llamado hallib) que apunta a
+la biblioteca de sistema Halfile. Este enlace simplifica el copiado de
+un archivo de biblioteca. Por ejemplo, para copiar el archivo de biblioteca
+core_sim.hal para hacer modificaciones locales:</p></div>
+<div class="exampleblock">
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre><code>cd ~/linuxcnc/configs/nombre_de_configuracion
+cp hallib/core_sim.hal core_sim.hal</code></pre>
+</div></div>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

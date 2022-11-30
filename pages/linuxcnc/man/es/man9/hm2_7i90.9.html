@@ -1,0 +1,184 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HM2_7I90</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HM2_7I90</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#Comunicaci&Atilde;&sup3;n con la tarjeta">Comunicaci&Atilde;&sup3;n con la tarjeta</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_7i90 -
+Controlador HAL LinuxCNC para la tarjeta Mesa Electronics
+7i90 EPP Anything IO con firmware HostMot2.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt hm2_7i90
+[ioaddr=</b><i>N</i><b>[,</b><i>N</i><b>...]]
+[ioaddr_hi=</b><i>N</i><b>[,</b><i>N</i><b>...]]
+[epp_wide=</b><i>N</i><b>[,</b><i>N</i><b>...]]
+[debug_epp=</b><i>N</i><b>[,</b><i>N</i><b>...]]</b></p> </td></tr>
+</table>
+
+<p style="margin-left:17%;"><b>ioaddr</b> [predeterminado:
+0 (parport0)]</p>
+
+<p style="margin-left:28%;">La direcci&Atilde;&sup3;n base
+del puerto paralelo.</p>
+
+<p style="margin-left:28%; margin-top: 1em">El controlador
+utiliza el n&Atilde;&ordm;mero de direcciones/&Atilde;ndices
+ioaddr proporcionados para determinar cu&Atilde;&iexcl;ntas
+tarjetas buscar. Anteriormente se usaron el
+n&Atilde;&ordm;mero cadenas config, pero una cadena de
+configuraci&Atilde;&sup3;n en blanco es perfectamente
+aceptable para 7i90.</p>
+
+<p style="margin-left:17%;"><b>ioaddr_hi</b>
+[predeterminado: 0]</p>
+
+<p style="margin-left:28%;">La direcci&Atilde;&sup3;n
+secundaria del puerto paralelo, utilizada para configurar el
+modo EPP. 0 significa usar ioaddr+0x400.</p>
+
+<p style="margin-left:17%;"><b>epp_wide</b>
+[predeterminado: 1]</p>
+
+<p style="margin-left:28%;">Ponga a cero para deshabilitar
+el &quot;modo EPP wide&quot;. El modo &quot;Wide&quot;
+permite transferencias EPP de 16-32 bits, que pueden reducir
+el tiempo dedicado a de lectura y escritura. Sin embargo,
+esto puede no funcionar en todos los puertos paralelos
+EPP</p>
+
+<p style="margin-left:17%;"><b>config</b> [predeterminado:
+&quot;&quot;]</p>
+
+<p style="margin-left:28%;">Cadenas de
+configuraci&Atilde;&sup3;n de HostMot2, descritas en la
+p&Atilde;&iexcl;gina de manual de hostmot2 (9).</p>
+
+<p style="margin-left:17%;"><b>debug_epp</b>
+[predeterminado: 0]</p>
+
+<p style="margin-left:28%;">&Acirc;&iexcl;Uso del
+desarrollador/depuraci&Atilde;&sup3;n solamente! Habilite el
+registro de depuraci&Atilde;&sup3;n de la mayor&Atilde;a de
+transferencias EPP.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_7i90 es un
+controlador de dispositivo que interconecta la tarjeta Mesa
+7i90 con el firmware HostMot2 al HAL LinuxCNC.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El firmware
+7i90 se almacena en el propio 7i90, no est&Atilde;&iexcl;
+programado por el driver en el momento de la carga. El
+firmware 7i90 se puede cambiar usando el programa
+mesaflash.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El driver habla
+con la 7i90 a trav&Atilde;&copy;s del puerto paralelo, a
+trav&Atilde;&copy;s de EPP.</p>
+
+<h2>Comunicaci&Atilde;&sup3;n con la tarjeta
+<a name="Comunicaci&Atilde;&sup3;n con la tarjeta"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El 7i90 se
+comunica con la computadora LinuxCNC a trav&Atilde;&copy;s
+de EPP. Esto proporciona aproximadamente 1 MBps de
+rendimiento, y la latencia de comunicaci&Atilde;&sup3;n es
+muy predecible y razonablemente baja.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El puerto
+paralelo debe ser compatible con EPP 1.7 o EPP 1.9. Se
+prefiere EPP 1.9, pero EPP 1.7 tambi&Atilde;&copy;n
+funcionar&Atilde;&iexcl;. El modo EPP del puerto paralelo es
+a veces una configuraci&Atilde;&sup3;n en el BIOS.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Tenga en cuenta
+que el popular &quot;NetMOS&quot; tambi&Atilde;&copy;n
+conocido como &quot;MosChip 9805&quot; PCI parport cards
+<b>no funciona</b>. No cumplen con la
+especificaci&Atilde;&sup3;n EPP y no se pueden usar de
+manera confiable con el 7i43. Tiene que encontrar otra
+tarjeta, lo siento.</p>
+
+<p style="margin-left:11%; margin-top: 1em">EPP es muy
+confiable bajo circunstancias normales, pero un mal cableado
+o cableado excesivamente largo puede causar tiempos de
+espera de comunicaci&Atilde;&sup3;n. El controlador exporta
+un par&Atilde;&iexcl;metro llamado
+hm2_7i90.&lt;BoardNum&gt;.io_error para informar a HAL de
+esta condici&Atilde;&sup3;n. Cuando el driver detecta un
+tiempo de espera de EPP, establece io_error en True y deja
+de comunicarse con la tarjeta 7i90. Establecer io_error en
+False hace que el controlador comience a intentar
+comunicarse con el 7i90 nuevamente.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El acceso al
+bus EPP no es seguro para hilos: solo un hilo en tiempo real
+puede acceder al bus EPP.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hostmot2
+(9)</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

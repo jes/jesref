@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Puerto paralelo PCI</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Puerto paralelo PCI</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:pci-parallel-port"><p>Cuando agrega un segundo puerto paralelo a su bus PCI, debe encontrar
+la dirección antes de poder usarlo con LinuxCNC.</p></div>
+<div class="paragraph"><p>Para encontrar la dirección de su tarjeta de puerto paralelo, abra una ventana de terminal
+y escriba</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>lspci -v</code></pre>
+</div></div>
+<div class="paragraph"><p>Verá algo similar a esto, así como información sobre todo lo
+demás en el bus PCI:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>0000:00:10.0 Communication controller: \
+        NetMos Technology PCI 1 port parallel adapter (rev 01)
+        Subsystem: LSI Logic / Symbios Logic: Unknown device 0010
+        Flags: medium devsel, IRQ 11
+        I/O ports at a800 [size=8]
+        I/O ports at ac00 [size=8]
+        I/O ports at b000 [size=8]
+        I/O ports at b400 [size=8]
+        I/O ports at b800 [size=8]
+        I/O ports at bc00 [size=16]</code></pre>
+</div></div>
+<div class="paragraph"><p>En mi caso, la dirección fue la primera, así que cambié mi archivo .hal de</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg=0x378</code></pre>
+</div></div>
+<div class="paragraph"><p>a</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg="0x378 0xa800 in"</code></pre>
+</div></div>
+<div class="paragraph"><p>(Tenga en cuenta las comillas dobles que rodean las direcciones).</p></div>
+<div class="paragraph"><p>y luego agregó las siguientes líneas para que el parport se lea y se escriba:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>addf parport.1.read base-thread
+addf parport.1.write base-thread</code></pre>
+</div></div>
+<div class="paragraph"><p>Después de hacer lo anterior, ejecute su configuración y verifique que
+el puerto paralelo se cargó en la ventana Máquina/Mostrar Configuración HAL.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

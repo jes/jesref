@@ -1,0 +1,212 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:20 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>parport</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">parport</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#SONDEO DE DIRECCI&Atilde;N ALTA">SONDEO DE DIRECCI&Atilde;N ALTA</a><br>
+<a href="#ESTRUCTURA PARPORT">ESTRUCTURA PARPORT</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_parport -
+acceso portable a puertos paralelos estilo PC</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">#include
+&quot;hal_parport.h&quot;</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int <b>hal_parport_get</b>(int
+<i>comp_id</i>, hal_parport_t *<i>port</i>, unsigned short
+<i>base</i>, unsigned short <i>base_hi</i>, unsigned int
+<i>modes</i>)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">void
+<b>hal_parport_release</b>(hal_parport_t *<i>port</i>)</p></td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>comp_id</i></p>
+
+<p style="margin-left:22%;">Un identificador de componente
+HAL devuelto por una llamada anterior a <b>hal_init</b>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>port</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Un puntero a una estructura hal_parport_t</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>base</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>La direcci&Atilde;&sup3;n base del puerto (si puerto
+&gt;= 16) o el n&Atilde;&ordm;mero de puerto de Linux (si
+puerto &lt;16)</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>base_hi</i></p>
+
+<p style="margin-left:22%;">La direcci&Atilde;&sup3;n
+&quot;alta&quot; del puerto (ubicaci&Atilde;&sup3;n de los
+registros ECP), 0 para usar una direcci&Atilde;&sup3;n alta
+probada, o -1 para deshabilitar la direcci&Atilde;&sup3;n
+alta</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>modes</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Avisa al driver de los modos de puerto deseados, desde
+&lt;linux/parport.h&gt;. Si un puerto detectado por Linux no
+proporciona los modos solicitados, se imprime una
+advertencia con rtapi_print_msg. Esto no hace que la
+solicitud de puerto falle, porque desafortunadamente, muchos
+sistemas que tienen parports EPP que funcionan no se
+detectan como tales por Linux.</p></td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_parport_get</b>
+asigna un puerto paralelo para uso exclusivo de componente
+hal llamado. El puerto debe liberarse con
+<b>hal_parport_release</b> antes de que el componente salga
+con <b>hal_exit</b>.</p>
+
+<h2>SONDEO DE DIRECCI&Atilde;N ALTA
+<a name="SONDEO DE DIRECCI&Atilde;N ALTA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Si el puerto es
+un puerto paralelo conocido por Linux, y Linux
+detect&Atilde;&sup3; una direcci&Atilde;&sup3;n alta de E/S,
+se utiliza este valor. De lo contrario, se usara base+0x400
+si no est&Atilde;&iexcl; registrada por cualquier
+dispositivo. De lo contrario, no se utiliza ninguna
+direcci&Atilde;&sup3;n. Si no se detecta una
+direcci&Atilde;&sup3;n alta, port-&gt; base_hi es 0.</p>
+
+<h2>ESTRUCTURA PARPORT
+<a name="ESTRUCTURA PARPORT"></a>
+</h2>
+
+
+<p style="margin-left:17%; margin-top: 1em">typedef struct
+<br>
+{ <br>
+unsigned short base; <br>
+unsigned short base_hi; <br>
+.... // mas campos <br>
+} hal_parport_t;</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_parport_get&nbsp;devuelve
+un c&Atilde;&sup3;digo de estado HAL. En caso de
+&Atilde;&copy;xito,</b> <i>port</i> es completado con
+informaci&Atilde;&sup3;n sobre el puerto asignado. En caso
+de fallo, los contenidos de <i>port&nbsp;fR no
+est&Atilde;&iexcl;n definidos, excepto que es seguro (pero
+no obligatorio) pasar este puerto a</i>
+<b>hal_parport_release</b>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_parport_release</b>
+no devuelve un valor. Siempre tiene &Atilde;&copy;xito.</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">En nuevo
+c&Atilde;&sup3;digo, se prefiere el uso de rtapi_parport a
+hal_parport.</p>
+<hr>
+</body>
+</html>

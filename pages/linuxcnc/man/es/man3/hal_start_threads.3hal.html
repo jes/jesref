@@ -1,0 +1,109 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_start_threads</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_start_threads</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_start_threads
+- Permitir que los hilos HAL comiencen a ejecutarse</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="37%">
+
+
+<p style="margin-top: 1em">int hal_start_threads ()</p></td>
+<td width="52%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="37%">
+
+
+<p style="margin-top: 1em">int hal_stop_threads ()</p></td>
+<td width="52%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_start_threads</b>
+inicia todos los hilos que se han creado. Este es el punto
+en el que comienzan a llamarse las funciones en tiempo
+real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stop_threads</b>
+detiene todos los hilos que fueron iniciados previamente por
+<b>hal_start_threads</b>. Debe llamarse antes de cualquier
+componente que es parte de salida del sistema.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+c&Atilde;&sup3;digo de estado HAL.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_export_funct(3hal)</b>,
+<b>hal_create_thread(3hal)</b>,
+<b>hal_add_funct_to_thread(3hal)</b></p>
+<hr>
+</body>
+</html>

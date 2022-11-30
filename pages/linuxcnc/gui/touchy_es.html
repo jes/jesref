@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>GUI táctil</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>GUI táctil</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:touchy-gui"><p>Touchy es una interfaz de usuario para LinuxCNC diseñada para su uso en paneles de control de máquinas,
+y por lo tanto no requiere teclado ni mouse.</p></div>
+<div class="paragraph"><p>Está diseñado para usarse con una pantalla táctil y funciona en combinación
+con un volante/MPG y algunos botones e interruptores.</p></div>
+<div class="paragraph"><p>La pestaña <em>Volante</em> tiene botones radio para seleccionar entre las funciones de <em>Porcentaje de alimentación</em>,
+<em>Porcentaje de husillo</em>, <em>Velocidad máxima</em> y <em>Jogging</em> para la entrada del volante/MPG.
+También están previstos botones radio para la selección de eje e incrementos para jog</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/touchy.png" alt="GUI Touchy" />
+</div>
+<div class="title">Figura 1. Touchy</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración_del_panel">1. Configuración del panel</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_conexiones_hal">1.1. Conexiones HAL</h3>
+<div class="paragraph"><p>Touchy requiere que cree un archivo llamado <em>touchy.hal</em> en su
+directorio de configuración (el directorio en el que se encuentra su archivo ini) para
+conectar sus controles. Touchy ejecuta los comandos HAL en este archivo
+después de que haya hecho disponibles sus propios pines para la conexión.</p></div>
+<div class="paragraph"><p>Para obtener más información sobre los archivos HAL y el comando net, consulte el
+<a href="../hal/basic-hal_es.html#cha:basic-hal-reference">Referencia básica de HAL</a>.</p></div>
+<div class="paragraph"><p>Touchy tiene varios pines de salida que deben conectarse al
+controlador de movimiento para controlar el jogging de volante:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>touchy.jog.wheel.increment</em>,
+que debe conectarse al pin <em>axis.N.jog-scale</em> de cada eje N.
+</p>
+</li>
+<li>
+<p>
+<em>touchy.jog.wheel.N</em>, que se debe conectar a <em>axis.N.jog-enable</em>
+para cada eje N.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>[NOTE] <em>N</em> representa el número de eje 0-8.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Además de estar conectado a <em>touchy.wheel-count</em>, la cuenta del volante
+también debe estar conectada a <em>axis.N.jog-count</em> para cada eje N. Si usa el componente
+HAL <em>ilowpass</em> para suavizar el jog con el volante,
+asegúrese de suavizar solo <em>axis.N.jog-count</em> y no <em>touchy.wheel-count</em>.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title">Controles requeridos.</div><ul>
+<li>
+<p>
+Botón de cancelación (contacto momentáneo) conectado al pin HAL <em>touchy.abort</em>
+</p>
+</li>
+<li>
+<p>
+Botón de inicio de ciclo (contacto momentáneo) conectado a <em>touchy.cycle-start</em>
+</p>
+</li>
+<li>
+<p>
+Rueda / MPG, conectada a <em>touchy.wheel-count</em> y pines de movimiento como se describe anteriormente
+</p>
+</li>
+<li>
+<p>
+Bloque único (interruptor de palanca) conectado a <em>touchy.single-block</em>
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title">Controles opcionales.</div><ul>
+<li>
+<p>
+Para jog continuo, una palanca momentánea bidireccional centrada
+   (o dos botones momentáneos) para cada eje, enganchados a <em>touchy.jog.continuous.x.negative</em>,
+   <em>touchy.jog.continuous.x.positive</em>, etc.
+</p>
+</li>
+<li>
+<p>
+Si se desea un botón momentaneo para mover Z a la parte superior del recorrido a maxima velocidad
+   , debe conectarse a <em>touchy.quill-up</em>.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title">Lámparas de panel opcionales.</div><ul>
+<li>
+<p>
+<em>touchy.jog.active</em> muestra cuando los controles de desplazamiento del panel están activos.
+</p>
+</li>
+<li>
+<p>
+<em>touchy.status-indicator</em> está encendido cuando la máquina está ejecutando código G,
+    y parpadea cuando la máquina está ejecutando pero está en pausa/feedhold.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_recomendado_para_cualquier_configuración">1.2. Recomendado para cualquier configuración</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+Botón de parada Estop conectado en la cadena de parada
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración">2. Configuración</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_habilitar_touchy">2.1. Habilitar Touchy</h3>
+<div class="paragraph"><p>Para usar Touchy, en la sección <em>[DISPLAY]</em> de su archivo ini cambie
+la línea del selector a <em>DISPLAY = touchy</em></p></div>
+</div>
+<div class="sect2">
+<h3 id="_preferencias">2.2. Preferencias</h3>
+<div class="paragraph"><p>Cuando inicie Touchy la primera vez, verifique la pestaña Preferencias.
+Si usa una pantalla táctil, para mejores resultados elija la opción de ocultar el puntero.</p></div>
+<div class="paragraph"><p>La ventana de estado tiene una altura fija, establecida por el tamaño de una fuente fija.
+Esto puede verse afectado por el DPI de Gnome, configurado en Sistema/Preferencias/Apariencia/Fuentes/Detalles.
+Si la parte inferior de la pantalla está cortada, reducir la configuración de DPI.</p></div>
+<div class="paragraph"><p>Todos los demás tamaños de fuente se pueden cambiar en la pestaña Preferencias.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_macros">2.3. Macros</h3>
+<div class="paragraph"><p>Touchy puede invocar macros O-word usando la interfaz MDI. Para configurar
+esto, en la sección <em>[TOUCHY]</em> del archivo ini, agregue una o más líneas <em>MACRO</em>.
+Cada una debe tener el formato</p></div>
+<div class="paragraph"><p><em>MACRO = increment xinc yinc</em></p></div>
+<div class="paragraph"><p>En este ejemplo, increment es el nombre de la macro y acepta dos
+parámetros, llamados xinc e yinc.</p></div>
+<div class="paragraph"><p>Ahora, coloque la macro en un archivo llamado <em>increment.ngc</em>, en el
+Directorio <em>PROGRAM_PREFIX</em> o cualquier directorio en <em>SUBROUTINE_PATH</em>.</p></div>
+<div class="paragraph"><p>Debería verse así:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>O&lt;increment&gt; sub
+G91 G0 X#1 Y#2
+G90
+O&lt;increment&gt; endsub</code></pre>
+</div></div>
+<div class="paragraph"><p>Observe que el nombre del sub coincide con el nombre del archivo y el nombre de la macro exactamente,
+incluyendo el caso.</p></div>
+<div class="paragraph"><p>Cuando invoque la macro presionando el botón Macro en el MDI
+de Touchy, puede ingresar valores para xinc e yinc. Estos son
+pasados a la macro como <em>#1</em> y <em>#2</em> respectivamente. Los parámetros
+en blanco se pasan como valor 0.</p></div>
+<div class="paragraph"><p>Si hay varias macros diferentes, presione el botón Macro
+repetidamente para recorrerlos.</p></div>
+<div class="paragraph"><p>En este ejemplo simple, si ingresa -1 para xinc y presiona arranque de ciclo,
+se invocará un movimiento rápido <em>G0</em>, moviendo una unidad a
+la izquierda.</p></div>
+<div class="paragraph"><p>Esta capacidad macro es útil para el sondeo de bordes/agujeros y otras tareas
+de configuracion, así como quizás fresado de agujeros u otras operaciones simples
+que se puede hacer desde el panel sin necesidad de escribir especialmente
+programas de gcode.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

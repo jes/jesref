@@ -1,0 +1,167 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:46 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_bb_gpio</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_bb_gpio</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#USER LEDS">USER LEDS</a><br>
+<a href="#INPUT PINS">INPUT PINS</a><br>
+<a href="#OUTPUT PINS">OUTPUT PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_bb_gpio -
+Driver for beaglebone GPIO pins</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt hal_bb_gpio</b>
+<i>user_leds=#,... input_pins=#,...
+output_pins=#,...</i></p> </td></tr>
+</table>
+
+<h2>USER LEDS
+<a name="USER LEDS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>user_leds</i> loadrt parameter controls which LEDs are
+available to HAL. Valid range: 0..3. These LEDs are next to
+the ethernet jack and the linuxcnc numbers match the
+silkscreen on beaglbone black. Empirically, these seem to be
+OR&rsquo;d with whatever function is assigned to the LED in
+Linux.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>PINS <br>
+bb_gpio.userled</b><i>N</i> bit in <b><br>
+bb_gpio.userled</b><i>N</i><b>-invert</b> bit in</p>
+
+<p style="margin-left:22%;">The associated LED is lit if
+<b>userled</b><i>N</i> xor <b>userled</b><i>N</i>-invert
+<b>is TRUE.</b></p>
+
+<h2>INPUT PINS
+<a name="INPUT PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>input_pins</i> loadrt parameter controls which physical
+I/O pins are available to HAL as input pins. The numbering
+is &quot;800+N&quot; for pin N on connector P8, and
+&quot;900+N&quot; for pin N on connector P9. For example,
+&quot;803&quot; means connector P8 pin 3, which is also
+described in BeagleBone documentation as
+&quot;gpmc_ad6&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Specifying pins
+that are otherwise in use by the system may have undesirable
+side effects, such as crashing rtapi_app or the whole
+system.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>PINS <br>
+bb_gpio.p</b><i>N</i><b>.in-</b><i>NN</i> bit out <b><br>
+bb_gpio.p</b><i>N</i><b>.in-</b><i>NN</i><b>-invert</b> bit
+in</p>
+
+<p style="margin-left:22%;"><b>in-</b><i>NN</i> is a
+snapshot of the value of the corresponding physical pin XOR
+the value of the corresponding
+<b>in-</b><i>NN</i><b>-invert</b> pin.</p>
+
+<h2>OUTPUT PINS
+<a name="OUTPUT PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<i>input_pins</i> loadrt parameter controls which physical
+I/O pins are available to HAL as input pins. The numbering
+is &quot;800+N&quot; for pin N on connector P8, and
+&quot;900+N&quot; for pin N on connector P9.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Specifying pins
+that are otherwise in use by the system may have undesirable
+side effects, such as crashing rtapi_app or the whole
+system.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>PINS <br>
+bb_gpio.p</b><i>N</i><b>.out-</b><i>NN</i> bit out <b><br>
+bb_gpio.p</b><i>N</i><b>.out-</b><i>NN</i><b>-invert</b> bit
+in</p>
+
+<p style="margin-left:22%;">The corresponding physical pin
+is driven with the result of <b>in-</b><i>NN</i> xor
+<b>in-</b><i>NN</i><b>-invert</b>.</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">None</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>bb_gpio.read</b></p>
+
+<p style="margin-left:22%;">Update HAL pins from physical
+pins</p>
+
+<p style="margin-left:11%;"><b>bb_gpio.write</b></p>
+
+<p style="margin-left:22%;">Update physical pins from HAL
+pins</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

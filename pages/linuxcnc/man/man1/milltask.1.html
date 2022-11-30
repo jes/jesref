@@ -1,0 +1,236 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:35 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>milltask</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">milltask</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#NOTES">NOTES</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>milltask</b>
+- Userspace task controller for LinuxCNC</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>milltask</b>
+is an internal process of LinuxCNC. It is generally not
+invoked directly but by an inifile setting:
+<b>[TASK]TASK=milltask</b>. The <b>milltask</b> process
+creates the <b>ini.*</b> hal pins listed below and owned by
+the <b>inihal</b> user component. These pins may be modified
+while LinuxCnC is running to alter values that are typically
+specified in an inifile.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+<b>inihal</b> pins are sampled in every task cycle, however,
+commands affected by their values typically use the value
+present at the time when the command is processed. Such
+commands include all codes handled by the interpreter
+(<b>Gcode</b> programs and <b>MDI</b> commands) and NML
+<b>jogging</b> commands issued by a GUI (including
+<b>halui</b>). <b>Wheel jogging</b> is implemented in the
+realtime motion module so <b>inihal</b> pin changes (e.g.,
+ini.*.max_velocity, ini.*.max_acceleration) may be honored
+as soon as altered values are propagated to the motion
+module.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Per-joint
+pins (N == joint number) <br>
+ini.</b><i>N</i><b>.backlash</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]BACKLASH</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.ferror</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]FERROR</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.min_ferror</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]MIN_FERROR</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.min_limit</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]MIN_LIMIT</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.max_limit</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]MAX_LIMIT</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.max_velocity</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]MAX_VELOCITY</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.max_acceleration</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]MAX_ACCELERATION</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.home</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]HOME</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.home_offset</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]HOME_OFFSET</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>N</i><b>.home_offset</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[JOINT_</b><i>N</i><b>]HOME_SEQUENCE</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Per-axis
+pins (L == axis letter) <br>
+ini.</b><i>L</i><b>.min_limit</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[AXIS_</b><i>L</i><b>]MIN_LIMIT</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>L</i><b>.max_limit</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[AXIS_</b><i>L</i><b>]MAX_LIMIT</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>L</i><b>.max_velocity</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[AXIS_</b><i>L</i><b>]MAX_VELOCITY</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.</b><i>L</i><b>.max_acceleration</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[AXIS_</b><i>L</i><b>]MAX_ACCELERATION</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Global pins
+<br>
+ini.traj_default_acceleration</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]DEFAULT_ACCELERATION</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_default_velocity</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]DEFAULT_VELOCITY</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_max_acceleration</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]MAX_ACCELERATION</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_max_velocity</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]MAX_VELOCITY</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Global pins
+(arc_blend trajectory planner) <br>
+ini.traj_arc_blend_enable</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]ARC_BLEND_ENABLE</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_arc_blend_fallback_enable</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]ARC_BLEND_FALLBACK_ENABLE</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_arc_blend_gap_cycles</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]ARC_OPTIMIZATION_DEPTH</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_arc_blend_optimization_depth</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]ARC_BLEND_GAP_CYCLES</b></p>
+
+
+<p style="margin-left:11%;"><b>ini.traj_arc_blend_ramp_freq</b></p>
+
+<p style="margin-left:22%;">Allows adjustment of
+<b>[TRAJ]ARC_BLEND_RAMP_FREQ</b></p>
+
+<h2>NOTES
+<a name="NOTES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+<b>inihal</b> pins cannot be linked or set in a halfile that
+is specified by an inifile <b>[HAL]HALFILE</b> item because
+they are not created until <b>milltask</b> is started. The
+<b>inihal</b> pin values can be altered by independent
+halcmd programs specified by <b>[APPLICATION]APP</b> items
+or by GUIs that support a <b>[HAL]POSTGUI_HALFILE</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The inifile is
+not automatically updated with values altered by
+<b>inihal</b> pin settings but can be updated using the
+calibration program (emccalib.tcl) when using a
+<b>[HAL]POSTGUI_HALFILE</b>.</p>
+<hr>
+</body>
+</html>

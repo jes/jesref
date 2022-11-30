@@ -1,0 +1,2259 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Descripcion general del codigo G</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Descripcion general del codigo G</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:g-code-overview">1. Descripcion general</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El lenguaje LinuxCNC G Code se basa en el lenguaje RS274/NGC.
+El lenguaje de código G se basa en líneas de código. Cada línea (también llamada
+<em>bloque</em>) puede incluir comandos para hacer varias cosas diferentes. Las líneas de
+código se puede recopilar en un archivo para crear un programa.</p></div>
+<div class="paragraph"><p>Una línea de código típica consiste en un número de línea opcional al
+comienzo seguido de una o más <em>palabras</em>. Una palabra consiste en una letra
+seguida de un número (o algo que se evalúe como un número, como una formula). Una palabra
+puede dar un comando o proporcionar un argumento a un comando. Por
+ejemplo, <em>G1 X3</em> es una línea de código válida con dos palabras. <em>G1</em> es un
+comando que significa <em>moverse en línea recta a velocidad de avance programada
+hasta el punto final programado</em>, y <em>X3</em> proporciona un argumento de
+valor (el valor de X debe ser 3 al final del movimiento).
+La mayoría de los comandos de LinuxCNC G Code comienzan con G o M (de
+General y Misceláneo). Las palabras para estos comandos se llaman <em>códigos G</em> y <em>códigos M</em>.</p></div>
+<div class="paragraph"><p>El lenguaje LinuxCNC no tiene indicador para el inicio de un programa.
+El intérprete, sin embargo, se ocupa de los archivos. Un solo programa puede estar en un
+archivo único, o un programa puede extenderse a través de varios archivos. Un archivo
+se puede demarcar con porcentajes de la siguiente manera. La primera linea no en blanco
+de un archivo puede contener solo un signo de porcentaje, <em>%</em>, posiblemente
+rodeado de espacios en blanco y luego (normalmente al final
+del archivo) puede haber una línea similar. Demarcar un archivo con
+porcentajes es opcional si el archivo tiene un <em>M2</em> o <em>M30</em>, pero es
+requerido si no los tiene. Se notificará un error si un archivo
+tiene una línea de porcentaje al principio pero no al final.
+El contenido util de un archivo delimitado por porcentajes termina después del segundo porcentaje.
+Cualquier cosa después de ese signo, se ignora.</p></div>
+<div class="paragraph"><p>El lenguaje LinuxCNC G Code tiene dos comandos (<em>M2</em> o <em>M30</em>), y cualquiera de los dos
+termina un programa. Un programa puede finalizar antes del final de
+un archivo. Las líneas de un archivo que ocurren después del final de un programa no son
+ejecutadas. El intérprete ni siquiera las lee.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_formato_de_una_linea">2. Formato de una linea</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Una línea permitida de código de entrada consiste en lo siguiente, en orden,
+con la restricción de que hay un máximo (actualmente 256)
+número de caracteres permitidos en una línea.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+un carácter de eliminación de bloque, opcional, que es una barra inclinada <em>/</em>.
+</p>
+</li>
+<li>
+<p>
+Un número de línea opcional.
+</p>
+</li>
+<li>
+<p>
+cualquier cantidad de palabras, configuraciones de parámetros y comentarios.
+</p>
+</li>
+<li>
+<p>
+un marcador de fin de línea (retorno de carro o avance de línea o ambos).
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Cualquier entrada no permitida explícitamente es ilegal y causará que el
+intérprete señale un error.</p></div>
+<div class="paragraph"><p>Se permiten espacios y tabulaciones en cualquier lugar de una línea de código sin
+cambiar el significado de la línea, excepto los comentarios internos. Esto hace que algunos
+entradas de aspecto extraño sean legales. La línea <em>G0X +0. 12 34Y 7</em> es legal y
+equivalente a <em>G0 x + 0.1234 Y7</em>, por ejemplo.</p></div>
+<div class="paragraph"><p>Se permiten líneas en blanco en la entrada. Seran ignoradas.</p></div>
+<div class="paragraph"><p>La entrada no distingue entre mayúsculas y minúsculas, excepto en los comentarios, es decir, cualquier letra
+fuera de un comentario puede estar en mayúsculas o minúsculas sin cambiar el
+significado de una línea</p></div>
+<div class="paragraph"><p><a id="sub:block-delete"></a> </p></div>
+<div class="sect2">
+<h3 id="_eliminar_bloque">2.1. Eliminar Bloque</h3>
+<div class="paragraph"><p>El carácter opcional de eliminación de bloque es la barra <em>/</em> cuando se coloca el primero en una línea.
+Algunas interfaces de usuario pueden utilizarlo para omitir líneas de código cuando sea necesario. En Axis,
+la combinación de teclas Alt-m-/ activa o desactiva la eliminación de bloque. Cuando eliminar bloque
+está activado, cualquier línea que comience con la barra <em>/</em> se omite.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_numero_de_línea">2.2. Numero de línea</h3>
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Un número de línea es la letra N seguida de un entero sin signo,
+seguida opcionalmente por un punto y otro entero sin signo. Por
+ejemplo, <em>N1234</em> y <em>N56.78</em> son números de línea válidos. Pueden ser
+repetidos o usados fuera de orden, aunque la práctica normal es evitar
+tal uso. Los números de línea también se pueden omitir, y eso es la práctica normal.
+No es necesario utilizar un número de línea, pero debe estar en el
+lugar apropiado si se usa.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_palabra">2.3. Palabra</h3>
+<div class="paragraph"><p>Una palabra es una letra distinta de N seguida de un valor real.</p></div>
+<div class="paragraph"><p>Las palabras pueden comenzar con cualquiera de las letras que se muestran en la siguiente tabla.
+La tabla incluye N para que sea completa,
+aunque, como se definió anteriormente, los números de línea no son palabras. Varias letras
+(I, J, K, L, P, R) pueden tener diferentes significados en diferentes contextos.
+Las letras que hacen referencia a los nombres de los ejes no son válidas en una máquina que
+no tiene el eje correspondiente.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="75%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 1. Palabras y sus significados.</caption>
+<col width="16%" />
+<col width="83%" />
+<thead>
+<tr>
+<th align="center" valign="top"> Letra </th>
+<th align="left" valign="top"> Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">A</p></td>
+<td align="left" valign="top"><p class="table">Eje A de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">B</p></td>
+<td align="left" valign="top"><p class="table">Eje B de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">C</p></td>
+<td align="left" valign="top"><p class="table">Eje C de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">D</p></td>
+<td align="left" valign="top"><p class="table">Número de compensación de radio de herramienta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">F</p></td>
+<td align="left" valign="top"><p class="table">Velocidad de alimentación o avance</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">G</p></td>
+<td align="left" valign="top"><p class="table">Función general (Ver tabla <a href="overview_es.html#cap:modal-groups">Grupos modales</a>)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">H</p></td>
+<td align="left" valign="top"><p class="table">Índice de offset de longitud de herramienta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">I</p></td>
+<td align="left" valign="top"><p class="table">Offset X para arcos y ciclos fijos G87</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">J</p></td>
+<td align="left" valign="top"><p class="table">Offset Y para arcos y ciclos fijos G87</p></td>
+</tr>
+<tr>
+<td rowspan="2" align="center" valign="top"><p class="table">K</p></td>
+<td align="left" valign="top"><p class="table">Offset Z para arcos y ciclos fijos G87.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Relacion Husillo-Movimiento para movimientos sincronizados G33.</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">L</p></td>
+<td align="left" valign="top"><p class="table">palabra de parámetro genérico para G10, M66 y otros</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">M</p></td>
+<td align="left" valign="top"><p class="table">Función miscelánea (Ver tabla <a href="overview_es.html#cap:modal-groups">Grupos modales</a>)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">N</p></td>
+<td align="left" valign="top"><p class="table">Número de línea</p></td>
+</tr>
+<tr>
+<td rowspan="2" align="center" valign="top"><p class="table">P</p></td>
+<td align="left" valign="top"><p class="table">Tiempo de parada en ciclos fijos y con G4.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Clave utilizada con G10.</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Q</p></td>
+<td align="left" valign="top"><p class="table">Incremento de alimentación en ciclos fijos G73, G83</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">R</p></td>
+<td align="left" valign="top"><p class="table">Radio de arco o plano de ciclo fijo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">S</p></td>
+<td align="left" valign="top"><p class="table">Velocidad del husillo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">T</p></td>
+<td align="left" valign="top"><p class="table">Selección de herramienta</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">U</p></td>
+<td align="left" valign="top"><p class="table">Eje U de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">V</p></td>
+<td align="left" valign="top"><p class="table">Eje V de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">W</p></td>
+<td align="left" valign="top"><p class="table">Eje W de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table">Eje X de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Y</p></td>
+<td align="left" valign="top"><p class="table">Eje Y de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">Z</p></td>
+<td align="left" valign="top"><p class="table">Eje Z de la máquina</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_numeros">2.4. Numeros</h3>
+<div class="paragraph"><p>Las siguientes reglas se utilizan para números (explícitos). En estas reglas, un
+dígito es un solo carácter entre 0 y 9.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Un número consta de (1) un signo, más o menos, opcional, seguido de
+(2) de cero a muchos dígitos, seguido, posiblemente, por (3) un punto decimal,
+seguido de (4) cero a muchos dígitos, siempre que haya al menos
+un dígito en algún lugar del número.
+</p>
+</li>
+<li>
+<p>
+Hay dos tipos de números: enteros y decimales. Un entero
+no tiene un punto decimal en él; un decimal si lo tiene.
+</p>
+</li>
+<li>
+<p>
+Los números pueden tener cualquier número de dígitos, sujeto a la limitación de
+longitud de la línea. Solo se retendrán unas diecisiete cifras significativas,
+suficiente para todas las aplicaciones conocidas.
+</p>
+</li>
+<li>
+<p>
+Un número distinto de cero sin signo en su primer carácter, se supone que es positivo.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Observe que los ceros inicial (antes del punto decimal y el primer dígito distinto de cero)
+y final (después del punto decimal y el último dígito distinto de cero) están permitidos pero
+no son obligatorios. Un número escrito con los ceros iniciales o finales tendrán el mismo valor
+cuando se lea como si los ceros adicionales no estuvieran allí.</p></div>
+<div class="paragraph"><p>Los números utilizados para fines específicos en RS274/NGC a menudo están restringidos
+a algún conjunto finito de valores o a algún rango de valores. En muchos
+usos, los números decimales deben ser cercanos a enteros; esto incluye el
+valores de índices (para parámetros y números de ranura de carrusel, por
+ejemplo), códigos M y códigos G multiplicados por diez. Un número decimal
+que está destinado a representar un número entero se considera lo suficientemente cerca si
+está dentro de 0.0001 de un valor entero.</p></div>
+<div class="paragraph"><p><a id="gcode:parameters"></a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parametros">3. Parametros</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El lenguaje RS274/NGC admite <em>parámetros</em>, lo qué en otros
+los lenguajes de programación se llamarían <em>variables</em>. Hay varios
+tipos de parámetros de diferente propósito y apariencia, cada uno descrito
+en las siguientes secciones. El único tipo de valor soportado por los parámetros
+es el punto flotante; no hay tipos de cadena, booleanos o enteros en
+Código G, a diferencia de otros lenguajes de programación. Sin embargo, las expresiones lógicas
+se puede formular con <a href="overview_es.html#gcode:binary-operators">operadores booleanos</a>
+(<em>AND</em>, <em>OR</em>, <em>XOR</em> y los operadores de comparación
+<em>EQ</em>, <em>NE</em>, <em>GT</em>, <em>GE</em>, <em>LT</em>, <em>LE</em>), y los <a href="overview_es.html#gcode:functions">operadores</a> <em>MOD</em>, <em>ROUND</em>, <em>FUP</em> y
+<em>FIX</em> admiten aritmética de enteros.</p></div>
+<div class="paragraph"><p>Los parámetros difieren en sintaxis, alcance, comportamiento cuando aún no se han
+inicializado, modo, persistencia y uso previsto.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Sintaxis
+</dt>
+<dd>
+<p>
+Hay tres tipos de apariencia sintáctica:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>numerado</em> - #4711
+</p>
+</li>
+<li>
+<p>
+<em>nombre local</em> - #&lt;valorlocal&gt;
+</p>
+</li>
+<li>
+<p>
+<em>nombre global</em> - #&lt;_valorglobal&gt;
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Alcance
+</dt>
+<dd>
+<p>
+El alcance de un parámetro es global o local dentro de una
+subrutina. Los parámetros de subrutina y las variables nombradas locales tienen
+alcance local. Los parámetros nombrados globales y los parámetros numerados a partir del
+número 31 tiene alcance global. RS274/NGC utiliza <em>alcance léxico</em> -
+en una subrutina solo las variables locales definidas allí, y cualquier
+variable global, son visibles. Las variables locales de un
+procedimiento de llamada no son visibles por el procedimiento llamado.
+</p>
+</dd>
+<dt class="hdlist1">
+Comportamiento de parámetros no inicializados
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+Los parámetros globales no inicializados y los parámetros de subrutina no utilizados
+   devuelve valor cero cuando se usan en una expresión.
+</p>
+</li>
+<li>
+<p>
+Los parámetros con nombre no inicializados indican un error cuando se usan en una expresión.
+</p>
+</li>
+</ul></div>
+</dd>
+<dt class="hdlist1">
+Modo
+</dt>
+<dd>
+<p>
+La mayoría de los parámetros son de lectura/escritura y pueden asignarse
+dentro de una declaración de asignación. Sin embargo, para muchos parámetros predefinidos
+esto no tiene sentido, por lo que son de solo lectura;
+puede aparecer en expresiones, pero no en el lado izquierdo de un
+sentencia de asignación.
+</p>
+</dd>
+<dt class="hdlist1">
+Persistencia
+</dt>
+<dd>
+<p>
+Cuando LinuxCNC se cierra, los parámetros volátiles pierden su
+valores. Todos los parámetros excepto los parámetros numerados en el actual
+rango persistente <span class="footnote" id="_footnote_persistent_range"><br />[El rango de parámetros persistentes puede cambiar a medida que avanza el desarrollo. Este rango es actualmente 5161-5390. Se define en la matriz <em>_required_parameters</em> en el archivo src/emc/rs274ngc/interp_array.cc.]<br /></span> son ​​volátiles.
+Los parámetros persistentes se guardan en el archivo .var y son
+restaurados a sus valores anteriores cuando LinuxCNC se inicia de nuevo.
+los parámetros numerados volatiles se restablecen a cero.
+</p>
+</dd>
+<dt class="hdlist1">
+Uso previsto
+</dt>
+<dd>
+<div class="ulist"><ul>
+<li>
+<p>
+parámetros de usuario:: parámetros numerados en el rango 31..5000, y
+parámetros nombrados globales y locales, excepto parámetros predefinidos. Estan
+disponible para almacenamiento de uso general de valores de punto flotante, como
+resultados intermedios, banderas, etc., a lo largo de la ejecución del programa.
+Son de lectura/escritura (se le puede asignar un valor).
+</p>
+</li>
+<li>
+<p>
+<a href="overview_es.html#sub:subroutine-parameters">parámetros de subrutina</a> - se utilizan para
+  mantener los parámetros reales pasados ​​a una subrutina.
+</p>
+</li>
+<li>
+<p>
+<a href="overview_es.html#sub:numbered-parameters">parámetros numerados</a> - La mayoría de estos se utilizan
+  para acceder a offsets de sistemas de coordenadas.
+</p>
+</li>
+<li>
+<p>
+<a href="overview_es.html#sub:system-parameters">parámetros del sistema</a> - utilizado para determinar la
+   versión en ejecución. Son de solo lectura.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="sect2">
+<h3 id="sub:numbered-parameters">3.1. Parametros numerados</h3>
+<div class="paragraph"><p>Un parámetro numerado es el carácter de numeral <em>#</em> seguido de un
+entero entre 1 y 5602 (actualmente) <span class="footnote"><br />[El intérprete RS274/NGC
+mantiene una matriz de parámetros numerados. Su tamaño está definido por el
+símbolo <em>RS274NGC_MAX_PARAMETERS</em> en el archivo
+src/emc/rs274ngc/interp_internal.hh). Este número de
+parámetros numéricos también pueden aumentar a medida que el desarrollo agrege soporte para nuevos
+parámetros]<br /></span>. El parámetro es referido
+por este entero, y su valor es cualquier número almacenado en el parámetro.</p></div>
+<div class="paragraph"><p>Un valor se almacena en un parámetro con el operador <em>=</em> , por ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>#3 = 15 (configura el parámetro 3 a 15)</code></pre>
+</div></div>
+<div class="paragraph"><p>Una configuración de parámetros no toma efecto hasta después de que todos los valores de los
+parámetros en la misma línea hayan sido encontrados. Por ejemplo, si el parámetro 3 tiene
+previamente el valor 15 y se interpreta la línea <em>#3=6 G1 X#3</em>, ocurrirá un movimiento directo
+a un punto donde X es igual a 15 y el valor del parámetro #3 pasara a 6.</p></div>
+<div class="paragraph"><p>El carácter <em>#</em> tiene prioridad sobre otras operaciones, de modo que, por
+ejemplo, <em>#1+2</em> significa el número resultante de sumar 2 al valor de
+parámetro 1, no el valor encontrado en el parámetro 3. Por supuesto, <em>#[1+2]</em> significa el
+valor encontrado en el parámetro 3. El carácter <em>#</em> puede repetirse; por
+ejemplo <em>##2</em> significa el valor del parámetro cuyo índice es el valor (entero) del parámetro 2.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+'31 -5000 ' - parámetros de usuario del código G. Estos parámetros son globales en
+  archivos de código G, y disponibles para uso general. Volátiles.
+</p>
+</li>
+<li>
+<p>
+<em>5061-5069</em> - Coordenadas de un resultado de la sonda <a href="g-code_es.html#gcode:g38">G38</a> (X, Y,
+  Z, A, B, C, U, V y W). Las coordenadas están en el sistema de coordenadas en
+  que tuvo lugar el G38. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5070</em> - Resultado de la sonda <a href="g-code_es.html#gcode:g38">G38</a> ; 1 si es exitoso, 0 si la sonda
+  no se pudo cerrar. Utilizado con G38.3 y G38.5. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5161-5169</em> - Home "G28" para X, Y, Z, A, B, C, U, V y W. Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5181-5189</em> - Home "G30" para X, Y, Z, A, B, C, U, V y W. Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5210</em> - 1 si actualmente se aplica el desplazamiento "G52" o "G92", 0
+   en caso contrario. Volátil por defecto; persistente si
+   <em>DISABLE_G92_PERSISTENCE = 1</em> en la sección <em>[RS274NGC]</em> del
+   archivo <em>.ini</em>.
+</p>
+</li>
+<li>
+<p>
+<em>5211-5219</em> - offsets compartidos "G52" y "G92" para X, Y, Z, A, B, C, U,
+  V y W. Volátil por defecto; persistente si
+  <em>DISABLE_G92_PERSISTENCE = 1</em> en la sección <em>[RS274NGC]</em> del
+  archivo <em>.ini</em>.
+</p>
+</li>
+<li>
+<p>
+<em>5220</em> - Sistema de coordenadas número 1-9 para G54 - G59.3. Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5221-5230</em> - Sistema de coordenadas 1, G54 para X, Y, Z, A, B, C, U, V, W y R.
+  R denota el ángulo de rotación XY alrededor del eje Z. Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5241-5250</em> - Sistema de coordenadas 2, G55 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5261-5270</em> - Sistema de coordenadas 3, G56 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5281-5290</em> - Sistema de coordenadas 4, G57 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5301-5310</em> - Sistema de coordenadas 5, G58 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5321-5330</em> - Sistema de coordenadas 6, G59 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5341-5350</em> - Sistema de coordenadas 7, G59.1 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5361-5370</em> - Sistema de coordenadas 8, G59.2 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5381-5390</em> - Sistema de coordenadas 9, G59.3 para X, Y, Z, A, B, C, U, V, W y R.
+  Persistente.
+</p>
+</li>
+<li>
+<p>
+<em>5399</em> - Resultado de M66 - Verifica o espera la entrada. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5400</em> - Número de herramienta. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5401-5409</em> - Offsets de herramientas para X, Y, Z, A, B, C, U, V y W. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5410</em> - Diámetro de herramienta. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5411</em> - Ángulo frontal de herramienta. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5412</em> - Ángulo posterior de la herramienta. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5413</em> - Orientación de herramienta. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5420-5428</em> - Posición relativa actual en el sistema de coordenadas activo
+  incluyendo todas los offsets y en las unidades de programa actuales para
+  X, Y, Z, A, B, C, U, V y W, volátiles.
+</p>
+</li>
+<li>
+<p>
+<em>5599</em> - Indicador para controlar la salida de las declaraciones (DEBUG,).
+   1 = salida, 0 = sin salida; predeterminado = 1. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5600</em> - Indicador de fallo del cambiador de herramientas. Utilizado con el componente iocontrol-v2.
+   1: cambiador de herramientas con fallos, 0: normal. Volátil.
+</p>
+</li>
+<li>
+<p>
+<em>5601</em> - Código de fallo del cambiador de herramientas. Utilizado con el componente iocontrol-v2.
+   Refleja el valor del pin HAL <em>toolchanger-reason</em> si ocurrió un fallo.
+   Volátil.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><div class="title">Persistencia de Parámetros Numerados</div><p>Los valores de los parámetros en el rango persistente se conservan en el
+tiempo, incluso si el centro de mecanizado está apagado. LinuxCNC usa un
+archivo de parámetros para garantizar la persistencia. Es administrado por el
+interprete. El intérprete lee el archivo cuando se inicia y
+escribe el archivo cuando sale.</p></div>
+<div class="paragraph"><p>El formato de un archivo de parámetros se muestra en la Tabla
+<a href="#gcode:format-parameter-file">formato de archivo de parámetros</a>.</p></div>
+<div class="paragraph"><p>El intérprete espera que el archivo tenga dos columnas. Se salta cualquier
+líneas que no contienen exactamente dos valores numéricos.
+Se espera que la primera columna contenga un valor entero (el número de parámetro).
+La segunda columna contiene un número de coma flotante (último valor del parámetro).
+El valor se representa como un número de coma flotante de doble precisión dentro del intérprete, pero
+el punto decimal no se requiere en el archivo.</p></div>
+<div class="paragraph"><p>Pueden agregarse al archivo parámetros definidos por el usuario en el rango (31-5000).
+Dichos parámetros serán leídos por el intérprete y escritos en el archivo al salir.</p></div>
+<div class="paragraph"><p>Los parámetros faltantes en el rango persistente se inicializarán a cero
+y se escribiran con sus valores actuales en la próxima operación de guardar.</p></div>
+<div class="paragraph"><p>Los números de los parámetros deben organizarse en orden ascendente.
+Se señalará el error <em>Archivo de parámetros fuera de servicio</em> si no están en
+orden ascendente</p></div>
+<div class="paragraph"><p>El archivo original se guarda como un archivo de respaldo cuando se escribe el nuevo archivo.</p></div>
+<div class="tableblock" id="gcode:format-parameter-file">
+<table rules="all"
+width="90%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 2. Formato de archivo de parámetros</caption>
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="left" valign="top">Número de parámetro </th>
+<th align="left" valign="top"> Valor del parámetro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">5161</p></td>
+<td align="left" valign="top"><p class="table">0.0</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">5162</p></td>
+<td align="left" valign="top"><p class="table">0.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sub:subroutine-parameters">3.2. Parametros de subrutina</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>1-30</em> Parámetros locales de argumentos  de llamada de subrutina. Estos parámetros son
+  locales a la subrutina. Volátil. Ver también el capítulo sobre
+  <a href="o-code_es.html#cha:o-codes">códigos O</a>.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_parametros_con_nombre">3.3. Parametros con nombre</h3>
+<div class="paragraph"><p>Los parámetros con nombre funcionan como parámetros numerados pero son más fáciles de leer.
+Todos los nombres de parámetros se convierten a minúsculas y tienen eliminados espacios y
+tabulaciones, por lo que <em>&lt;param&gt;</em> y <em>&lt;P a R am&gt;</em> se refieren al mismo
+parámetro. Los parámetros con nombre deben estar encerrados con las marcas <em>&lt; &gt;</em>.</p></div>
+<div class="paragraph"><p><em>#&lt;parámetro con nombre&gt;</em> es un parámetro con nombre local. Por defecto, un
+parámetro con nombre es local en el ámbito en el que está asignado. No puede
+acceder a un parámetro local fuera de su subrutina. Esto significa que dos
+subrutinas pueden usar los mismos nombres de parámetros sin temor a una subrutina
+sobreescriba los valores de la otra.</p></div>
+<div class="paragraph"><p><em>#&lt;_parámetro con nombre global&gt;</em> es un parámetro con nombre global.
+Son accesibles desde las subrutinas llamadas y pueden establecer valores dentro de
+subrutinas, accesibles para el llamante. En lo que respecta al alcance,
+actúan como parámetros numéricos regulares. No se almacenan en archivos.</p></div>
+<div class="paragraph"><p>Ejemplos:</p></div>
+<div class="listingblock">
+<div class="title">Declaración de la variable global nombrada.</div>
+<div class="content">
+<pre><code>#&lt;_endmill_dia&gt; = 0.049</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Referencia a la variable global previamente declarada</div>
+<div class="content">
+<pre><code>#&lt;_endmill_rad&gt; = [#&lt;_endmill_dia&gt;/2.0]</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Mezcla de Parámetros literales y con nombre.</div>
+<div class="content">
+<pre><code>o100 call [0.0] [0.0] [#&lt;_inside_cutout&gt;-#&lt;_endmill_dia&gt;] [#&lt;_Zcut&gt;] [#&lt;_feedrate&gt;]</code></pre>
+</div></div>
+<div class="paragraph"><p>Los parámetros con nombre aparecen cuando se les asigna un valor por primera vez.
+Los parámetros locales nombrados desaparecen cuando se abandona su alcance, esto es,
+cuando se vuelve de una subrutina se eliminan todos sus parámetros locales
+y ya no se puede hacer referencia a ellos.</p></div>
+<div class="paragraph"><p>Es un error utilizar un parámetro con nombre inexistente dentro de una
+expresión, o en el lado derecho de una asignacion. Imprimir el
+valor de un parámetro con nombre inexistente con una instrucción DEBUG, como
+<em>(DEBUG, &lt;no_exito_parameter&gt;)</em> mostrará la cadena <em>#</em>.</p></div>
+<div class="paragraph"><p>Los parámetros globales, así como parámetros locales asignados a
+nivel global, conservan su valor una vez asignados incluso cuando el programa
+finaliza y tendrán esos valores cuando el programa se ejecute nuevamente.</p></div>
+<div class="paragraph"><p>La <a href="overview_es.html#gcode:functions">función <em>EXISTS</em></a> prueba si existe un parámetro con nombre dado.</p></div>
+</div>
+<div class="sect2">
+<h3 id="gcode:predefined-named-parameters">3.4. Parametros con nombre predefinidos</h3>
+<div class="paragraph"><p>Los siguientes parámetros globales con nombre, de solo lectura, están disponibles para
+acceder al estado interno del intérprete y al estado de la máquina. Pueden
+ser usados en expresiones arbitrarias, por ejemplo para controlar el flujo de
+programa con sentencias if-then-else. Tenga en cuenta que un nuevo
+<a href="../remap/remap_es.html#remap:adding-predefined-named-parameters">parámetro con nombre predefinido</a>
+se puede agregar fácilmente, sin cambios en el código .ngc.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_vmajor&gt;</em> - Versión principal del paquete. Si la versión actual fuera 2.5.2, devolvería 2.5.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_vminor&gt;</em> - Versión menor del paquete. Si la versión actual fuera 2.6.2, devolvería 0.2.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_line&gt;</em> - Número de secuencia. Si ejecuta un archivo de código G, esto devuelve el número de línea actual.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_motion_mode&gt;</em> - Devuelve el modo de movimiento actual del intérprete:
+</p>
+</li>
+</ul></div>
+<div class="tableblock">
+<table rules="all"
+width="20%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="left" valign="top">Modo de movimiento </th>
+<th align="left" valign="top"> valor de retorno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">G1</p></td>
+<td align="left" valign="top"><p class="table">10</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G2</p></td>
+<td align="left" valign="top"><p class="table">20</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G3</p></td>
+<td align="left" valign="top"><p class="table">30</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G33</p></td>
+<td align="left" valign="top"><p class="table">330</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G38.2</p></td>
+<td align="left" valign="top"><p class="table">382</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G38.3</p></td>
+<td align="left" valign="top"><p class="table">383</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G38.4</p></td>
+<td align="left" valign="top"><p class="table">384</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G38.5</p></td>
+<td align="left" valign="top"><p class="table">385</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G5.2</p></td>
+<td align="left" valign="top"><p class="table">52</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G73</p></td>
+<td align="left" valign="top"><p class="table">730</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G76</p></td>
+<td align="left" valign="top"><p class="table">760</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G80</p></td>
+<td align="left" valign="top"><p class="table">800</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G81</p></td>
+<td align="left" valign="top"><p class="table">810</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G82</p></td>
+<td align="left" valign="top"><p class="table">820</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G83</p></td>
+<td align="left" valign="top"><p class="table">830</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G84</p></td>
+<td align="left" valign="top"><p class="table">840</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G85</p></td>
+<td align="left" valign="top"><p class="table">850</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G86</p></td>
+<td align="left" valign="top"><p class="table">860</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G87</p></td>
+<td align="left" valign="top"><p class="table">870</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G88</p></td>
+<td align="left" valign="top"><p class="table">880</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G89</p></td>
+<td align="left" valign="top"><p class="table">890</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_plane&gt;</em> - devuelve el valor que designa el plano actual:
+</p>
+</li>
+</ul></div>
+<div class="tableblock">
+<table rules="all"
+width="20%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="left" valign="top">Plano </th>
+<th align="left" valign="top"> valor de retorno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">G17</p></td>
+<td align="left" valign="top"><p class="table">170</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G18</p></td>
+<td align="left" valign="top"><p class="table">180</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G19</p></td>
+<td align="left" valign="top"><p class="table">190</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G17.1</p></td>
+<td align="left" valign="top"><p class="table">171</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G18.1</p></td>
+<td align="left" valign="top"><p class="table">181</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G19.1</p></td>
+<td align="left" valign="top"><p class="table">191</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_ccomp&gt;</em> - Estado de la compensación del cortador. Valores de retorno:
+</p>
+</li>
+</ul></div>
+<div class="tableblock">
+<table rules="all"
+width="20%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="left" valign="top">Modo </th>
+<th align="left" valign="top"> valor de retorno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">G40</p></td>
+<td align="left" valign="top"><p class="table">400</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G41</p></td>
+<td align="left" valign="top"><p class="table">410</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G41.1</p></td>
+<td align="left" valign="top"><p class="table">411</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G41</p></td>
+<td align="left" valign="top"><p class="table">410</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G42</p></td>
+<td align="left" valign="top"><p class="table">420</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G42.1</p></td>
+<td align="left" valign="top"><p class="table">421</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_metric&gt;</em> - Devuelve 1 si G21 está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_imperial&gt;</em> - Devuelve 1 si G20 está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_absolute&gt;</em> - Devuelve 1 si G90 está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_incremental&gt;</em> - Devuelve 1 si G91 está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_inverse_time&gt;</em> - Devuelve 1 si el modo de alimentación inversa (G93) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_units_per_minute&gt;</em> - Devuelve 1 si el modo de alimentación udes/minuto (G94) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_units_per_rev&gt;</em> - Devuelve 1 si el modo udes/revolución (G95) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_coord_system&gt;</em> - Devuelve un flotante del nombre del sistema de coordenadas actual (G54..G59.3).
+Por ejemplo, si está en el sistema de coordenadas G55, el valor de retorno es
+550.000000 y si está en G59.1 el valor de retorno es 591.000000.
+</p>
+</li>
+</ul></div>
+<div class="tableblock">
+<table rules="all"
+width="20%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="left" valign="top">Modo </th>
+<th align="left" valign="top"> valor de retorno</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">G54</p></td>
+<td align="left" valign="top"><p class="table">540</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G55</p></td>
+<td align="left" valign="top"><p class="table">550</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G56</p></td>
+<td align="left" valign="top"><p class="table">560</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G57</p></td>
+<td align="left" valign="top"><p class="table">570</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G58</p></td>
+<td align="left" valign="top"><p class="table">580</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59</p></td>
+<td align="left" valign="top"><p class="table">590</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59.1</p></td>
+<td align="left" valign="top"><p class="table">591</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59.2</p></td>
+<td align="left" valign="top"><p class="table">592</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G59.3</p></td>
+<td align="left" valign="top"><p class="table">593</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_tool_offset&gt;</em> - Devuelve 1 si el offset de herramienta (G43) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_retract_r_plane&gt;</em> - Devuelve 1 si G98 está configurado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_retract_old_z&gt;</em> - Devuelve 1 si G99 está activado, de lo contrario 0.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="sub:system-parameters">3.5. Parametros del sistema</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_spindle_rpm_mode&gt;</em> -
+    Devuelva 1 si el modo rpm del cabezal (G97) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_spindle_css_mode&gt;</em> -
+    Devuelve 1 si el modo de velocidad de superficie constante (G96) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_ijk_absolute_mode&gt;</em> -
+    Devuelve 1 si el modo de distancia de Arco absoluto (G90.1) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_lathe_diameter_mode&gt;</em> -
+    Devuelve 1 si el modo de diámetro en torno (G7) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_lathe_radius_mode&gt;</em> -
+    Devuelve 1 si el modo de radio en torno (G8) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_spindle_on&gt;</em> -
+    Devuelve 1 si el husillo está girando actualmente (M3 o M4), de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_spindle_cw&gt;</em> -
+    Devuelve 1 si la dirección del husillo es en sentido horario (M3), de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_mist&gt;</em> -
+    Devuelve 1 si la niebla (M7) está activada.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_flood&gt;</em> -
+    Devuelve 1 si la inundación (M8) está activada.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_speed_override&gt;</em> -
+    Devuelva 1 si la anulación de alimentación (M48 o M50 P1) está activada, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_feed_override&gt;</em> -
+    Devuelve 1 si el ajuste de alimentación (M48 o M51 P1) está activado, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_adaptive_feed&gt;</em> -
+    Devuelve 1 si la alimentación adaptativa (M52 o M52 P1) está activada, de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_feed_hold&gt;</em> -
+    Devuelve 1 si el interruptor de retención de alimentación está habilitado (M53 P1), de lo contrario 0.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_feed&gt;</em> -
+    Devuelve el valor actual de F, no la velocidad de alimentación real.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_rpm&gt;</em> -
+    Devuelve el valor actual de S, no la velocidad real del husillo.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_x&gt;</em> -
+    Devuelve la coordenada X relativa actual, incluidos todos los offsets. Igual que #5420.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_y&gt;</em> -
+    Devuelve la coordenada Y relativa actual, incluidos todos los offsets. Igual que #5421.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_z&gt;</em> -
+    Devuelve la coordenada Z relativa actual, incluidos todos los offsets. Igual que #5422.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_a&gt;</em> -
+    Devuelve la coordenada relativa actual A, incluidos todos los offsets. Igual que #5423.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_b&gt;</em> -
+    Devuelve la coordenada B relativa actual, incluidos todos los offsets. Igual que #5424.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_c&gt;</em> -
+    Devuelve la coordenada C relativa actual, incluidos todos los offsets. Igual que #5425.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_u&gt;</em> -
+    Devuelve la coordenada U relativa actual, incluidos todos los offsets. Igual que #5426.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_v&gt;</em> -
+    Devuelve la coordenada V relativa actual, incluidos todos los offsets. Igual que #5427.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_w&gt;</em> -
+    Devuelve la coordenada W relativa actual, incluidos todos los offsets. Igual que #5428.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_current_tool&gt;</em> -
+    Número de la herramienta actual en el husillo. Igual que # 5400.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_current_pocket&gt;</em> -
+    Devuelve el número de ranura de la herramienta actual.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_selected_tool&gt;</em> -
+    El número de la herramienta seleccionada por un código T. Por defecto -1.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_selected_pocket&gt;</em> -
+    El número de ranura seleccionado por un código T. Predeterminado -1
+    (sin ranura seleccionada).
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_value&gt;</em> -
+Valor de retorno de la última palabra O <em>return</em> o <em>endsub</em>. Por defecto
+    valor 0 si no hay expresión después de <em>return</em> o <em>endsub</em>. Inicializado
+    a 0 al inicio del programa.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_value_returned&gt;</em> -
+    1.0 si la última palabra O <em>return</em> o <em>endsub</em> devolvió un valor, 0
+    de otra manera. Limpiado por la siguiente llamada O-word.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_task&gt;</em> -
+    1.0 si la instancia del intérprete en ejecución es parte de milltask, 0.0
+    de otra manera. A veces es necesario tratar este caso especialmente
+    para mantener una vista previa adecuada, por ejemplo, cuando se prueba el éxito de
+    una sonda (G38.n) inspeccionando #5070, que siempre fallará en el
+    intérprete de vista previa (por ejemplo, Axis).
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_call_level&gt;</em> -
+    nivel actual de anidamiento de los procedimientos O-word. Para depuracion.
+</p>
+</li>
+<li>
+<p>
+<em>#&lt;_remap_level&gt;</em> -
+    nivel actual de la pila de reasignación. Cada reasignación en un bloque agrega uno
+    al nivel de reasignación. Para depuracion.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:ini-hal-params">4. Pines HAL y valores INI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Si está habilitado en el <a href="../config/ini-config_es.html#gcode:ini-features">archivo INI</a> G-code tiene acceso
+a los valores de las entradas del archivo INI y a los pines HAL.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_ini[section]name&gt;</em> Devuelve el valor del elemento correspondiente en el archivo INI.
+Por ejemplo, si el archivo ini se ve así:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[SETUP]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">XPOS </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 3.145</span>
+<span style="font-weight: bold"><span style="color: #0000FF">YPOS </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 2.718</span></tt></pre></div></div>
+<div class="paragraph"><p>puede referirse a los parámetros nombrados <code>#&lt;_ini[setup]xpos&gt;</code> y
+<code>#&lt;_ini[setup]ypos&gt;</code> dentro del código G.</p></div>
+<div class="paragraph"><p><code>EXISTS</code> puede usarse para probar la presencia de una variable en el archivo ini dado:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">o100 if</span></span> <span style="font-weight: bold"><span style="color: #000000">[EXISTS[</span></span><span style="color: #009900">#&lt;_ini[setup]xpos&gt;</span><span style="font-weight: bold"><span style="color: #000000">]]</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">(debug, [setup]xpos existe: </span></span><span style="color: #009900">#&lt;_ini[setup]xpos&gt;</span><span style="font-style: italic"><span style="color: #9A1900">)</span></span>
+<span style="font-weight: bold"><span style="color: #000080">o100 else</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">(debug, [setup]xpos no existe)</span></span>
+<span style="font-weight: bold"><span style="color: #000080">o100 endif</span></span></tt></pre></div></div>
+<div class="paragraph"><p>El valor se lee desde el archivo ini una vez y se almacena en caché del interprete.
+Estos parámetros son de solo lectura: asignar un valor
+causa un error de tiempo de ejecución. Los nombres no distinguen entre mayúsculas y minúsculas, son
+convertido a mayúsculas antes de consultar el archivo ini.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>#&lt;_hal[elemento Hal]&gt;</em>
+Permite que los programas de código G lean los valores de los pines HAL. El acceso a las variables es
+de solo lectura; la única forma de <em>dar valores</em> a pines HAL desde código G sigue siendo M62-M65,
+M67, M68 y los códigos personalizados M100-M199.
+Tenga en cuenta que el valor leído no se actualizará en tiempo real; normalmente será devuelto
+el valor que estaba en el pin cuando se inició el programa de código G.
+Es posible solucionar esto forzando una sincronización de estado.
+Una forma de hacerlo es con un comando M66 ficticio: M66E0L0
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Ejemplo:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">(debug, </span></span><span style="color: #009900">#&lt;_hal[motion-controller.time]&gt;</span><span style="font-style: italic"><span style="color: #9A1900">)</span></span></tt></pre></div></div>
+<div class="paragraph"><p>El acceso a los items HAL es de solo lectura. Actualmente, solo se puede acceder de esta manera
+a los nombres HAL en minúsculas.</p></div>
+<div class="paragraph"><p><code>EXISTS</code> se puede usar para probar la presencia de un elemento HAL dado:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">o100 if</span></span> <span style="font-weight: bold"><span style="color: #000000">[EXISTS[</span></span><span style="color: #009900">#&lt;_hal[motion-controller.time]&gt;</span><span style="font-weight: bold"><span style="color: #000000">]]</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">(debug, [motion-controller.time] existe: </span></span><span style="color: #009900">#&lt;_hal[motion-controller.time]&gt;</span><span style="font-style: italic"><span style="color: #9A1900">)</span></span>
+<span style="font-weight: bold"><span style="color: #000080">o100 else</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">(debug, [motion-controller.time] no existe)</span></span>
+<span style="font-weight: bold"><span style="color: #000080">o100 endif</span></span></tt></pre></div></div>
+<div class="paragraph"><p>Esta característica fue motivada por el deseo de una conexion más fuerte entre
+componentes de la interfaz de usuario como <code>GladeVCP</code> y` PyVCP` para actuar como
+fuente de parámetros para manejar el comportamiento del archivo NGC. La alternativa -
+pasar por los pines M6x y ​​conectarlos - tiene un
+espacio de nombres límitado y no mnemotécnico y es innecesariamente engorroso como
+mecanismo de comunicación UI/Intérprete.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:expressions">5. Expresiones</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Una expresión es un conjunto de caracteres que comienzan con un corchete izquierdo <em>[</em>
+y terminan con un corchete derecho de equilibrio <em>]</em>. Entre los corchetes
+hay números, valores de parámetros, operaciones matemáticas
+y otras expresiones. Una expresión se evalúa para
+producir un número. Las expresiones en una línea se evalúan cuando la línea
+se lee, antes de que se ejecute nada en la línea. Un ejemplo de una
+expresión es <em>[1 + acos[0] - [#3 ** [4.0/2]]]</em>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:binary-operators">6. Operadores binarios</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Los operadores binarios solo aparecen dentro de las expresiones. Hay cuatro operaciones
+matemáticas básicas: suma (<em>+</em>), resta (<em>-</em>), multiplicación (<em>*</em>) y división (<em>/</em>). Hay tres
+operaciones lógicas: o no exclusivo (<em>OR</em>), o exclusivo (<em>XOR</em>), y lógico <em>AND</em>).
+La octava operación es la operación de módulo (<em>MOD</em>).
+La novena operación es la operación <em>potencia</em> (<em>**</em>); elevar el número
+a la izquierda de la operación al exponente de la derecha.
+Los operadores relacionales son igualdad (<em>EQ</em>), desigualdad
+(<em>NE</em>), estrictamente mayor que (<em>GT</em>), mayor o igual que (<em>GE</em>),
+estrictamente menor que (<em>LT</em>), y menor o igual que (<em>LE</em>).</p></div>
+<div class="paragraph"><p>Las operaciones binarias se dividen en varios grupos según su
+precedencia. Si las operaciones en diferentes grupos de precedencia se unen
+(por ejemplo, en la expresión <em>[2.0 / 3 * 1.5 - 5.5 / 11.0]</em>), las operaciones
+en un grupo superior deben realizarse antes de las operaciones
+en un grupo inferior. Si una expresión contiene más de una operación
+del mismo grupo (como el primer <em>/</em> y <em>*</em> en el ejemplo),
+la operación mas a la izquierda se realiza primero. Así,
+el ejemplo es equivalente a: <em>[ [ [2.0 / 3] * 1.5] - [5.5 / 11.0] ]</em>,
+que es equivalente a <em>[1.0 - 0.5]</em>, que es <em>0.5</em>.</p></div>
+<div class="paragraph"><p>Las operaciones lógicas y el módulo pueden realizarse en cualquier
+número, no solo en enteros. El número cero es equivalente a falso lógico,
+y cualquier número distinto de cero es equivalente a verdadero lógico.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="60%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 3. Precedencia de operadores</caption>
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="center" valign="top">Operador </th>
+<th align="center" valign="top"> Precedencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">**</p></td>
+<td align="center" valign="top"><p class="table"><em>más alto</em></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">* / MOD</p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">+ -</p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">EQ NE GT GE LT LE</p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">AND OR XOR</p></td>
+<td align="center" valign="top"><p class="table"><em>más bajo</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_igualdad_y_valores_de_coma_flotante">7. Igualdad y valores de coma flotante</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El lenguaje RS274/NGC solo admite valores de punto flotante de
+precisión finita. Por lo tanto, probar la igualdad o desigualdad de dos
+valores de punto flotante es inherentemente problemático. El interprete
+resuelve este problema considerando valores iguales si su
+diferencia absoluta es menor que 0.0001 (este valor se define como
+<em>TOLERANCE_EQUAL</em> en src/emc/rs274ngc/interp_internal.hh).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:functions">8. Funciones</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las funciones disponibles se muestran en la siguiente tabla. Los argumentos unarios
+de las operaciones que toman medidas de ángulo (<em>COS</em>, <em>SIN</em> y <em>TAN</em>) están en
+grados. Los valores devueltos por operaciones unarias que devuelven medidas de ángulo
+(<em>ACOS</em>, <em>ASIN</em> y <em>ATAN</em>) también están en grados.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="75%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 4. Funciones</caption>
+<col width="50%" />
+<col width="50%" />
+<thead>
+<tr>
+<th align="center" valign="top">Nombre de la función </th>
+<th align="left" valign="top"> Resultado de la función</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">ATAN[arg]/[arg]</p></td>
+<td align="left" valign="top"><p class="table">Tangente inversa de cuatro cuadrantes</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">ABS[arg]</p></td>
+<td align="left" valign="top"><p class="table">Valor absoluto</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">ACOS[arg]</p></td>
+<td align="left" valign="top"><p class="table">Coseno inverso</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">ASIN[arg]</p></td>
+<td align="left" valign="top"><p class="table">Seno inverso</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">COS[arg]</p></td>
+<td align="left" valign="top"><p class="table">Coseno</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">EXP[arg]</p></td>
+<td align="left" valign="top"><p class="table">e elevado al exponente dado</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">FIX[arg]</p></td>
+<td align="left" valign="top"><p class="table">Redondear hacia abajo a entero</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">FUP[arg]</p></td>
+<td align="left" valign="top"><p class="table">Redondear a entero hacia arriba</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">ROUND[arg]</p></td>
+<td align="left" valign="top"><p class="table">Redondear al entero más cercano</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">LN[arg]</p></td>
+<td align="left" valign="top"><p class="table">Logaritmo Base-e</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">SIN[arg]</p></td>
+<td align="left" valign="top"><p class="table">Seno</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">SQRT[arg]</p></td>
+<td align="left" valign="top"><p class="table">Raíz cuadrada</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">TAN[arg]</p></td>
+<td align="left" valign="top"><p class="table">Tangente</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">EXISTS[arg]</p></td>
+<td align="left" valign="top"><p class="table">Comprueba el parámetro con nombre</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>La función <em>FIX</em> se redondea hacia la izquierda (menos positiva o más negativa)
+en una recta numérica, de modo que <em>FIX[2.8] = 2</em> y <em>FIX[-2.8] = -3</em>.</p></div>
+<div class="paragraph"><p>La operación <em>FUP</em> se redondea hacia la derecha (más positiva o menos
+negativa) en una recta numérica; <em>FUP[2.8] = 3</em> y <em>FUP[-2.8] = -2</em>.</p></div>
+<div class="paragraph"><p>La función <em>EXISTS</em> verifica la existencia de un solo parámetro con nombre.
+Solo toma un parámetro con nombre y devuelve 1 si existe y 0 si
+no existe. Es un error si usa un parámetro numerado o una expresión.
+Aquí hay un ejemplo para el uso de la función EXISTS:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>o&lt;test&gt; sub
+o10 if [EXISTS[#&lt;_global&gt;]]
+    (debug, _global existe y tiene el valor #&lt;_global&gt;)
+o10 else
+    (debug, _global does no existe)
+o10 endif
+o&lt;test&gt; endsub
+
+o&lt;test&gt; call
+#&lt;_global&gt; = 4711
+o&lt;test&gt; call
+m2</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_items_repetidos">9. Items repetidos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Una línea puede tener cualquier número de palabras G, pero dos palabras G del mismo
+grupo modal no pueden aparecer en la
+misma línea. Consulte la sección <a href="overview_es.html#gcode:modal-groups">Grupos Modales</a> para obtener más información.</p></div>
+<div class="paragraph"><p>Una línea puede tener de cero a cuatro palabras M. Dos palabras M del mismo grupo modal
+no deben aparecer en la misma línea.</p></div>
+<div class="paragraph"><p>Para todas las demás letras legales, una línea puede tener solo una palabra que comienza
+con esa letra.</p></div>
+<div class="paragraph"><p>Si una configuración del mismo parámetro se repite en una línea,
+<em>#3 = 15 #3 = 6</em>, por ejemplo, solo la última configuración tendrá efecto.
+Es absurdo, pero no ilegal, establecer el mismo parámetro dos veces en la misma línea.</p></div>
+<div class="paragraph"><p>Si aparece más de un comentario en una línea, solo el último será
+usado; cada uno de los otros comentarios será leído y su formato será
+marcado, pero se ignorará a partir de entonces.
+Poner más de un comentario en una línea es muy raro.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_orden_de_items">10. Orden de items</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Los tres tipos de items cuyo orden puede variar en una línea (como se indica en
+el comienzo de esta sección) son palabras, configuración de parámetros y
+comentarios. Imagine que estos tres tipos de elementos se dividen en tres
+grupos por tipo.</p></div>
+<div class="paragraph"><p>El primer grupo (las palabras) puede reordenarse de cualquier manera sin
+cambiar el significado de la línea.</p></div>
+<div class="paragraph"><p>Si se reordena el segundo grupo (la configuración de parámetros),
+no habrá cambio en el significado de la línea a menos que el mismo parámetro sea
+establecido más de una vez. En este caso, solo la última configuración del
+parámetro tendrá efecto. Por ejemplo, después de que la línea <em>#3 = 15 #3 = 6</em>
+ha sido interpretada, el valor del parámetro 3 será 6. Si el
+orden se invierte a <em>#3 = 6 #3 = 15</em> y se interpreta la línea,
+el valor del parámetro 3 será 15.</p></div>
+<div class="paragraph"><p>Si el tercer grupo (los comentarios) contiene más de un comentario y
+se reordena, solo se utilizará el último comentario.</p></div>
+<div class="paragraph"><p>Si cada grupo se mantiene en orden o se reordena sin cambiar el
+significado de la línea, entonces los tres grupos pueden estar intercalados en cualquier
+forma sin cambiar el significado de la línea. Por ejemplo, la linea
+<em>g40 g1 #3 = 15 (foo) #4=-7.0</em> tiene cinco elementos y significa exactamente
+lo mismo en cualquiera de los 120 posibles ordenes (por ejemplo <em>#4=-7.0 g1 #3=15 g40 (foo)</em>) de los cinco
+items.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comandos_y_modos_de_maquina">11. Comandos y Modos de Maquina</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Muchos comandos hacen que el controlador cambia de un modo a otro,
+y el modo permanece activo hasta que algún otro comando lo cambie
+implícita o explícitamente. Tales comandos se denominan <em>modales</em>.
+Por ejemplo, si el refrigerante está encendido, permanece encendido hasta que sea explícitamente
+apagado. Los códigos G para movimiento también son modales. Si un G1 (movimiento recto)
+se da en una línea, se ejecutará nuevamente en la línea siguiente si hay una o más palabras de eje disponibles en
+esa línea, a menos que en ella se dé un comando explícito usando las palabras de eje o cancelando el movimiento.</p></div>
+<div class="paragraph"><p>Los códigos <em>no modales</em> solo tienen efecto en las líneas en las que se encuentran.
+Por ejemplo, G4 (Dwell) no es modal.</p></div>
+<div class="paragraph"><p></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_coordenadas_polares">12. Coordenadas Polares</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las coordenadas polares se pueden usar para especificar la coordenada XY de un movimiento.
+El @n es la distancia y ^n es el ángulo. La ventaja de esto está
+en cosas como círculos de agujeros de pernos que se pueden hacer de manera muy simple
+moviéndose a un punto en el centro del círculo, estableciendo el desplazamiento y
+luego moviendose hacia el primer agujero para luego ejecutar el ciclo de perforación.
+Las coordenadas polares siempre son desde la posición cero XY actual.
+Para cambiar las coordenadas polares del cero máquina, use un desplazamiento
+o seleccione un sistema de coordenadas.</p></div>
+<div class="paragraph"><p>En modo absoluto, la distancia y el ángulo son desde la posición cero XY
+y el ángulo comienza con 0 en el eje X positivo y aumenta en dirección CCW
+sobre el eje Z. El código G1 @1 ^90 es el mismo que G1 Y1.</p></div>
+<div class="paragraph"><p>En modo relativo, la distancia y el ángulo también son desde el cero XY
+pero son acumulativos.
+Puede ser confuso al principio cómo funciona esto en modo incremental.</p></div>
+<div class="paragraph"><p>Por ejemplo, si tiene el siguiente programa, puede esperar que
+sea un patrón cuadrado</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>F100 G1 @.5 ^90
+G91 @.5 ^90
+@.5 ^90
+@.5 ^90
+@.5 ^90
+G90 G0 X0 Y0 M2</code></pre>
+</div></div>
+<div class="paragraph"><p>Puede ver en la siguiente figura que la salida no es lo que usted
+podría esperar. Ya que agregamos 0.5 a la distancia cada vez,
+la distancia desde la posición XY cero aumentó con cada línea.</p></div>
+<div class="paragraph"><p>Espiral polar</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/polar01.png" alt="Espiral polar" />
+</div>
+</div>
+<div class="paragraph"><p>El siguiente código producirá nuestro patrón cuadrado.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>F100 G1 @.5 ^90
+G91 ^90
+^90
+^90
+^90
+G90 G0 X0 Y0 M2</code></pre>
+</div></div>
+<div class="paragraph"><p>Como puede ver solo agregando al ángulo 90 grados cada vez,
+la distancia del punto final es la misma para cada línea.</p></div>
+<div class="paragraph"><p>Cuadrado polar</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/polar02.png" alt="Cuadrado polar" />
+</div>
+</div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Se inicia un movimiento incremental en el origen
+</p>
+</li>
+<li>
+<p>
+Se usa una mezcla de palabras Polar y X o Y
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><a id="gcode:modal-groups"></a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_grupos_modales">13. Grupos modales</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Los comandos modales se organizan en conjuntos llamados <em>grupos modales</em>, y solo
+un miembro de un grupo modal puede estar en vigor en cualquier momento. En
+general, un grupo modal contiene comandos para los cuales es lógicamente
+imposible que dos miembros entren en vigencia al mismo tiempo, como
+medida en pulgadas y medida en milímetros. Un centro de mecanizado puede estar
+en muchos modos al mismo tiempo, con un modo de cada grupo modal
+en vigor. Los grupos modales se muestran en la siguiente tabla.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 5. Grupos modales de código G.<a id="cap:modal-groups"></a></caption>
+<col width="40%" />
+<col width="60%" />
+<thead>
+<tr>
+<th align="left" valign="top">Significado del grupo modal                         </th>
+<th align="left" valign="top"> Miembros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Códigos no modales (Grupo 0)</p></td>
+<td align="left" valign="top"><p class="table">G4, G10 G28, G30, G52, G53, G92, G92.1, G92.2, G92.3,</p></td>
+</tr>
+<tr>
+<td rowspan="2" align="left" valign="top"><p class="table">Movimiento (Grupo 1)</p></td>
+<td align="left" valign="top"><p class="table">G0, G1, G2, G3, G33, G38.n, G73, G76, G80, G81</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">G82, G83, G84, G85, G86, G87, G88, G89</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Selección de plano (Grupo 2)</p></td>
+<td align="left" valign="top"><p class="table">G17, G18, G19, G17.1, G18.1, G19.1</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo distancia (Grupo 3)</p></td>
+<td align="left" valign="top"><p class="table">G90, G91</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo de distancia Arc IJK (Grupo 4)</p></td>
+<td align="left" valign="top"><p class="table">G90.1, G91.1</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo de velocidad de alimentación (Grupo 5)</p></td>
+<td align="left" valign="top"><p class="table">G93, G94, G95</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Unidades (Grupo 6)</p></td>
+<td align="left" valign="top"><p class="table">G20, G21</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Compensación del diámetro del cortador (Grupo 7)</p></td>
+<td align="left" valign="top"><p class="table">G40, G41, G42, G41.1, G42.1</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Desplazamiento de longitud de herramienta (Grupo 8)</p></td>
+<td align="left" valign="top"><p class="table">G43, G43.1, G49</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo de retorno de ciclos fijos (Grupo 10)</p></td>
+<td align="left" valign="top"><p class="table">G98, G99</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Sistema de coordenadas (Grupo 12)</p></td>
+<td align="left" valign="top"><p class="table">G54, G55, G56, G57, G58, G59, G59.1, G59.2, G59.3</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo de control (Grupo 13)</p></td>
+<td align="left" valign="top"><p class="table">G61, G61.1, G64</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo de velocidad del husillo (Grupo 14)</p></td>
+<td align="left" valign="top"><p class="table">G96, G97</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Modo de diámetro de torno (Grupo 15)</p></td>
+<td align="left" valign="top"><p class="table">G7, G8</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Tabla 6. Grupos modales de código M.</caption>
+<col width="40%" />
+<col width="60%" />
+<thead>
+<tr>
+<th align="left" valign="top">Significado del grupo modal          </th>
+<th align="left" valign="top"> Miembros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Detención (Grupo 4)</p></td>
+<td align="left" valign="top"><p class="table">M0, M1, M2, M30, M60</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Husillo (Grupo 7)</p></td>
+<td align="left" valign="top"><p class="table">M3, M4, M5</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Refrigerante (Grupo 8)</p></td>
+<td align="left" valign="top"><p class="table">(M7 M8 puede estar ambos ON), M9</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Interruptores de ajuste (Grupo 9)</p></td>
+<td align="left" valign="top"><p class="table">M48, M49</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Definido por el usuario (Grupo 10)</p></td>
+<td align="left" valign="top"><p class="table">M100-M199</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Para varios grupos modales, cuando un centro de mecanizado está listo para aceptar
+comandos, un miembro del grupo debe estar en vigor. Hay por defecto
+ajustes para estos grupos modales. Cuando el centro de mecanizado está encendido
+o reinicializado, los valores predeterminados entran automáticamente en efecto.</p></div>
+<div class="paragraph"><p>El grupo 1 es un grupo de códigos G para movimiento. Uno de ellos siempre está vigente.
+A ese se le llama modo de movimiento actual.</p></div>
+<div class="paragraph"><p>Es un error colocar un código G del grupo 1 y un código G del grupo 0
+en la misma línea si ambos usan palabras de eje. Si un código G del grupo 1 que usa palabras de eje
+estaba implícitamente vigente en una línea (por haber sido activado en una línea anterior)
+y un código G del grupo 0 que usa las palabras de eje aparece en la línea, la actividad del código G del grupo 1 es
+suspendida para esa línea. Los códigos G del grupo 0 que usan palabras de eje son
+G10, G28, G30, G52 y G92.</p></div>
+<div class="paragraph"><p>Es un error incluir palabras no relacionadas en una línea con control de flujo <em>O-</em>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:comments">14. Comentarios</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Se pueden agregar comentarios a las líneas de código G para ayudar a aclarar la
+intención del programador. Los comentarios se pueden incrustar en una línea usando
+paréntesis () o al final de una línea usando un punto y coma.
+El punto y coma no se trata como el comienzo de un comentario cuando está encerrado entre
+paréntesis</p></div>
+<div class="paragraph"><p>Los comentarios pueden aparecer entre palabras, pero no entre palabras y sus
+parámetros correspondientes. Por tanto, <em>S100 (velocidad establecida) F200 (alimentación)</em> está bien mientras que
+<em>S (velocidad) 100F (alimentación)</em> no lo está.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>G0 (Rápido para comenzar) X1 Y1
+G0 X1 Y1 (Rápido para comenzar; pero no olvide el refrigerante)
+M2 ; Fin del programa.</code></pre>
+</div></div>
+<div class="paragraph"><p>Hay varios comentarios <em>activos</em> que parecen comentarios pero causan
+alguna acción, como <em>(debug, ..)</em> o <em>(print, &#8230;)</em>. Si hay
+varios comentarios en una línea, solo se interpretará el último comentario
+de acuerdo con estas reglas. Por lo tanto, un comentario normal después de un comentario activo
+deshabilitará el comentario activo. Por ejemplo, <em>(foo)
+(debug, # 1)</em> imprimirá el valor del parámetro <em>#1</em>; sin embargo
+<em>(debug, #1) (foo)</em> no lo hará.</p></div>
+<div class="paragraph"><p>Un comentario introducido por un punto y coma es, por definición, el último comentario
+en esa línea, y siempre se interpretará para la sintaxis activa de comentarios.</p></div>
+<div class="paragraph"><p>NOTA: Los comentarios en línea en palabras O no deben usarse. Vea la sección del Código O
+<a href="o-code_es.html#ocode:comments">comentarios</a>  para más información.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:messages">15. Mensajes</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>(MSG,)</em> - muestra el mensaje si aparece <em>MSG</em> después del paréntesis izquierdo
+y antes de cualquier otro caracter imprimible. Se permiten variantes de <em>MSG</em> que incluyen
+espacios en blanco y minúsculas. El resto de
+los caracteres antes del paréntesis derecho se consideran un mensaje.
+Los mensajes deben mostrarse en el dispositivo de visualización de mensajes del interfaz de usuario,
+si se proporciona.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo de mensaje</div>
+<div class="content">
+<pre><code>(MSG, esto es un mensaje)</code></pre>
+</div></div>
+<div class="paragraph"><p></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_registro_de_sonda">16. Registro de sonda</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>(PROBEOPEN filename.txt)</em> - abrirá filename.txt y almacenará 9 números de
+coordenadas, XYZABCUVW, de cada sondeo recto exitoso en el.
+</p>
+</li>
+<li>
+<p>
+<em>(PROBECLOSE)</em> - cerrará el archivo abierto. Para más información sobre
+sondeo ver la sección <a href="g-code_es.html#gcode:g38">G38</a>.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_registro">17. Registro</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>(LOGOPEN, filename.txt)</em> - abre el archivo de registro nombrado. Si el archivo ya
+existe, se trunca.
+</p>
+</li>
+<li>
+<p>
+<em>(LOGAPPEND, filename)</em> - abre el archivo de registro nombrado. Si el archivo ya
+existe, los datos se adjuntan.
+</p>
+</li>
+<li>
+<p>
+<em>(LOGCLOSE)</em> - cierra un archivo de registro abierto.
+</p>
+</li>
+<li>
+<p>
+<em>(LOG,)</em> - todo lo sigue a la <em>,</em> se escribe en el archivo de registro si está abierto.
+Admite la expansión de parámetros como se describe a continuación.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Ejemplos de registro están en <em>nc_files/examples/smartprobe.ngc</em> y en
+<em>nc_files/ngcgui_lib/rectange_probe.ngc</em> archivos de código G de muestra.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:debug">18. Mensajes de depuracion</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>(DEBUG,)</em> - muestra un mensaje como <em>(MSG,)</em> con la adición de manejo especial
+de parámetros de comentarios como se describe a continuación.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:print">19. Imprimir mensajes</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>(PRINT,)</em> - los mensajes se envían a <em>stderr</em> con un manejo especial para
+parámetros como se describe a continuación.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:comment-parameters">20. Parametros de comentario</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>En los comentarios DEBUG, PRINT y LOG, los valores de los parámetros en
+el mensaje se expanden.</p></div>
+<div class="paragraph"><p>Por ejemplo: para imprimir una variable global con nombre en stderr (el valor predeterminado
+ventana de consola).</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo de parámetros</div>
+<div class="content">
+<pre><code>(print,endmill dia = #&lt;_endmill_dia&gt;)
+(print,el valor de la variable 123 es: #123)</code></pre>
+</div></div>
+<div class="paragraph"><p>Dentro de los tipos de comentarios anteriores, se reemplazan secuencias como <em>#123</em>
+por el valor del parámetro 123. Secuencias como <em>#&lt;nombre de parámetro&gt;</em>
+son reemplazadas por el valor del parámetro nombrado. Los parámetros nombrados
+tendrán los espacio en blanco eliminados. Por tanto, <em>#&lt;parámetro con nombre&gt;</em>
+se convertirá en <em># &lt;parametroconnombre&gt;</em>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gcode:file-requirements">21. Requisitos de archivos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Un archivo de código G debe contener una o más líneas de código G y debe terminarse
+con un <a href="m-code_es.html#mcode:m2-m30">Final de Programa</a>. Cualquier código G pasado el final del programa
+no se evalúa.</p></div>
+<div class="paragraph"><p>Si no se usa un código de finalización de programa, se utilizarán un par de signos de porcentaje <em>%</em> con el primer
+signo de porcentaje en la primera línea del archivo seguido de una o más líneas de
+código G y un segundo signo de porcentaje. Cualquier código pasado el segundo signo de porcentaje no es
+evaluado.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Aviso</div>
+</td>
+<td class="content">Usar % al principio y final de un archivo de código G no hará lo mismo que usar un Final de Programa.
+Usando %, la máquina estará en cualquier estado en que el programa la dejó,
+el husillo y el refrigerante aún pueden estar encendidos y cosas como G90/91 se dejan como el
+último programa las configuró. Si no usa un preámbulo apropiado, el próximo programa
+podría comenzar en una condición peligrosa.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">El archivo debe crearse con un editor de texto como Gedit y no con un
+procesador como Open Office Word Processor.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tamaño_de_archivo">22. Tamaño de archivo</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El intérprete y el planificador de tareas están cuidadosamente escritos para que el único límite
+en el tamaño del programa sea la capacidad del disco. La interfaz TkLinuxCNC y Axis
+cargan el texto del programa para mostrarlo al usuario, y entonces la RAM
+se convierte en un factor limitante. En Axis, donde se dibuja la gráfica de vista previa
+por defecto, el tiempo de redibujo también se convierte en un límite práctico en el tamaño del programa.
+La vista previa se puede desactivar en Axis para acelerar la carga de grandes
+programas. En Axis, las secciones de la vista previa se pueden desactivar usando comentarios de
+<a href="../gui/axis_es.html#axis:preview-control">control de vista previa</a>.</p></div>
+<div class="paragraph"><p><a id="gcode:order-of-execution"></a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_orden_de_ejecución_del_codigo_g">23. Orden de ejecución del Codigo G</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El orden de ejecución de los elementos en una línea no se define por la
+posición de cada elemento en la línea, sino según la siguiente lista:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Comandos O-word (opcionalmente seguidos de un comentario, pero no se permiten otras palabras
+en la misma línea)
+</p>
+</li>
+<li>
+<p>
+Comentario (incluido mensajes)
+</p>
+</li>
+<li>
+<p>
+Establecer el modo de velocidad de alimentación (G93, G94).
+</p>
+</li>
+<li>
+<p>
+Establecer la velocidad de alimentación (F).
+</p>
+</li>
+<li>
+<p>
+Establecer la velocidad del husillo (S).
+</p>
+</li>
+<li>
+<p>
+Seleccionar herramienta (T).
+</p>
+</li>
+<li>
+<p>
+I/O en pines HAL (M62-M68).
+</p>
+</li>
+<li>
+<p>
+Cambiar herramienta (M6) y Establecer número de herramienta (M61).
+</p>
+</li>
+<li>
+<p>
+Husillo encendido o apagado (M3, M4, M5).
+</p>
+</li>
+<li>
+<p>
+Guardar estado (M70, M73), Restaurar estado (M72), Invalidar estado (M71).
+</p>
+</li>
+<li>
+<p>
+Refrigerante activado o desactivado (M7, M8, M9).
+</p>
+</li>
+<li>
+<p>
+Activar o desactivar los ajustes (M48, M49, M50, M51, M52, M53).
+</p>
+</li>
+<li>
+<p>
+Comandos definidos por el usuario (M100-M199).
+</p>
+</li>
+<li>
+<p>
+Dwell (G4).
+</p>
+</li>
+<li>
+<p>
+Establecer plano activo (G17, G18, G19).
+</p>
+</li>
+<li>
+<p>
+Establecer unidades de longitud (G20, G21).
+</p>
+</li>
+<li>
+<p>
+Compensación de radio de corte activada o desactivada (G40, G41, G42)
+</p>
+</li>
+<li>
+<p>
+Offset de longitud del cortador activada o desactivada (G43, G49)
+</p>
+</li>
+<li>
+<p>
+Selección del sistema de coordenadas (G54, G55, G56, G57, G58, G59, G59.1, G59.2, G59.3).
+</p>
+</li>
+<li>
+<p>
+Establecer el modo de control de ruta (G61, G61.1, G64)
+</p>
+</li>
+<li>
+<p>
+Establecer el modo de distancia (G90, G91).
+</p>
+</li>
+<li>
+<p>
+Establecer el modo de retracción (G98, G99).
+</p>
+</li>
+<li>
+<p>
+Ir a la ubicación de referencia (G28, G30) o cambiar datos del sistema de coordenadas
+  (G10) o establecer offsets de eje (G52, G92, G92.1, G92.2, G94).
+</p>
+</li>
+<li>
+<p>
+Realizar movimiento (G0 a G3, G33, G38.n, G73, G76, G80 a G89), como se modificó
+  (posiblemente) por G53.
+</p>
+</li>
+<li>
+<p>
+Detener (M0, M1, M2, M30, M60).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_buenas_practicas_de_código_g">24. Buenas practicas de código G</h2>
+<div class="sectionbody">
+<div class="paragraph"><div class="title">Utilice una precisión decimal adecuada.</div><p>Use al menos 3 dígitos después del decimal al fresar en milímetros,
+y al menos 4 dígitos después del decimal al fresar en pulgadas.</p></div>
+<div class="paragraph"><div class="title">Use espacios en blanco consistentes.</div><p>El código G es más legible cuando aparece al menos un espacio antes de las palabras.
+Si bien está permitido insertar espacios en blanco en medio de los números, no hay razón para hacerlo.</p></div>
+<div class="paragraph"><div class="title">Utilice arcos de formato central.</div><p>Los arcos de formato central (que usan <em>I- J- K-</em> en lugar de <em>R-</em>) se comportan más
+consistentemente que los arcos de formato R, particularmente para
+ángulos incluidos cerca de 180 o 360 grados.</p></div>
+<div class="paragraph"><div class="title">Utilice un conjunto de grupos modales en el preámbulo</div><p>Cuando la ejecución correcta de su programa depende de la configuración modal,
+asegúrese de configurarlos al comienzo del programa de pieza. Los modos pueden llegar
+desde programas anteriores y desde los comandos MDI.</p></div>
+<div class="paragraph"><p>Preámbulo de ejemplo para una fresadora.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">G17</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G20</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G40</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G49</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G54</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G80</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G90</span></span> <span style="font-weight: bold"><span style="color: #0000FF">G94</span></span></tt></pre></div></div>
+<div class="paragraph"><p>G17 usar plano XY, G20 modo pulgadas, G40 cancelar compensación de diámetro,
+G49 cancelar offset de longitud, G54 usar sistema de coordenadas 1, G80 cancelar
+ciclos fijos, G90 modo de distancia absoluta, G94 modo de avance/minuto.</p></div>
+<div class="paragraph"><p>Quizás la configuración modal más crítica es la unidad de distancia; si usted
+no incluyen G20 o G21, entonces diferentes máquinas fresarán el
+programa a diferentes escalas. Otras configuraciones, como el modo de retorno en
+los ciclos fijos también pueden ser importantes.</p></div>
+<div class="paragraph"><div class="title">No ponga demasiadas cosas en una línea.</div><p>Ignore todo en la Sección <a href="overview_es.html#gcode:order-of-execution">Orden de ejecución</a>, y en su lugar
+no escriba ninguna línea de código que sea ambigua.</p></div>
+<div class="paragraph"><div class="title">No establezca y use un parámetro en la misma línea.</div><p>No use y establezca un parámetro en la misma línea, aunque
+la semántica está bien definida. Actualizar una variable a un nuevo valor, como
+<em>#1=[#1+#2]</em> está bien.</p></div>
+<div class="paragraph"><div class="title">No use números de línea.</div><p>Los números de línea no ofrecen beneficios. Cuando se informan números de línea en
+mensajes de error, los números se refieren al número de línea en el archivo, no
+al valor de palabras N.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ejes_lineales_y_rotativos">25. Ejes lineales y rotativos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Puesto que el significado de una palabra F en el modo de alimentación por minuto varía
+dependiendo de qué ejes se ordena mover, y ya que la cantidad
+del material eliminado no depende solo de la velocidad de alimentación, puede ser
+más fácil usar el modo de alimentación de tiempo inverso G93  para lograr la
+tasa de eliminación de material deseada.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mensajes_de_error_comunes">26. Mensajes de error comunes</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Código G fuera de rango</em> - se utilizó un código G mayor que G99; el alcance de
+los códigos G en LinuxCNC son 0 - 99. No todos los números entre 0 y 99 son
+código G válidos.
+</p>
+</li>
+<li>
+<p>
+<em>Código g desconocido utilizado</em> - se utilizó un código G que no forma parte de LinuxCNC.
+</p>
+</li>
+<li>
+<p>
+<em>palabra i, j, k sin Gx para usarla</em> - las palabras i, j y k deben usarse en la misma
+línea del código G.
+</p>
+</li>
+<li>
+<p>
+<em>No se pueden usar valores de eje sin un código g que los use</em> - Los valores de eje
+no debe usarse en una línea sin un código G modal vigente o un código G
+en la misma linea.
+</p>
+</li>
+<li>
+<p>
+<em>Archivo finalizado sin signo de porcentaje o fin de programa</em> - Cada archivo de código G debe
+termina en un M2 o M30 o estar envuelto con signos de porcentaje %.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

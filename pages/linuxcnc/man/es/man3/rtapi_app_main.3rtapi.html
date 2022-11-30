@@ -1,0 +1,116 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:22 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_app_main</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_app_main</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_app_main
+- Funci&Atilde;&sup3;n proporcionada por el usuario para
+inicializar un componente</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;rtapi_app.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="46%">
+
+
+<p style="margin-top: 1em"><b>int rtapi_app_main(void)
+{</b><i>...</i><b>}</b></p> </td>
+<td width="43%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguno</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El cuerpo de
+<b>rtapi_app_main</b>, que es proporcionado por el autor del
+componente, generalmente consiste en una llamada a
+rtapi_init o hal_init, seguido de otro c&Atilde;&sup3;digo
+de inicializaci&Atilde;&sup3;n espec&Atilde;fico del
+componente.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve 0 en
+&Atilde;&copy;xito. Devuelve un valor errno negativo (por
+ejemplo, -EINVAL) en error. El c&Atilde;&sup3;digo existente
+tambi&Atilde;&copy;n devuelve valores de error RTAPI o HAL,
+pero usando valores errno negativos da mejores
+diagn&Atilde;&sup3;sticos desde insmod.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Llamado
+autom&Atilde;&iexcl;ticamente por la infraestructura rtapi
+en un contexto de inicializaci&Atilde;&sup3;n (no tiempo
+real).</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_app_exit(3rtapi)</b>,
+<b>rtapi_init(3rtapi)</b>, <b>hal_init(3hal)</b></p>
+<hr>
+</body>
+</html>

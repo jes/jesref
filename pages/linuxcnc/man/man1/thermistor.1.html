@@ -1,0 +1,156 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:37 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>THERMISTOR</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">THERMISTOR</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">thermistor -
+compute temperature indicated by a thermistor</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>thermistor</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+computes the temperature indicated by a thermistor in a
+voltage-divider ladder. It uses the Beta-parameter variant
+of the Steinhart-Hart equation, described here:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">http://en.wikipedia.org/wiki/Thermistor</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>thermistor.</b><i>N</i><b>.t0-c</b>
+float in</p>
+
+<p style="margin-left:22%;">Reference temperature of the
+thermistor, in degrees Celsius (typically 25 C). This must
+be set before the component can compute the thermistor
+temperature. The reference temperature information is
+supplied by the thermistor manufacturer.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.r0</b>
+float in</p>
+
+<p style="margin-left:22%;">Resistance of the thermistor at
+the reference temperature. This must be set before the
+component can compute the thermistor temperature. The
+reference resistance information is supplied by the
+thermistor manufacturer.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.beta</b>
+float in</p>
+
+<p style="margin-left:22%;">Beta parameter of the
+thermistor (sometimes just called B). This must be set
+before the component can compute the thermistor temperature.
+The Beta parameter is supplied by the thermistor
+manufacturer.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.r-other</b>
+float in</p>
+
+<p style="margin-left:22%;">Resistance of the other
+resistor in the voltage-divider ladder. This must be set
+before the component can compute the thermistor
+temperature.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.v-total</b>
+float in</p>
+
+<p style="margin-left:22%;">Supply voltage of the
+voltage-divider ladder.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.v-thermistor</b>
+float in</p>
+
+<p style="margin-left:22%;">Voltage drop across the
+termistor.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.temperature-c</b>
+float out</p>
+
+<p style="margin-left:22%;">Temperature sensed by the
+thermistor, in degrees Celsius.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.temperature-k</b>
+float out</p>
+
+<p style="margin-left:22%;">Temperature sensed by the
+thermistor, in Kelvins.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.temperature-f</b>
+float out</p>
+
+<p style="margin-left:22%;">Temperature sensed by the
+thermistor, in degrees Fahrenheit.</p>
+
+
+<p style="margin-left:11%;"><b>thermistor.</b><i>N</i><b>.resistance</b>
+float out</p>
+
+<p style="margin-left:22%;">Computed resistance of the
+thermistor.</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_uart_send</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_uart_send</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_uart_send -
+write data to a Hostmot2 UART</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_uart_send(char* name,
+unsigned char data[], int count)</p></td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_uart_send</b>
+write &rsquo;count&rsquo; bytes of data to the UART
+&quot;name&quot; from the buffer &rsquo;data&rsquo;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The UART FIFO
+is 64 bytes deep, attempts to transmit more than 64 bytes
+may have unexpected effects.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">&quot;name&quot;
+is a unique string given to each UART during hostmot2 setup.
+The names of the available channels are printed to standard
+output during the driver loading process and take the form:
+hm2_&lt;board name&gt;.&lt;board
+index&gt;.uart.&lt;index&gt; For example
+hm2_5i23.0.uart.0</p>
+
+<p style="margin-left:11%; margin-top: 1em">This function
+performs writes of data to the specified UART.It should be
+used inside a function in a realtime or userspace HAL
+component.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns the
+number of bytes sent on success and -1 on failure.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">man
+hm2_uart_setup, man hm2_uart_read See src/hal/drivers
+mesa_uart.comp for an example usage.</p>
+<hr>
+</body>
+</html>

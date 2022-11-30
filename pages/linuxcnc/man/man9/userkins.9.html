@@ -1,0 +1,134 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:51 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>USERKINS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">USERKINS</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">userkins -
+Template for user-built kinematics</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="74%">
+
+
+<p style="margin-top: 1em"><b>loadrt userkins
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="15%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The
+userkins.comp file is a template for creating kinematics
+that can be user-built using halcompile.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The unmodified
+userkins component can be used as a kinematics file for a
+machine with identity kinematics for an xyz machine
+employing 3 joints (motors).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>USAGE:</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">1) Copy the
+userkins.comp file to a user-owned <br>
+directory (<b>mydir</b>).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Note: The
+userkins.comp file can be downloaded from:
+<a href="https://github.com/LinuxCNC/linuxcnc/raw/2.8/src/hal/components/userkins.comp">https://github.com/LinuxCNC/linuxcnc/raw/2.8/src/hal/components/userkins.comp</a>
+<br>
+where &rsquo;2.8&rsquo; is the branch name (use
+&rsquo;master&rsquo; for <br>
+the master branch)</p>
+
+<p style="margin-left:11%; margin-top: 1em">For a RIP
+(run-in-place) build, the file is located in <br>
+the git tree as: <br>
+src/hal/components/userkins.comp</p>
+
+<p style="margin-left:11%; margin-top: 1em">2) Edit the
+functions kinematicsForward() and <br>
+kinematicsInverse() as required <br>
+3) If required, add hal pins following examples in <br>
+the template code <br>
+4) Build and install the component using halcompile: <br>
+$ cd <b>mydir</b> <br>
+$ [sudo] halcompile --install userkins.comp <br>
+# Note: <br>
+# sudo is required when using a deb install <br>
+# sudo is <b>not</b> required for run-in-place builds <br>
+# $ man halcompile for more info <br>
+5) Specify userkins in an ini file as: <b><br>
+[KINS] <br>
+KINEMATICS=userkins <br>
+JOINTS=3</b> <br>
+# the number of JOINTS must agree with the <br>
+# number of joints used in your modified userkins.comp <br>
+6) Note: the manpage for userkins is not updated by <br>
+halcompile --install <br>
+7) To use a different component name, rename the file <br>
+(example mykins.comp) and change all instances of <br>
+&rsquo;userkins&rsquo; to &rsquo;mykins&rsquo;</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>userkins.</b><i>N</i><b>.dummy</b>
+bit out (default: <i>1</i>)</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

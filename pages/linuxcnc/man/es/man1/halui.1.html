@@ -1,0 +1,1168 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HALUI</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HALUI</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#USO">USO</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+<a href="#HISTORIA">HISTORIA</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#REPORTE DE ERRORES">REPORTE DE ERRORES</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halui -
+observacion de los pines HAL y ordenes LinuxCNC a traves de
+NML</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halui</b>
+[<b>-ini &lt;path-to-ini&gt;</b>]</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halui</b> se
+usa para construir una interfaz de usuario usando mandos e
+interruptores hardware. Exporta un gran numero de pines, y
+actua en consecuencia cuando estos cambian</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-ini
+name</b></p>
+
+<p style="margin-left:22%;">Use <i>name</i> como el archivo
+de configuracion. Nota: halui debe encontrar el archivo nml
+especificado en el ini; normalmente ese archivo esta en la
+misma carpeta que el ini, por lo que tiene sentido ejecutar
+halui desde esa carpeta.</p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Cuando se
+ejecuta, <b>halui</b> exportara una gran cantidad de pines.
+Un usuario puede conectarlos a sus mandos fisicos,
+interruptores y leds, y cuando se produzca un cambio, Halui
+disparara el evento apropiado.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>halui</b>
+espera que las se&ntilde;ales sean limpias, por lo que si es
+necesario (contacto con ruido en el boton), conecte primero
+el boton fisico a un filtro debounce HAL.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Abortar <br>
+halui.abort</b> bit in</p>
+
+<p style="margin-left:22%;">pin para borrar la mayoria de
+los errores</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Herramientas
+<br>
+halui.tool.length-offset.a</b> float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje A</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.b</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje B</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.c</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje C</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.u</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje U</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.v</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje V</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.w</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje W</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.x</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje X</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.y</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje Y</p>
+
+
+<p style="margin-left:11%;"><b>halui.tool.length-offset.z</b>
+float out</p>
+
+<p style="margin-left:22%;">Offset aplicado de la longitud
+de la herramienta actual para el eje Z</p>
+
+<p style="margin-left:11%;"><b>halui.tool.diameter</b>
+float out</p>
+
+<p style="margin-left:22%;">Diametro actual de la
+herramienta, o 0 si no hay ninguna herramienta cargada.</p>
+
+<p style="margin-left:11%;"><b>halui.tool.number</b> u32
+out</p>
+
+<p style="margin-left:22%;">herramienta seleccionada
+actual</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Husillo <br>
+halui.spindle.brake-is-on</b> bit out</p>
+
+<p style="margin-left:22%;">Pin de estado que dice si el
+freno esta activado</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.brake-off</b>
+bit in</p>
+
+<p style="margin-left:22%;">Pin para desactivar el freno
+del husillo.</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.brake-on</b>
+bit in</p>
+
+<p style="margin-left:22%;">Pin para activar el freno de
+husillo</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.decrease</b>
+bit in</p>
+
+<p style="margin-left:22%;">Un flanco ascendente en este
+pin disminuye la velocidad actual del husillo en 100</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.forward</b>
+bit in</p>
+
+<p style="margin-left:22%;">Un flanco ascendente en este
+pin hace que el husillo gire en sentido normal</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.increase</b>
+bit in</p>
+
+<p style="margin-left:22%;">Un flanco ascendente en este
+pin aumenta la velocidad actual del husillo en 100</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.is-on</b> bit
+out</p>
+
+<p style="margin-left:22%;">Pin de estado que indica si el
+husillo esta encendido</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.reverse</b>
+bit in</p>
+
+<p style="margin-left:22%;">Un flanco ascendente en este
+pin hace que el husillo gire en sentido inverso</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle.runs-backward</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin de estado que indica si el
+eje esta en sentido inverso</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle.runs-forward</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin de estado que indica si el
+eje esta en sentido normal</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.start</b> bit
+in</p>
+
+<p style="margin-left:22%;">Un flanco ascendente en este
+pin inicia el husillo</p>
+
+<p style="margin-left:11%;"><b>halui.spindle.stop</b> bit
+in</p>
+
+<p style="margin-left:22%;">Un flanco ascendente en este
+pin detiene el husillo</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Ajuste del
+husillo (override)</b> <br>
+(SO = Spindle Override. FO = Feed Override) <b><br>
+halui.spindle-override.count-enable</b> bit in (por defecto:
+<b>TRUE</b>)</p>
+
+<p style="margin-left:22%;">Cuando sea VERDADERO, modifica
+el ajuste del husillo cuando los recuentos cambien.</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle-override.counts</b>
+s32 in</p>
+
+<p style="margin-left:22%;">cuenta X escala = porcentaje de
+ajuste del husillo</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle-override.decrease</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para disminuir el SO
+(-=escala)</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle-override.direct
+-value</b> bit in</p>
+
+<p style="margin-left:22%;">pin para habilitar la entrada
+del valor directo de ajuste del husillo</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle-override.increase</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para aumentar el SO (+=
+escala)</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle-override.scale</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para establecer la escala
+de cuentas para SO</p>
+
+
+<p style="margin-left:11%;"><b>halui.spindle-override.value</b>
+float out</p>
+
+<p style="margin-left:22%;">valor actual de FO</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Programa
+<br>
+halui.program.block-delete.is-on</b> bit out</p>
+
+<p style="margin-left:22%;">Pin de estado que indica que la
+eliminacion de bloque esta activada</p>
+
+
+<p style="margin-left:11%;"><b>halui.program.block-delete.off</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para solicitar que la
+eliminacion de bloque este desactivada</p>
+
+
+<p style="margin-left:11%;"><b>halui.program.block-delete.on</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para solicitar que la
+eliminacion de bloque esta activada</p>
+
+<p style="margin-left:11%;"><b>halui.program.is-idle</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin de estado diciendo que no
+hay ningun programa en ejecucion</p>
+
+<p style="margin-left:11%;"><b>halui.program.is-paused</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin de estado que indica que un
+programa esta en pausa</p>
+
+
+<p style="margin-left:11%;"><b>halui.program.is-running</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado que dice que un
+programa se esta ejecutando</p>
+
+
+<p style="margin-left:11%;"><b>halui.program.optional-stop.is-on</b>
+bit out</p>
+
+<p style="margin-left:22%;">Pin de estado que indica que la
+parada opcional esta activada</p>
+
+
+<p style="margin-left:11%;"><b>halui.program.optional-stop.off</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin solicitando que la parada
+opcional este desactivada</p>
+
+
+<p style="margin-left:11%;"><b>halui.program.optional-stop.on</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin solicitando que la parada
+opcional este activada</p>
+
+<p style="margin-left:11%;"><b>halui.program.pause</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para pausar un programa</p>
+
+<p style="margin-left:11%;"><b>halui.program.resume</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para reanudar un
+programa</p>
+
+<p style="margin-left:11%;"><b>halui.program.run</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para ejecutar un
+programa</p>
+
+<p style="margin-left:11%;"><b>halui.program.step</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para avanzar en un
+programa</p>
+
+<p style="margin-left:11%;"><b>halui.program.stop</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para detener un programa
+(nota: este pin hace lo mismo que halui.abort)</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Modo <br>
+halui.mode.auto</b> bit in</p>
+
+<p style="margin-left:22%;">pin para solicitar el modo
+auto</p>
+
+<p style="margin-left:11%;"><b>halui.mode.is-auto</b> bit
+out</p>
+
+<p style="margin-left:22%;">pin para se&ntilde;alar modo
+auto activado</p>
+
+<p style="margin-left:11%;"><b>halui.mode.is-joint</b> bit
+out</p>
+
+<p style="margin-left:22%;">pin para articulacion en modo
+de jog de articulacion activado</p>
+
+<p style="margin-left:11%;"><b>halui.mode.is -manual</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin para se&ntilde;alar modo
+manual activado</p>
+
+<p style="margin-left:11%;"><b>halui.mode.is-mdi</b> bit
+out</p>
+
+<p style="margin-left:22%;">pin para se&ntilde;alar modo
+mdi activado</p>
+
+<p style="margin-left:11%;"><b>halui.mode.is-teleop</b> bit
+out</p>
+
+<p style="margin-left:22%;">pin para se&ntilde;alar que el
+modo jog coordinado esta activado</p>
+
+<p style="margin-left:11%;"><b>halui.mode.joint</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para solicitar articulacion
+en modo jog articulacion</p>
+
+<p style="margin-left:11%;"><b>halui.mode.manual</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para solicitar modo
+manual</p>
+
+<p style="margin-left:11%;"><b>halui.mode.mdi</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para solicitar modo mdi</p>
+
+<p style="margin-left:11%;"><b>halui.mode.teleop</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para solicitar el modo jog
+coordinado</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>mdi</b>
+(opcional) <b><br>
+halui.mdi-command-XX</b> bit in</p>
+
+<p style="margin-left:22%;"><b>halui</b> busca las
+variables ini [HALUI]MDI_COMMAND, y exporta un pin para cada
+comando que encuentra. Cuando el pin se hace VERDADERO,
+<b>halui</b> ejecuta el comando MDI especificado. XX es un
+numero de dos digitos a partir de 00. Si no se establecen
+variables [HALUI]MDI_COMMAND en el archivo ini, no seran
+exportados pines halui.mdi-command-XX.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>niebla <br>
+halui.mist.is-on</b> bit out</p>
+
+<p style="margin-left:22%;">pin para se&ntilde;alar niebla
+activada</p>
+
+<p style="margin-left:11%;"><b>halui.mist.off</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para detener niebla</p>
+
+<p style="margin-left:11%;"><b>halui.mist.on</b> bit in</p>
+
+<p style="margin-left:22%;">pin para activar niebla</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>max-velocidad
+<br>
+halui.max-velocity.count-enable</b> bit in (por defecto:
+<b>TRUE</b> )</p>
+
+<p style="margin-left:22%;">Cuando sea VERDADERO, modifica
+la velocidad maxima cuando cambie
+halui.max-velocity.counts.</p>
+
+
+<p style="margin-left:11%;"><b>halui.max-velocity.counts</b>
+s32 in</p>
+
+<p style="margin-left:22%;">Cuando .count-enable es
+VERDADERO, halui cambia la velocidad maxima en respuesta a
+cambios en este pin. Por lo general, esta conectado a un MPG
+en un panel de operador o jog colgante. Cuando .count-enable
+es FALSO, halui ignora este pin.</p>
+
+
+<p style="margin-left:11%;"><b>halui.max-velocity.direct-value</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando este pin es VERDADERO,
+halui ordena la velocidad maxima directamente a (.counts *
+.scale). Cuando este pin es FALSO, halui ordena la maxima
+velocidad de forma relativa: cambie la velocidad maxima en
+una cantidad igual a (cambio en .counts * .scale).</p>
+
+
+<p style="margin-left:11%;"><b>halui.max-velocity.increase</b>
+bit in</p>
+
+<p style="margin-left:22%;">Un flanco positivo (una
+transicion de FALSO a VERDADERO) en este pin aumenta la
+velocidad maxima por el valor del pin de escala. (Tenga en
+cuenta que halui siempre responde a este pin,
+independientemente del pin .count-enable.)</p>
+
+
+<p style="margin-left:11%;"><b>halui.max-velocity.decrease</b>
+bit in</p>
+
+<p style="margin-left:22%;">Un flanco positivo (una
+transicion de FALSO a VERDADERO) en este pin disminuye la
+velocidad maxima por el valor del pin de escala. (Tenga en
+cuenta que halui siempre responde a este pin,
+independientemente del pin .count-enable.)</p>
+
+
+<p style="margin-left:11%;"><b>halui.max-velocity.scale</b>
+float in</p>
+
+<p style="margin-left:22%;">Este pin controla la escala de
+cambios a la velocidad maxima. Cada unidad cambia en
+.counts, y cada flanco positivo en .increase y .decrease,
+cambia la velocidad maxima por la escala. Las unidades del
+pin de escala son unidades-maquina por segundo.</p>
+
+
+<p style="margin-left:11%;"><b>halui.max-velocity.value</b>
+float out</p>
+
+<p style="margin-left:22%;">Valor actual para la velocidad
+maxima, en unidades-maquina por segundo.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>maquina <br>
+halui.machine.units-per-mm</b> float out</p>
+
+<p style="margin-left:22%;">pin para
+unidades-maquina-per-mm (pulgada: 1 / 25.4, mm: 1) de
+acuerdo con la configuracion inifile: [TRAJ]LINEAR_UNITS</p>
+
+<p style="margin-left:11%;"><b>halui.machine.is-on</b> bit
+out</p>
+
+<p style="margin-left:22%;">pin que se&ntilde;ala maquina
+encendida/apagada</p>
+
+<p style="margin-left:11%;"><b>halui.machine.off</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para apagado de la
+maquina</p>
+
+<p style="margin-left:11%;"><b>halui.machine.on</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para encendido de la
+maquina</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>lubricacion
+<br>
+halui.lube.is-on</b> bit out</p>
+
+<p style="margin-left:22%;">pin que se&ntilde;ala
+lubricacion encendida</p>
+
+<p style="margin-left:11%;"><b>halui.lube.off</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para detener la
+lubricacion</p>
+
+<p style="margin-left:11%;"><b>halui.lube.on</b> bit in</p>
+
+<p style="margin-left:22%;">pin para activar la
+lubricacion</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Articulaciones
+(joints)</b> (<b>N</b> = numero de articulacion (0 ...
+num_joints-1)) <b><br>
+halui.joint.N.select</b> bit in</p>
+
+<p style="margin-left:22%;">pin para seleccionar la
+articulacion N</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.is-selected</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; articulacion N
+seleccionada</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.has-fault</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; la articulacion
+N tiene un fallo</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.home</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para referenciado de la
+articulacion N</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.is-homed</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; la articulacion
+N esta referenciada</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.on-hard-max-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; la articulacion
+N esta en el limite hardware positivo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.on-hard-min-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; la articulacion
+N esta en el limite hardware negativo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.on-soft-max-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; la articulacion
+N esta en el limite software positivo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.on-soft-min-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; la articulacion
+N esta en el limite software negativo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.override-limits</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; los limites de
+articulacion N se anulan temporalmente</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.unhome</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para desreferenciar
+articulacion N</p>
+
+<p style="margin-left:11%;"><b>halui.joint.selected</b> u32
+out</p>
+
+<p style="margin-left:22%;">pin de numero de articulacion
+seleccionado (0 ... num_joints-1)</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.has-fault</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin pin de estado; seleccion de
+articulacion ha fallado</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.home</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para referenciar la
+articulacion seleccionada</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.is-homed</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; indica que la
+articulacion seleccionada esta referenciada.</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.on-hard-max-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; indica que la
+articulacion seleccionada esta en el limite hardware
+positivo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.on-hard-min-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; indica que la
+articulacion seleccionada esta en el limite hardware
+negativo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.on-soft-max-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; indica que la
+articulacion seleccionada esta en el limite software
+positivo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.on-soft-min-limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin de estado; indica que la
+articulacion seleccionada esta en el limite software
+negativo</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.override
+-limits</b> bit out</p>
+
+<p style="margin-left:22%;">pin de estado; indica que los
+limites de la articulacion seleccionada se anulan
+temporalmente</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.unhome</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para desreferenciar la
+articulacion seleccionada</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>jogging de
+articulacion</b> (<b>N</b> = numero de articulacion (0 ...
+num_joints -1)) <b><br>
+halui.joint.jog-deadband</b> float in Pin para configurar la
+banda muerta analogica de jog (entradas analogicas jog mas
+peque&ntilde;as o lentas que este valor (en valor absoluto)
+se ignora) <b><br>
+halui.joint.jog-speed</b> float in</p>
+
+<p style="margin-left:22%;">pin para ajustar la velocidad
+de jog para jogging mas/menos</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.analog</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para mover la articulacion
+N usando un valor flotante (por ejemplo, un joystick). El
+valor, tipicamente establecido entre 0.0 y &nbsp;(+ - 1.0),
+se usa como un multiplicador jog-speed.</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.increment</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para configurar el
+incremento de jog para la articulacion N cuando se utiliza
+el incremento -plus/minus</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.increment-minus</b>
+bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara un
+movimiento de articulacion N en la direccion negativa por la
+cantidad de incremento</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.N.increment-plus</b>
+bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara un
+movimiento de articulacion N en la direccion positiva por la
+cantidad de incremento</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.minus</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para jog de la articulacion
+N en direccion negativa en la velocidad
+halui.joint.jog-speed</p>
+
+<p style="margin-left:11%;"><b>halui.joint.N.plus</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para jog de la articulacion
+N en direccion positiva a la velocidad
+halui.joint.jog-speed</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.increment</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para configurar el
+incremento de jog para la articulacion seleccionada cuando
+se utiliza el incremento -plus/minus</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.increment-minus</b>
+bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara un
+jog de articulacion seleccionada, en la direccion negativa,
+la cantidad de incremento</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.increment-plus</b>
+bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara un
+jog de articulacion seleccionada, en la direccion positiva,
+la cantidad de incremento</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.minus</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para mover la articulacion
+seleccionada en direccion negativa a la velocidad
+halui.joint.jog-speed</p>
+
+
+<p style="margin-left:11%;"><b>halui.joint.selected.plus</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para jog de la articulacion
+seleccionada en direccion positiva a la velocidad
+halui.joint.jog-speed</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Ejes (axis)
+(L</b> = indice del eje (0:x 1:y 2:z 3:a 4:b 5:c 6:u 7:v
+8:w)) <b><br>
+halui.axis.L.select</b> bit in</p>
+
+<p style="margin-left:22%;">Pin para seleccionar eje por
+indice</p>
+
+<p style="margin-left:11%;"><b>halui.axis.L.is
+-selected</b> bit out</p>
+
+<p style="margin-left:22%;">pin de estado; el eje L esta
+seleccionado</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.L.pos-commanded</b>
+float out</p>
+
+<p style="margin-left:22%;">Posicion ordenada del eje, en
+coordenadas maquina.</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.L.pos-feedback</b>
+float out&nbsp;fR</p>
+
+<p style="margin-left:22%;">Realimentacion de posicion del
+eje, en coordenadas maquina.</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.L.pos-relative</b>
+float out</p>
+
+<p style="margin-left:22%;">Posicion ordenada del eje, en
+coordenadas relativas.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>axis
+jogging</b> (<b>L</b> = indice del eje (0:x 1:y 2:z 3:a 4:b
+5:c 6:u 7:v 8:w) <b><br>
+halui.axis.jog-deadband</b> float in</p>
+
+<p style="margin-left:22%;">Pin para configurar la banda
+muerta analogica de jog (entradas analogicas jog mas
+peque&ntilde;as o lentas que este valor (en valor absoluto)
+se ignora)</p>
+
+<p style="margin-left:11%;"><b>halui.axis.jog-speed</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para ajustar la velocidad
+de jog para jogging mas/menos</p>
+
+<p style="margin-left:11%;"><b>halui.axis.L.analog</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para mover el eje L
+utilizando un valor flotante (por ejemplo, un joystick). El
+valor, tipicamente establecido entre 0.0 y &plusmn;1.0, se
+usa como un multiplicador jog-speed.</p>
+
+<p style="margin-left:11%;"><b>halui.axis.L.increment</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para configurar el
+incremento de jog para el eje L cuando se utiliza el
+incremento -plus/minus</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.L.increment-minus</b>
+bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara que
+el eje L avance, en la direccion negativa, la cantidad de
+incremento</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.L.increment-plus</b>
+bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara que
+el eje L avance, en la direccion positiva, la cantidad de
+incremento</p>
+
+<p style="margin-left:11%;"><b>halui.axis.L.minus</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para mover el eje L, en
+direccion negativa, a la velocidad halui.axis.jog-speed</p>
+
+<p style="margin-left:11%;"><b>halui.axis.L.plus</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para mover el eje L, en
+direccion positiva, a la velocidad halui.axis.jog-speed</p>
+
+<p style="margin-left:11%;"><b>halui.axis.selected</b> u32
+out</p>
+
+<p style="margin-left:22%;">eje seleccionado (por indice:
+(0:x 1:y 2:z 3:a 4:b 5:c 6:u 7:v 8:w)</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.selected.increment</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para configurar el
+incremento de jog para el eje seleccionado cuando se utiliza
+el incremento -plus/minus</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.selected.increment
+-minus</b> bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara que
+el eje seleccionado avance, en la direccion negativa, la
+cantidad de incremento</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.selected.increment
+-plus</b> bit in</p>
+
+<p style="margin-left:22%;">un flanco ascendente hara que
+el eje seleccionado avance, en la direccion positiva, la
+cantidad de incremento</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.selected.minus</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para mover el eje
+seleccionado, en direccion negativa, a la velocidad de
+velocidad halui.axis.jog-speed</p>
+
+
+<p style="margin-left:11%;"><b>halui.axis.selected.plus</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para mover el eje
+seleccionado, en direccion positiva, a la velocidad
+halui.axis.jog-speed</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>inundacion
+<br>
+halui.flood.is-on</b> bit out</p>
+
+<p style="margin-left:22%;">pin para inundacion ON</p>
+
+<p style="margin-left:11%;"><b>halui.flood.off</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para inundacion OFF</p>
+
+<p style="margin-left:11%;"><b>halui.flood.on</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para activar inundacion</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Ajuste
+manual de la alimentacion (Feed Override)(FO) <br>
+halui.feed-override.count-enable</b> bit in (por defecto:
+<b>TRUE</b> )</p>
+
+<p style="margin-left:22%;">Cuando sea VERDADERO, modifica
+la alimentacion cuando cambien los conteos.</p>
+
+
+<p style="margin-left:11%;"><b>halui.feed-override.counts</b>
+s32 in</p>
+
+<p style="margin-left:22%;">cuenta X escala = porcentaje de
+ajuste de alimentacion</p>
+
+
+<p style="margin-left:11%;"><b>halui.feed-override.decrease</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para disminuir FO
+(-=escala)</p>
+
+<p style="margin-left:11%;"><b>halui.feed-override.direct
+-value</b> bit in</p>
+
+<p style="margin-left:22%;">pin para habilitar la entrada
+directa de valor FO</p>
+
+
+<p style="margin-left:11%;"><b>halui.feed-override.increase</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para aumentar FO
+(+=escala)</p>
+
+
+<p style="margin-left:11%;"><b>halui.feed-override.scala</b>
+flota en</p>
+
+<p style="margin-left:22%;">pin para ajustar la escala en
+el cambio de FO</p>
+
+
+<p style="margin-left:11%;"><b>halui.feed-override.value</b>
+float out</p>
+
+<p style="margin-left:22%;">valor de reemplazo de
+alimentacion actual</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Ajuste
+manual de rapidos (Rapid override) <br>
+halui.rapid-override.count-enable</b> bit in (por defecto:
+<b>TRUE</b> )</p>
+
+<p style="margin-left:22%;">Cuando sea TRUE, modifica Rapid
+Override cuando los recuentos cambien.</p>
+
+
+<p style="margin-left:11%;"><b>halui.rapid-override.counts</b>
+s32 in</p>
+
+<p style="margin-left:22%;">cuenta X escala = porcentaje de
+ajuste de rapidos</p>
+
+
+<p style="margin-left:11%;"><b>halui.rapid-override.decrease</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para disminuir el reemplazo
+rapido (-= escala)</p>
+
+<p style="margin-left:11%;"><b>halui.rapid-override.direct
+-value</b> bit in</p>
+
+<p style="margin-left:22%;">pin para habilitar la entrada
+de valor directo de rapidos</p>
+
+
+<p style="margin-left:11%;"><b>halui.rapid-override.increase</b>
+bit in</p>
+
+<p style="margin-left:22%;">pin para aumentar el ajuste de
+rapidos (+= escala)</p>
+
+
+<p style="margin-left:11%;"><b>halui.rapid-override.scale</b>
+float in</p>
+
+<p style="margin-left:22%;">pin para establecer la escala
+en el cambio de rapidos</p>
+
+
+<p style="margin-left:11%;"><b>halui.rapid-override.value</b>
+float out</p>
+
+<p style="margin-left:22%;">valor de ajuste de rapidos
+actual</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>estop <br>
+halui.estop.activate</b> bit in</p>
+
+<p style="margin-left:22%;">pin para configurar Estop ON
+(interno de LinuxCNC)</p>
+
+
+<p style="margin-left:11%;"><b>halui.estop.is-activated</b>
+bit out</p>
+
+<p style="margin-left:22%;">pin para mostrar el estado
+Estop On/Off (interno de LinuxCNC)</p>
+
+<p style="margin-left:11%;"><b>halui.estop.reset</b> bit
+in</p>
+
+<p style="margin-left:22%;">pin para reiniciar Estop OFF
+(interno de LinuxCNC)</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Home
+(referencia) <br>
+halui.home-all</b> bit in</p>
+
+<p style="margin-left:22%;">pin para solicitar referenciar
+todo (solo disponible cuando se especifica una secuencia de
+referencia valida)</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+<h2>HISTORIA
+<a name="HISTORIA"></a>
+</h2>
+
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguna
+conocida en este momento.</p>
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Escrito por
+Alex Joni, como parte del proyecto LinuxCNC. Actualizado por
+John Thornton</p>
+
+<h2>REPORTE DE ERRORES
+<a name="REPORTE DE ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Informar
+errores a alex_joni AT usuarios DOT sourceforge DOT net</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2006 Alex Joni. <br>
+Este es un software libre; ver las fuentes para condiciones
+de copia. No hay garantia; ni siquiera para COMERCIABILIDAD
+o APTITUD PARA UN PROPoSITO PARTICULAR.</p>
+<hr>
+</body>
+</html>

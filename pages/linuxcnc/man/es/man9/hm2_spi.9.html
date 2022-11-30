@@ -1,0 +1,161 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HM2_SPI</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HM2_SPI</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONFIGURACI&Atilde;N DE INTERFAZ">CONFIGURACI&Atilde;N DE INTERFAZ</a><br>
+<a href="#RENDIMIENTO EN TIEMPO REAL DE LOS CONDUCTORES LINUX SPIDEV">RENDIMIENTO EN TIEMPO REAL DE LOS CONDUCTORES LINUX SPIDEV</a><br>
+<a href="#TARIFAS DE RELOJ SPI">TARIFAS DE RELOJ SPI</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_spi-
+Controlador HAL LinuxCNC para las tarjetas Mesa Electronics
+SPI Anything IO, con firmware HostMot2.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt hm2_spi [config =</b>
+<i>str [, str ...]</i> <b>] [spidev_path = ruta [, ruta ...]
+] [spidev_rate =</b> <i>rate [, rate ...]</i> <b>]</b></p></td></tr>
+</table>
+
+<p style="margin-left:17%;"><b>config</b> [predeterminado:
+&quot;&quot;]</p>
+
+<p style="margin-left:28%;">Cadenas de
+configuraci&Atilde;&sup3;n de HostMot2, descritas en la
+p&Atilde;&iexcl;gina de manual de hostmot2 (9).</p>
+
+<p style="margin-left:17%;"><b>spidev_path</b>
+[predeterminado: &quot;/dev/spidev1.0&quot;]</p>
+
+<p style="margin-left:28%;">La ruta al nodo del dispositivo
+spi, un dispositivo especial de caracteres en / dev</p>
+
+<p style="margin-left:17%;"><b>spidev_rate</b>
+[predeterminado: 24000]</p>
+
+<p style="margin-left:28%;">La velocidad deseada del reloj
+SPI en kHz. Si el reloj exacto especificado no es
+disponible, se usa un reloj inferior. Debido a las
+deficiencias en la API spidev, es Hal no puede informar el
+reloj real utilizado.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_spi es un
+controlador de dispositivo que interact&Atilde;&ordm;a con
+el SPI de Mesa Bas&Atilde;&sup3; cualquier tarjeta de E / S
+(con el firmware HostMot2) en LinuxCNC HAL</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las tarjetas
+compatibles son: 7I90HD.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La tarjeta debe
+tener un firmware compatible cargado en la tarjeta por el
+programa mesaflash (1).</p>
+
+<p style="margin-left:11%; margin-top: 1em">hm2_spi solo
+est&Atilde;&iexcl; disponible cuando linuxcnc
+est&Atilde;&iexcl; configurado con &quot;uspace&quot; en
+tiempo real.</p>
+
+<h2>CONFIGURACI&Atilde;N DE INTERFAZ
+<a name="CONFIGURACI&Atilde;N DE INTERFAZ"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Es posible que
+un bus SPI conecte varios dispositivos; en esto
+configuraci&Atilde;&sup3;n, un dispositivo maestro tiene
+varias l&Atilde;neas de selecci&Atilde;&sup3;n de chip. Con
+el fin de satisfacer fechas l&Atilde;mite en tiempo real,
+hm2_spi debe usarse en una interfaz SPI dedicada, no
+compartido con otros esclavos.</p>
+
+<h2>RENDIMIENTO EN TIEMPO REAL DE LOS CONDUCTORES LINUX SPIDEV
+<a name="RENDIMIENTO EN TIEMPO REAL DE LOS CONDUCTORES LINUX SPIDEV"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A partir del
+kernel 3.8, la mayor&Atilde;a o todos los controladores SPI
+del kernel no alcanzan el alto tasa de respuesta en tiempo
+real requerida para una configuraci&Atilde;&sup3;n
+t&Atilde;pica de linuxcnc. los el controlador se
+prob&Atilde;&sup3; con una versi&Atilde;&sup3;n modificada
+del controlador spi-s3c64xx SPI en el Plataforma Odroid U3.
+El n&Atilde;&ordm;cleo parcheado reside
+<a href="https://github.com/jepler/odroid-linux/tree/odroid-3.8.13-rt">en
+github</a>.</p>
+
+<h2>TARIFAS DE RELOJ SPI
+<a name="TARIFAS DE RELOJ SPI"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El reloj SPI
+m&Atilde;&iexcl;ximo del 7i90 est&Atilde;&iexcl; documentado
+como 50MHz. Otros elementos de La ruta de datos entre HAL y
+el 7i90 puede imponer otras limitaciones.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hostmot2
+(9)</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:20 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_pin_new</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_pin_new</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_pin_new -
+Crea un pin HAL</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_bit_new(const char *<i>name</i>, hal_pin_dir_t
+<i>dir</i>, hal_bit_t ** <i>data_ptr_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_float_new(const char *<i>name</i>, hal_pin_dir_t
+<i>dir</i>, hal_float_t ** <i>data_ptr_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_u32_new(const char *<i>name</i>, hal_pin_dir_t
+<i>dir</i>, hal_u32_t ** <i>data_ptr_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_s32_new(const char *<i>name</i>, hal_pin_dir_t
+<i>dir</i>, hal_s32_t ** <i>data_ptr_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_bit_newf(hal_pin_dir_t <i>dir</i>, hal_bit_t **
+<i>data_ptr_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_float_newf(hal_pin_dir_t <i>dir</i>, hal_float_t **
+<i>data_ptr_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_u32_newf(hal_pin_dir_t <i>dir</i>, hal_u32_t **
+<i>data_ptr_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_s32_newf(hal_pin_dir_t <i>dir</i>, hal_s32_t **
+<i>data_ptr_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_pin_new(const char *<i>name</i>, hal_type_t <i>type</i>,
+hal_pin_dir_t <i>dir</i>, void **<i>data_ptr_addr</i>, int
+<i>comp_id</i>)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="6%"></td>
+<td width="5%"></td>
+<td width="78%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>name</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>El nombre del pin</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>dir</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>La direcci&Atilde;&sup3;n del pin, desde el punto de
+vista del componente. Puede ser <b>HAL_IN</b>,
+<b>HAL_OUT</b> o <b>HAL_IO</b>. Cualquier
+n&Atilde;&ordm;mero de pines <b>HAL_IN</b> o <b>HAL_IO</b>
+pueden estar conectados a la misma se&Atilde;&plusmn;al,
+pero no est&Atilde;&iexcl; permitido mas de un pin
+<b>HAL_OUT</b> . Un componente puede asignar un valor a un
+pin que sea <b>HAL_OUT</b> o <b>HAL_IO</b>, pero no puede
+asignar un valor a un pin que sea <b>HAL_IN</b>.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>data_ptr_addr</i></p>
+
+<p style="margin-left:22%;">La direcci&Atilde;&sup3;n del
+puntero a datos, que debe estar dentro de la memoria
+asignada por <b>hal_malloc</b>.</p>
+
+<p style="margin-left:11%;"><i>comp_id</i></p>
+
+<p style="margin-left:22%;">Un identificador de componente
+HAL devuelto por una llamada anterior a <b>hal_init</b>.</p>
+
+<p style="margin-left:11%;"><i>fmt,</i> <br>
+Una cadena de formato de estilo printf y sus argumentos
+<i><br>
+type</i> <br>
+El tipo del par&Atilde;&iexcl;metro, como se especifica en
+<b>hal_type_t(3hal)</b>.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La familia de
+funciones <b>hal_pin_new</b> crea un nuevo objeto
+<i>pin</i>. Una vez se ha creado un pin, se puede vincular a
+un objeto de se&Atilde;&plusmn;al utilizando
+<b>hal_link</b>. Un pin contiene un puntero y el componente
+que posee el pin puede desreferenciar el puntero para
+acceder a cualquier se&Atilde;&plusmn;al vinculada al pin.
+(Si no hay ninguna se&Atilde;&plusmn;al vinculada, apunta a
+una se&Atilde;&plusmn;al ficticia).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Hay funciones
+para cada uno de los tipos de datos que admite HAL. Los
+pines pueden estar vinculados solo a se&Atilde;&plusmn;ales
+del mismo tipo.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve 0 en
+caso de &Atilde;&copy;xito o un valor errno negativo en caso
+de error.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_type_t(3hal)</b>,
+<b>hal_link(3hal)</b></p>
+<hr>
+</body>
+</html>

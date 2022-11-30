@@ -1,0 +1,123 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:19 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_param_alias</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_param_alias</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_param_alias
+- crea un nombre alternativo para un
+par&Atilde;&iexcl;metro</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">Int <b>hal_param_alias</b>(const
+char *<b>original_name</b>, const char *<b>alias</b>);</p></td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>original_name</i></p>
+
+<p style="margin-left:22%;">El nombre original del
+parametro.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>alias</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>El nombre alternativo que se puede usar para referirse
+al par&Atilde;&iexcl;metro, o NULL para eliminar cualquier
+nombre alternativo</p></td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Un
+par&Atilde;&iexcl;metro puede tener dos nombres: el nombre
+original (el que se pas&Atilde;&sup3; a una funcion
+<b>hal_param_new</b>) y un alias.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Por lo general,
+los alias son para conveniencia de los usuarios y deben
+crearse y destruirse a trav&Atilde;&copy;s de halcmd. Sin
+embargo, en algunos casos es sensato crear alias
+directamente en un componente. Estos casos incluyen el caso
+donde un par&Atilde;&iexcl;metro es renombrado, para
+preservar la compatibilidad con versiones anteriores.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+c&Atilde;&sup3;digo de estado HAL.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_pin_alias</b>(3)</p>
+<hr>
+</body>
+</html>

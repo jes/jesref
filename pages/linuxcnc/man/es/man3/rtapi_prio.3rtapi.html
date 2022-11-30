@@ -1,0 +1,193 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_prio</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_prio</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_prio -
+funciones de prioridad de hilo</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="55%">
+
+
+<p style="margin-top: 1em">int rtapi_prio_highest()</p></td>
+<td width="34%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="55%">
+
+
+<p style="margin-top: 1em">int rtapi_prio_lowest()</p></td>
+<td width="34%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="55%">
+
+
+<p style="margin-top: 1em">int rtapi_prio_next_higher(int
+<i>prio</i>)</p> </td>
+<td width="34%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="55%">
+
+
+<p style="margin-top: 1em">int rtapi_prio_next_lower(int
+<i>prio</i>)</p> </td>
+<td width="34%">
+</td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="6%"></td>
+<td width="5%"></td>
+<td width="78%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>prio</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Un valor devuelto por una llamada previa
+<b>rtapi_prio_xxx</b></p> </td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Las funciones
+<b>rtapi_prio_xxxx</b> proporcionan una forma
+port&Atilde;&iexcl;til de configurar prioridad de tareas. La
+asignaci&Atilde;&sup3;n de la prioridad real al
+n&Atilde;&ordm;mero de prioridad depende del RTOS. Las
+prioridades var&Atilde;an de <b>rtapi_prio_lowest</b> a
+<b>rtapi_prio_highest</b>, inclusive. Para usar esta API,
+use uno de dos m&Atilde;&copy;todos:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p style="margin-top: 1em">1)</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">Establezca su tarea de menor
+prioridad en <b>rtapi_prio_lowest</b>, y para cada tarea de
+la siguiente prioridad m&Atilde;&iexcl;s baja, establezca
+sus prioridades en
+<b>rtapi_prio_next_higher(anterior)</b>.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p>2)</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Establezca su tarea de mayor prioridad en
+<b>rtapi_prio_highest</b>, y para cada tarea de la siguiente
+prioridad m&Atilde;&iexcl;s alta, establezca sus prioridades
+a <b>rtapi_prio_next_lower(anterior)</b>.</p></td></tr>
+</table>
+
+
+<p style="margin-left:11%; margin-top: 1em">n&Atilde;&sup3;tese
+que una tarea de alta prioridad se adelantar&Atilde;&iexcl;
+o interrumpir&Atilde;&iexcl; una tarea de prioridad menor.
+&Acirc;&iexcl;Linux es siempre la prioridad
+m&Atilde;&iexcl;s baja!</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Llame a estas
+funciones solo desde el c&Atilde;&sup3;digo de
+inicio/limpieza, no desde tiempo real.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+n&Atilde;&ordm;mero de prioridad opaco en tiempo real.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_task_new(3rtapi)</b></p>
+<hr>
+</body>
+</html>

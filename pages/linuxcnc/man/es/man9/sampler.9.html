@@ -1,0 +1,268 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:30 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SAMPLER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SAMPLER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#HISTORIA">HISTORIA</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#REPORTE DE ERRORES">REPORTE DE ERRORES</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">sampler -
+muestreo de datos HAL en tiempo real</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+sampler depth=</b><i>depth1[,depth2...]</i>
+<b>cfg=</b><i>string1[,string2...]</i></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>sampler</b></i>
+y <b>halsampler</b>(1) se usan juntos para muestrear datos
+HAL en tiempo real y almacenarlos en un archivo. <b>sampler
+es un componente HAL en tiempo real que exporta pines HAL y
+crea un FIFO en la memoria compartida. Luego comienza a
+muestrear datos de HAL y los almacena en el FIFO. halsampler
+es un programa de espacio de usuario que copia datos de FIFO
+a stdout, donde puede redirigirse a un archivo o canalizarse
+a otro programa.</b></p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>depth=</b><i>depth1[,depth2...]</i></p>
+
+<p style="margin-left:22%;">establece la profundidad del
+realtime-&gt;user FIFO que <b>sampler</b> crea para
+almacenar los datos en tiempo real. M&Atilde;&ordm;ltiples
+valores de <i>depth</i> (separados por comas) se puede
+especificar si necesita m&Atilde;&iexcl;s de un FIFO (por
+ejemplo, si desea muestrear datos de dos hilos diferentes en
+tiempo real).</p>
+
+
+<p style="margin-left:11%;"><b>cfg=</b><i>string1[,string2...]</i></p>
+
+<p style="margin-left:22%;">define el juego de pines HAL
+que <b>sampler</b> exporta y luego muestrea datos de ellos.
+Una <i>string</i> debe suministrarse para cada FIFO,
+separadas por comas. <b>sampler</b> exporta un pin para cada
+caracter en la <i>string.</i> Los caracteres legales
+son:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="24%">
+
+
+<p><b>F, f</b> (float pin)</p></td>
+<td width="54%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="24%">
+
+
+<p><b>B, b</b> (bit pin)</p></td>
+<td width="54%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="24%">
+
+
+<p><b>S, s</b> (s32 pin)</p></td>
+<td width="54%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="24%">
+
+
+<p><b>U, u</b> (u32 pin)</p></td>
+<td width="54%">
+</td></tr>
+</table>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler.</b><i>N</i></p>
+
+<p style="margin-left:22%;">Se crea una
+funci&Atilde;&sup3;n por FIFO, numerada desde cero.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler.</b><i>N</i><b>.pin.</b><i>M</i>
+input</p>
+
+<p style="margin-left:22%;">Pin para los datos que
+terminar&Atilde;&iexcl;n en la columna <i>M</i> del FIFO
+<i>N</i> (y en columna <i>M</i> del archivo de salida). El
+tipo de pin depende de la cadena de
+configuraci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>sampler.</b><i>N</i><b>.curr-depth</b>
+out s32</p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero actual de
+muestras en el FIFO. Cuando esto alcanza <i>depth</i> los
+nuevos datos comenzar&Atilde;&iexcl;n a sobrescribir los
+datos antiguos y se perder&Atilde;&iexcl;n algunas
+muestras.</p>
+
+
+<p style="margin-left:11%;"><b>sampler.</b><i>N</i><b>.full</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE cuando el FIFO <i>N</i>
+est&Atilde;&iexcl; lleno, FALSE cuando hay espacio para otra
+muestra.</p>
+
+
+<p style="margin-left:11%;"><b>sampler.</b><i>N</i><b>.enable</b>
+bit input</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, las muestras se
+capturan y se colocan en FIFO <i>N</i>, cuando es FALSE, no
+se obtienen muestras. El valor predeterminado es TRUE.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler.</b><i>N</i><b>.overruns</b>
+s32 rw</p>
+
+<p style="margin-left:22%;">El n&Atilde;&ordm;mero de veces
+que <b>sampler</b> ha intentado escribir datos en los pines
+HAL pero no encontr&Atilde;&sup3; espacio en el FIFO. Se
+incrementa cada vez que <b>full</b> es cierto y se puede
+restablecer mediante el comando <b>setp .</b></p>
+
+
+<p style="margin-left:11%;"><b>sampler.</b><i>N</i><b>.sample-num</b>
+s32 rw</p>
+
+<p style="margin-left:22%;">Un n&Atilde;&ordm;mero que
+identifica la muestra. Se incrementa
+autom&Atilde;&iexcl;ticamente para cada muestra y se puede
+restablecer usando el comando <b>setp .</b> El
+n&Atilde;&ordm;mero de muestra puede imprimirse
+opcionalmente en la primera columna de la salida de
+<b>halsampler,</b>utilizando<b>la</b>opcion <i>-t</i> (ver
+<b>man 1 halsampler</b>)</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halsampler</b>(1)
+<b>streamer</b>(9) <b>halstreamer</b>(1)</p>
+
+<h2>HISTORIA
+<a name="HISTORIA"></a>
+</h2>
+
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">Versi&Atilde;&sup3;n
+original de John Kasunich, como parte del proyecto LinuxCNC.
+Mejoras por varios otros miembros del equipo de desarrollo
+de LinuxCNC.</p>
+
+<h2>REPORTE DE ERRORES
+<a name="REPORTE DE ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Informar
+errores a los usuarios de jmkasunich AT DOT sourceforge DOT
+net</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&nbsp;(co 2006 John Kasunich. <br>
+Esto es software libre; vea la fuente para las condiciones
+de copia. No hay garant&Atilde;a; ni siquiera para
+COMERCIABILIDAD o APTITUD PARA UN PROP&Atilde;SITO EN
+PARTICULAR.</p>
+<hr>
+</body>
+</html>

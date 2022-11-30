@@ -1,0 +1,425 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:34 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HY_GT_VFD</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HY_GT_VFD</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#HARDWARE SETUP">HARDWARE SETUP</a><br>
+<a href="#FIRMWARE SETUP">FIRMWARE SETUP</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#ISSUES">ISSUES</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hy_gt_vfd - HAL
+userspace component for Huanyang GT-series VFDs</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd</b>
+[<i>OPTIONS</i>]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The hy_gt_vfd
+component interfaces a Huanyang GT-series VFD to the
+LinuxCNC HAL. The VFD is connected via RS-485 serial to the
+LinuxCNC computer.</p>
+
+<h2>HARDWARE SETUP
+<a name="HARDWARE SETUP"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">At least some
+Huanyang GT VFDs must be physically modified to enable
+Modbus communication.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The circuit
+board location marked &quot;SW1&quot; is identified in the
+manual as &quot;Switch of terminal resistor for RS485
+communication&quot;. On the only VFD I have experience with,
+the circuit board contained no switch at that location,
+instead holding a pair of crossed jumper wires (top-left pad
+connected to bottom-right pad, top-right to bottom-left). In
+this configuration, no Modbus communication is possible. We
+had to desolder the two crossed jumper wires and re-solder
+them parallel to each other (top-left to bottom-left,
+top-right to bottom-right).</p>
+
+<h2>FIRMWARE SETUP
+<a name="FIRMWARE SETUP"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The Huanyang GT
+VFD must be configure via the faceplate to talk Modbus with
+LinuxCNC. Consult the Operation section of the Huanyang
+GT-series Inverter Manual for details. Set the following
+parameters:</p>
+
+<p style="margin-left:11%; margin-top: 1em">P0.01 = 2</p>
+
+<p style="margin-left:17%;">Set Run Command Source to
+Modbus serial port.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P0.03</p>
+
+<p style="margin-left:17%;">Set Maximum Frequency to the
+maximum frequency you want the VFD to output, in Hz.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P0.04</p>
+
+<p style="margin-left:17%;">Set Upper Frequence Limit to
+the maximum frequency you want the VFD to output, in Hz.
+This should be the same as the value in P0.03.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P0.05</p>
+
+<p style="margin-left:17%;">Set Lower Frequency Limit to
+the minimum frequency you want the VFD to output, in Hz.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P0.07 = 7</p>
+
+<p style="margin-left:17%;">Set Frequency A Command Source
+to Modbus serial port.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P2.01 = ???</p>
+
+<p style="margin-left:17%;">Set Motor Rated Power to the
+motor&rsquo;s power rating in kW.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P2.02 = ???</p>
+
+<p style="margin-left:17%;">Set Motor Rated Frequency to
+the motor&rsquo;s max frequency in Hz.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P2.03 = ???</p>
+
+<p style="margin-left:17%;">Set Motor Rated Speed to the
+motor&rsquo;s speed in RPM at its rated maximum
+frequence.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P2.04 = ???</p>
+
+<p style="margin-left:17%;">Set Motor Rated Voltage to the
+motor&rsquo;s maximum voltage, in Volts.</p>
+
+<p style="margin-left:11%; margin-top: 1em">P2.05 = ???</p>
+
+<p style="margin-left:17%;">Set Motor Rated Current to the
+motor&rsquo;s maximum current, in Amps.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PC.00 = 1</p>
+
+<p style="margin-left:17%;">Set Local Address to 1. This
+matches the default in the hy_gt_vfd driver, change this if
+your setup has special needs.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PC.01 = 5</p>
+
+<p style="margin-left:17%;">Set Baud Rate Selection to 5
+(38400 bps). This matches the default in the hy_gt_vfd
+driver, change this if your setup has special needs.</p>
+
+<p style="margin-left:23%; margin-top: 1em">0 = 1200 <br>
+1 = 2400 <br>
+2 = 4800 <br>
+3 = 9600 <br>
+4 = 19200 <br>
+5 = 38400</p>
+
+<p style="margin-left:11%; margin-top: 1em">PC.02 = 0</p>
+
+<p style="margin-left:17%;">Set Data Format (8n1 RTU). This
+matches the default in the hy_gt_vfd driver, change this if
+your setup has special needs.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PC.03 = 1</p>
+
+<p style="margin-left:17%;">Set Communication Delay Time to
+1 ms. This is expected by the hy_gt_vfd driver.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-b</b>,
+<b>--bits</b> <i>N</i></p>
+
+<p style="margin-left:17%;">(default 8) For Modbus
+communication. Set number of data bits to <i>N</i>. <i>N</i>
+must be between 5 and 8 inclusive.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-p</b>,
+<b>--parity</b> [Even,Odd,None]</p>
+
+<p style="margin-left:17%; margin-top: 1em">(default None)
+For Modbus communication. Set serial parity to Even, <br>
+Odd, or None.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-r</b>,
+<b>--rate</b> <i>N</i></p>
+
+<p style="margin-left:17%;">(default 38400) For Modbus
+communication. Set baud rate to <i>N</i>. It is an error if
+the rate is not one of the following: 1200, 2400, 4800,
+9600, 19200, 38400</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-s</b>,
+<b>--stopbits</b> [1,2]</p>
+
+<p style="margin-left:17%;">(default 1) For Modbus
+communication. Set serial stop bits to 1 or 2.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-t</b>,
+<b>--target</b> <i>N</i></p>
+
+<p style="margin-left:17%;">(default 1) For Modbus
+communication. Set Modbus target (slave) number. This must
+match the device number you set on the Huanyang GT VFD.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-d</b>,
+<b>--device</b> <i>PATH</i></p>
+
+<p style="margin-left:17%;">(default /dev/ttyS0) For Modbus
+communication. Set the name of the serial device node to
+use.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-v</b>,
+<b>--verbose</b></p>
+
+<p style="margin-left:17%;">Turn on verbose mode.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-S</b>,
+<b>--motor-max-speed</b> <i>RPM</i></p>
+
+<p style="margin-left:17%;">The motor&rsquo;s max speed in
+RPM. This must match the motor speed value configured in VFD
+register P2.03.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-F</b>,
+<b>--max-frequency</b> <i>HZ</i></p>
+
+<p style="margin-left:17%;">This is the maximum output
+frequency of the VFD in Hz. It should correspond to the
+motor&rsquo;s rated max frequency, and to the maximum and
+upper limit output frequency configured in VFD register
+P0.03 and P0.04.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-f</b>,
+<b>--min-frequency</b> <i>HZ</i></p>
+
+<p style="margin-left:17%;">This is the minimum output
+frequency of the VFD in Hz. It should correspond to the
+minimum output frequency configured in VFD register
+P0.05.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.period</b>
+(float, in)</p>
+
+<p style="margin-left:17%;">The period for the
+driver&rsquo;s update cycle, in seconds. This is how
+frequently the driver will wake up, check its HAL pins, and
+communicate with the VFD. Must be between 0.001 and 2.000
+seconds. Default: 0.1 seconds.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.speed-cmd</b>
+(float, in)</p>
+
+<p style="margin-left:17%;">The requested motor speed, in
+RPM.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.speed-fb</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The motor&rsquo;s current
+speed, in RPM, reported by the VFD.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.at-speed</b>
+(bit, out)</p>
+
+<p style="margin-left:17%;">True when the drive is on and
+at the commanded speed (within 2%), False otherwise.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.freq-cmd</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The requested output frequency,
+in Hz. This is set from the .speed-cmd value, and is just
+shown for debugging purposes.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.freq-fb</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The current output frequency of
+the VFD, in Hz. This is reported from the VFD to the
+driver.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.spindle-on</b>
+(bit, in)</p>
+
+<p style="margin-left:17%;">Set this pin True to command
+the spindle on, at the speed requested on the .speed-cmd
+pin. Set this pin False to command the spindle off.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.output-voltage</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The voltage that the VFD is
+current providing to the motor, in Volts.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.output-current</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The current that the motor is
+currently drawing from the VFD, in Amperes.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.output-power</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The power that the motor is
+currently drawing from the VFD, in Watts.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.dc-bus-volts</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The current voltage of the
+VFD&rsquo;s internal DC power supply, in Volts.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.modbus-errors</b>
+(u32, out)</p>
+
+<p style="margin-left:17%;">A count of the number of modbus
+communication errors between the driver and the VFD. The
+driver is resilient against communication errors, but a
+large or growing number here indicates a problem that should
+be investigated.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.input-terminal</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s input terminal
+register.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.output-terminal</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s output terminal
+register.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.AI1</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s AI1
+register.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.AI2</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s AI2
+register.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.HDI-frequency</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s HDI-frequency
+register.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.external-counter</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s external
+counter register.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_gt_vfd.fault-info</b>
+(float, out)</p>
+
+<p style="margin-left:17%;">The VFD&rsquo;s fault info
+register.</p>
+
+<h2>ISSUES
+<a name="ISSUES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The VFD
+produces the output frequency that it sends to the motor by
+adding a manually specified offset to the frequency command
+it gets over modbus.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The manual
+offset is controlled by pressing the Up/Down arrows on the
+faceplate while the VFD is turning the motor.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you command
+a speed on the .speed-cmd pin and get a different speed
+reported on the .speed-fb pin, first verify that the VFD
+registers listed in the FIRMWARE SETUP section above and the
+driver&rsquo;s command-line arguments all agree with the
+info on the motor&rsquo;s name plate. If you still
+aren&rsquo;t getting the speed you expect, zero the
+VFD&rsquo;s frequency offset by starting the motor running,
+then pressing the Up/Down buttons to zero the offset.</p>
+<hr>
+</body>
+</html>

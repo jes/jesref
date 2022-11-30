@@ -1,0 +1,110 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:24 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_snprintf</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_snprintf</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_snprintf,
+rtapi_vsnprintf - Realiza un formateo de cadena similar a
+snprintf</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:22%; margin-top: 1em">int
+rtapi_snprintf(char *<i>buf</i>, unsigned long int
+<i>size</i>, const char *<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+rtapi_vsnprintf(char *<i>buf</i>, unsigned long int
+<i>size</i>, const char *<i>fmt</i>, va_list
+<i>apfB)</i></p>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Como en
+<i>snprintf(3)</i> o <i>vsnprintf(3)</i>.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estas funciones
+actuan como las funciones est&Atilde;&iexcl;ndar C printf,
+excepto que se admite un conjunto reducido de operaciones de
+formateo.</p>
+
+<p style="margin-left:11%; margin-top: 1em">En particular:
+el formato de valores long long no es compatible. El
+formateo de los valores de punto flotante se realizan como
+con %A incluso cuando otros formatos como %f
+est&Atilde;&iexcl;n especificados</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde c&Atilde;&sup3;digo de usuario, init/cleanup y en
+tiempo real.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El
+n&Atilde;&ordm;mero de caracteres escritos en
+<i>buf</i>.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>printf(3)</b></p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_bspi_setup_chan</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_bspi_setup_chan</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_bspi_setup_chan
+- configura un canal bspi de Hostmot2</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_bspi_setup_chan(char
+*name, int chan, int cs, int bits, float mhz,</p></td></tr>
+</table>
+
+<p style="margin-left:22%;">int delay, int cpol, int cpha,
+int noclear, int noecho)</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_bspi_setup_chan</b>
+permite que un componente en tiempo real reclame y configure
+un canal BSPI en una placa hostmot2 configurada
+previamente.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>name</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Una cadena &Atilde;&ordm;nica dada al canal BSPI durante
+la configuraci&Atilde;&sup3;n de hostmot2. Los nombres de
+los canales disponibles se imprimen a la salida
+est&Atilde;&iexcl;ndar durante el proceso de carga del
+controlador y toman la forma
+<b>hm2_</b><i>board-name</i><b>.</b><i>board-index</i><b>.bspi.</b><i>bspi-index</i>
+. Por ejemplo, el primer &Atilde;ndice en la primera placa
+hm2_5i23 se llamar&Atilde;a hm2_5i23.0.bspi.0.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>chan</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Los canales est&Atilde;&iexcl;n numerados del 0 al 15.
+El valor en las l&Atilde;neas chip-select se establece
+mediante cs y no necesita coincidir con el
+n&Atilde;&ordm;mero de canal.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>cs</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>La(s) l&Atilde;nea(s) chip-select para confirmar al
+acceder a este canal. BSPI admite 4 l&Atilde;neas de
+selecci&Atilde;&sup3;n de chip, por lo que el rango
+v&Atilde;&iexcl;lido para cs es 0-15.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>bits</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>establece la longitud de bits del paquete SPI. La
+longitud m&Atilde;&iexcl;xima soportada es de 64 bits pero
+esto abarcar&Atilde;&iexcl; dos entradas FIFO le&Atilde;das
+y necesitar&Atilde;&iexcl; un manejo especial. (los valores
+32 e inferiores no requieren manejo especial)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>mhz</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>establece la velocidad de comunicaci&Atilde;&sup3;n del
+chip. El valor m&Atilde;&iexcl;ximo para esto es la mitad de
+la frecuencia base FPGA, por ejemplo, con una 48MHz 5i23 la
+frecuencia SPI m&Atilde;&iexcl;xima es de 24Mhz. Los valores
+superiores al m&Atilde;&iexcl;ximo admitido
+ser&Atilde;&iexcl;n redondeados hacia abajo
+silenciosamente.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>delay</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>establece el retardo v&Atilde;&iexcl;lido de
+selecci&Atilde;&sup3;n de chip (en nS)</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">cpha&nbsp;y&nbsp;cpol</p>
+
+<p style="margin-left:22%;">Configura la fase del reloj y
+la polaridad (de acuerdo con la hoja de datos del
+dispositivo).</p>
+
+<p style="margin-left:11%;">noclear</p>
+
+<p style="margin-left:22%;">controla si el bit de borrado
+de trama se establece despu&Atilde;&copy;s de la
+transferencia del b&Atilde;&ordm;fer de 32 bits. Este
+par&Atilde;&iexcl;metro debe establecerse en 1 cuando la
+longitud de la trama es mayor de 32 bits y los siguientes
+datos en el FIFO contienen los otros bits.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>noecho</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Se establece en 1 para dispositivos que no devuelven
+datos (como un DAC).</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">samplelate</p>
+
+<p style="margin-left:22%;">Ajuste a 1 para muestrear los
+datos SPI recibidos 1/2 reloj SPI m&Atilde;&iexcl;s tarde de
+lo normal. Esto es &Atilde;&ordm;til cuando las altas
+frecuencias de reloj o el aislamiento causan demoras
+significativas desde el reloj hasta los datos recibidos.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Llame solo
+desde el c&Atilde;&sup3;digo de usuario o de
+inicio/limpieza, no desde las tareas realtime.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve 0 en
+caso de &Atilde;&copy;xito y -1 en caso de error.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_allocate_bspi_tram(3hm2)</b>,
+<b>hm2_bspi_set_read_function(3hm2)</b>,
+<b>hm2_bspi_set_write_function(3hm2)</b>,
+<b>hm2_bspi_write_chan(3hm2)</b>,
+<b>hm2_tram_add_bspi_frame(3hm2)</b>, Consulte
+src/hal/drivers mesa_7i65.comp para ver un ejemplo de
+uso.</p>
+<hr>
+</body>
+</html>

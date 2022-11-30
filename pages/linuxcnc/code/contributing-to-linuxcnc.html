@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Contributing to LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Contributing to LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This document contains information for developers about LinuxCNC
+infrastructure, and describes the best practices for contributing code
+and documentation updates to the LinuxCNC project.</p></div>
+<div class="paragraph"><p>Throughout this document, "source" means both the source code to the
+programs and libraries, and the source text for the documentation.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_communication_among_linuxcnc_developers">2. Communication among LinuxCNC developers</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The two main ways that project developers communicate with each other are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Via IRC, at #linuxcnc-devel on FreeNode.
+</p>
+</li>
+<li>
+<p>
+Via email, on the developers' mailing list:
+  <a href="https://lists.sourceforge.net/lists/listinfo/emc-developers">https://lists.sourceforge.net/lists/listinfo/emc-developers</a>
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_linuxcnc_source_forge_project">3. The LinuxCNC Source Forge project</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We use Source Forge for mailing lists: <a href="http://sourceforge.net/p/emc/mailman/">http://sourceforge.net/p/emc/mailman/</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_git_revision_control_system">4. The git Revision Control System</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>All of the LinuxCNC source is maintained in the revision control system
+git <span class="footnote"><br />[<a href="http://git-scm.com/">http://git-scm.com/</a>]<br /></span>.</p></div>
+<div class="sect2">
+<h3 id="_linuxcnc_official_git_repo">4.1. LinuxCNC official git repo</h3>
+<div class="paragraph"><p>The official LinuxCNC git repo is at <a href="http://github.com/linuxcnc/linuxcnc/">http://github.com/linuxcnc/linuxcnc/</a></p></div>
+<div class="paragraph"><p>Anyone can get a read-only copy of the LinuxCNC source tree via git:</p></div>
+<div class="paragraph"><p><code>git clone https://github.com/linuxcnc/linuxcnc linuxcnc-dev</code></p></div>
+<div class="paragraph"><p>If you are a developer with push access, then follow github&#8217;s instructions
+for setting up a repository that you can push from.</p></div>
+<div class="paragraph"><p>Note that the clone command put the local LinuxCNC repo in a
+directory called <code>linuxcnc-dev</code>, instead of the default <code>linuxcnc</code>.
+This is because the LinuxCNC software by default expects configs and
+G-code programs in a directory called <code>$HOME/linuxcnc</code>, and having the
+git repo there too is confusing.</p></div>
+<div class="paragraph"><p>Issues and pull requests are welcome on github:
+<a href="https://github.com/LinuxCNC/linuxcnc/issues">https://github.com/LinuxCNC/linuxcnc/issues</a>
+<a href="https://github.com/LinuxCNC/linuxcnc/pulls">https://github.com/LinuxCNC/linuxcnc/pulls</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_use_of_git_in_the_linuxcnc_project">4.2. Use of git in the LinuxCNC project</h3>
+<div class="paragraph"><p>We use the "merging upwards" and "topic branches" git workflows described
+here:</p></div>
+<div class="paragraph"><p><a href="https://www.kernel.org/pub/software/scm/git/docs/gitworkflows.html">https://www.kernel.org/pub/software/scm/git/docs/gitworkflows.html</a></p></div>
+<div class="paragraph"><p>We have a development branch called <code>master</code>, and one or more stable
+branches with names like <code>2.6</code> and <code>2.7</code> indicating the version number
+of the releases we make from it.</p></div>
+<div class="paragraph"><p>Bugfixes go in the oldest applicable stable branch, and that branch gets
+merged into the next newer stable branch, and so on up to <code>master</code>.
+The committer of the bugfix may do the merges themselves, or they may
+leave the merges for someone else.</p></div>
+<div class="paragraph"><p>New features generally go in the <code>master</code> branch, but some kinds of
+features (specifically well isolated device drivers and documentation)
+may (at the discretion of the stable branch release managers) go into
+a stable branch and get merged up just like bugfixes do.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_git_tutorials">4.3. git tutorials</h3>
+<div class="paragraph"><p>There are many excellent, free git tutorials on the internet.</p></div>
+<div class="paragraph"><p>The first place to look is probably the "gittutorial" manpage.
+This manpage is accessible by running "man gittutorial" in a terminal
+(if you have the git manpages installed).  The gittutorial and its
+follow-on documentation are also available online here:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+git tutorial:
+  <a href="https://www.kernel.org/pub/software/scm/git/docs/gittutorial.html">https://www.kernel.org/pub/software/scm/git/docs/gittutorial.html</a>
+</p>
+</li>
+<li>
+<p>
+git tutorial 2:
+  <a href="https://www.kernel.org/pub/software/scm/git/docs/gittutorial-2.html">https://www.kernel.org/pub/software/scm/git/docs/gittutorial-2.html</a>
+</p>
+</li>
+<li>
+<p>
+Everyday git with 20 commands or so:
+  <a href="https://www.kernel.org/pub/software/scm/git/docs/giteveryday.html">https://www.kernel.org/pub/software/scm/git/docs/giteveryday.html</a>
+</p>
+</li>
+<li>
+<p>
+Git User&#8217;s Manual:
+  <a href="https://www.kernel.org/pub/software/scm/git/docs/user-manual.html">https://www.kernel.org/pub/software/scm/git/docs/user-manual.html</a>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>For a more thorough documentation of git see the "Pro Git" book:
+<a href="http://git-scm.com/book">http://git-scm.com/book</a></p></div>
+<div class="paragraph"><p>Another online tutorial that has been recommended is "Git for the Lazy":
+<a href="http://wiki.spheredev.org/Git_for_the_lazy">http://wiki.spheredev.org/Git_for_the_lazy</a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overview_of_the_process">5. Overview of the process</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The high-level overview of how to contribute changes to the source goes
+like this:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Communicate with the project developers and let us know what you&#8217;re
+  hacking on
+</p>
+</li>
+<li>
+<p>
+Clone the git repo
+</p>
+</li>
+<li>
+<p>
+Make your changes in a local branch, making sure you "sign off" your commits
+  according to our signed-off-by policy (see below).
+</p>
+</li>
+<li>
+<p>
+Adding documentation and tests is an important part of adding a new
+  feature.  Otherwise, others won&#8217;t know how to use your feature, and
+  if other changes break your feature it can go unnoticed without a test.
+</p>
+</li>
+<li>
+<p>
+Share your changes with the other project developers in one of these ways:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Push your branch to github and create a github pull request to
+   <a href="https://github.com/linuxcnc/linuxcnc">https://github.com/linuxcnc/linuxcnc</a> (this requires a github account)
+</p>
+</li>
+<li>
+<p>
+Push your branch to a publicly visible git repo (such as github,
+   bitbucket, your own publicly-accessible server, etc) and share that
+   location on the emc-developers mailing list, or
+</p>
+</li>
+<li>
+<p>
+Email your commits to the emc-developers mailing list (use <code>git
+   format-patch</code> to create the patches)
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Advocate for your patch
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Explain what problem it addresses and why it should be included
+   in LinuxCNC
+</p>
+</li>
+<li>
+<p>
+Be receptive to questions and feedback from the developer community.
+</p>
+</li>
+<li>
+<p>
+It is not uncommon for a patch to go through several revisions before
+   it is accepted.
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_git_configuration">6. git configuration</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In order to be considered for inclusion in the LinuxCNC source, commits
+must have correct Author fields identifying the author of the commit.
+A good way to ensure this is to set your global git config:</p></div>
+<div class="paragraph"><p><code>git config --global user.name "Your full name"</code></p></div>
+<div class="paragraph"><p><code>git config --global user.email "you@example.com"</code></p></div>
+<div class="paragraph"><p>Use your real name (not a handle), and use an unobfuscated e-mail address.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_effective_use_of_git">7. Effective use of git</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_commit_contents">7.1. Commit contents</h3>
+<div class="paragraph"><p>Keep your commits small and to the point.  Each commit should accomplish
+one logical change to the repo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_write_good_commit_messages">7.2. Write good commit messages</h3>
+<div class="paragraph"><p>Keep commit messages around 72 columns wide (so that in a default-size
+terminal window, they don&#8217;t wrap when shown by <code>git log</code>).</p></div>
+<div class="paragraph"><p>Use the first line as a summary of the intent of the change (almost
+like the subject line of an e-mail).  Follow it with a blank line,
+then a longer message explaining the change.  Example:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>Get rid of RTAPI_SUCCESS, use 0 instead</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>The test "retval &lt; 0" should feel familiar; it's the same kind of
+test you use in userspace (returns -1 for error) and in kernel space
+(returns -ERRNO for error)</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_commit_to_the_proper_branch">7.3. Commit to the proper branch</h3>
+<div class="paragraph"><p>Bugfixes should go on the oldest applicable branch.  New features should
+go in the master branch.  If you&#8217;re not sure where a change belongs,
+ask on irc or on the mailing list.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_use_multiple_commits_to_organize_changes">7.4. Use multiple commits to organize changes</h3>
+<div class="paragraph"><p>When appropriate, organize your changes into a branch (a series of
+commits) where each commit is a logical step towards your ultimate
+goal. For example, first factor out some complex code into a new
+function. Then, in a second commit, fix an underlying bug. Then, in the
+third commit, add a new feature which is made easier by the refactoring
+and which would not have worked without fixing that bug.</p></div>
+<div class="paragraph"><p>This is helpful to reviewers, because it is easier to see that the
+"factor out code into new function" step was right when there aren’t
+other edits mixed in; it’s easier to see that the bug is fixed when
+the change that fixes it is separate from the new feature; and so on.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_follow_the_style_of_the_surrounding_code">7.5. Follow the style of the surrounding code</h3>
+<div class="paragraph"><p>Make an effort to follow the prevailing indentation style of surrounding
+code. In particular, changes to whitespace make it harder for other
+developers to track changes over time. When reformatting code must be
+done, do it as a commit separate from any semantic changes.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_simplify_complicated_history_before_sharing_with_fellow_developers">7.6. Simplify complicated history before sharing with fellow developers</h3>
+<div class="paragraph"><p>With git, it’s possible to record every edit and false start as a
+separate commit. This is very convenient as a way to create checkpoints
+during development, but often you don’t want to share these false
+starts with others.</p></div>
+<div class="paragraph"><p>Git provides two main ways to clean history, both of which can be done
+freely before you share the change:</p></div>
+<div class="paragraph"><p><code>git commit --amend</code> lets you make additional changes to the last thing
+you committed, optionally modifying the commit message as well. Use this
+if you realized right away that you left something out of the commit,
+or if you typo’d the commit message.</p></div>
+<div class="paragraph"><p><code>git rebase --interactive upstream-branch</code> lets you go back through each
+commit made since you forked your feature branch from the upstream branch,
+possibly editing commits, dropping commits, or squashing (combining)
+commits with others.  Rebase can also be used to split individual commits
+into multiple new commits.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_make_sure_every_commit_builds">7.7. Make sure every commit builds</h3>
+<div class="paragraph"><p>If your change consists of several patches, <code>git rebase -i</code> may be used to
+reorder these patches into a sequence of commits which more clearly lays
+out the steps of your work.  A potential consequence of reordering patches
+is that one might get dependencies wrong - for instance, introducing a
+use of a variable, and the declaration of that variable only follows in
+a later patch.</p></div>
+<div class="paragraph"><p>While the branch HEAD will build, not every commit might build in such
+a case.  That breaks <code>git bisect</code> - something somebody else might use
+later on to find the commit which introduced a bug.  So beyond making
+sure your branch builds, it is important to assure every single commit
+builds as well.</p></div>
+<div class="paragraph"><p>There&#8217;s an automatic way to check a branch for each commit being buildable
+- see <a href="http://dustin.sallings.org/2010/03/28/git-test-sequence.html">http://dustin.sallings.org/2010/03/28/git-test-sequence.html</a>
+, and the code at <a href="https://github.com/dustin/bindir/blob/master/git-test-sequence">https://github.com/dustin/bindir/blob/master/git-test-sequence</a> .
+Use as follows (in this case testing every commit from origin/master to
+HEAD, including running regression tests):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd linuxcnc-dev
+git-test-sequence origin/master..  '(cd src &amp;&amp; make &amp;&amp; ../scripts/runtests)'</code></pre>
+</div></div>
+<div class="paragraph"><p>This will either report <em>All&#8217;s well</em> or <em>Broke on &lt;commit&gt;</em></p></div>
+</div>
+<div class="sect2">
+<h3 id="_renaming_files">7.8. Renaming files</h3>
+<div class="paragraph"><p>Please use the ability to rename files very cautiously.  Like running
+indent on single files, renames still make it more difficult to follow
+changes over time.  At a minimum, you should seek consensus on irc or
+the mailing list that the rename is an improvement.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_prefer_rebase">7.9. Prefer "rebase"</h3>
+<div class="paragraph"><p>Use <code>git pull --rebase</code> instead of bare <code>git pull</code> in order to keep a
+nice linear history.  When you rebase, you always retain your work as
+revisions that are ahead of origin/master, so you can do things like
+<code>git format-patch</code> them to share with others without pushing to the
+central repository.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_other_ways_to_contribute">8. Other ways to contribute</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There are many ways  to contribute to LinuxCNC, that are not addressed
+by this document.  These ways include:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Answering questions on the forum, mailing lists, and in IRC
+</p>
+</li>
+<li>
+<p>
+Reporting bugs on the bug tracker, forum, mailing lists, or in IRC
+</p>
+</li>
+<li>
+<p>
+Helping test experimental features
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

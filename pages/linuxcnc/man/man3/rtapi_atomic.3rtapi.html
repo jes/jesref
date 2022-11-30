@@ -1,0 +1,199 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:41 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>funct</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">funct</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#ARGUMENTS">ARGUMENTS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#REALTIME CONSIDERATIONS">REALTIME CONSIDERATIONS</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_atomic -
+subset of C11 &lt;stdatomic.h&gt;</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#include
+&lt;rtapi_atomic.h&gt;</p> </td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">enum memory_order { ... };</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define atomic_store(obj,
+desired)...</p> </td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define
+atomic_store_explicit(obj, desired, order)...</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define atomic_load(obj)...</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em">#define
+atomic_load_explicit(obj, order)...</p></td>
+<td width="8%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTS
+<a name="ARGUMENTS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>volatile
+A*</b> <i>obj</i></p>
+
+<p style="margin-left:22%;">A pointer to a volatile object
+that is the destination of the store or the source of the
+load. The pointer must have an appropriate type and
+alignment such that the underlying store or load operation
+itself is atomic; at a minimum, a properly aligned
+&quot;int&quot; may be assumed to be such a type. Improper
+size or alignment are undiagnosed errors.</p>
+
+<p style="margin-left:11%;"><b>C</b> <i>desired</i></p>
+
+<p style="margin-left:22%;">The value to be stored in the
+object. &quot;*obj = desired&quot; must be well-formed.</p>
+
+<p style="margin-left:11%;"><b>memory_order</b> order</p>
+
+<p style="margin-left:22%;">The required memory ordering
+semantic.</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This header
+provides at least the subset of C11&rsquo;s
+&lt;stdatomic.h&gt; given above. When there is an ordering
+requirement for multiple values read or written in RTAPI
+shared memory areas by other threads of execution, including
+the values of HAL pins and parameters, these functions (or
+function-like macros) are the only way to ensure the
+ordering requirement is obeyed. Otherwise, according to
+architecture-specific rules, loads and stores may be
+reordered from their normal source code order.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For example, to
+leave a message in a shared memory area from one thread and
+retrieve it from another, the writer must use an atomic
+store for the &quot;message is complete&quot; variable, and
+the reader must use an atomic load when checking that
+variable:</p>
+
+<p style="margin-left:22%; margin-top: 1em">// producer
+<br>
+*message = 42; <br>
+atomic_store_explicit(message_ready, 1,
+memory_order_release);</p>
+
+<p style="margin-left:22%; margin-top: 1em">// consumer
+<br>
+while(atomic_load_explicit(message_ready,
+memory_order_acquire) == 0) sched_yield(); <br>
+printf(&quot;message was %d\n&quot;, *message); // must
+print 42</p>
+
+<h2>REALTIME CONSIDERATIONS
+<a name="REALTIME CONSIDERATIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">May be called
+from any code.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>atomic_load</b>
+and <b>atomic_load_explicit</b> return the value pointed to
+by the <i>obj</i> argument.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>atomic_store</b>
+and <b>atomic_store_explicit</b> have no return value.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;stdatomic.h&gt;</b>
+(C11), <b>&lt;rtapi_bitops.h&gt;</b> (for other atomic
+memory operations supported by rtapi)</p>
+<hr>
+</body>
+</html>

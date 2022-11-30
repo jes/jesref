@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Interfaces de dispositivos canónicos</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Interfaces de dispositivos canónicos</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:canonical-device-interfaces">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las siguientes secciones muestran los pines, parámetros y funciones
+suministrados por "dispositivos canónicos". Todos los controladores de dispositivo HAL deben
+suministrar los mismos pines y parámetros, e implementar el mismo comportamiento.</p></div>
+<div class="paragraph"><p>Tenga en cuenta que solo los campos <code>&lt;io-type&gt;</code> y <code>&lt;specific-name&gt;</code> estan
+definido para un dispositivo canónico. Los campos <code>&lt;device-name&gt;</code>, <code>&lt;device-num&gt;</code>,
+y <code>&lt;chan-num&gt;</code> se establecen en función de las características del
+dispositivo real.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_entrada_digital">2. Entrada digital</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La entrada digital canónica (campo tipo E/S:<code>digin</code>) es bastante simple.</p></div>
+<div class="sect2">
+<h3 id="_pines">2.1. Pines</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(bit) <strong>in</strong>&#8201;&#8212;&#8201;Estado de la entrada hardware.
+</p>
+</li>
+<li>
+<p>
+(bit) <strong>in-not</strong>&#8201;&#8212;&#8201;Estado invertido de la entrada.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_parámetros">2.2. Parámetros</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+Ninguno
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_funciones">2.3. Funciones</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(funct) <strong>read</strong>&#8201;&#8212;&#8201;Lee el hardware y configura los pines HAL <em>in</em> y 'in-not`.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_salida_digital">3. Salida digital</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La salida digital canónica (campo de tipo E/S: <code>digout</code>) también es muy
+sencilla.</p></div>
+<div class="sect2">
+<h3 id="_pines_2">3.1. Pines</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(bit) * out *&#8201;&#8212;&#8201;Valor a escribir (posiblemente invertido) en la salida hardware.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_parámetros_2">3.2. Parámetros</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(bit) <strong>invert</strong>&#8201;&#8212;&#8201;Si es TRUE, <strong>out</strong> se invierte antes de escribir en el hardware.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_funciones_2">3.3. Funciones</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(funct) <strong>write</strong>&#8201;&#8212;&#8201;Lee <strong>out</strong> e <strong>invert</strong> y establece la salida hardware
+   en consecuencia.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_entrada_analógica">4. Entrada Analógica</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La entrada analógica canónica (tipo E/S: <code>adcin</code>) se espera que
+sea utilizada para convertidores analógico a digital que, por ejemplo,
+conviertan voltaje a un rango continuo de valores.</p></div>
+<div class="sect2">
+<h3 id="_pines_3">4.1. Pines</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(float) <strong>value</strong>&#8201;&#8212;&#8201;La lectura del hardware, escalada según los parámetros
+   <strong>scale</strong> y <strong>offset</strong>. <strong>Value</strong> = ((lectura de entrada, en
+   unidades dependientes del hardware) * <strong>scale</strong>) - <strong>offset</strong>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_parámetros_3">4.2. Parámetros</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(float) <strong>scale</strong>&#8201;&#8212;&#8201;El voltaje de entrada (o corriente) se multiplicará
+   por <strong>scale</strong> antes de salir a <strong>value</strong>.
+</p>
+</li>
+<li>
+<p>
+(float) <strong>offset</strong>&#8201;&#8212;&#8201;Se restará de la entrada de voltaje (o corriente) hardware
+   después de que se haya aplicado el multiplicador de escala.
+</p>
+</li>
+<li>
+<p>
+(float) <strong>bit_weight</strong>&#8201;&#8212;&#8201;El valor del bit menos significativo(LSB).
+   Es efectivamente la granularidad de la lectura de entrada.
+</p>
+</li>
+<li>
+<p>
+(float) <strong>hw_offset</strong>&#8201;&#8212;&#8201;El valor presente en la entrada cuando se aplican 0 voltios
+   al pin(es) de entrada.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_funciones_3">4.3. Funciones</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(funct) <strong>read</strong>&#8201;&#8212;&#8201;Lee los valores de este canal de entrada analógica. Se
+   puede usar para leer un canal individual, o puede hacer que se lean todos los canales
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_salida_analógica">5. Salida analógica</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La salida analógica canónica (tipo E/S: <strong>adcout</strong>). Esto esta pensado
+para cualquier tipo de hardware que pueda generar un
+rango de valores más o menos continuo. Los ejemplos son convertidores de digital a analógico
+o generadores PWM.</p></div>
+<div class="sect2">
+<h3 id="_pines_4">5.1. Pines</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(float) <strong>value</strong>&#8201;&#8212;&#8201;El valor que se escribirá. El valor real de salida
+   para el hardware dependerá de la escala y los parámetros de offset.
+</p>
+</li>
+<li>
+<p>
+(bit) <strong>enable</strong>&#8201;&#8212;&#8201;Si es falso, entonces salida al hardware es 0, independientemente
+   del pin <strong>value</strong>.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_parámetros_4">5.2. Parámetros</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+(float) <strong>offset</strong>&#8201;&#8212;&#8201;Esto se agregará a <strong>value</strong> antes de la
+   actualizacion del hardware.
+</p>
+</li>
+<li>
+<p>
+(float) <strong>scale</strong>&#8201;&#8212;&#8201;Se debe configurar de modo que una entrada de 1 en el
+   pin <strong>value</strong>  causará que en el pin de salida analógica se lea 1 voltio.
+</p>
+</li>
+<li>
+<p>
+(float) <strong>high_limit</strong> (opcional)&#8201;&#8212;&#8201;Cuando se calcula el valor para
+   salida al hardware, si <strong>value</strong> + <strong>offset</strong> es mayor que
+   <strong>high_limit</strong>, se usará <strong>high_limit</strong> .
+</p>
+</li>
+<li>
+<p>
+(float) <strong>low_limit</strong> (opcional)&#8201;&#8212;&#8201;Cuando se calcula el valor de salida
+   para el hardware, si <strong>value</strong> + <strong>offset</strong> es menor que <strong>low_limit</strong>,
+   se usará <strong>low_limit</strong>.
+</p>
+</li>
+<li>
+<p>
+(float) <strong>bit_weight</strong> (opcional)&#8201;&#8212;&#8201;El valor del bit menos significativo
+   (LSB), en voltios (o mA, para salidas de corriente)
+</p>
+</li>
+<li>
+<p>
+(float) <strong>hw_offset</strong> (opcional)&#8201;&#8212;&#8201;El voltaje (o corriente) real
+   que saldrá si se escribe 0 en el hardware.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_funciones_4">5.3. Funciones</h3>
+<div class="paragraph"><p>(funct) <strong>write</strong>&#8201;&#8212;&#8201;Hace que el valor calculado sea enviado al
+hardware. Si el pin enable es falso, la salida será 0,
+independientemente de <strong>value</strong>, <strong>scale</strong> y <strong>offset</strong>.
+El significado de "0" depende del hardware. Por ejemplo, un
+A/D bipolar de 12 bits puede necesitar escribir 0x1FF (escala intermedia) para obtener D/A 0
+voltios desde el pin de hardware. Si el pin enable es verdadero, lee scale, offset y
+value y pone a la salida del ADC (<strong>scale</strong> * <strong>value</strong>) + <strong>offset</strong>.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

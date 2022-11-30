@@ -1,0 +1,161 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:35 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LATENCY-PLOT</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">LATENCY-PLOT</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">latency-plot -
+another way to view latency numbers</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>latency-plot</b>
+[<b>-?|--help</b>] [<b>-H|--hal</b>] [<b>-b|--base</b>
+<i>nS</i>] [<b>-s|--servo</b> <i>nS</i>] [<b>-t|--time</b>
+<i>mS</i>] [<b>--relative</b>] [<b>--actual</b>]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>latency-plot</b>
+makes a strip chart recording for a base and a servo thread.
+It may be useful to see spikes in latency when other
+applications are started or used. Mainly superseded by
+latency-histogram.</p>
+
+<p style="margin-left:11%; margin-top: 1em">LinuxCNC and
+Hal should not be running, stop with <i>halrun -U</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">More details:
+https://linuxcnc.org/docs/html/install/latency-test.html</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-?</b>,
+<b>--help</b></p>
+
+<p style="margin-left:22%;">Show options and exit.</p>
+
+<p style="margin-left:11%;"><b>-H</b>, <b>--hal <br>
+-b</b>, <b>--base</b> <i>nS</i></p>
+
+<p style="margin-left:22%;">base thread interval, default:
+25000</p>
+
+<p style="margin-left:11%;"><b>-s</b>, <b>--servo</b>
+<i>nS</i></p>
+
+<p style="margin-left:22%;">servo thread interval, default:
+1000000</p>
+
+<p style="margin-left:11%;"><b>-t</b>, <b>--time</b>
+<i>mS</i></p>
+
+<p style="margin-left:22%;">report interval, default: 1000,
+min: 100, max: 10000</p>
+
+<p style="margin-left:11%;"><b>--relative</b></p>
+
+<p style="margin-left:22%;">relative clock time
+(default)</p>
+
+<p style="margin-left:11%;"><b>--actual</b></p>
+
+<p style="margin-left:22%;">actual clock time</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>latency-histogram</b>(1),
+<b>latency-test</b>(1), <b>linuxcnc</b>(1)</p>
+
+<p style="margin-left:11%; margin-top: 1em">Much more
+information about LinuxCNC and HAL is available in the
+LinuxCNC and HAL User Manuals, found at
+<i>/usr/share/doc/linuxcnc/</i>.</p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">None known at
+this time.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This man page
+written by andypugh, as part of the LinuxCNC project.</p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs at
+https://github.com/LinuxCNC/linuxcnc/issues</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2020 andypugh. <br>
+This is free software; see the source for copying
+conditions. There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<hr>
+</body>
+</html>

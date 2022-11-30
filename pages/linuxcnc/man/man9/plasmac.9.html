@@ -1,0 +1,934 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:49 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>PLASMAC</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">PLASMAC</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">plasmac - A
+plasma cutter controller</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="21%">
+
+
+<p style="margin-top: 1em"><b>loadrt plasmac</b></p></td>
+<td width="68%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A plasma
+cutting table control component for use with the LinuxCNC
+V2.8 or later.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>VERSION:</i>
+<br>
+0.190 - 2020 Dec 13</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>SUMMARY:</i>
+<br>
+Usage of this component is demonstrated in the PlasmaC
+example configurations included with LinuxCNC.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>DISCLAIMER:</i>
+<br>
+THE AUTHOR OF THIS SOFTWARE ACCEPTS ABSOLUTELY NO LIABILITY
+FOR ANY HARM OR LOSS RESULTING FROM ITS USE.</p>
+
+<p style="margin-left:11%; margin-top: 1em">IT IS EXTREMELY
+UNWISE TO RELY ON SOFTWARE ALONE FOR SAFETY.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Any machinery
+capable of harming persons must have provisions for
+completely stopping all motors and moving parts etc. before
+persons enter any danger area.</p>
+
+<p style="margin-left:11%; margin-top: 1em">All machinery
+must be designed to comply with local and national safety
+codes, and the author of this software can not, and does
+not, take any responsibility for such compliance.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>plasmac</b>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>plasmac.arc-fail-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">arc start failure timeout
+(seconds)</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-lost-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">arc lost delay during a cut
+(seconds)</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-ok-high</b>
+float in</p>
+
+<p style="margin-left:22%;">maximum voltage level for Arc
+OK signal [mode 0] (volts)</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-ok-in</b> bit
+in</p>
+
+<p style="margin-left:22%;">external arc ok input signal
+[mode 1 &amp; mode 2]</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-ok-low</b> float
+in</p>
+
+<p style="margin-left:22%;">minimum voltage level for Arc
+OK signal [mode 0] (volts)</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-max-starts</b>
+s32 in</p>
+
+<p style="margin-left:22%;">maximum attempts at starting
+the arc</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-voltage-in</b>
+float in</p>
+
+<p style="margin-left:22%;">arc voltage input [mode 0 &amp;
+mode 1] see Notes above</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.arc-voltage-offset</b>
+float in</p>
+
+<p style="margin-left:22%;">offset to set arc voltage to 0
+at 0 volts</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.arc-voltage-scale</b>
+float in</p>
+
+<p style="margin-left:22%;">scale to convert arc_voltage
+input to actual volts</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.axis-z-min-limit</b>
+float in</p>
+
+<p style="margin-left:22%;">axis z minimum limit, connect
+to ini.z.min-limit</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.axis-z-max-limit</b>
+float in</p>
+
+<p style="margin-left:22%;">axis z maximum limit, connect
+to ini.z.max-limit</p>
+
+<p style="margin-left:11%;"><b>plasmac.axis-z-position</b>
+float in</p>
+
+<p style="margin-left:22%;">current z axis position,
+connect to joint.N.pos-fb</p>
+
+<p style="margin-left:11%;"><b>plasmac.axis-x-position</b>
+float in</p>
+
+<p style="margin-left:22%;">current x axis position,
+connect to axis.x.pos-cmd</p>
+
+<p style="margin-left:11%;"><b>plasmac.axis-y-position</b>
+float in</p>
+
+<p style="margin-left:22%;">current y axis position,
+connect to axis.y.pos-cmd</p>
+
+<p style="margin-left:11%;"><b>plasmac.breakaway</b> bit
+in</p>
+
+<p style="margin-left:22%;">torch breakaway switch
+(optional, see float_switch)</p>
+
+<p style="margin-left:11%;"><b>plasmac.spotting-start</b>
+bit in</p>
+
+<p style="margin-left:22%;">start a new spot, connect to
+spindle.2.on</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.spotting-threshold</b>
+float in</p>
+
+<p style="margin-left:22%;">threshold voltage to start
+spotting delay</p>
+
+<p style="margin-left:11%;"><b>plasmac.spotting-time</b>
+float in</p>
+
+<p style="margin-left:22%;">torch off delay after spotting
+threshold reached</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.consumable-change</b>
+bit in</p>
+
+<p style="margin-left:22%;">change consumables in torch</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.cornerlock-enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">enable corner lock</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.cornerlock-threshold</b>
+float in</p>
+
+<p style="margin-left:22%;">corner lock threshold (% of
+requested feed rate), speeds below this disable THC</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.current-velocity</b>
+float in</p>
+
+<p style="margin-left:22%;">current machine velocity ,
+connect to motion.current-vel</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-feed-rate</b>
+float in</p>
+
+<p style="margin-left:22%;">cut feed rate, set to 0 to use
+feed rate from gcod file (machine units per minute)</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-height</b> float
+in</p>
+
+<p style="margin-left:22%;">cut height (machine units)</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-recovery</b> bit
+in</p>
+
+<p style="margin-left:22%;">recover from cut error</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-volts</b> float
+in</p>
+
+<p style="margin-left:22%;">cut voltage (volts)</p>
+
+<p style="margin-left:11%;"><b>plasmac.cutting-start</b>
+bit in</p>
+
+<p style="margin-left:22%;">start a new cut, connect to
+spindle.0.on</p>
+
+<p style="margin-left:11%;"><b>plasmac.external-estop</b>
+bit in</p>
+
+<p style="margin-left:22%;">external estop input</p>
+
+<p style="margin-left:11%;"><b>plasmac.feed-reduction</b>
+float in</p>
+
+<p style="margin-left:22%;">reduce adaptive feed to this
+percentage (connect to motion.analog-out-03)</p>
+
+<p style="margin-left:11%;"><b>plasmac.feed-override</b>
+float in</p>
+
+<p style="margin-left:22%;">feed override value from gui
+(connect to halui.feed-override.value)</p>
+
+<p style="margin-left:11%;"><b>plasmac.float-switch</b> bit
+in</p>
+
+<p style="margin-left:22%;">float switch input (can also
+act as breakaway if it actuates when torch breaks away)</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.float-switch-travel</b>
+float in</p>
+
+<p style="margin-left:22%;">float switch travel (machine
+units)</p>
+
+<p style="margin-left:11%;"><b>plasmac.height-override</b>
+float in</p>
+
+<p style="margin-left:22%;">height override adjustment
+(volts)</p>
+
+<p style="margin-left:11%;"><b>plasmac.height-per-volt</b>
+float in</p>
+
+<p style="margin-left:22%;">torch height change per volt
+(machine units)</p>
+
+<p style="margin-left:11%;"><b>plasmac.homed</b> bit in</p>
+
+<p style="margin-left:22%;">machine is homed</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.kerfcross-enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">enable kerf crossing [mode 0
+&amp; mode 1]</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.kerfcross-override</b>
+float in</p>
+
+<p style="margin-left:22%;">kerf crossing threshold
+override as a percentage</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.lowpass-frequency</b>
+float in</p>
+
+<p style="margin-left:22%;">lowpass cutoff frequency for
+arc voltage output</p>
+
+<p style="margin-left:11%;"><b>plasmac.ignore-arc-ok-0</b>
+bit in</p>
+
+<p style="margin-left:22%;">don&rsquo;t require arc ok for
+start or cutting</p>
+
+<p style="margin-left:11%;"><b>plasmac.ignore-arc-ok-1</b>
+bit in</p>
+
+<p style="margin-left:22%;">don&rsquo;t require arc ok for
+start or cutting</p>
+
+<p style="margin-left:11%;"><b>plasmac.machine-is-on</b>
+bit in</p>
+
+<p style="margin-left:22%;">machine is on signal</p>
+
+<p style="margin-left:11%;"><b>plasmac.mesh-enable</b> bit
+in</p>
+
+<p style="margin-left:22%;">enable mesh cutting mode</p>
+
+<p style="margin-left:11%;"><b>plasmac.mode</b> s32 in</p>
+
+<p style="margin-left:22%;">operating mode</p>
+
+<p style="margin-left:11%;"><b>plasmac.motion-type</b> s32
+in</p>
+
+<p style="margin-left:22%;">motion type, connect to
+motion.motion-type</p>
+
+<p style="margin-left:11%;"><b>plasmac.move-down</b> bit
+in</p>
+
+<p style="margin-left:22%;">external thc down switch [mode
+2])</p>
+
+<p style="margin-left:11%;"><b>plasmac.move-up</b> bit
+in</p>
+
+<p style="margin-left:22%;">external thc up switch [mode
+2]</p>
+
+<p style="margin-left:11%;"><b>plasmac.multi-tool</b> bit
+in</p>
+
+<p style="margin-left:22%;">allows the use of multiple
+tools</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.ohmic-probe-enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">ohmic probe enable input</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.ohmic-probe-offset</b>
+float in</p>
+
+<p style="margin-left:22%;">Z axis offset for ohmic probe
+(machine units)</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.ohmic-max-attempts</b>
+s32 in</p>
+
+<p style="margin-left:22%;">maximum ohmic probe attempts
+before fallback to float switch</p>
+
+<p style="margin-left:11%;"><b>plasmac.ohmic-probe</b> bit
+in</p>
+
+<p style="margin-left:22%;">ohmic probe input</p>
+
+<p style="margin-left:11%;"><b>plasmac.ohmic-test</b> bit
+in</p>
+
+<p style="margin-left:22%;">test for shorted torch</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.paused-motion-speed</b>
+float in</p>
+
+<p style="margin-left:22%;">multiplier for speed of motion
+when paused, from -1 to 1</p>
+
+<p style="margin-left:11%;"><b>plasmac.pause-at-end</b>
+float in</p>
+
+<p style="margin-left:22%;">time to pause at end of cut</p>
+
+<p style="margin-left:11%;"><b>plasmac.pid-d-gain</b> float
+in</p>
+
+<p style="margin-left:22%;">derivative gain input [mode 0
+&amp; mode 1]</p>
+
+<p style="margin-left:11%;"><b>plasmac.pid-i-gain</b> float
+in</p>
+
+<p style="margin-left:22%;">integral gain input [mode 0
+&amp; mode 1]</p>
+
+<p style="margin-left:11%;"><b>plasmac.pid-p-gain</b> float
+in</p>
+
+<p style="margin-left:22%;">proportional gain input [mode 0
+&amp; mode 1]</p>
+
+<p style="margin-left:11%;"><b>plasmac.pierce-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">time required to pierce stock
+(seconds)</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.probe-final-speed</b>
+s32 in (default: <i>1</i>)</p>
+
+<p style="margin-left:22%;">final probe speed (steps per
+servo period)</p>
+
+<p style="margin-left:11%;"><b>plasmac.pierce-height</b>
+float in</p>
+
+<p style="margin-left:22%;">pierce height (machine
+units)</p>
+
+<p style="margin-left:11%;"><b>plasmac.probe-feed-rate</b>
+float in</p>
+
+<p style="margin-left:22%;">probe down velocity (machine
+units per minute)</p>
+
+<p style="margin-left:11%;"><b>plasmac.probe-test</b> bit
+in</p>
+
+<p style="margin-left:22%;">probe test only</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.probe-start-height</b>
+float in</p>
+
+<p style="margin-left:22%;">probe starting height</p>
+
+<p style="margin-left:11%;"><b>plasmac.program-is-idle</b>
+bit in</p>
+
+<p style="margin-left:22%;">program is idle, connect to
+halui.program.is-idle</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.program-is-paused</b>
+bit in</p>
+
+<p style="margin-left:22%;">program is paused, connect to
+halui.program.is-paused</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.program-is-running</b>
+bit in</p>
+
+<p style="margin-left:22%;">program is running, connect to
+halui.program.is-running</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.puddle-jump-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">delay move from pierce height
+to cut height (seconds), leave disconnected if not
+required</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.puddle-jump-height</b>
+float in</p>
+
+<p style="margin-left:22%;">puddle jump height (percentage
+of pierce height), leave disconnected if not required</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.requested-velocity</b>
+float in</p>
+
+<p style="margin-left:22%;">requested velocity, set by a
+known requested velocity or connect to
+motion.requested-vel</p>
+
+<p style="margin-left:11%;"><b>plasmac.resolution</b> s32
+in (default: <i>1</i>)</p>
+
+<p style="margin-left:22%;">resolution of the offset
+counts</p>
+
+<p style="margin-left:11%;"><b>plasmac.restart-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">time from arc failure till next
+restart attempt</p>
+
+<p style="margin-left:11%;"><b>plasmac.safe-height</b>
+float in</p>
+
+<p style="margin-left:22%;">requested safe traverse height
+(machine units)</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.scribe-arm-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">delay from scribe arm to scribe
+on</p>
+
+<p style="margin-left:11%;"><b>plasmac.scribe-on-delay</b>
+float in</p>
+
+<p style="margin-left:22%;">delay from scribe on to motion
+beginning</p>
+
+<p style="margin-left:11%;"><b>plasmac.scribe-start</b> bit
+in</p>
+
+<p style="margin-left:22%;">start a new scribe, connect to
+spindle.1.on</p>
+
+<p style="margin-left:11%;"><b>plasmac.setup-feed-rate</b>
+float in</p>
+
+<p style="margin-left:22%;">feed rate for moves to pierce
+and cut heights (machine units per minute)</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.skip-ihs-distance</b>
+float in</p>
+
+<p style="margin-left:22%;">skip IHS if less than this
+distance from last cut</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-enable</b> bit
+in</p>
+
+<p style="margin-left:22%;">enable/disable thc and set the
+IHS skip type</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-disable</b> bit
+in</p>
+
+<p style="margin-left:22%;">thc disable</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-delay</b> float
+in</p>
+
+<p style="margin-left:22%;">delay from start of cut to THC
+enable (seconds)</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-feed-rate</b>
+float in</p>
+
+<p style="margin-left:22%;">maximum feed rate for thc
+(machine units per minute)</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-threshold</b>
+float in</p>
+
+<p style="margin-left:22%;">thc threshold (volts), changes
+below this have no effect</p>
+
+<p style="margin-left:11%;"><b>plasmac.torch-enable</b> bit
+in</p>
+
+<p style="margin-left:22%;">enable torch</p>
+
+<p style="margin-left:11%;"><b>plasmac.torch-off</b> bit
+in</p>
+
+<p style="margin-left:22%;">turn torch off</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.torch-pulse-start</b>
+bit in</p>
+
+<p style="margin-left:22%;">torch pulse start</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.torch-pulse-time</b>
+float in</p>
+
+<p style="margin-left:22%;">torch pulse time (seconds)</p>
+
+<p style="margin-left:11%;"><b>plasmac.units-per-mm</b>
+float in</p>
+
+<p style="margin-left:22%;">for scale calcs, connect to
+halui.machine.units-per-mm</p>
+
+<p style="margin-left:11%;"><b>plasmac.use-auto-volts</b>
+bit in</p>
+
+<p style="margin-left:22%;">use calculated voltage for thc
+baseline</p>
+
+<p style="margin-left:11%;"><b>plasmac.xy-feed-rate</b>
+float in</p>
+
+<p style="margin-left:22%;">feed-rate for consumable
+change</p>
+
+<p style="margin-left:11%;"><b>plasmac.x-offset</b> float
+in</p>
+
+<p style="margin-left:22%;">offest to apply to axis x for
+consumable change</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.x-offset-current</b>
+float in</p>
+
+<p style="margin-left:22%;">current x axis offset, connect
+to axis.x.eoffset</p>
+
+<p style="margin-left:11%;"><b>plasmac.y-offset</b> float
+in</p>
+
+<p style="margin-left:22%;">offest to apply to axis y for
+consumable change</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.y-offset-current</b>
+float in</p>
+
+<p style="margin-left:22%;">current z axis offset, connect
+to axis.y.eoffset</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.z-offset-current</b>
+float in</p>
+
+<p style="margin-left:22%;">current z axis offset, connect
+to axis.z.eoffset</p>
+
+<p style="margin-left:11%;"><b>plasmac.adaptive-feed</b>
+float out</p>
+
+<p style="margin-left:22%;">for reverse-run, connect to
+motion.adaptive-feed</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-ok-out</b> bit
+out</p>
+
+<p style="margin-left:22%;">arc ok output</p>
+
+<p style="margin-left:11%;"><b>plasmac.arc-voltage-out</b>
+float out</p>
+
+<p style="margin-left:22%;">arc voltage output [mode 0
+&amp; mode 1]</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.consumable-changing</b>
+bit out</p>
+
+<p style="margin-left:22%;">consumables are being
+changed</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.cornerlock-is-locked</b>
+bit out</p>
+
+<p style="margin-left:22%;">corner locked indicator</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-length</b> float
+out</p>
+
+<p style="margin-left:22%;">length of current cut job</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-time</b> float
+out</p>
+
+<p style="margin-left:22%;">time of current cut job</p>
+
+<p style="margin-left:11%;"><b>plasmac.cut-recovering</b>
+bit out</p>
+
+<p style="margin-left:22%;">recovering from cut error</p>
+
+<p style="margin-left:11%;"><b>plasmac.cutting-stop</b> bit
+out</p>
+
+<p style="margin-left:22%;">stop manual cut, connect to
+halui.spindle.0.stop</p>
+
+<p style="margin-left:11%;"><b>plasmac.feed-hold</b> bit
+out</p>
+
+<p style="margin-left:22%;">feed hold, connect to
+motion.feed_hold</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.kerfcross-is-locked</b>
+bit out</p>
+
+<p style="margin-left:22%;">kerf crossing locked indicator
+[mode 0 &amp; mode 1]</p>
+
+<p style="margin-left:11%;"><b>plasmac.led-down</b> bit
+out</p>
+
+<p style="margin-left:22%;">thc move down indicator</p>
+
+<p style="margin-left:11%;"><b>plasmac.led-up</b> bit
+out</p>
+
+<p style="margin-left:22%;">thc move up indicator</p>
+
+<p style="margin-left:11%;"><b>plasmac.offset-scale</b>
+float out</p>
+
+<p style="margin-left:22%;">offset scale, connect to
+axis.&lt;x y z&gt;.eoffset-scale</p>
+
+<p style="margin-left:11%;"><b>plasmac.ohmic-enable</b> bit
+out</p>
+
+<p style="margin-left:22%;">on only while probing</p>
+
+<p style="margin-left:11%;"><b>plasmac.pierce-count</b> s32
+out</p>
+
+<p style="margin-left:22%;">number of pierce attempts</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.probe-test-error</b>
+bit out</p>
+
+<p style="margin-left:22%;">minimum limit reached while
+pobe testing</p>
+
+<p style="margin-left:11%;"><b>plasmac.program-pause</b>
+bit out</p>
+
+<p style="margin-left:22%;">pause the current program,
+connect to halui.program.pause</p>
+
+<p style="margin-left:11%;"><b>plasmac.program-resume</b>
+bit out</p>
+
+<p style="margin-left:22%;">resume the currently paused
+program, connect to halui.program.resume</p>
+
+<p style="margin-left:11%;"><b>plasmac.program-run</b> bit
+out</p>
+
+<p style="margin-left:22%;">run the currently loaded
+program, connect to halui.program.run</p>
+
+<p style="margin-left:11%;"><b>plasmac.program-stop</b> bit
+out</p>
+
+<p style="margin-left:22%;">stop current program, connect
+to halui.program.stop</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.safe-height-is-limited</b>
+bit out</p>
+
+<p style="margin-left:22%;">safe height is limited
+indicator</p>
+
+<p style="margin-left:11%;"><b>plasmac.scribe-arm</b> bit
+out</p>
+
+<p style="margin-left:22%;">arm the scribe</p>
+
+<p style="margin-left:11%;"><b>plasmac.scribe-on</b> bit
+out</p>
+
+<p style="margin-left:22%;">turn scribe on</p>
+
+<p style="margin-left:11%;"><b>plasmac.state-out</b> s32
+out</p>
+
+<p style="margin-left:22%;">current state</p>
+
+<p style="margin-left:11%;"><b>plasmac.stop-type-out</b>
+s32 out</p>
+
+<p style="margin-left:22%;">current stop type</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-active</b> bit
+out</p>
+
+<p style="margin-left:22%;">thc status output</p>
+
+<p style="margin-left:11%;"><b>plasmac.thc-enabled</b> bit
+out</p>
+
+<p style="margin-left:22%;">thc is enabled</p>
+
+<p style="margin-left:11%;"><b>plasmac.torch-on</b> bit
+out</p>
+
+<p style="margin-left:22%;">turn torch on, connect to your
+torch on input</p>
+
+<p style="margin-left:11%;"><b>plasmac.x-offset-counts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">x offset for consumable change,
+connect to axis.x.eoffset-counts</p>
+
+<p style="margin-left:11%;"><b>plasmac.y-offset-counts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">y offset for consumable change,
+connect to axis.y.eoffset-counts</p>
+
+
+<p style="margin-left:11%;"><b>plasmac.xy-offset-enable</b>
+bit out</p>
+
+<p style="margin-left:22%;">enable x and y offsets, connect
+to axis.&lt;x &amp; y&gt;.eoffset-enable</p>
+
+<p style="margin-left:11%;"><b>plasmac.z-offset-counts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">z offset for height control,
+connect to axis.z.eoffset-counts</p>
+
+<p style="margin-left:11%;"><b>plasmac.z-offset-enable</b>
+bit out</p>
+
+<p style="margin-left:22%;">enable z offsets, connect to
+axis.z.eoffset-enable</p>
+
+<p style="margin-left:11%;"><b>plasmac.z-relative</b> float
+out</p>
+
+<p style="margin-left:22%;">distance of Z from last probed
+height</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>plasmac.debug-print</b>
+bit rw (default: <i>FALSE</i>)</p>
+
+<p style="margin-left:22%;">print debug messages</p>
+
+<p style="margin-left:11%;"><b>plasmac.kerf-errors-max</b>
+s32 rw (default: <i>2</i>)</p>
+
+<p style="margin-left:22%;">allowable kerfcross threshold
+errors</p>
+
+<p style="margin-left:11%;"><b>plasmac.mesh-arc-ok</b> bit
+rw (default: <i>FALSE</i>)</p>
+
+<p style="margin-left:22%;">don&rsquo;t require arc ok for
+mesh mode</p>
+
+<p style="margin-left:11%;"><b>plasmac.max-offset</b> s32
+rw (default: <i>5</i>)</p>
+
+<p style="margin-left:22%;">maximum height offset</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Phillip A
+Carter</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">GPLv2 or
+greater</p>
+<hr>
+</body>
+</html>

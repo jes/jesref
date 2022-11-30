@@ -1,0 +1,467 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_stream</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_stream</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#ARGUMENTS">ARGUMENTS</a><br>
+<a href="#SAMPLE CODE">SAMPLE CODE</a><br>
+<a href="#REALTIME CONSIDERATIONS">REALTIME CONSIDERATIONS</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_stream -
+non-blocking realtime streams</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hal.h&gt;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_create(hal_stream_t *stream, int comp_id, int
+key, int depth, const char *typestring); <br>
+void hal_stream_destroy(hal_stream_t *stream); <br>
+int hal_stream_attach(hal_stream_t *stream, int comp_id, int
+key, const char *typestring); <br>
+int hal_stream_detach(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_element_count(hal_stream_t *stream); <br>
+hal_type_t hal_stream_element_type(hal_stream_t *stream, int
+idx); <br>
+int hal_stream_depth(hal_stream_t *stream); <br>
+int hal_stream_maxdepth(hal_stream_t *stream); <br>
+int hal_stream_num_underruns(hal_stream_t *stream); <br>
+int hal_stream_num_overruns(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_read(hal_stream_t *stream, union hal_stream_data
+*buf, unsigned *sampleno); <br>
+bool hal_stream_readable(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em">int
+hal_stream_write(hal_stream_t *stream, union hal_stream_data
+*buf); <br>
+bool hal_stream_writable(hal_stream_t *stream);</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>#ifdef
+ULAPI</b> <br>
+void hal_stream_wait_writable(hal_stream_t *stream,
+sig_atomic_t *stop); <br>
+void hal_stream_wait_readable(hal_stream_t *stream,
+sig_atomic_t *stop); <b><br>
+#endif</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A HAL stream
+provides a limited ability for two components to communicate
+data which does not fit within the model of HAL pins. A
+reader and a writer must agree on a <i>key</i> (32-bit
+integer identifier) and a data structure specified by
+<i>typestring.</i> They must also agree which component (the
+first one loaded) will <b>hal_stream_create</b> the stream,
+and which component (the second one loaded) will
+<b>hal_stream_attach</b> to the already-created stream.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The userspace
+part can be <b>halstreamer</b> or <b>halsampler</b>. In the
+case of <b>halstreamer</b> the key is 0x48535430 plus the
+channel number. In the case of <b>halsampler</b> the key is
+0x48534130 plus the channel number.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_create</b>
+<br>
+Create the given stream, initializing the <i>stream</i>
+which is passed by reference. It is an undiagnosed error if
+a stream has already been created with the same
+<i>key</i>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_destroy</b>
+<br>
+Destroy the given stream. It is an undiagnosed error if the
+stream is still attached by another component. It is an
+undiagnosed error if the stream was attached with
+<b>hal_stream_attach</b> rather than created with
+<b>hal_stream_create</b>. It is an undiagnosed error if the
+call to <b>hal_stream_destroy</b> is omitted.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_attach</b>
+<br>
+Attach the given stream, which was already created by
+<b>hal_stream_create</b>. If the typestring is specified,
+this call fails if it does not match the typestring the
+stream was created with. If the typestring argument is NULL,
+then any typestring is accepted.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_detach</b>
+<br>
+Detach the given stream. It is an undiagnosed error if the
+stream was created with <b>hal_stream_create</b> rather than
+attached with <b>hal_stream_attach</b>. It is an undiagnosed
+error if the call to <b>hal_stream_detach</b> is
+omitted.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_element_count</b>
+<br>
+Returns the number of pins.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_element_type</b>
+<br>
+Returns the type of the given pin number.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_readable</b>
+<br>
+Returns true if the stream has at least one sample to
+read</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_read</b>
+<br>
+If the stream has one sample to read, stores it in buf.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_writable</b>
+<br>
+Returns true if the stream has room for at least one sample
+to be written.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_depth</b>
+<br>
+Returns the number of samples waiting to be read.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_maxdepth</b>
+<br>
+Returns the <b>depth</b> argument that the stream was
+created with.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_num_overruns</b>
+<br>
+Returns a number which is incremented each time
+<b>hal_stream_write</b> is called without space
+available.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_num_underruns</b>
+<br>
+Returns a number which is incremented each time
+<b>hal_stream_read</b> is called without a sample
+available.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_wait_readable</b>
+<br>
+Waits until the stream is readable or the stop flag is
+set.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_wait_writable</b>
+<br>
+Waits until the stream is writable or the stop flag is
+set.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_read</b>
+<br>
+Reads a record from stream. If successful, it is stored in
+the given buffer. Optionally, the sample number can be
+retrieved. If no sample is available, <i>num_underruns</i>
+is incremented. It is an undetected error if more than one
+component or real-time function calls <b>hal_stream_read</b>
+concurrently.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_write</b>
+<br>
+Writes a record to the stream. If successful, it copied from
+the given buffer. If no room is available,
+<i>num_overruns</i> is incremented. In either case, the
+internal <i>sampleno</i> value is incremented. <br>
+It is an undetected error if more than one component or
+real-time function calls <b>hal_stream_write</b>
+concurrently.</p>
+
+<h2>ARGUMENTS
+<a name="ARGUMENTS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p style="margin-top: 1em"><i>stream</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">A pointer to a stream object. In
+the case of <b>hal_stream_create</b> and
+<b>hal_stream_attach</b> this is an uninitialized stream; in
+other cases, it must be a stream created or attached by an
+earlier call and not yet detached or destroyed.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>hal_id</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>An HAL component identifier returned by an earlier call
+to <b>hal_init</b>.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>key</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>The key for the shared memory segment.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><i>depth</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>The number of samples that can be unread before any
+samples are lost (overrun)</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>typestring</i></p>
+
+<p style="margin-left:22%;">A typestring is a
+case-insensitive string which consists of one or more of the
+following type characters:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>B</p></td>
+<td width="10%"></td>
+<td width="37%">
+
+
+<p>for bool / hal_bit_t</p></td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>S</p></td>
+<td width="10%"></td>
+<td width="37%">
+
+
+<p>for int32_t / hal_s32_t</p></td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>U</p></td>
+<td width="10%"></td>
+<td width="37%">
+
+
+<p>for uint32_t / hal_u32_t</p></td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="17%"></td>
+<td width="1%">
+
+
+<p>F</p></td>
+<td width="10%"></td>
+<td width="37%">
+
+
+<p>for real_t / hal_float_t</p></td>
+<td width="35%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">A typestring is limited to 16
+characters.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p style="margin-top: 1em"><i>buf</i></p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">A buffer big enough to hold all
+the data in one sample.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>sampleno</i></p>
+
+<p style="margin-left:22%;">If non-NULL, the last sample
+number is stored here. Gaps in this sequence indicate that
+an overrun occurred between the previous read and this one.
+May be NULL, in which case the sample number is not
+retrieved.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>stop</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>A pointer to a value which is monitored while waiting.
+If it is nonzero, the wait operation returns early. This
+allows a wait call to be safely terminated in the case of a
+signal.</p> </td></tr>
+</table>
+
+<h2>SAMPLE CODE
+<a name="SAMPLE CODE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">In the source
+tree under <i>src/hal/components</i>, <b>sampler.c</b> and
+<b>streamer.c</b> are realtime components that read and
+write hal streams.</p>
+
+<h2>REALTIME CONSIDERATIONS
+<a name="REALTIME CONSIDERATIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_read</b>,
+<b>hal_stream_readable</b>, <b>hal_stream_write</b>,
+<b>hal_stream_writable</b>, <b>hal_stream_element_count</b>,
+<b>hal_tream_pin_type</b>, <b>hal_stream_depth</b>,
+<b>hal_stream_maxdepth</b>, <b>hal_stream_num_underruns</b>,
+<b>hal_stream_number_overruns</b> may be called from
+realtime code.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_wait_writable</b>,
+<b>hal_stream_wait_writable</b> may be called from ULAPI
+code.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Other functions
+may be called in any context, including realtime
+contexts.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_stream_create</b>
+, <b>hal_stream_attach</b> , <b>hal_stream_read</b> ,
+<b>hal_stream_write</b> , <b>hal_stream_detach</b> and
+<b>hal_stream_destroy</b> return an RTAPI status code. Other
+functions&rsquo; return values are explained above.</p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The memory
+overhead of a stream can be large. Each element in a record
+uses 8 bytes, and the implicit sample number also uses 8
+bytes. As a result, a stream which is used to transport
+8-bit values uses 94% of its memory as overhead. However,
+for modest stream sizes this overhead is not important.
+(this memory is part of its own shared memory region and
+does not count against the HAL shared memory region used for
+pins, parameters and signals)</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler</b>(9),
+<b>streamer</b>(9), <b>halsampler</b>(1),
+<b>halstreamer</b>(1)</p>
+<hr>
+</body>
+</html>

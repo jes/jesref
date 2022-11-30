@@ -1,0 +1,146 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:29 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MESA_PKTGYRO_TEST</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MESA_PKTGYRO_TEST</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">mesa_pktgyro_test
+- PktUART simple test with Microstrain 3DM-GX3-15 gyro</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="87%">
+
+
+<p style="margin-top: 1em"><b>loadrt mesa_pktgyro_test
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="2%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+is written in order to test the PktUART driver for Mesa. It
+resembles partly Andy Pugh&rsquo;s mesa_uart.comp .</p>
+
+<p style="margin-left:11%; margin-top: 1em">This module
+uses the names= mode of loadrt declaration to specifiy which
+PktUART instances to enable. A check is included to ensure
+that the count= option is not used instead. For simplicity
+we test only one PktUART instance, therefore load the
+component like this:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+mesa_uart names=hm2_5i25.0.pktuart.0</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">The PktUART
+instance names are printed to the dmesg buffer during the
+Hostmot2 setup sequence, one for each PktUART instance
+included in the bitfile loaded to each installed card during
+the Hostmot2 setup sequence. Type &quot;dmesg&quot; at the
+terminal prompt to view the output. If you want to work with
+more than one PktUART instance, consult Andy Pugh&rsquo;s
+mesa_uart.comp</p>
+
+<p style="margin-left:11%; margin-top: 1em">In order to
+compile and install do: <b><br>
+halcompile --install
+src/hal/drivers/mesa_pktgyro_test.comp</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">The component
+exports only one function, namely receive, which needs to be
+added to a realtime thread. To test this component set
+DEBUG=5 before and execute this HAL script: <b><br>
+loadrt hostmot2 <br>
+loadrt hm2_pci <br>
+loadrt mesa_pktgyro_test names=hm2_5i25.0.pktuart.0 <br>
+loadrt threads name1=test1 period1=10000000 <br>
+addf hm2_5i25.0.pktuart.0.receive test1 <br>
+start</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Check
+linuxcnc.log for debug output.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mesa-pktgyro-test.</b><i>N</i><b>.receive</b>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mesa-pktgyro-test.</b><i>N</i><b>.rxbytes</b>
+s32 out</p>
+
+<p style="margin-left:22%;">Number of Bytes received or
+negative Error code</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Boris
+Skegin</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

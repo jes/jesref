@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Stand Alone Interpreter</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Stand Alone Interpreter</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:rs274"><p>The rs274 stand alone interpreter is available for use via the command line.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">1. Usage</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre><code>Usage: rs274 [-p interp.so] [-t tool.tbl] [-v var-file.var] [-n 0|1|2]
+          [-b] [-s] [-g] [input file [output file]]
+
+    -p: Specify the pluggable interpreter to use
+    -t: Specify the .tbl (tool table) file to use
+    -v: Specify the .var (parameter) file to use
+    -n: Specify the continue mode:
+           0: continue
+           1: enter MDI mode
+           2: stop (default)
+    -b: Toggle the 'block delete' flag (default: OFF)
+    -s: Toggle the 'print stack' flag (default: OFF)
+    -g: Toggle the 'go (batch mode)' flag (default: OFF)
+    -i: specify the .ini file (default: no ini file)
+    -T: call task_init()
+    -l: specify the log_level (default: -1)</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example">2. Example</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>To see the output of a loop for example we can run rs274 on the following file
+and see that the loop never ends. To break out of the loop use Ctrl Z. The
+following two files are needed to run the example.</p></div>
+<div class="listingblock">
+<div class="title">test.ngc</div>
+<div class="content">
+<pre><code>#&lt;test&gt; = 123.352
+
+o101 while [[#&lt;test&gt; MOD 60 ] NE 0]
+(debug,#&lt;test&gt;)
+    #&lt;test&gt; = [#&lt;test&gt; + 1]
+o101 endwhile
+
+M2</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">test.tbl</div>
+<div class="content">
+<pre><code>T1 P1 Z0.511 D0.125 ;1/8 end mill
+T2 P2 Z0.1 D0.0625 ;1/16 end mill
+T3 P3 Z1.273 D0.201 ;#7 tap drill</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">command</div>
+<div class="content">
+<pre><code>rs274 -g test.ngc -t test.tbl</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

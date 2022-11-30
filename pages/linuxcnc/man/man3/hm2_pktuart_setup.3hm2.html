@@ -1,0 +1,361 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_pktuart_setup</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_pktuart_setup</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#FUTURE DEVELOPMENT">FUTURE DEVELOPMENT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_pktuart_setup
+- setup a Hostmot2 PktUART instance</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_pktuart_setup(char
+*name, int bitrate, rtapi_s32 tx_mode, rtapi_s32 rx_mode,
+int txclear, int rxclear)</p></td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_pktuart_setup</b>
+Setup the bitrate for the PktUART named &quot;name&quot;.
+&quot;name&quot; is a unique string given to each PktUART
+during hostmot2 setup. The names of the available UARTs are
+printed to standard output during the driver loading process
+and take the form: hm2_&lt;board name&gt;.&lt;board
+index&gt;.pktuart.&lt;index&gt; For example
+hm2_5i25.0.pktuart.0 .</p>
+
+<p style="margin-left:11%; margin-top: 1em">Hostmot2 UARTs
+are good to about 10 Mb/sec, but higher data rates (with any
+UART) trade speed for susceptibility to impulse noise.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The PktUART
+function allows different RX and TX bitrates, but that is
+not currently supported by this driver.</p>
+
+<p style="margin-left:11%; margin-top: 1em">tx_mode is bit
+mask defined in the Hostmot2 regmap:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 21</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>FrameBuffer Has Data</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>Bits 20..16 Frames to send
+<br>
+Bits 15..8 InterFrame delay in bit times</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 7</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>Send busy, Transmit Logic active</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 6</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>Drive Enable bit (enables external RS-422/485 Driver
+when</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>set)</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 5</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>Drive enable Auto (Automatic external drive
+enable)</b></p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 4</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>SCFIFO Error</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>Bits 3..0 Drive enable delay
+(delay from asserting drive enable</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="8%"></td>
+<td width="7%"></td>
+<td width="8%">
+</td>
+<td width="8%"></td>
+<td width="7%">
+
+
+<p>to start of data transmit. In CLock Low periods</p></td>
+<td width="62%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">rx_mode is bit
+mask defined in the Hostmot2 regmap:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 21</b></p></td>
+<td width="7%"></td>
+<td width="8%">
+
+
+<p><b>FrameBuffer has data</b></p></td>
+<td width="31%"></td>
+<td width="8%"></td>
+<td width="38%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>Bits 20..16 Frames received
+<br>
+Bits 15..8 InterFrame delay in bit times</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 7</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>Rx Logic active</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 6</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>RXMask</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>Bit 5 Unused</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 4</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>RCFIFO Error</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 3</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>RXEnable (must be set to receive packets)</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 2</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>RXMask Enable (enables input data masking when
+transmitting)</b></p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 1</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>Overrun error (no stop bit when expected)
+(sticky)</b></p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 0</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="77%">
+
+
+<p><b>False Start bit error (sticky)</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">rx_mode and
+tx_mode registers are currently write-only. One can get the
+instance number of a PktUART instance with the help of
+hm2_get_pktuart function in order to read and write to Rx
+and Tx registers.</p>
+
+<p style="margin-left:11%; margin-top: 1em">To write only
+to the tx_mode DriveEnable bit call this function with the
+bitrate unchanged and -1 as the rx_mode To change bitrate
+without altering mode settings send -1 to both modes.</p>
+
+<p style="margin-left:11%; margin-top: 1em">txclear==1
+aborts any sends in process, clears the data FIFO and clears
+the send count FIFO.</p>
+
+<p style="margin-left:11%; margin-top: 1em">rxclear==1
+aborts any receives in process, clears the data FIFO and
+clears the receive count FIFO.</p>
+
+<p style="margin-left:11%; margin-top: 1em">txclear!=1 or
+rxclear!=1 lets the corresponding registers unchanged.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns 0 on
+success and -1 or -EINVAL on failure.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>man
+hm2_pktuart_send, man hm2_pktuart_read</b> <br>
+See src/hal/drivers/mesa_pktgyro_test.comp for an example
+usage.</p>
+
+<h2>FUTURE DEVELOPMENT
+<a name="FUTURE DEVELOPMENT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This function
+is subject to change as digital filters will be added on the
+Rx UART, and bit rate register will gain a 12 bit field for
+the input filter constant.</p>
+<hr>
+</body>
+</html>

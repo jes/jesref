@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Husillo con GS2</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Husillo con GS2</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:gs2-spindle"><p>Este ejemplo muestra las conexiones necesarias para usar un VFD GS2
+de Automation Direct para manejar un husillo. La velocidad y dirección del husillo son
+controladas por LinuxCNC.</p></div>
+<div class="paragraph"><p>El uso del componente GS2 tiene muy poco que configurar. Empezamos con una configuración
+generada por el asistente Stepconf. Asegúrese de que los pines con "Husillo
+CW" y "Husillo PWM" están configurados como no utilizados en la configuración del puerto paralelo.</p></div>
+<div class="paragraph"><p>En el archivo custom.hal colocamos lo siguiente para conectar LinuxCNC al
+GS2 y que controle la unidad.</p></div>
+<div class="listingblock">
+<div class="title">GS2 Ejemplo</div>
+<div class="content">
+<pre><code># cargar el componente de espacio de usuario para VFD Automation Direct GS2
+loadusr -Wn spindle-vfd gs2_vfd -r 9600 -p none -s 2 -n spindle-vfd
+
+# conecte el pin de dirección del husillo al GS2
+net gs2-fwd spindle-vfd.spindle-fwd &lt;= spindle.N.forward
+
+# conecte el pin de arranque del husillo al GS2
+net gs2-run spindle-vfd.spindle-on &lt;= spindle.N.on
+
+# conecte el GS2 a velocidad al movimiento a velocidad
+net gs2-at-speed spindle.N.at-speed &lt;= spindle-vfd.at-speed
+
+# conecte RPM de husillo al GS2
+net gs2-RPM spindle-vfd.speed-command &lt;= spindle.N.speed-out</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">La velocidad de transmisión puede ser más rápida dependiendo del entorno exacto.
+Tanto la unidad como las opciones de línea de comando deben coincidir. Para verificar
+errores de transmisión, agregue la opción <em>-v</em> a la línea de comando y ejecute desde un
+terminal.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Necesita configurar un par de cosas en el propio driver GS2 antes de que
+las comunicaciones modbus funcionen. Puede que sea necesario configurar otros parámetros
+basado en sus requisitos físicos, pero estos están más allá del alcance de este
+manual. Consulte el manual de GS2 que vino con la unidad para obtener más información
+sobre los parámetros del variador.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Los interruptores de comunicación deben configurarse en RS-232C
+</p>
+</li>
+<li>
+<p>
+Los parámetros del motor deben configurarse para que coincidan con el motor
+</p>
+</li>
+<li>
+<p>
+P3.00 (Fuente del comando de operación) debe establecerse en Operación
+   determinada por la interfaz RS-485, 03 o 04
+</p>
+</li>
+<li>
+<p>
+P4.00 (Fuente del comando de frecuencia) debe establecerse en Frecuencia
+   determinada por la interfaz de comunicación RS232C/RS485, 05
+</p>
+</li>
+<li>
+<p>
+P9.01 (Velocidad de transmisión) debe establecerse en 9600 baudios, 01
+</p>
+</li>
+<li>
+<p>
+P9.02 (Protocolo de comunicación) debe establecerse en "Modo Modbus RTU,
+   8 bits de datos, sin paridad, 2 bits de parada ", 03
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Un panel PyVCP basado en este ejemplo está <a href="../gui/pyvcp-examples_es.html#gs2-rpm-meter">aqui</a>.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

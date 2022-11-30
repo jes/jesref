@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>关于LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>关于LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_软件">1. 软件</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+LinuxCNC（增强型机器控制器）是一个软件系统，用于机床（例如铣床和车床），机器人（例如puma和scara）以及其他最多9轴的计算机控制器。
+</p>
+</li>
+<li>
+<p>
+LinuxCNC是开源代码的免费软件。当前版本的LinuxCNC完全根据GNU通用公共许可证和次要GNU通用公共许可证（GPL和LGPL）获得许可
+</p>
+</li>
+<li>
+<p>
+LinuxCNC提供：
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+图形用户界面（实际上是几个界面可供选择）
+</p>
+</li>
+<li>
+<p>
+G代码的解释器（RS-274机床编程语言）
+</p>
+</li>
+<li>
+<p>
+具有超前的实时运动调度系统
+</p>
+</li>
+<li>
+<p>
+底层机器电子设备（例如传感器和电机驱动器）的操作
+</p>
+</li>
+<li>
+<p>
+易于使用的"面包板"层，可为您的机器快速创建独特的配置
+</p>
+</li>
+<li>
+<p>
+可通过梯形图编程的软件PLC
+</p>
+</li>
+<li>
+<p>
+使用Live-CD轻松安装
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+不提供工程图（CAD-计算机辅助设计）或从工程图生成G代码（CAM-计算机自动化制造）的功能。
+</p>
+</li>
+<li>
+<p>
+最多可以同时移动9个轴，并支持多种接口。
+</p>
+</li>
+<li>
+<p>
+控制器可以通过计算机上的LinuxCNC软件关闭反馈回路来运行真正的伺服器（模拟或PWM），也可以使用步进伺服或步进电机来控制开环。
+</p>
+</li>
+<li>
+<p>
+运动控制功能包括：刀具半径和长度补偿，限制在指定公差范围内的路径偏差，车床螺纹，同步轴运动，自适应进给率，操作员进给倍率以及恒速控制。
+</p>
+</li>
+<li>
+<p>
+通过自定义运动学模块提供对非笛卡尔运动系统的支持。可用的架构包括六脚架（Stewart平台和类似概念）以及带有旋转关节以提供运动的系统，例如PUMA或SCARA机器人。
+</p>
+</li>
+<li>
+<p>
+LinuxCNC运行在使用了实时内核扩展的Linux系统。
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_操作系统">2. 操作系统</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>在Ubuntu和Debian发行版，LinuxCNC作为现成软件包提供。</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_获得帮助">3. 获得帮助</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_irc">3.1. IRC</h3>
+<div class="paragraph"><p>IRC的含义是Internet中继聊天。它是与其他LinuxCNC用户的实时连接。LinuxCNC的IRC通道是freenode上的#linuxcnc。</p></div>
+<div class="paragraph"><p>进入IRC的最简单方法是使用此
+<a href="https://webchat.freenode.net/?channels=%23linuxcnc">页面</a>
+的嵌入式Java客户端。</p></div>
+<div class="ulist"><div class="title">常用IRC礼节</div><ul>
+<li>
+<p>
+直接提出具体问题&#8230;避免使用“有人可以帮助我吗？”之类的问题。
+</p>
+</li>
+<li>
+<p>
+如果您真的对一切都不熟悉，请在输入问题之前，先仔细考虑一下您的问题。确保其能提供足够的信息，以便有人可以解决您的问题。
+</p>
+</li>
+<li>
+<p>
+等待答案时需要一些耐心，有时需要花上一些时间来准备答案，或者，每个人都有可能在忙于工作或其他事情。
+</p>
+</li>
+<li>
+<p>
+使用您的独一无二的名称设置您的IRC帐户，以便人们知道您的身份。如果您使用Java客户端，则每次登录时都会使用相同的名称。
+  这可以帮助人们记住您的身份，如果您曾经参加过，那么很多人会记住过去的讨论，从而节省了双方的时间。
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><div class="title">共享文件</div><p>在IRC上共享文件的最常见方法是将文件上传到以下服务或类似服务之一，然后粘贴链接：</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>对于文字</em> - <a href="http://pastebin.com/">http://pastebin.com/</a> , <a href="http://pastie.org/">http://pastie.org/</a>, <a href="https://gist.github.com/">https://gist.github.com/</a>
+</p>
+</li>
+<li>
+<p>
+<em>对于图片</em> - <a href="http://imagebin.org/">http://imagebin.org/</a> , <a href="http://imgur.com/">http://imgur.com/</a> , <a href="http://bayimg.com/">http://bayimg.com/</a>
+</p>
+</li>
+<li>
+<p>
+<em>对于其他文件</em> - <a href="https://filedropper.com/">https://filedropper.com/</a> , <a href="http://filefactory.com/">http://filefactory.com/</a> , <a href="http://1fichier.com/">http://1fichier.com/</a>
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_邮件列表">3.2. 邮件列表</h3>
+<div class="paragraph"><p>Internet邮件列表是一种向该列表中的所有人提出问题，以便他们在方便时查看和回答的方式。
+与在IRC上相比，通过邮件列表, 你的问题会得到更好的关注，但获取答案花费的时间也会更长。
+简而言之，您可以通过电子邮件将邮件发送到列表中，并根据您的帐户设置方式获取每日摘要或个人回复。</p></div>
+<div class="paragraph"><p>您可以在以下位置订阅emc-users邮件列表：
+<a href="https://lists.sourceforge.net/lists/listinfo/emc-users">https://lists.sourceforge.net/lists/listinfo/emc-users</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_网络论坛">3.3. 网络论坛</h3>
+<div class="paragraph"><p>可以在 <a href="https://forum.linuxcnc.org">https://forum.linuxcnc.org</a> 或通过 linuxcnc.org 主页顶部的链接找到一个网络论坛。</p></div>
+<div class="paragraph"><p>这里是非常活跃的，但是与邮件列表相比，普通用户的占比更重。如果您希望确保开发人员可以看到您的消息，则首选邮件列表。</p></div>
+</div>
+<div class="sect2">
+<h3 id="_linuxcnc_wiki">3.4. LinuxCNC Wiki</h3>
+<div class="paragraph"><p>Wiki站点是用户维护的网站，任何人都可以添加或编辑。</p></div>
+<div class="paragraph"><p>用户维护的LinuxCNC Wiki网站包含大量信息和提示，网址为：</p></div>
+<div class="paragraph"><p><a href="http://wiki.linuxcnc.org/">http://wiki.linuxcnc.org</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_错误报告">3.5. 错误报告</h3>
+<div class="paragraph"><p>向LinuxCNC报告错误
+<a href="http:///github.com/LinuxCNC/linuxcnc/issues">github bug tracker</a>.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

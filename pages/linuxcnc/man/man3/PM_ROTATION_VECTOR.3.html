@@ -1,0 +1,163 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:38 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>funct</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">funct</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#CONSTRUCTORS">CONSTRUCTORS</a><br>
+<a href="#DATA">DATA</a><br>
+<a href="#OPERATORS">OPERATORS</a><br>
+<a href="#OTHER FUNCTIONS ON PM_CARTESIAN OBJECTS">OTHER FUNCTIONS ON PM_CARTESIAN OBJECTS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">PM_CARTESIAN -
+Three-axis cartesian position</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="31%">
+
+
+<p style="margin-top: 1em"><b>#include posemath.h</b></p></td>
+<td width="58%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="31%">
+
+
+<p style="margin-top: 1em"><b>struct PM_CARTESIAN;</b></p></td>
+<td width="58%">
+</td></tr>
+</table>
+
+<h2>CONSTRUCTORS
+<a name="CONSTRUCTORS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>PM_CARTESIAN()</b></p>
+
+<p style="margin-left:22%;">Construct the point
+&lt;0,0,0&gt;</p>
+
+<p style="margin-left:11%;"><b>PMCARTESIAN(double</b>
+<i>x</i><b>, double</b> <i>y</i><b>, double</b>
+<i>z</i><b>)</b></p>
+
+<p style="margin-left:22%;">Construct the point
+&lt;<i>x</i><b>,</b><i>y</i><b>,</b><i>z</i><b>&gt;</b></p>
+
+<p style="margin-left:11%;"><b>PMCARTESIAN(const
+PM_CARTESIAN &amp;v)</b></p>
+
+<p style="margin-left:22%;">Construct a copy of the point
+<i>v</i></p>
+
+<h2>DATA
+<a name="DATA"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>double</b>
+x</i><b>,</b> <i>y</i><b>,</b> <i>z</i></p>
+
+<h2>OPERATORS
+<a name="OPERATORS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>operator[](int
+n);</b></i></p>
+
+<p style="margin-left:22%;">Return the <i>n</i>th component
+of the vector (x=0, y=1, z=2)</p>
+
+<p style="margin-left:11%;"><b>int
+operator==(PM_CARTESIAN</b> <i>v1</i><b>, PM_CARTESIAN</b>
+<i>v2</i><b>) <br>
+int operator!=(PM_CARTESIAN</b> <i>v1</i><b>,
+PM_CARTESIAN</b> <i>v2</i><b>)</b></p>
+
+<p style="margin-left:22%;">Elementwise equality and
+inequality operator</p>
+
+<p style="margin-left:11%;"><b>PM_CARTESIAN
+operator+(PM_CARTESIAN</b> <i>v1</i><b>,
+PM_CARTESIAN</b><i>v2</i><b>) <br>
+PM_CARTESIAN operator-(PM_CARTESIAN</b> <i>v1</i><b>,
+PM_CARTESIAN</b><i>v2</i><b>)</b></p>
+
+<p style="margin-left:22%;">Addition and subtraction of
+vectors</p>
+
+<p style="margin-left:11%;"><b>PM_CARTESIAN
+operator*(double</b> <i>s</i><b>, PM_CARTESIAN</b>
+<i>v</i><b>) <br>
+PM_CARTESIAN operator*(PM_CARTESIAN</b> <i>v</i><b>,
+double</b> <i>s</i><b>)</b></p>
+
+<p style="margin-left:22%;">Scalar multiplication</p>
+
+<p style="margin-left:11%;"><b>PM_CARTESIAN
+operator/(PM_CARTESIAN</b> <i>v</i><b>, double</b>
+<i>s</i><b>)</b></p>
+
+<p style="margin-left:22%;">Scalar multiplication by
+<i>1/s</i></p>
+
+<h2>OTHER FUNCTIONS ON PM_CARTESIAN OBJECTS
+<a name="OTHER FUNCTIONS ON PM_CARTESIAN OBJECTS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>double
+dot(PM_CARTESIAN</b> v1</i><b>, PM_CARTESIAN</b>
+<i>v2</i><b>) <br>
+PM_CARTESIAN cross(PM_CARTESIAN</b> <i>v1</i><b>,
+PM_CARTESIAN</b> <i>v2</i><b>) <br>
+PM_CARTESIAN norm(PM_CARTESIAN</b> <i>v</i><b>)</b></p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+<hr>
+</body>
+</html>

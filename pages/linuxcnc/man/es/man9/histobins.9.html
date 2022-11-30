@@ -1,0 +1,138 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HISTOBINS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HISTOBINS</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">histobins -
+histogram bins utility for scripts/hal-histogram</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Usage: <br>
+Read availablebins pin for the number of bins available.
+<br>
+Set the minvalue, binsize, and nbins pins. <br>
+Ensure nbins &lt;= availablebins <br>
+For nbins = N, the bins are numbered: 0 ... N-1 <br>
+Iterate: <br>
+Set index pin to a bin number: 0 &lt;= index &lt; nbins.
+<br>
+Read check pin and verify that check pin == index pin. <br>
+Read outputs: binvalue, pextra, nextra pins. <br>
+(binvalue is count for the indexed bin) <br>
+(pextra is count for all inputs &gt; maxvalue) <br>
+(nextra is count for all bins &lt; minvalue)</p>
+
+<p style="margin-left:11%; margin-top: 1em">If index is out
+of range (index &lt; 0 or index &gt; maxbinnumber) <br>
+then binvalue == -1. <br>
+The input-error pin is set when input rules are violated
+<br>
+and updates cease. <br>
+The reset pin may be used to restart. <br>
+The input used is selected based on pintype: <br>
+pintype inputpin <br>
+------- ----------- <br>
+0 input <br>
+1 input-s32 <br>
+2 input-u32 <br>
+3 input-bit <br>
+Additional output statistics pins: <br>
+input-min <br>
+input-max <br>
+nsamples <br>
+variance <br>
+mean <br>
+The method input pin selects an alternate variance
+calculation.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Maintainers
+note: hardcoded for MAXBINNUMBER==200</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>histobins.</b><i>N</i>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>histobins.</b><i>N</i><b>.pintype</b>
+u32 in <b><br>
+histobins.</b><i>N</i><b>.input</b> float in <b><br>
+histobins.</b><i>N</i><b>.input-s32</b> s32 in <b><br>
+histobins.</b><i>N</i><b>.input-u32</b> u32 in <b><br>
+histobins.</b><i>N</i><b>.input-bit</b> bit in <b><br>
+histobins.</b><i>N</i><b>.nbins</b> u32 in (default:
+<i>20</i>) <b><br>
+histobins.</b><i>N</i><b>.binsize</b> float in (default:
+<i>1</i>) <b><br>
+histobins.</b><i>N</i><b>.minvalue</b> float in (default:
+<i>0</i>) <b><br>
+histobins.</b><i>N</i><b>.index</b> s32 in <b><br>
+histobins.</b><i>N</i><b>.check</b> s32 out <b><br>
+histobins.</b><i>N</i><b>.reset</b> bit in <b><br>
+histobins.</b><i>N</i><b>.method</b> bit in <b><br>
+histobins.</b><i>N</i><b>.input-error</b> bit out <b><br>
+histobins.</b><i>N</i><b>.binvalue</b> float out <b><br>
+histobins.</b><i>N</i><b>.pextra</b> float out <b><br>
+histobins.</b><i>N</i><b>.nextra</b> float out <b><br>
+histobins.</b><i>N</i><b>.input-min</b> float out <b><br>
+histobins.</b><i>N</i><b>.input-max</b> float out <b><br>
+histobins.</b><i>N</i><b>.nsamples</b> u32 out <b><br>
+histobins.</b><i>N</i><b>.variance</b> float out <b><br>
+histobins.</b><i>N</i><b>.mean</b> float out <b><br>
+histobins.</b><i>N</i><b>.availablebins</b> s32 out
+(default: <i>200</i>)</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

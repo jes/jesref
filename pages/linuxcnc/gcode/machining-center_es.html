@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Descripcion general de una máquina CNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Descripcion general de una máquina CNC</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:cnc-machine-overview"><p>Esta sección proporciona una breve descripción de una máquina CNC
+desde los puntos de vista de entrada y salida del intérprete.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_componentes_mecanicos">1. Componentes mecanicos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Una máquina CNC tiene muchos componentes mecánicos que pueden ser controlados o
+que pueden afectar a la forma en que se ejerce el control. Esta sección
+describe el subconjunto de aquellos componentes que interactúan con el
+interprete. Los componentes mecánicos que no interactúan directamente con
+el intérprete, como los botones de jog, no se describen aquí, incluso
+si afectan al control.</p></div>
+<div class="sect2">
+<h3 id="_ejes">1.1. Ejes</h3>
+<div class="paragraph"><p>Cualquier máquina CNC tiene uno o más ejes. Diferentes tipos de máquinas CNC
+pueden tener diferentes combinaciones. Por ejemplo, una <em>fresadora de 4 ejes</em>
+puede tener ejes XYZA o XYZB. Un torno normalmente tiene los ejes XZ. Una
+máquina de corte de espuma puede tener ejes XYUV. En LinuxCNC, el caso de una
+máquina <em>pórtico</em> XYYZ, con dos motores para un eje, se maneja mejor
+con la cinemática en lugar de con un segundo eje lineal. <span class="footnote"><br />[si el
+el movimiento de los componentes mecánicos no es independiente, como en
+máquinas hexapod, el lenguaje RS274/NGC y las funciones de mecanizado canónicas
+seguirán siendo utilizables, siempre que los niveles inferiores de control
+sepan cómo controlar los mecanismos reales para producir el mismo
+movimiento relativo de herramienta y pieza de trabajo como el que se produciría por ejes independientes.
+Esto se llama <em>cinemática</em>.]<br /></span></p></div>
+<div class="paragraph"><div class="title">Ejes lineales primarios </div><p>Los ejes X, Y y Z producen movimiento lineal en tres
+direcciones mutuamente ortogonales.</p></div>
+<div class="paragraph"><div class="title">Ejes lineales secundarios </div><p>Los ejes U, V y W producen movimiento lineal en tres
+direcciones ortogonales. Típicamente, X y U son paralelos, Y y V son
+paralelo, y Z y W son paralelos.</p></div>
+<div class="paragraph"><div class="title">Ejes Rotacionales </div><p>Los ejes A, B y C producen movimiento angular (rotación). Normalmente, A
+gira alrededor de una línea paralela a X, B gira alrededor de una línea paralela
+a Y, y C gira alrededor de una línea paralela a Z.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_husillo">1.2. Husillo </h3>
+<div class="paragraph"><p>Una máquina CNC tiene generalmente un husillo que contiene una herramienta de corte,
+una sonda, o el material en el caso de un torno. El husillo puede
+ser controlado por el software CNC.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_refrigerante">1.3. Refrigerante </h3>
+<div class="paragraph"><p>Una máquina CNC puede tener componentes para proporcionar refrigerante por niebla  y/o inundación.
+El refrigerante puede ser controlado por códigos G.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_controles_de_velocidad_y_alimentacion">1.4. Controles de velocidad y alimentacion</h3>
+<div class="paragraph"><p>Una máquina CNC puede tener controles separados de velocidades rapida y de avance,
+que permite al operador especificar la velocidad de avance real, o la
+velocidad utilizada en el husillo, en porcentaje de la velocidad programada.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_interruptor_de_borrado_de_bloque">1.5. Interruptor de borrado de bloque</h3>
+<div class="paragraph"><p>Una máquina CNC puede tener un interruptor de eliminación de bloques de codigo G marcados para ello. Vea la
+seccion <a href="machining-center_es.html#sub:block-delete-switch">Eliminar Bloques</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_interruptor_de_parada_de_programa_opcional">1.6. Interruptor de parada de programa opcional</h3>
+<div class="paragraph"><p>Una máquina CNC puede tener un interruptor de parada opcional de programa. Ver la
+seccion <a href="machining-center_es.html#sub:optional-program-stop">parada opcional de programa</a>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_componentes_de_control_y_datos">2. Componentes de control y datos</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ejes_lineales">2.1. Ejes lineales</h3>
+<div class="paragraph"><p>Los ejes X, Y y Z forman un sistema de coordenadas estándar de mano derecha de
+ejes lineales ortogonales. Las posiciones de los tres mecanismos de movimiento lineal
+se expresan usando coordenadas en estos ejes.</p></div>
+<div class="paragraph"><p>Los ejes U, V y W también forman un sistema de coordenada a derechas estándar.
+X y U son paralelos, Y y V son paralelos, y Z y W son
+paralelo (cuando el giro en A, B y C es cero).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_ejes_de_rotacion">2.2. Ejes de rotacion</h3>
+<div class="paragraph"><p>Los ejes de rotación se miden en grados como ejes lineales de revolucion en
+los que la dirección de la rotación positiva es en sentido antihorario cuando
+se ven desde el extremo positivo del eje X, Y o Z correspondiente. Por
+"eje lineal de revolucion", nos referimos a uno en el que la posición angular puede
+aumentar sin límite (va hacia más-infinito) a medida que el eje gira
+en sentido antihorario y decrece sin límite (va hacia menos-infinito)
+a medida que el eje gira en el sentido de las agujas del reloj. Se utilizan ejes lineales de revolucion
+independientemente de si hay o no un límite mecánico en la rotación.</p></div>
+<div class="paragraph"><p>El sentido horario o antihorario se toma desde el punto de vista de la
+pieza de trabajo. Si la pieza de trabajo está sujeta a un plato giratorio que gira en un
+eje de rotación, un giro en sentido antihorario desde el punto de vista de
+la pieza de trabajo se logra girando el plato giratorio en una dirección que
+(para la mayoría de las configuraciones de máquina comunes) se ve en el sentido de las agujas del reloj desde el punto
+de vista de alguien parado al lado de la máquina. <span class="footnote"><br />[si
+se viola el requisito de paralelismo, el creador del sistema
+tiene que decir cómo distinguir entre sentido horario y antihorario.]<br /></span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_punto_controlado">2.3. Punto controlado</h3>
+<div class="paragraph"><p>El punto controlado es el punto cuya posición y velocidad de movimiento
+están controlados. Cuando el offset de la longitud de la herramienta es cero (el valor predeterminado), este
+es un punto en el eje del husillo (a menudo llamado punto calibrado) que es una distancia fija más allá del final del husillo,
+generalmente cerca del extremo del portaherramientas que encaja en el husillo.
+La ubicación del punto controlado se puede mover a lo largo del eje del husillo
+especificando una cantidad positiva para el offset de la longitud de la herramienta.
+Esta cantidad es normalmente la longitud de la herramienta de corte en uso, por lo que
+el punto controlado está al final de la herramienta de corte. En un torno,
+los offsets de longitud de herramienta se pueden especificar para los ejes X y Z, y el
+punto controlado esta en la punta de la herramienta o ligeramente fuera de ella
+(donde las líneas perpendiculares, alineadas a los ejes, tocadas por el <em>frente</em> y
+<em>flanco</em> de la herramienta se cruzan).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_movimiento_lineal_coordinado">2.4. Movimiento lineal coordinado</h3>
+<div class="paragraph"><p>Para manejar una herramienta a lo largo de una ruta especifica, un centro de mecanizado debe
+coordinar el movimiento de varios ejes. Usamos el término
+<em>movimiento lineal coordinado</em> para describir la situación en la que, nominalmente, cada eje
+se mueve a velocidad constante y todos los ejes se mueven desde sus posiciones iniciales
+a sus posiciones finales al mismo tiempo. Si solo los ejes X, Y y Z
+(o uno o dos de ellos) se mueven, se produce movimiento en una línea recta,
+de ahí la palabra <em>lineal</em> en el término. En movimientos reales,
+a menudo no es posible mantener la velocidad constante por la aceleración o
+desaceleración al comienzo y/o al final del movimiento.
+Sin embargo, es factible controlar los ejes para que, en todo momento, cada
+eje haya completado la misma fracción del movimiento requerido que los
+otros ejes. Esto mueve la herramienta a lo largo de la misma ruta, y también llamamos a este
+tipo de movimiento <em>movimiento lineal coordinado</em>.</p></div>
+<div class="paragraph"><p>El movimiento lineal coordinado se puede realizar a la
+velocidad de avance, o a la velocidad rapida, o puede estar sincronizado con la
+rotación del husillo. Si los límites físicos en la velocidad del eje hacen que la tasa deseada
+sea inalcanzable, todos los ejes se ralentizan para mantener el camino deseado.</p></div>
+<div class="paragraph"><p><a id="sub:feed-rate"></a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_velocidad_de_avance">2.5. Velocidad de avance</h3>
+<div class="paragraph"><p>La velocidad a la que se mueve el punto controlado es, nominalmente, la
+velocidad estable que puede establecer el usuario. En el intérprete, la tasa de alimentación
+se interpreta de la siguiente manera (a menos que los modos <em>alimentacion inversa al tiempo</em> o <em>alimentacion
+por revolución</em> se esten utilizando, en cuyo caso, consulte la Sección
+<a href="g-code_es.html#gcode:g93-g94-g95">G93-G94-G95-Mode</a>).</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Si X,Y o Z se mueven, F está en unidades por minuto en el
+   sistema cartesiano XYZ, y todos los demás ejes (ABCUVW) se mueven para arrancar y
+   parar de manera coordinada.
+</p>
+</li>
+<li>
+<p>
+De lo contrario, si U,V o W se mueven, F está en unidades por minuto en el
+   sistema cartesiano UVW y todos los demás ejes (ABC) se mueven para arrancar y
+   parar de manera coordinada.
+</p>
+</li>
+<li>
+<p>
+De lo contrario, el movimiento es puro movimiento giratorio y la palabra F está en
+   unidades de rotación en el sistema ABC <em>pseudo-cartesiano</em>.
+</p>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_refrigerante_2">2.6. Refrigerante </h3>
+<div class="paragraph"><p>El refrigerante de inundación y el refrigerante de niebla pueden encenderse independientemente.
+El lenguaje RS274/NGC los apaga juntos con un solo codigo M. Ver Sección <a href="m-code_es.html#mcode:m7-m8-m9">M7 M8 M9</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_dwell">2.7. Dwell </h3>
+<div class="paragraph"><p>Se puede ordenar que un centro de mecanizado haga dwell (es decir, mantenga todos los ejes
+inmóviles) durante una cantidad específica de tiempo. El uso más común de dwell
+es romper y despejar las virutas, por lo que el husillo suele girar durante un
+dwell. Independientemente del modo de control de ruta (ver la sección
+<a href="machining-center_es.html#sec:path-control-mode">control de ruta</a>) la máquina se detendrá exactamente al final del
+movimiento programado anterior, como si estuviera en modo de ruta exacta.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_unidades">2.8. Unidades </h3>
+<div class="paragraph"><p>Las unidades utilizadas para distancias a lo largo de los ejes X, Y y Z pueden medirse en
+milímetros o pulgadas. Las unidades para todas las demás cantidades involucradas en
+el control de la máquina no puede ser cambiadas. Diferentes cantidades usan diferentes
+unidades específicas. La velocidad del husillo se mide en revoluciones por minuto.
+Las posiciones de los ejes de rotación se miden en grados. La velocidad de alimentación
+se expresan en unidades de longitud actual por minuto, o grados por
+minuto, o unidades de longitud por revolución del husillo, como se describe en la Sección
+<a href="g-code_es.html#gcode:g93-g94-g95">G93 G94 G95</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_posicion_actual">2.9. Posicion actual</h3>
+<div class="paragraph"><p>El lugar donde en cualquier momento se encuentra el punto controlado se llama <em>posición actual</em>,
+y el controlador siempre conoce dónde está ese punto. Los números que
+representan la posición actual deben ajustarse si, en ausencia de
+cualquier movimiento del eje, ocurre alguno de estos eventos:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Se cambian las unidades de longitud.
+</p>
+</li>
+<li>
+<p>
+El offset de la longitud de la herramienta ha cambiado.
+</p>
+</li>
+<li>
+<p>
+Se modifican los offsets del sistema de coordenadas.
+</p>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_plano_seleccionado">2.10. Plano seleccionado</h3>
+<div class="paragraph"><p>Siempre hay un "plano seleccionado", que debe ser el plano XY, el
+YZ, o el XZ del centro de mecanizado. El eje Z es,
+por supuesto, perpendicular al plano XY, el eje X al plano YZ, y
+el eje Y al plano XZ.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_carrusel_de_herramientas">2.11. Carrusel de herramientas</h3>
+<div class="paragraph"><p>Se asigna cero o una herramienta a cada ranura en el carrusel de herramientas.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_cambio_de_herramienta">2.12. Cambio de herramienta</h3>
+<div class="paragraph"><p>Se puede ordenar a un centro de mecanizado que cambie las herramientas.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pallet_shuttle">2.13. Pallet Shuttle</h3>
+<div class="paragraph"><p>Hasta dos palets pueden intercambiarse por comando.</p></div>
+<div class="paragraph"><p><a id="sec:path-control-mode"></a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_modo_de_control_de_ruta">2.14. Modo de control de ruta</h3>
+<div class="paragraph"><p>El centro de mecanizado puede colocarse en cualquier modo de control de ruta entre estos tres;
+(1) modo de parada exacta, (2) modo de ruta exacta, o (3) modo continuo
+con tolerancia opcional. En el modo de parada exacta, la máquina se detiene brevemente
+al final de cada movimiento programado. En modo de ruta exacta, la máquina
+sigue la ruta programada lo más exactamente posible, ralentizandose o deteniendose,
+si es necesario en las esquinas agudas del camino. En modo continuo,
+las esquinas de la ruta pueden ser redondeadas ligeramente para que la velocidad de alimentación pueda
+mantenerse actualizada (pero no más que la tolerancia, si se ha especificado). Ver las
+secciones <a href="g-code_es.html#gcode:g61">[gcode:g61]</a>,G61/G61.1&gt;&gt; y <a href="g-code_es.html#gcode:g64">G64</a>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_interaccion_del_interprete_con_los_interruptores">3. Interaccion del interprete con los interruptores</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El intérprete interactúa con varios conmutadores. Esta sección
+describe las interacciones con más detalle. En ningún caso el
+intérprete sabe cuál es la configuración de cualquiera de estos interruptores.</p></div>
+<div class="sect2">
+<h3 id="_interruptores_de_porcentaje_de_alimentacion_y_velocidad">3.1. Interruptores de porcentaje de alimentacion y velocidad</h3>
+<div class="paragraph"><p>Los comandos RS274/NGC <em>M48</em> y <em>M49</em> del intérprete permiten o deshabilitan los
+controles de porcentaje de alimentación y velocidad. Para ciertos
+movimientos, como la salida al final de un hilo durante un ciclo de roscado,
+los interruptores se deshabilitan automáticamente.</p></div>
+<div class="paragraph"><p>LinuxCNC reacciona a la configuración de porcentaje de alimentación y velocidad cuando estos
+interruptores están habilitados.</p></div>
+<div class="paragraph"><p>Consulte la sección <a href="m-code_es.html#mcode:m48-m49">Interruptores M48-M49</a> para obtener más información.</p></div>
+</div>
+<div class="sect2">
+<h3 id="sub:block-delete-switch">3.2. Interruptor de borrado de bloque</h3>
+<div class="paragraph"><p>Si el interruptor de borrado de bloque está activado, las líneas de código G que comienzan
+con una barra inclinada (el carácter de <em>borrar bloque</em>) no se interpretan. Si el
+interruptor está apagado, tales líneas si son interpretadas. Normalmente, este
+interruptor debe activarse antes de iniciar el programa NGC.</p></div>
+</div>
+<div class="sect2">
+<h3 id="sub:optional-program-stop">3.3. Interruptor de parada opcional de programa</h3>
+<div class="paragraph"><p>Si este interruptor está activado y se encuentra un código M1, la ejecución del programa
+entra en pausa.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tabla_de_herramientas">4. Tabla de herramientas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para usar el intérprete se requiere una tabla de herramientas. El archivo dice que
+herramientas están en qué ranuras de un cambiador de herramientas y cuál es el tamaño y tipo de
+cada herramienta. El nombre de la tabla de herramientas se define en el archivo ini:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[EMCIO]
+
+# archivo de tabla de herramientas
+TOOL_TABLE = tooltable.tbl</code></pre>
+</div></div>
+<div class="paragraph"><p>El nombre de archivo predeterminado probablemente se parezca a lo anterior, pero
+es posible que prefiera darle a su máquina su propia tabla de herramientas, utilizando el
+mismo nombre en su archivo ini, pero siempre con extensión tbl. Por ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>TOOL_TABLE = acme_300.tbl</code></pre>
+</div></div>
+<div class="paragraph"><p>o</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>TOOL_TABLE = EMC-AXIS-SIM.tbl</code></pre>
+</div></div>
+<div class="paragraph"><p>Para obtener más información sobre los detalles del formato de la tabla de herramientas,
+vea la sección <a href="tool-compensation_es.html#sec:tool-table">Formato de la tabla de herramientas</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parametros">5. Parametros</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Bajo el punto de vista del lenguaje RS274/NGC, un centro de mecanizado mantiene una matriz
+de parámetros numéricos definida por el valor de sistema (RS274NGC_MAX_PARAMETERS).
+Muchos de ellos tienen usos específicos, especialmente
+en la definición de sistemas de coordenadas. La cantidad de parámetros numéricos puede
+aumentar a medida que el desarrollo agrege soporte para nuevos parámetros. La
+matriz persiste con el tiempo, incluso si el centro de mecanizado está apagado.
+LinuxCNC usa un archivo de parámetros para asegurar la persistencia y le da
+al intérprete la responsabilidad de mantener el archivo.
+El intérprete lee el archivo cuando se inicia y lo escribe cuando se cierra.</p></div>
+<div class="paragraph"><p>Todos los parámetros están disponibles para su uso en programas de código G.</p></div>
+<div class="paragraph"><p>El formato de un archivo de parámetros se muestra en la siguiente tabla.
+El archivo consiste en cualquier cantidad de
+líneas de encabezado, seguidas por una línea en blanco, seguidas por cualquier cantidad de
+líneas de datos. El intérprete omite las líneas de encabezado. Es
+importante que haya exactamente una línea en blanco (sin espacios ni tabuladores)
+antes de los datos. La línea de encabezado que se muestra en la siguiente tabla
+describe las columnas de datos, por lo que se
+sugiere (pero no es obligatorio) que esa línea siempre se incluya en el
+encabezamiento.</p></div>
+<div class="paragraph"><p>El intérprete solo lee las dos primeras columnas de la tabla.
+La tercera columna, "Comentario", no es leída por el intérprete.</p></div>
+<div class="paragraph"><p>Cada línea del archivo contiene el número de índice del parámetro en la
+primera columna y, en la segunda columna, el valor al que ese parámetro debe establecerse.
+El valor se representa como un numero flotante de doble precisión
+dentro del intérprete, pero el punto decimal no es
+obligatorio en el archivo. Todos los parámetros que se muestran en la siguiente tabla
+son parámetros requeridos y deben ser
+incluidos en cualquier archivo de parámetros, excepto cualquier parámetro que represente
+un valor de eje de rotación para un eje no utilizado, que puede omitirse. Se señalara un error
+si falta algún parámetro requerido.
+El archivo puede incluir cualquier otro parámetro, siempre que su número esté en el
+rango de 1 a 5400. Los números de los parámetros se deben organizar en orden ascendente; si no lo
+estan, se señalara un error. Cualquier parámetro incluido en
+el archivo leído por el intérprete se incluirá en el archivo que se escriba cuando se cierre.
+El archivo original se guarda como un archivo de copia de seguridad cuando se escribe el nuevo archivo.
+Los comentarios no se conservan cuando se escribe el archivo.</p></div>
+<div class="paragraph"><p>Formato de archivo de parámetros</p></div>
+<div class="tableblock">
+<table rules="all"
+width="75%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="center" valign="top">Número de parámetro</th>
+<th align="center" valign="top">Valor Parámetro</th>
+<th align="left" valign="top">Comentario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">5161</p></td>
+<td align="center" valign="top"><p class="table">0.0</p></td>
+<td align="left" valign="top"><p class="table">G28 Home X</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">5162</p></td>
+<td align="center" valign="top"><p class="table">0.0</p></td>
+<td align="left" valign="top"><p class="table">G28 Home Y</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Vea la sección &lt;&lt;gcode:parameters,Parametros para más información.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

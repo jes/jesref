@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Configuración de steppers</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Configuración de steppers</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:stepper-config">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La forma preferida de configurar una máquina de pasos estándar es con el
+Asistente de Configuración de Pasos. Ver el capítulo
+<a href="stepconf_es.html#cha:stepconf-wizard">Asistente de Configuración Stepconf</a> .</p></div>
+<div class="paragraph"><p>Este capítulo describe algunas de las configuraciones más comunes para
+sistemas basado en pasos. Estos sistemas utilizan motores paso a paso
+con controladores que aceptan señales de paso y dirección.</p></div>
+<div class="paragraph"><p>Es una de las configuraciones más simples, porque los motores funcionan en bucle abierto
+(la retroalimentación no proviene de los motores), pero el sistema debe ser
+configurado correctamente para que los motores no se detengan o pierdan pasos.</p></div>
+<div class="paragraph"><p>La mayor parte de este capítulo se basa en una configuración de muestra publicada junto con
+LinuxCNC. La configuración se llama stepper_inch, y se puede encontrar ejecutando el
+<a href="../getting-started/running-linuxcnc_es.html#cha:running-emc">Selector de configuración</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_velocidad_de_paso_máxima">2. Velocidad de paso máxima</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Con la generación de pasos de software, la tasa de paso máxima es un paso por
+cada dos BASE_PERIODs para salida de paso y dirección. La velocidad de pasos
+máxima solicitada es el producto <em>MAX_VELOCITY</em> del eje y su <em>INPUT_SCALE</em>.
+Si la tasa de pasos solicitada no es alcanzable, ocurriran los siguientes errores,
+particularmente durante movimientos jog y movimientos G0.</p></div>
+<div class="paragraph"><p>Si su controlador paso a paso puede aceptar entrada en cuadratura, use este modo.
+Con una señal de cuadratura, es posible un paso para cada BASE_PERIOD,
+duplicando la velocidad de paso máxima.</p></div>
+<div class="paragraph"><p>Los otros remedios son disminuir uno o más de: BASE_PERIOD
+(establecerlo demasiado bajo hará que la máquina deje de responder o
+incluso se bloquee), INPUT_SCALE (si puede seleccionar diferentes tamaños de paso
+en su controlador paso a paso, cambie las relaciones de las poleas o el paso del tornillo de avance), o
+MAX_VELOCITY y STEPGEN_MAXVEL.</p></div>
+<div class="paragraph"><p>Si no hay una combinación válida de BASE_PERIOD, INPUT_SCALE y MAX_VELOCITY
+aceptable, entonces considere usar la generación de pasos de hardware (como
+con el controlador paso a paso universal compatible con LinuxCNC, las tarjetas Mesa y
+otros.)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pinout">3. Pinout</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Uno de los principales defectos en EMC fué que no se podía especificar el pinout
+sin recompilar el código fuente. LinuxCNC es mucho más flexible, y ahora
+(gracias a la Capa de Abstracción de Hardware o HAL) se puede especificar fácilmente qué
+señal va a donde. Vea el &lt;&lt; cha:basic-hal-reference, Tutorial básico de HAL&gt;&gt;
+para más información sobre HAL.</p></div>
+<div class="paragraph"><p>Tal como se describe en la Introducción y el tutorial de HAL, dentro del HAL tenemos
+señales, pines y parámetros.</p></div>
+<div class="paragraph"><p>NOTA: Estamos centrandonos en un solo eje para ser concisos; todos los demás son similares.</p></div>
+<div class="paragraph"><p>Lo relevante para nuestro pinout es:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>señales: Xstep, Xdir y Xen
+pines: parport.0.pin-XX-out y parport.0.pin-XX-in</code></pre>
+</div></div>
+<div class="paragraph"><p>Dependiendo de lo que haya elegido en su archivo .ini, está utilizando
+standard_pinout.hal o xylotex_pinout.hal. Estos son dos archivos
+que le indican a HAL cómo vincular las diferentes señales y pines. Después
+investigaremos standard_pinout.hal.</p></div>
+<div class="sect2">
+<h3 id="_pinout_estándar_hal">3.1. Pinout estándar HAL</h3>
+<div class="paragraph"><p>Este archivo contiene varios comandos HAL, y generalmente se ve así:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># archivo de configuración de pinout estándar para steppers de 3 ejes
+# usando un parport para E/S
+#
+# primero carga el controlador parport
+loadrt hal_parport cfg = "0x0378"
+#
+# a continuación, conecta las funciones de parport a hilos
+# primero, leer entradas
+addf parport.0.read base-thread 1
+# lo ultimo, escribir salidas
+addf parport.0.write base-thread -1
+#
+# finalmente, conectar los pines físicos a las señales
+net Xstep =&gt; parport.0.pin-03-out
+net Xdir =&gt; parport.0.pin-02-out
+net Ystep =&gt; parport.0.pin-05-out
+net Ydir =&gt; parport.0.pin-04-out
+net Zstep =&gt; parport.0.pin-07-out
+net Zdir =&gt; parport.0.pin-06-out
+
+# crear una señal para el loopback de estop
+net estop-loop iocontrol.0.user-enable-out iocontrol.0.emc-enable-in
+
+# crear señales para el loopback de carga de herramientas
+net tool-prep-loop iocontrol.0.tool-prepare iocontrol.0.tool-prepare
+net tool-change-loop iocontrol.0.tool-change iocontrol.0.tool-changed
+
+# conectar el pin del controlador de movimiento "spindle on" a un pin físico
+net spindle-on spindle.0.on =&gt; parport.0.pin-09-out
+
+###
+### Puede usar algo como esto para habilitar unidades chopper cuando la máquina está ENCENDIDA
+### la señal Xen se define en core_stepper.hal
+###
+
+# net Xen =&gt; parport.0.pin-01-out
+
+###
+### Si desea activo bajo para este pin, inviértalo así:
+###
+
+# setp parport.0.pin-01-out-invert 1
+
+###
+### Un interruptor home de muestra en el eje X (eje 0). Hacer una señal
+### y vincular el pin parport entrante a la señal, luego vincular la señal
+### al pin de entrada del interruptor home del eje 0 de LinuxCNC
+###
+
+# net Xhome parport.0.pin-10-in =&gt; joint.0.home-sw-in
+
+###
+### ¿comparte todos los interruptores home en un pin del puerto paralelo?
+### de acuerdo, conecte la misma señal a todos los ejes, pero asegúrese de
+### establece HOME_IS_SHARED y HOME_SEQUENCE en el archivo ini.
+###
+
+# net homeswitches &lt;= parport.0.pin-10-in
+# net homeswitches =&gt; joint.0.home-sw-in
+# net homeswitches =&gt; joint.1.home-sw-in
+# net homeswitches =&gt; joint.2.home-sw-in
+
+###
+### Muestra de interruptores de límite separados en el eje X (eje 0)
+###
+
+# net X-neg-limit parport.0.pin-11-in =&gt; joint.0.neg-lim-sw-in
+# net X-pos-limit parport.0.pin-12-in =&gt; joint.0.pos-lim-sw-in
+
+###
+### Al igual que en el ejemplo de los interruptores home compartidos, puede conectar juntos
+### finales de carrera. Tenga cuidado si activa uno, LinuxCNC se detendrá pero no puede decirle
+### qué interruptor/eje se ha disparado. Tenga cuidado al reiniciar despues de esto.
+###
+
+# net Xlimits parport.0.pin-13-in =&gt; joint.0.neg-lim-sw-in joint.0.pos-lim-sw-in</code></pre>
+</div></div>
+<div class="paragraph"><p>Las líneas que comienzan con <em>#</em> son comentarios, y su único propósito es
+guiar al lector a través del archivo.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_descripción_general">3.2. Descripción general</h3>
+<div class="paragraph"><p>Hay un par de operaciones que se ejecutan cuando se ejecuta/interpreta
+standard_pinout.hal:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+El controlador Parport se carga (ver el <a href="../hal/parallel-port_es.html#cha:parport">Capítulo Parport</a>
+   para más detalles)
+</p>
+</li>
+<li>
+<p>
+Las funciones de lectura y escritura del controlador parport se asignan al hilo base
+   <span class="footnote"><br />[el subproceso más rápido en la configuración de LinuxCNC, generalmente
+   su código se ejecuta cada pocas decenas de microsegundos]<br /></span>
+</p>
+</li>
+<li>
+<p>
+Las señales de paso y dirección para los ejes X, Y, Z se vinculan a los pines en el
+   parport
+</p>
+</li>
+<li>
+<p>
+Se conectan más señales de E /S (loopback de estop, loopback del cambiador de herramientas)
+</p>
+</li>
+<li>
+<p>
+Se define una señal de husillo y se vincula a un pin parport
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_standard_pinout_hal">3.3. Cambiar standard_pinout.hal</h3>
+<div class="paragraph"><p>Si desea cambiar el archivo standard_pinout.hal, todo lo que necesita es un
+editor de texto. Abra el archivo y localice las partes que desea cambiar.</p></div>
+<div class="paragraph"><p>Si desea, por ejemplo, cambiar los pines de señales para el eje X Step y
+Dirección, todo lo que necesita hacer es cambiar el número en el
+nombre <em>parport.0.pin-XX-out</em>:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net Xstep parport.0.pin-03-out
+net Xdir parport.0.pin-02-out</code></pre>
+</div></div>
+<div class="paragraph"><p>se puede cambiar a:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net Xstep parport.0.pin-02-out
+net Xdir parport.0.pin-03-out</code></pre>
+</div></div>
+<div class="paragraph"><p>o básicamente cualquier otro pin <em>out</em> que interese.</p></div>
+<div class="paragraph"><p>Sugerencia: asegúrese de no tener más de una señal conectada al mismo pin.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_cambio_de_polaridad_de_una_señal">3.4. Cambio de polaridad de una señal</h3>
+<div class="paragraph"><p>Si el hardware externo espera una señal de "activo bajo", configure el
+parámetro <em>-invert</em> correspondiente. Por ejemplo, para invertir
+la señal de control del husillo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>setp parport.0.pin-09-invert TRUE</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_agregar_control_de_velocidad_pwm_al_husillo">3.5. Agregar control de velocidad PWM al husillo</h3>
+<div class="paragraph"><p>Si su husillo puede ser controlado por una señal PWM, use el componente <em>pwmgen</em>
+para crear la señal:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt pwmgen output_type = 0
+addf pwmgen.update servo-thread
+addf pwmgen.make-pulses base-thread
+net spindle-speed-cmd spindle.0.speed-out =&gt; pwmgen.0.value
+net spindle-on spindle.0.on =&gt; pwmgen.0.enable
+net spindle-pwm pwmgen.0.pwm =&gt; parport.0.pin-09-out
+setp pwmgen.0.scale 1800  # Cambia a la velocidad máxima de su husillo en RPM</code></pre>
+</div></div>
+<div class="paragraph"><p>Esto supone que la respuesta del controlador del husillo a PWM es simple:
+0% PWM da 0 RPM, 10% PWM da 180 RPM, etc. Si hay un mínimo PWM que
+se requiere para que el husillo gire, siga el ejemplo en
+configuración de muestra <em>nist-lathe</em> para usar un componente <em>scale</em>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_agregar_una_señal_de_habilitación">3.6. Agregar una señal de habilitación</h3>
+<div class="paragraph"><p>Algunos amplificadores (controladores) requieren una señal de habilitación antes de aceptar
+ordenes de movimiento de los motores. Por esta razón ya hay
+señales definidas llamadas <em>Xen</em>, <em>Yen</em>, <em>Zen</em>.</p></div>
+<div class="paragraph"><p>Para conectarlas use el siguiente ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net Xen parport.0.pin-08-out</code></pre>
+</div></div>
+<div class="paragraph"><p>Puede tener un solo pin que habilite todas las unidades o
+varios, dependiendo de la configuración que tenga. Tenga en cuenta, sin embargo, que generalmente
+cuando falla un eje, todas las demás unidades también se desactivarán, por lo que
+tener una sola señal/pin de habilitación para todas las unidades es una práctica común.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_botón_externo_estop">3.7. Botón externo ESTOP</h3>
+<div class="paragraph"><p>El archivo standard_pinout.hal supone que no hay un botón ESTOP externo. Para más
+información sobre un E-Stop externo, consulte la página del manual estop_latch.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

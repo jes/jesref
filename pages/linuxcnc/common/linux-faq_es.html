@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Linux FAQ</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Linux FAQ</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:linux-faq"><p>Estos son algunos comandos básicos y técnicas para nuevos usuarios de
+linux. Información más completa se puede encontrar en la web o mediante
+las páginas del manual con el comando man.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_login_automatico">1. Login automatico </h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Al instalar linuxCNC con el CD de Ubuntu por defecto se tiene que iniciar
+sesión cada vez que encienda el ordenador. Para activar autentificacion automática
+vaya a <em>System &gt; Administration &gt; Login Window</em>. Si se trata
+de una instalación nueva, la ventana de inicio de sesión puede tardar
+unos segundo en aparecer. Usted tiene que tener la contraseña que utilizo
+para la instalación para acceder a la ventana de configuracion de inicio.
+En la pestaña seguridad marque habilitar acceso automático y elija un nombre de
+usuario de la lista (seleecione su nombre de usuario).</p></div>
+<div class="paragraph"><p>N.T. Debian Stretch usa por defecto el entorno de escritorio Xfce, con el gestor
+de pantallas lightDM. Para obtener acceso automatico con Stretch:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+En un terminal, use el comando:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ /usr/sbin/lightdm --show-config</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Anote el path absoluto del archivo de configuracion lightdm.conf.
+</p>
+</li>
+<li>
+<p>
+Edite ese archivo con un editor de texto puro (gedit, nano, etc), como root.
+</p>
+</li>
+<li>
+<p>
+Busque y descomente las lineas:
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>#autologin-user=
+#autologin-user-timeout=0</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Haga autologin-user=su_nombre_usuario
+</p>
+</li>
+<li>
+<p>
+Guarde y reinicie.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_inicio_automatico_de_linuxcnc">2. Inicio automatico de LinuxCNC </h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para tener un inicio automático de linuxCNC con su configuración después
+de encender el equipo vaya a <em>System &gt; Preferences &gt; Sessions &gt; Startup Applications</em>,
+seleccione la opcion agregar nuevo.
+Vaya a su carpeta de configuración y
+seleccione el archivo .ini. Cuando el cuadro de dialogo selector de
+archivos se cierra, añadir linuxcnc y un espacio al frente de la ruta a su archivo .ini.</p></div>
+<div class="paragraph"><p>Ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>linuxcnc /home/mill/linuxcnc/config/mill/mill.ini</code></pre>
+</div></div>
+<div class="paragraph"><p>N.T. En Debian Stretch, vaya a <em>Aplicaciones &gt; Configuracion &gt; Administrador de Configuracion &gt; Sesion e Inicio</em>.
+En la pestaña <em>Autoarranque de aplicaciones</em>, use el boton <em>Añadir</em>. De un nombre, una descripcion y una orden similar
+al ejemplo anterior. En el proximo reinicio, LinuxCNC arrancara automaticamente.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="faq:terminal">3. Terminal</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Hay que hacer muchas cosas desde la terminal, como verificar el búfer de mensajes
+del núcleo con <em>dmesg</em>. Ubuntu y Linux Mint tienen un atajo de teclado Ctrl + Alt + t.
+N.T. Debia Stretch no tiene definido ningun atajo de teclado. Se puede crear facilmente
+con el <em>Administrador de Configuracion</em>.</p></div>
+<div class="paragraph"><p>La mayoría de los administradores de archivos modernos admiten el boton derecho para
+abrir un terminal; solo asegúrese de hacer clic derecho en un área en blanco o en un
+directorio.</p></div>
+<div class="paragraph"><p>La mayoría de los sistemas operativos tienen el terminal como elemento de menú,
+generalmente en <em>Accesorios</em>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_paginas_de_manual_a_id_sec_man_pages_a">4. Paginas de manual <a id="sec:Man-Pages"></a></h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Las páginas del manual son generadas automáticamente en la mayoría de los casos.
+Las páginas del manual estan generalmente disponibles para la
+mayoría de los programas y comandos de linux.</p></div>
+<div class="paragraph"><p>Para abrir una página del manual utilice una terminal.
+La terminal se puede abrir usando la ruta  <em>Applications &gt;
+Accessories &gt; Terminal</em>.
+Por ejemplo si quiere encontrar
+algo acerca del comando de busqueda "find" tecle:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>man find</code></pre>
+</div></div>
+<div class="paragraph"><p>Utilice las teclas <em>página-arriba y 'pagina-abajo</em> para ver las páginas del manual
+y la tecla Q para salir de la visualizacion.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lista_de_modulos">5. Lista de modulos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A veces, para soluciónar algun problema, usted necesita obtener una
+lista de los módulos que se encuentran cargados. En una ventana de terminal teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>lsmod</code></pre>
+</div></div>
+<div class="paragraph"><p>Si desea enviar la salida de lsmod a un archivo de texto teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>lsmod &gt; mymod.txt</code></pre>
+</div></div>
+<div class="paragraph"><p>El archivo de texto resultante, <em>mymod.txt</em>, se colocara en el directorio home
+si usted no cambio de directorio cuando abrio la terminal y
+será nombrado mymod.txt, o como usted lo haya nombrado.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_edicion_de_archivos_de_root_a_id_sec_editing_a_root_file_a">6. Edicion de archivos de root <a id="sec:Editing-a-Root-File"></a></h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Al abrir el explorador de archivos y ver que el propietario del
+archivo es el usuario root, se tienen que hacer algunos pasos adicionales para modificar ese archivo.
+La edición de algunos archivos puede tener malos resultados. Tenga cuidado
+al editar los archivos de root; generalmente usted puede ver y abrir los archivos root
+en modo de <em>solo lectura</em>.</p></div>
+<div class="sect2">
+<h3 id="_con_la_linea_de_comandos">6.1. Con la linea de comandos</h3>
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>En una ventana de terminal teclee.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo gedit</code></pre>
+</div></div>
+<div class="paragraph"><p>Abrir el archivo con el menu File &gt; Open &gt; Edit, y proceda a editar.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_usando_la_interface_grafica">6.2. Usando la interface grafica</h3>
+<div class="paragraph"><p></p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>.Haga clic derecho sobre el escritorio y seleccione 'Crear lanzador'
+.Escriba un nombre como 'editar sudo'
+.Escriba 'gksudo "gnome-open %u"' como el comando y guarde el lanzador
+ en su escritorio.
+.Arrastré el archivo a su lanzador para abrir y editar.</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_acceso_tipo_super_usuario">6.3. Acceso tipo super usuario</h3>
+<div class="paragraph"><p>En Ubuntu (o Debian) puede convertirse en super usuario tecleando "sudo -i" en una terminal.
+Debera escribir su contraseña. Tenga
+cuidado porque usted puede dañar su instalacion si no sabe lo que esta haciendo.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comandos_en_la_terminal_a_id_sec_terminal_commands_a">7. Comandos en la terminal <a id="sec:Terminal-Commands"></a></h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="sect2">
+<h3 id="_directorio_de_trabajo">7.1. Directorio de trabajo </h3>
+<div class="paragraph"><p>Para encontrar la ruta del directorio actual de trabajo en la terminal, teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pwd</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_cambiar_de_directorios">7.2. Cambiar de directorios</h3>
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Para subir un nivel en la terminal teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd ..</code></pre>
+</div></div>
+<div class="paragraph"><p>Para subir dos niveles en la terminal teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd ../..</code></pre>
+</div></div>
+<div class="paragraph"><p>Para desplazarse hacia abajo hacia el subdirectorio linuxcnc/configs en la terminal teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>cd linuxcnc/configs</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_listado_de_los_archivos_en_un_directorio">7.3. Listado de los archivos en un directorio</h3>
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Para ver una lista de todos los archivos y subdirecciones en la terminal teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>dir</code></pre>
+</div></div>
+<div class="paragraph"><p>ó</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ls</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_encontrar_un_archivo">7.4. Encontrar un archivo</h3>
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>El comando <em>find</em> puede ser un poco confuso para un usuario nuevo de linux.
+La sintaxis básica es la siguiente:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>find directorio-inicio parametros acciones</code></pre>
+</div></div>
+<div class="paragraph"><p>Por ejemplo para encontrar todos los archivos .ini en el directorio de linuxcnc
+primero tiene que usar el comando pwd para ver el directorio. + abra una ventana de
+terminal y escriba.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>pwd</code></pre>
+</div></div>
+<div class="paragraph"><p>y pwd podría devolver el siguiente resultado:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>/home/joe</code></pre>
+</div></div>
+<div class="paragraph"><p>Con esta información se pondrá el comando conjunto de esta manera:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>find /home/joe/linuxcnc -name \*.ini -print</code></pre>
+</div></div>
+<div class="paragraph"><p>Aqui, -name es el nombre del archivo que se busca y -print hace que se muestre
+el resultado en la ventana de terminal. El nombre \*.ini indica <em>devolver
+todos los archivos que tienen la extensión .ini</em>.
+La diagonal se requiere para escapar los metacaracteres de la consola.
+Si desea mas informacion al respecto, vea las paginas man de <em>find</em>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_busqueda_de_texto">7.5. Busqueda de texto</h3>
+<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>grep -irl 'buscar' *</code></pre>
+</div></div>
+<div class="paragraph"><p>Este comando encuentra todos los archivos que contienen el texto <em>buscar</em>
+en el directorio actual y todos los subdirectorios por debajo de este,
+sin tener en cuenta el uso de mayusculas. La -i es para ignorar mayusculas, la -r es recursivo
+(incluir todos los subdirectorios en la búsqueda) y la opcion -l retornara una lista de los nombres de archivo. Si no se usa -l tambien se obtendra el texto donde fue encontrada la ocurrencia de lo buscado dentro de <em>buscar</em>.
+El * es un comodín para buscar todos los archivos.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_mensaje_de_arranque">7.6. Mensaje de arranque</h3>
+<div class="paragraph"><p>Para ver los mensajes de arranque usar "dmesg" en la ventana de comandos.
+Para guardar los mensajes de arranque en un archivo use el operador de redirección,
+de esta manera:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>dmesg &gt; bootmsg.txt</code></pre>
+</div></div>
+<div class="paragraph"><p>El contenido de este archivo puede ser copiado y pegado en línea para
+compartir con la gente que le este intentando ayudar a diagnosticar un problema.</p></div>
+<div class="paragraph"><p>Para borrar el buffer de mensajes, teclee:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo dmesg -c</code></pre>
+</div></div>
+<div class="paragraph"><p>Esto puede ser útil justo antes del arranque de LinuxCNC, por lo que solo
+habra un registro de información relacionada con el lanzamiento actual de LinuxCNC.</p></div>
+<div class="paragraph"><p>Para encontrar la direccion de un puerto paralelo integrado use grep para
+filtrar la información producida por dmesg.</p></div>
+<div class="paragraph"><p>Después del arranque abrir una terminal y escribir:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>dmesg|grep parport</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_items_convenientes">8. Items convenientes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_iniciador_de_terminal">8.1. Iniciador de terminal</h3>
+<div class="paragraph"><p>Si quiere añadir un iniciador de terminal en la barra del panel en la parte superior
+de la pantalla normalmente puede hacer clic derecho en el panel en la parte superior
+de la pantalla y seleccionar "añadir al panel". Seleccione lanzador de aplicación
+personalizado y agregar. Dele un nombre y use el comando gnome-terminal en la caja de comando.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_problemas_de_hardware">9. Problemas de Hardware</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_informacion_hardware">9.1. Informacion Hardware</h3>
+<div class="paragraph"><p>Para encontrar que hardware está conectado a la placa base,
+en una ventana de terminal teclee.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>lspci -v</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_resolucion_del_monitor">9.2. Resolucion del monitor</h3>
+<div class="paragraph"><p>Durante la instalación, ubuntu intentara detectar la configuración del monitor. Si esto no funciona
+el sistema se instalara con un máximo de resolución 800x600.</p></div>
+<div class="paragraph"><p>Instrucciones para arreglar esto, se encuentra aquí:</p></div>
+<div class="paragraph"><p><a href="https://help.ubuntu.com/community/FixVideoResolutionHowto">https://help.ubuntu.com/community/FixVideoResolutionHowto</a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_paths">10. Paths</h2>
+<div class="sectionbody">
+<div class="paragraph"><div class="title">Paths relativos</div><p>Los phats relativos se basan en el directorio de arranque que contiene
+el archivo ini. Usar paths relativos puede facilitar la relocalizacion
+de archivos de configuracion pero requiere una buena comprensión de los especificadores de path linux.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>   ./f0        es lo mismo que f0, e.g., un archivo llamado f0 en el directorio
+   ../f1       se refiere a un archivo llamado f1 en el directorio padre
+   ../../f2    se refiere a un archivo llamado f2 en el directorio padre del padre
+   ../../../f3 etc.</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

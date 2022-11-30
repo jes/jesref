@@ -1,0 +1,256 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HALMETER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HALMETER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#USO">USO</a><br>
+<a href="#EJEMPLOS">EJEMPLOS</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+<a href="#HISTORIA">HISTORIA</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#REPORTAR ERRORES">REPORTAR ERRORES</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halmeter -
+observa los pines, se&ntilde;ales y parametros de HAL</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halmeter</b>
+[<b>-s</b>] [<b>pin</b>|<b>sig</b>|<b>param</b> <i>name</i>]
+[<b>-g</b> <i>X-positon Y-position [Width]</i> ]</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halmeter</b>
+se utiliza para observar pines, se&ntilde;ales, o parametros
+HAL (Capa de abstraccion de hardware). Sirve para el mismo
+proposito que un multimetro cuando se trabaja en sistemas
+fisicos.</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pin</b>
+<i>name</i></p>
+
+<p style="margin-left:22%;">mostrar el pin HAL
+<i>name</i>.</p>
+
+<p style="margin-left:11%;"><b>sig</b> <i>name</i></p>
+
+<p style="margin-left:22%;">mostrar la se&ntilde;al HAL
+<i>name</i>.</p>
+
+<p style="margin-left:11%;"><b>param</b> <i>name</i></p>
+
+<p style="margin-left:22%;">mostrar el parametro HAL
+<i>name</i>. Si no se especifica <b>pin</b>, <b>sig</b> o
+<b>param</b> , la ventana comienza en blanco y el usuario
+debe seleccionar un elemento para observar.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-s</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>ventana peque&ntilde;a, no interactiva, que debe
+utilizarse con <b>pin</b>, <b>sig</b>, o <b>param</b> para
+seleccionar el elemento a mostrar. Se muestra el nombre del
+elemento en la barra de titulo en lugar de la ventana, y no
+hay botones &quot;Seleccionar&quot; o &quot;Salir&quot;.
+Practico cuando se requieren muchas medidas en un espacio
+reducido.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-g</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Posicion de la geometria. Permite especificar la
+posicion inicial y, opcionalmente, el ancho del multimetro.
+Referenciado desde la parte superior izquierda de la
+pantalla en unidades de pixel. Util cuando se requieren
+muchos multimetros en un script, sin solapar uno encima del
+otro.</p> </td></tr>
+</table>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">A menos que se
+especifique <b>-s</b>, hay dos botones,
+&quot;Seleccionar&quot; y &quot;Salir&quot;.
+&quot;Seleccionar&quot; abre un cuadro de dialogo para
+seleccionar el elemento (pin, se&ntilde;al o parametro) a
+ser observado. &quot;Exit&quot; termina el multimetro.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El dialogo de
+seleccion tiene botones &quot;Aceptar&quot;,
+&quot;Aplicar&quot; y &quot;Cancelar&quot;.
+&quot;Aceptar&quot; muestra el elemento seleccionado y
+cierra el dialogo. &quot;Aplicar&quot; muestra el elemento
+seleccionado pero mantiene abierto el dialogo de seleccion.
+&quot;Cancelar&quot; cierra el dialogo sin cambiar el
+elemento mostrado.</p>
+
+<h2>EJEMPLOS
+<a name="EJEMPLOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halmeter</b></p>
+
+<p style="margin-left:22%;">Abre una ventana de medidor,
+sin mostrar nada inicialmente. Use el boton
+&quot;Seleccionar&quot; para elegir un elemento a observar.
+No termina hasta que se cierre la ventana.</p>
+
+<p style="margin-left:11%;"><b>halmeter &amp;</b></p>
+
+<p style="margin-left:22%;">Abre una ventana de medidor,
+sin mostrar nada inicialmente. Use el boton
+&quot;Seleccionar&quot; boton para elegir un elemento. Se
+ejecuta en segundo plano dejando el shell libre para otros
+comandos.</p>
+
+<p style="margin-left:11%;"><b>halmeter pin</b>
+<i>parport.0.pin-03-out</i> <b>&amp;</b></p>
+
+<p style="margin-left:22%;">Abre una ventana de multimetro,
+mostrando inicialmente el pin HAL
+<i>parport.0.pin-03-out</i>. El boton
+&quot;Seleccionar&quot; se puede utilizar para mostrar otros
+elementos. Se ejecuta en segundo plano.</p>
+
+<p style="margin-left:11%;"><b>halmeter -s pin</b>
+<i>parport.0.pin-03-out</i> <b>&amp;</b></p>
+
+<p style="margin-left:22%;">Abre una peque&ntilde;a ventana
+de multimetro, que muestra el pin HAL
+<i>parport.0.pin-03-out</i>. El elemento mostrado no se
+puede cambiar. Se ejecuta en segundo plano.</p>
+
+<p style="margin-left:11%;"><b>halmeter -s pin</b>
+<i>parport.0.pin-03-out</i> <b>-g</b> <i>100 500</i>
+<b>&amp;</b></p>
+
+<p style="margin-left:22%;">Abre una peque&ntilde;a ventana
+que muestra el pin HAL <i>parport.0.pin-03-out</i> y la
+coloca 100 pixeles a la izquierda y 500 pixeles hacia abajo
+desde la parte superior de la pantalla. El elemento mostrado
+no se puede cambiar. Se ejecuta en segundo plano.</p>
+
+<p style="margin-left:11%;"><b>halmeter -s pin</b>
+<i>parport.0.pin-03-out</i> <b>-g</b> <i>100 500 400</i>
+<b>&amp;</b></p>
+
+<p style="margin-left:22%;">Abre una peque&ntilde;a ventana
+que muestra el pin HAL <i>parport.0.pin-03-out</i> y la
+coloca 100 pixeles a la izquierda y 500 pixeles hacia abajo
+desde la parte superior de la pantalla. El ancho sera de 400
+pixeles (270 es el valor predeterminado). El elemento
+mostrado no se puede cambiar. Se ejecuta en segundo
+plano.</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+<h2>HISTORIA
+<a name="HISTORIA"></a>
+</h2>
+
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Version
+original de John Kasunich, como parte del proyecto LinuxCNC.
+Mejoras de varios otros miembros de El equipo de desarrollo
+de LinuxCNC.</p>
+
+<h2>REPORTAR ERRORES
+<a name="REPORTAR ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Informar
+errores a jmkasunich AT usuarios DOT sourceforge DOT net</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2003 John Kasunich. <br>
+Este es un software libre; ver las fuentes para condiciones
+de copia. No hay garantia; ni siquiera para COMERCIABILIDAD
+o APTITUD PARA UN PROPoSITO PARTICULAR.</p>
+<hr>
+</body>
+</html>

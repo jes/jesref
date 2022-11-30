@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Iniciando LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Iniciando LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:starting-linuxcnc">1. Ejecutando LinuxCNC</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC se inicia con el archivo script <em>linuxcnc</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>linuxcnc [opciones] [&lt;ini-file&gt;]</code></pre>
+</div></div>
+<div class="ulist"><div class="title">Opciones de script linuxcnc</div><ul>
+<li>
+<p>
+<em>-v</em> = verbose - imprime información mientras funciona
+</p>
+</li>
+<li>
+<p>
+<em>-d</em> = hace eco de los comandos del script en la pantalla para detectar fallos
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si al script <em>linuxcnc</em> se le pasa un archivo .ini como argumento, lo lee y se inicia
+LinuxCNC. La sección [HAL] del archivo .ini especifica el orden de carga de archivos HAL,
+si se usa más de uno. Una vez que se cargan los archivos HAL=xxx.hal,
+se carga la GUI y luego se carga el archivo POSTGUI=.xxx.hal. Si se han creado objetos PyVCP o
+GladeVCP con pines HAL, debe usar el archivo HAL postgui para hacer cualquier
+conexion a esos pines. Consulte la sección <a href="../config/ini-config_es.html#sec:hal-section">[HAL]</a> de la configuración INI para más información.</p></div>
+<div class="sect2">
+<h3 id="sub:selector-de-configuración">1.1. Selector de configuracion</h3>
+<div class="paragraph"><p>Si no se pasa ningún archivo .ini al script linuxcnc, se carga el selector de configuración
+para que pueda elegir y guardar una configuración de ejemplo. Una vez que una configuración
+de ejemplo se ha guardado, se puede modificar para adaptarse a su aplicación.
+Los archivos de configuración se guardan en el directorio linuxcnc/configs.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/configuration-selector_es.png" alt="Selector de configuración de LinuxCNC" />
+</div>
+<div class="title">Figura 1. Selector de configuración</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

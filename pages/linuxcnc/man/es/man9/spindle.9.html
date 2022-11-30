@@ -1,0 +1,305 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:31 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SPINDLE</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SPINDLE</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#NOTES">NOTES</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">spindle -
+Control a spindle with different acceleration and
+deceleration and optional gear change scaling</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="72%">
+
+
+<p style="margin-top: 1em"><b>loadrt spindle
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="17%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+will control a spindle with adjustable acceleration and
+deceleration. It is designed for use with non-servo spindle
+drives that have separate fwd/reverse inputs, such as DC
+drives and inverters. If a spindle encoder is available it
+is used to tailor the acceleration and deceleration to the
+spindle load. If not the spindle speed is simulated. The
+component allows for gearboxes with up to 16 gears. Each
+gear has individual control of speeds, acceleration, driver
+gain and direction.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>spindle.</b><i>N</i>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>spindle.</b><i>N</i><b>.select-gear</b>
+u32 in</p>
+
+<p style="margin-left:22%;">Select a gear. Must be in the
+range 0 -&gt; number of available gears -1. If you use this,
+do not use the select.x input pins.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.commanded-speed</b>
+float in</p>
+
+<p style="margin-left:22%;">Commanded spindle speed (in
+RPM)</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.actual-speed</b>
+float in</p>
+
+<p style="margin-left:22%;">Actual spindle speed from a
+spindle encoder (in RPS) If you do not have a spindle
+encoder set the simulate_encoder parameter to 1</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.simulate-encoder</b>
+bit in</p>
+
+<p style="margin-left:22%;">If you do not have an encoder,
+set this to 1</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">If FALSE, the spindle is
+stopped at the gear&rsquo;s maximum deceleration</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.spindle-lpf</b>
+float in</p>
+
+<p style="margin-left:22%;">Smooth the spindle-rpm-abs
+output when at speed. 0 = disabled. Suitable values are
+probably between 1 and 20 depending on how stable your
+spindle is</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.spindle-rpm</b>
+float out</p>
+
+<p style="margin-left:22%;">Current spindle speed in
+RPM.+ve = forward, -ve = reverse. Uses the encoder input if
+available. If not, uses a simulated encoder speed.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.spindle-rpm-abs</b>
+float out</p>
+
+<p style="margin-left:22%;">Absolute spindle speed in RPM.
+Useful for spindle speed displays</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.output</b>
+float out</p>
+
+<p style="margin-left:22%;">Scaled output</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.current-gear</b>
+u32 out</p>
+
+<p style="margin-left:22%;">Currently selected gear.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.at-speed</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE when the spindle is at
+speed</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.forward</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE for forward rotation</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.reverse</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE for reverse rotation. Both
+forward and reverse are false when the spindle is
+stopped.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.brake</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE when decelerating</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.zero-speed</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE when the spindle is
+stationary</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.limited</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE when the commanded spindle
+speed is &gt;max or &lt;min.</p>
+
+<h2>NOTES
+<a name="NOTES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>The
+following pins are created depending the
+&rsquo;gears=&rsquo; parameter.</b></p>
+
+<p style="margin-left:22%;">One of each pin is created for
+each gear. If no gears are specified then one gear will be
+created. For instance if you have gears=1 on your command
+line, you will have two scale pins: <b><br>
+spindle.</b><i>N</i><b>.scale.0 <br>
+spindle.</b><i>N</i><b>.scale.1</b></p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.scale.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Scale the output. For multiple
+gears you would use a different scale for each gear. If you
+need to reverse the output for some gears, use a negative
+scale.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.min.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Set the minimum speed allowed
+(in RPM). The limit output will be TRUE while the commanded
+speed is between 0 RPM and the min speed.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.max.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Set the maximum speed allowed
+(in RPM). The limit output will be TRUE while the commanded
+speed is above this value</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.accel.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Set the maximum acceleration.
+If you do not have a spindle encoder this is in RPM/second.
+If you do have an encoder the output is the actual speed
+plus this value. This way the acceleration can be dependent
+on the spindle load.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.decel.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Set the minimum deceleration.
+If you do not have a spindle encoder this is in RPM/second.
+If you do have an encoder the output is the actual speed
+minus this value.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.speed-tolerance.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Tolerance for
+&rsquo;at-speed&rsquo; signal (in RPM). Actual spindle
+speeds within this amount of the commanded speed will cause
+the at-speed signal to go TRUE.</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.zero-tolerance.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">Tolerance for
+&rsquo;zero-speed&rsquo; signal (in RPM).</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.offset.</b><i>x
+float in</i></p>
+
+<p style="margin-left:22%;">The output command is offset by
+this amount (in RPM).</p>
+
+
+<p style="margin-left:11%;"><b>spindle.</b><i>N</i><b>.select.</b><i>x
+bit in</i></p>
+
+<p style="margin-left:22%;">Selects this gear. If no select
+inputs are active, gear 0 is selected. If multiple select
+inputs are active the highest is selected.</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

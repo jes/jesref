@@ -1,0 +1,825 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HALCMD</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HALCMD</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#COMANDOS">COMANDOS</a><br>
+<a href="#SUSTITUCION">SUSTITUCION</a><br>
+<a href="#EJEMPLOS">EJEMPLOS</a><br>
+<a href="#HISTORIA">HISTORIA</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#REPORTE DE ERRORES">REPORTE DE ERRORES</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halcmd
+-manipula HAL de LinuxCNC desde la linea de comandos</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd</b>
+[<i>OPTIONS</i>] [<i>COMMAND</i>[<i>ARG</i>]]</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcmd</b>
+se utiliza para manipular HAL (Capa de abstraccion de
+hardware) desde la linea de comando. <b>halcmd</b> puede
+leer, opcionalmente, comandos de un archivo, permitiendo que
+configuraciones complejas de HAL sean establecidas con un
+solo comando.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si la
+biblioteca <b>readline</b> esta disponible cuando se compila
+LinuxCNC, entonces <b>halcmd</b> ofrece edicion y
+finalizacion de la linea de comandos cuando se ejecuta
+interactivamente. Use la flecha hacia arriba para recuperar
+los comandos anteriores y presione la tecla tab para
+completar los nombres de elementos, como pines y
+se&ntilde;ales.</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p style="margin-top: 1em"><b>-I</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">Antes de destruir el entorno en
+tiempo real, ejecute un halcmd interactivo. <b>halrun</b>
+solamente. Si se usa <b>-I</b>, debe preceder a todos los
+demas argumentos de linea de comandos.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>\-f</b> [<i>fichero</i>]</p>
+
+<p style="margin-left:22%;">Ignorar los comandos en la
+linea de comandos; toma la entrada <i>file</i> en su lugar.
+Si no se especifica <i>file</i>, toma la entrada de
+<i>stdin</i>.</p>
+
+<p style="margin-left:11%;"><b>-i</b>
+<i>fichero.ini</i></p>
+
+<p style="margin-left:22%;">Usar variables de
+<i>inifile</i> para las sustituciones. Ver
+<b>SUSTITUCIONES</b> mas abajo.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>\-k</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Continuar despues de comandos fallidos. El valor
+predeterminado es detener y devolver el fallo si falla
+cualquier comando.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>\-q</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Visualizar solo errores (predeterminado)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>\-Q</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>No mostrar nada; ejecutar comandos silenciosamente</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>\-s</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Modo amigable con el script. En este modo, <i>show</i>
+no generara titulos para los elementos mostrados. Ademas, se
+imprimiran los nombres de los modulos en lugar de los
+codigos de identificacion en listados de pines, parametros y
+funciones. Los hilos se imprimen en una sola linea, con el
+periodo de hilo, el uso de FP y el nombre primero, seguido
+de todas las funciones en el hilo, en orden de ejecucion.
+Las se&ntilde;ales se imprimen en una sola linea, con el
+tipo, el valor y el nombre de la se&ntilde;al primero,
+seguidos de una lista de pines conectados a la se&ntilde;al,
+que muestra la direccion y el nombre del pin.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>-R</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Librar el mutex HAL. Esto es util para recuperacion
+cuando un componente HAL falla mientras retenia el mutex
+HAL.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>\-v</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>mostrar los resultados de cada comando</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>\-V</b></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Mostrar informacion de depuracion</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>\-h</b>[<i>comando</i>]</p>
+
+<p style="margin-left:22%;">Muestra una pantalla de ayuda y
+sale; muestra ayuda extendida de <i>comando</i> si se
+especifica</p>
+
+<h2>COMANDOS
+<a name="COMANDOS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los comandos le
+dicen a <b>halcmd</b> que hacer. Normalmente <b>halcmd</b>
+lee un solo comando desde la linea de comandos y lo ejecuta.
+Si se usa la opcion &rsquo;<b>-f</b>&rsquo; para leer
+comandos de un archivo, <b>halcmd</b> lee cada linea del
+archivo como un nuevo comando. Todo lo que siga a
+&rsquo;<b>#</b>&rsquo; en una linea es un comentario.
+<b><br>
+loadrt</b> <i>modname</i></p>
+
+<p style="margin-left:22%;">(<i>load r</i>eal<i>t</i>ime
+module) Carga un modulo HAL en tiempo real llamado
+<i>modname</i>. <b>halcmd</b> busca el modulo en el
+directorio especificado en tiempo de compilacion.</p>
+
+<p style="margin-left:22%; margin-top: 1em">En sistemas con
+tiempo real, <b>halcmd</b> llama a
+<b>linuxcnc_module_helper</b> para cargar modulos en tiempo
+real. <b>linuxcnc_module_helper</b> es un programa setuid y
+se compila con una lista blanca de modulos que se permiten
+cargar. Esto es actualmente solo una lista de los modulos
+relacionados con <b>LinuxCNC</b>.
+<b>linuxcnc_module_helper</b> ejecuta insmod, asi que
+devuelve los mensajes de codigos y error de insmod. Los
+administradores que deseen restringir que usuarios pueden
+cargar estos modulos de kernel relacionados con
+<b>LinuxCNC</b> pueden hacer esto configurando los permisos
+y el grupo en <b>linuxcnc_module_helper</b>
+apropiadamente.</p>
+
+<p style="margin-left:22%; margin-top: 1em">En sistemas sin
+tiempo real, <b>halcmd</b> llama a <b>rtapi_app</b> que crea
+el entorno en tiempo real simulado, si aun no existia, y
+luego carga el componente solicitado con una llamada a
+<b>dlopen(3)</b>.</p>
+
+<p style="margin-left:11%;"><b>unloadrt</b>
+<i>modname</i></p>
+
+<p style="margin-left:22%;">(<i>unload r</i>eal<i>t</i>ime
+module) Descarga un modulo HAL en tiempo real llamado
+<i>modname</i>. Si <i>modname</i> es &quot;all&quot;,
+descargara todos los modulos HAL en tiempo real cargados
+actualmente. <b>unloadrt</b> Tambien funciona ejecutando
+<b>linuxcnc_module_helper</b> o <b>rtapi_app</b>, al igual
+que <b>loadrt</b>.</p>
+
+<p style="margin-left:11%;"><b>loadusr</b> <i>[flags]
+unix-command</i></p>
+
+<p style="margin-left:22%;">(<i>load Us</i>e<i>r</i>space
+component) Ejecuta <i>unix-command</i>, generalmente para
+cargar un componente de espacio de usuario. <i>[flags]</i>
+puede ser uno o mas de:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="72%">
+
+
+<p><b>-W</b> para esperar a que el componente este listo.
+El componente se asume que tiene el mismo nombre que el
+primer argumento del comando.</p></td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="72%">
+
+
+<p><b>-Wn name</b> para esperar al componente, que tendra
+el nombre dado.</p></td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="72%">
+
+
+<p><b>-w</b> para esperar a que el programa salga</p></td></tr>
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="72%">
+
+
+<p><b>-i</b> para ignorar el valor de retorno del programa
+(con -w)</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>waitusr</b> <i>name</i></p>
+
+<p style="margin-left:22%;">(<i>wait</i> for
+<i>Us</i>e<i>r</i>space component) Espera al componente de
+espacio de usuario <i>name</i> hasta que desconecte de HAL
+(generalmente en la salida). El componente ya debe estar
+cargado. Util cerca del final de un archivo HAL para esperar
+hasta que el usuario cierre algun componente de la interfaz
+de usuario antes de limpiar y salir.</p>
+
+<p style="margin-left:11%;"><b>unloadusr</b>
+<i>compname</i></p>
+
+<p style="margin-left:22%;">(<i>unload Us</i>e<i>r</i>space
+component) Descarga un componente de espacio de usuario
+llamado <i>compname</i>. Si <i>compname</i> es
+&quot;all&quot;, descargara todos los componentes del
+espacio de usuario. <b>unloadusr</b> funciona mediante el
+envio de SIGTERM a todos los componentes del espacio de
+usuario.</p>
+
+<p style="margin-left:11%;"><b>unload</b>
+<i>compname</i></p>
+
+<p style="margin-left:22%;">Descarga un componente de
+espacio de usuario o modulo en tiempo real. Si
+<i>compname</i> es &quot;all&quot;, descargara todos los
+componentes del espacio de usuario y modulos en tiempo
+real.</p>
+
+<p style="margin-left:11%;"><b>newsig</b> <i>signame
+type</i></p>
+
+<p style="margin-left:22%;">(OBSOLETO: use <b>net</b> en su
+lugar) (<i>newsig</i>nal) Crea una nueva se&ntilde;al HAL
+llamada <i>signame</i> que puede ser posteriormente
+utilizada para conectar dos o mas pines de componentes HAL.
+<i>type</i> es el tipo de datos de la nueva se&ntilde;al y
+debe ser uno de &quot;<b>bit</b>&quot;,
+&quot;<b>s32</b>&quot;, &quot;<b>u32</b>&quot;, o
+&quot;<b>float</b>&quot;. Falla si ya existe una
+se&ntilde;al del mismo nombre.</p>
+
+<p style="margin-left:11%;"><b>delsig</b>
+<i>signame</i></p>
+
+<p style="margin-left:22%;">(<i>del</i>ete <i>sig</i>nal)
+Borra la se&ntilde;al HAL <i>signame</i>. Cualquier pin
+actualmente vinculado a la se&ntilde;al sera desvinculado.
+Falla si <i>signame</i> no existe.</p>
+
+<p style="margin-left:11%;"><b>sets</b> <i>signame
+value</i></p>
+
+<p style="margin-left:22%;">(<i>set s</i>ignal) Establece
+el valor de la se&ntilde;al <i>signame</i> a <i>value</i>.
+Falla si <i>signame</i> no existe, si ya tiene un escritor,
+o si <i>value</i> no es un valor legal. Los valores legales
+dependen del tipo de se&ntilde;al.</p>
+
+<p style="margin-left:11%;"><b>stype</b> <i>name</i></p>
+
+<p style="margin-left:22%;">(<i>s</i>ignal type) Obtiene el
+tipo de la se&ntilde;al <i>name</i>. Falla si <i>name</i> no
+existe como una se&ntilde;al.</p>
+
+<p style="margin-left:11%;"><b>gets</b> <i>signame</i></p>
+
+<p style="margin-left:22%;">(<i>gets</i>ignal) Obtiene el
+valor de la se&ntilde;al <i>signame</i>. Falla si
+<i>signame</i> no existe.</p>
+
+<p style="margin-left:11%;"><b>linkps</b> <i>pinname</i>
+[<i>arrow</i>] <i>signame</i></p>
+
+<p style="margin-left:22%;">(OBSOLETO: use <b>net</b> en su
+lugar) (<i>linkp</i>in a <i>s</i>ignal) Establece un enlace
+entre un pin de componente HAL <i>pinname</i> y una
+se&ntilde;al HAL <i>signame</i>. Cualquier enlace anterior a
+<i>pinname</i> sera roto. <i>arrow</i> puede ser &quot;
+<b>=&gt;</b>&quot;, &quot; <b>&lt;=</b>&quot;, &quot;
+<b>&lt;=&gt;</b>&quot;, u omitido. <b>halcmd</b> ignora las
+flechas, pero pueden ser utiles en los archivos de comando
+para documentar la direccion del flujo de datos. Las flechas
+no debe utilizarse en la linea de comandos ya que el shell
+podria intentar interpretarlas. Falla si <i>pinname</i> o
+<i>signame</i> no existe, o si no son del mismo tipo.</p>
+
+<p style="margin-left:11%;"><b>linksp</b> <i>signame</i>
+[<i>arrow</i>] <i>pinname</i></p>
+
+<p style="margin-left:22%;">(OBSOLETO: use <b>net</b> en su
+lugar) (<i>links</i>ignal a <i>p</i>in) Funciona como
+<b>linkps</b> pero invierte el orden de los argumentos.
+<b>halcmd</b> trata a ambos comandos de enlace exactamente
+igual. Usar el que se prefiera.</p>
+
+<p style="margin-left:11%;"><b>linkpp</b> <i>pinname1</i>
+[<i>arrow</i>] <i>pinname2</i></p>
+
+<p style="margin-left:22%;">(OBSOLETO: use <b>net</b> en su
+lugar) (<i>linkp</i>in a <i>p</i>in) Atajo para
+<b>linkps</b> que crea la se&ntilde;al (nombrada como el
+primer pin), y luego vincula a ambos a esa se&ntilde;al.
+<b>halcmd</b> trata esto como: <b><br>
+halcmd newsig</b> pinname1 <b><br>
+halcmd linksp</b> pinname1 pinname1 <b><br>
+halcmd linksp</b> pinname1 pinname2</p>
+
+<p style="margin-left:11%;"><b>net</b> <i>signame pinname
+...</i></p>
+
+<p style="margin-left:22%;">Crea <i>signname</i> para que
+coincida con el tipo de <i>pinname</i> si aun no existe.
+Luego, enlaza <i>signame</i> a cada <i>pinname</i> a su vez.
+Las flechas pueden ser utilizadas como en <b>linkps</b>. Al
+vincular un pin a una se&ntilde;al por primera vez, el valor
+de la se&ntilde;al heredara el valor predeterminado del
+pin.</p>
+
+<p style="margin-left:11%;"><b>unlinkp</b>
+<i>pinname</i></p>
+
+<p style="margin-left:22%;">(<i>unlinkp</i>in) Rompe
+cualquier enlace anterior a <i>pinname</i>. Falla si
+<i>pinname</i> no existe. Un pin no enlazado retendra el
+ultimo valor de la se&ntilde;al a la que estaba
+vinculado.</p>
+
+<p style="margin-left:11%;"><b>setp</b> <i>name
+value</i></p>
+
+<p style="margin-left:22%;">(<i>setp</i>arameter o
+<i>p</i>in) Establece el valor del parametro o pin
+<i>name</i> a <i>value</i>. Falla si <i>name</i> no existe
+como pin o parametro, si es un parametro que no se puede
+escribir, si es un pin que es un pin salida, si es un pin
+que ya esta conectado a una se&ntilde;al, o si <i>value</i>
+no es un valor legal. Los valores legales dependen del tipo
+de pin o parametro. Si un pin y un parametro existen con el
+nombre dado, se actua en el parametro.</p>
+
+<p style="margin-left:11%;"><i>paramname</i>
+<b>=</b><i>value <br>
+pinname</i> <b>=</b><i>value</i></p>
+
+<p style="margin-left:22%;">Identico a <b>setp</b>. Esta
+forma alternativa del comando puede ser mas conveniente y
+legible cuando se utiliza en un archivo.</p>
+
+<p style="margin-left:11%;"><b>ptype</b> <i>name</i></p>
+
+<p style="margin-left:22%;">(<i>p</i>arameter o <i>p</i>in
+<i>type</i>) Obtiene el tipo de parametro o pin <i>name</i>.
+Falla si <i>name</i> no existe como pin o parametro. Si un
+pin y un parametro existen con el nombre dado, se actua
+sobre el parametro.</p>
+
+<p style="margin-left:11%;"><b>getp</b> <i>name</i></p>
+
+<p style="margin-left:22%;">(<i>getp</i>arameter o
+<i>p</i>in) Obtiene el valor del parametro o pin
+<i>name</i>. Falla si <i>name</i> no existe como pin o
+parametro. Si un pin y un parametro existen con el nombre
+dado, se actua sobre el parametro.</p>
+
+<p style="margin-left:11%;"><b>addf</b> <i>functname
+threadname</i></p>
+
+<p style="margin-left:22%;">(<i>addf</i>unction) Agrega la
+funcion <i>functname</i> al hilo de tiempo real
+<i>threadname</i>. <i>functname</i> se ejecutara despues de
+cualquier funcion que fuera agregada previamente al hilo.
+Falla si cualquiera <i>functname</i> o <i>threadname</i> no
+existe, o si son incompatibles</p>
+
+<p style="margin-left:11%;"><b>delf</b> <i>functname
+threadname</i></p>
+
+<p style="margin-left:22%;">(<i>del</i>ete <i>f</i>unction)
+Elimina la funcion <i>functname</i> del hilo en tiempo real
+<i>threadname</i>. Falla si <i>functname</i> o bien
+<i>threadname</i> no existe, o si <i>functname</i> no es
+actualmente parte de <i>threadname</i>.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>start</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Inicia la ejecucion de hilos en tiempo real. Cada hilo
+llama periodicamente a todas las funciones que se le
+agregaron con el comando <b>addf</b>, en el orden en que
+fueron a&ntilde;adidas.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>stop</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Detiene la ejecucion de hilos en tiempo real. Los hilos
+ya no llamaran a sus funciones.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>show</b> [<i>item</i>]</p>
+
+<p style="margin-left:22%;">Imprime los elementos HAL en
+<i>stdout</i> en formato legible por humanos. <i>item</i>
+puede ser uno de &quot;<b>comp</b>&quot; (componentes),
+&quot;<b>pin</b>&quot;, &quot;<b>sig</b>&quot;
+(se&ntilde;ales), &quot;<b>param</b>&quot; (parametros),
+&quot;<b>funct</b>&quot; (funciones),
+&quot;<b>thread</b>&quot;, o &quot;<b>alias</b>&quot;. El
+tipo &quot;<b>all</b>&quot; se puede utilizar para mostrar
+elementos coincidentes de todos los tipos anteriores. Si se
+omite <i>item</i>, <b>show</b> imprimira todo.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><b>item</b></p></td>
+<td width="5%"></td>
+<td width="58%">
+
+
+<p>Esto es equivalente a <b>show all [item]</b>.</p></td>
+<td width="20%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>save</b> [<i>item</i>]</p>
+
+<p style="margin-left:22%;">Imprime los elementos HAL en
+<i>stdout</i> en forma de comandos HAL. Estos comandos se
+pueden redirigir a un archivo y luego ejecutarse utilizando
+<b>halcmd -f</b> para restaurar la configuracion guardada.
+<i>item</i> puede ser uno de los siguientes:</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>comp</b>&quot;
+genera un comando <b>loadrt</b> para el componente en tiempo
+real.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>alias</b>&quot;
+genera un comando <b>alias</b> para cada emparejamiento de
+pin o parametro alias</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>sig</b>&quot;
+(o &quot;<b>signal</b>&quot;) genera un comando
+<b>newsig</b> para cada se&ntilde;al, y
+&quot;<b>sigu</b>&quot; genera un comando <b>newsig</b> para
+cada se&ntilde;al no vinculada (para usar con <b>netl</b> y
+<b>netla</b>).</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>link</b>&quot;
+y &quot;<b>linka</b>&quot; generan comandos <b>linkps</b>
+para cada enlace. (<b>linka</b> incluye flechas, mientras
+que <b>link</b> no.)</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>net</b>&quot;
+y &quot;<b>neta</b>&quot; generan un comando <b>newsig</b>
+para cada se&ntilde;al, seguida de los comandos
+<b>linksp</b> para cada pin vinculado a esa se&ntilde;al.
+(<b>neta</b> incluye flechas.)</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>netl</b>&quot;
+genera un comando <b>net</b> para cada se&ntilde;al
+enlazada, y &quot;<b>netla</b>&quot; (o
+&quot;<b>netal</b>&quot;) genera un comando similar
+utilizando flechas.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>param</b>&quot;
+(o &quot;<b>parameter</b>)&quot; genera un comando
+<b>setp</b> para cada parametro.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>thread</b>&quot;
+genera un comando <b>addf</b> para cada funcion en cada hilo
+en tiempo real.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em">&quot;<b>unconnectedinpins</b>&quot;
+genera un comando setp para cada pin de entrada hal
+desconectado.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Si <i>item</i>
+es <b>all</b>, <b>save</b> hace lo equivalente a
+<b>comp</b>, <b>alias</b>, <b>sigu</b>, <b>netla</b>,
+<b>param</b>, <b>thread</b>, y <b>unconnectedinpins</b> en
+conjunto.</p>
+
+<p style="margin-left:22%; margin-top: 1em">Si se omite
+<i>item</i> (o <b>all</b>), <b>save</b> hace el equivalente
+a <b>comp</b>, <b>alias</b>, <b>sigu</b>, <b>netla</b>,
+<b>param</b>, y <b>thread</b> en conjunto.</p>
+
+<p style="margin-left:11%;"><b>source</b>
+<i>nombre_de_archivo.hal</i></p>
+
+<p style="margin-left:22%;">Ejecuta los comandos desde
+<i>nombre_de_archivo.hal</i>.</p>
+
+<p style="margin-left:11%;"><b>alias</b> <i>type name
+alias</i></p>
+
+<p style="margin-left:22%;">Asigna &quot;<b>alias</b>&quot;
+como segundo nombre para el pin o parametro
+&quot;name&quot;. Para la mayoria de las operaciones, un
+alias proporciona un segundo nombre que se puede usar para
+referirse a un pin o parametro; tanto el nombre original
+como el alias funcionaran. <br>
+&quot;tipo&quot; debe ser <b>pin</b> o <b>param</b>. <br>
+&quot;nombre&quot; debe ser un nombre existente o
+<b>alias</b> del tipo especificado.</p>
+
+<p style="margin-left:11%;"><b>unalias</b> <i>type
+alias</i></p>
+
+<p style="margin-left:22%;">Elimina cualquier alias del pin
+o parametro. <br>
+&quot;tipo&quot; debe ser <b>pin</b> o <b>param</b> <br>
+&quot;alias&quot; debe ser un nombre existente o
+<b>alias</b> del tipo especificado.</p>
+
+<p style="margin-left:11%;"><b>list</b> <i>type</i>
+[<i>pattern</i>]</p>
+
+<p style="margin-left:22%;">Imprime los nombres de los
+elementos HAL del tipo especificado. <br>
+&rsquo;type&rsquo; es &rsquo;<b>comp</b>&rsquo;,
+&rsquo;<b>pin</b>&rsquo;, &rsquo;<b>sig</b>&rsquo;,
+&rsquo;<b>param</b>&rsquo;, &rsquo;<b>funct</b>&rsquo;, o
+<br>
+&rsquo;<b>thread</b>&rsquo;. Si se especifica
+&rsquo;pattern&rsquo; solo se imprime <br>
+los nombres que coinciden con el patron, que puede ser un
+<br>
+&rsquo;shell glob&rsquo;. <br>
+Para &rsquo;<b>sig</b>&rsquo;, &rsquo;<b>pin</b>&rsquo; y
+&rsquo;<b>param</b>&rsquo;, el primer patron puede ser <br>
+-t <b>datatype</b> donde datatype es el tipo de datos (por
+ejemplo, &rsquo;float&rsquo;) <br>
+En este caso, los pines, se&ntilde;ales o parametros
+listados <br>
+estan restringidos al tipo de datos dado. <br>
+Los nombres se imprimen en una sola linea, separados por
+espacios.</p>
+
+<p style="margin-left:11%;"><b>lock</b> [<i>all</i>|
+<i>tune</i> | <i>none</i>]</p>
+
+<p style="margin-left:22%;">Bloquea HAL hasta cierto punto.
+<br>
+none - no hay bloqueo <br>
+tune: es posible realizar algunos ajustes (<b>setp</b> y
+similares). <br>
+all - HAL queda completamente bloqueado.</p>
+
+<p style="margin-left:11%;"><b>unlock</b> [<i>all</i> |
+<i>tune</i>]</p>
+
+<p style="margin-left:22%;">Desbloquea HAL hasta cierto
+punto. <br>
+tune: es posible realizar algunos ajustes (<b>setp</b> y
+similares). <br>
+all - HAL queda completamente desbloqueado.</p>
+
+<p style="margin-left:11%;"><b>status</b> [<i>type</i>]</p>
+
+<p style="margin-left:22%;">Imprime informacion de estado
+sobre HAL. <br>
+&rsquo;type&rsquo; es &rsquo;<b>lock</b>&rsquo;,
+&rsquo;<b>mem</b>&rsquo; o &rsquo;<b>all</b>&rsquo;. <br>
+Si se omite &quot;type&quot;, se asume
+&quot;<b>all</b>&quot;.</p>
+
+<p style="margin-left:11%;"><b>help</b>
+[<i>comando</i>]</p>
+
+<p style="margin-left:22%;">Dar informacion de ayuda para
+el comando. <br>
+Si se omite &rsquo;comando&rsquo;, lista todos los comandos
+y una breve descripcion</p>
+
+<h2>SUSTITUCION
+<a name="SUSTITUCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Despues de que
+se lee un comando pero antes de que se ejecute, tiene lugar
+varios tipos de sustitucion de variables.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Variables de
+entorno</b> <br>
+Las variables de entorno tienen los siguientes formatos:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>$ ENVVAR</b>
+seguido de final de linea o espacio en blanco</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>$
+(ENVVAR)</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Variables
+Inifile</b> <br>
+Las variables inifile estan disponibles solo cuando se
+especifico un inifile con la bandera de halcmd <b>-i</b>.
+Tienen los siguientes formatos:</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>[SECCION]VAR</b>
+seguido de final de linea o espacio en blanco</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>[SECCION]
+(VAR)</b></p>
+
+<h2>EJEMPLOS
+<a name="EJEMPLOS"></a>
+</h2>
+
+
+<h2>HISTORIA
+<a name="HISTORIA"></a>
+</h2>
+
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguno
+conocido en este momento.</p>
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Version
+original de John Kasunich, como parte del proyecto LinuxCNC.
+Ahora incluye importantes aportaciones de varios miembros
+del proyecto.</p>
+
+<h2>REPORTE DE ERRORES
+<a name="REPORTE DE ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Informar de
+errores en LinuxCNC bug tracker &lang; URL:
+http://sf.net/p/emc/bugs/ &rang; .</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2003 John Kasunich. <br>
+Este es un software libre; ver las fuentes para las
+condiciones de copia. No hay garantia; ni siquiera para
+COMERCIABILIDAD o APTITUD PARA UN PROPOSITO PARTICULAR.</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halrun
+(1)</b>: un script conveniente para iniciar un entorno en
+tiempo real, procesar un archivo .hal o .tcl y,
+opcionalmente, iniciar una sesion de comandos interactivos
+usando <b>halcmd</b> (descrito aqui) o <b>haltcl</b>(1).</p>
+<hr>
+</body>
+</html>

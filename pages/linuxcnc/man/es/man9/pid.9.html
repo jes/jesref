@@ -1,0 +1,513 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:30 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>PID</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">PID</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#NOMBRADO">NOMBRADO</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">pid-
+controlador proporcional/integral/derivativo</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt pid
+[num_chan =</b><i>num</i> <b>|
+names=</b><i>name1</i><b>[,</b><i>name2 ...</i><b>]][debug
+=</b><i>dbg</i>]</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid</b> es
+un controlador cl&Atilde;&iexcl;sico
+proporcional/integral/derivativo, utilizado para controlar
+la retroalimentaci&Atilde;&sup3;n de posici&Atilde;&sup3;n o
+velocidad para servomotores y otras aplicaciones de lazo
+cerrado.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid</b>
+admite un m&Atilde;&iexcl;ximo de diecis&Atilde;&copy;is
+controladores. El n&Atilde;&ordm;mero que realmente se carga
+se establece mediante el argumento <b>num_chan</b> cuando se
+carga el m&Atilde;&sup3;dulo. Alternativamente, especifique
+names= y nombres &Atilde;&ordm;nicos separados por
+comas.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+especificadores <b>num_chan=</b> y <b>names=</b> son
+mutuamente excluyentes. Si no se especifica <b>num_chan=</b>
+ni <b>names=</b>, el valor predeterminado es tres.
+Si<b>debug</b> se establece en 1 (el valor predeterminado es
+0), se exportar&Atilde;&iexcl;n algunos
+par&Atilde;&iexcl;metros HAL adicionales, que pueden ser
+&Atilde;&ordm;tiles para el ajuste, pero de lo contrario son
+innecesarios.</p>
+
+<h2>NOMBRADO
+<a name="NOMBRADO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los nombres de
+los pines, par&Atilde;&iexcl;metros y funciones tienen el
+prefijo: &Acirc;&nbsp;&Acirc;&nbsp;<b>pid.N.</b> para N=0,1,
+..., num-1 cuando se usa <b>num_chan=num</b>
+&Acirc;&nbsp;&Acirc;&nbsp;<b>nameN.</b> para nameN=name1,
+name2, ... cuando se usa<b>names=name1,name2, ...</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">El formato de
+<b>pid.N.</b> se muestra en las siguientes
+descripciones.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid.</b><i>N</i><b>.do-pid-calcs</b>
+(usa punto flotante) &Acirc;&iquest;Los
+c&Atilde;&iexcl;lculos PID para el bucle de
+control<i>N</i>.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid.</b><i>N</i><b>.command</b>
+float in</p>
+
+<p style="margin-left:22%;">El valor deseado (ordenado)
+para el bucle de control.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.Pgain</b>
+float in</p>
+
+<p style="margin-left:22%;">Ganancia proporcional. Resulta
+en una contribuci&Atilde;&sup3;n a la salida que es el error
+multiplicado por <b>Pgain</b>.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.Igain</b>
+float in</p>
+
+<p style="margin-left:22%;">Ganancia integral. Resulta en
+una contribuci&Atilde;&sup3;n a la salida que es la integral
+del error multiplicado por <b>Igain</b>. Por ejemplo, un
+error de 0.02 que dur&Atilde;&sup3; 10 segundos
+resultar&Atilde;a en un error integrado (<b>errorI</b>) de
+0.2, y si <b>Igain</b> es 20, el t&Atilde;&copy;rmino
+integral agregar&Atilde;a 4.0 a la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.Dgain</b>
+float in</p>
+
+<p style="margin-left:22%;">Ganancia derivada. Resulta en
+una contribuci&Atilde;&sup3;n a la salida que es la tasa de
+cambio (derivada) del error multiplicado por <b>Dgain</b>.
+Por ejemplo, un error que cambi&Atilde;&sup3; de 0.02 a 0.03
+durante 0.2 segundos resultar&Atilde;a en una derivada de
+error (<b>errorD</b>) de 0.05, y si <b>Dgain</b> es 5, el
+t&Atilde;&copy;rmino derivativo agregar&Atilde;a 0.25 a la
+salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.feedback</b>
+float in</p>
+
+<p style="margin-left:22%;">El valor real
+(retroalimentaci&Atilde;&sup3;n) de alg&Atilde;&ordm;n
+sensor, como un codificador.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.output</b>
+float out</p>
+
+<p style="margin-left:22%;">La salida del bucle PID, que va
+a alg&Atilde;&ordm;n actuador, como un motor.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.command-deriv</b>
+float in</p>
+
+<p style="margin-left:22%;">La derivada del valor deseado
+(ordenado) para el bucle de control. Si no hay ninguna
+se&Atilde;&plusmn;al conectada, la derivada se
+estimar&Atilde;&iexcl; num&Atilde;&copy;ricamente.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.feedback-deriv</b>
+float in</p>
+
+<p style="margin-left:22%;">La derivada del valor real
+(realimentaci&Atilde;&sup3;n) para el bucle de control. Si
+no hay ninguna se&Atilde;&plusmn;al conectada, la derivada
+se estimar&Atilde;&iexcl; num&Atilde;&copy;ricamente. Cuando
+la retroalimentaci&Atilde;&sup3;n proviene de una fuente de
+posici&Atilde;&sup3;n cuantificada (p. Ej.,
+posici&Atilde;&sup3;n de retroalimentaci&Atilde;&sup3;n del
+codificador), el comportamiento del t&Atilde;&copy;rmino D
+puede mejorarse al usaro una mejor estimaci&Atilde;&sup3;n
+de velocidad aqu&Atilde;, como la salida de velocidad del
+codificador(9) o hostmot2(9).</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.error-previous-target</b>
+bit in</p>
+
+<p style="margin-left:22%;">Utiliza-mode el objetivo de la
+invocaci&Atilde;&sup3;n anterior frente a la
+posici&Atilde;&sup3;n actual para el c&Atilde;&iexcl;lculo
+de errores, como lo espera el controlador de movimiento.
+Esto puede hacer que los bucles de posici&Atilde;&sup3;n
+torque-mode y los que requieren una ganancia I grande sean
+m&Atilde;&iexcl;s f&Atilde;&iexcl;ciles de sintonizar, al
+eliminar el error de seguimiento velocity-dependent.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.error</b>
+float</p>
+
+<p style="margin-left:22%;">Diferencia entre comando y
+retroalimentaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, habilita los
+c&Atilde;&iexcl;lculos PID. Cuando es FALSE, <b>output</b>
+es cero, y todos los integradores internos, etc., se
+reinician.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.index-enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">En el l&Atilde;mite descendente
+de <b>index-enable</b>, pid no actualiza la
+estimaci&Atilde;&sup3;n derivada del comando interno. En los
+sistemas que usan el pulso de &Atilde;ndice del codificador,
+este pin debe estar conectado a la se&Atilde;&plusmn;al
+index-enable. Cuando esto no se hace, y FF1 no es cero, un
+cambio de paso en el comando de entrada provoca un pico de
+ciclo &Atilde;&ordm;nico en la salida PID. En los sistemas
+que utilizan exactamente una de las entradas <b>-deriv</b>,
+esto tambi&Atilde;&copy;n afecta el t&Atilde;&copy;rmino
+D.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.bias</b>
+float in</p>
+
+<p style="margin-left:22%;"><b>bias</b> es una cantidad
+constante que se agrega a la salida. En la mayor&Atilde;a de
+los casos, debe dejarse en cero. Sin embargo, a veces puede
+ser &Atilde;&ordm;til para compensar offsets en los
+servoamplificadores, o para equilibrar el peso de un objeto
+que se mueve verticalmente. <b>bias</b> se desactiva cuando
+el bucle PID est&Atilde;&iexcl; desactivado, al igual que
+todos los dem&Atilde;&iexcl;s componentes de la salida. Si
+se necesita una salida distinta de cero incluso cuando el
+bucle PID est&Atilde;&iexcl; deshabilitado, debe agregarse
+con un bloque HAL externo sum2.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF0</b>
+float in</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de orden cero. Produce una
+contribuci&Atilde;&sup3;n a la salida que es <b>FF0</b>
+multiplicada por el valor ordenado. Para los bucles de
+posici&Atilde;&sup3;n, generalmente debe dejarse en cero.
+Para los bucles de velocidad, <b>FF0</b> puede compensar la
+fricci&Atilde;&sup3;n o la contra-EMF del motor y puede
+permitir un mejor ajuste si se usa correctamente.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF1</b>
+float in</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de primer orden. Produce una
+contribuci&Atilde;&sup3;n a la salida que <b>FF1</b>
+multiplica por la derivada del valor ordenado. Para los
+bucles de posici&Atilde;&sup3;n, la
+contribuci&Atilde;&sup3;n es proporcional a la velocidad y
+se puede utilizar para compensar la fricci&Atilde;&sup3;n o
+la CEMF del motor. Para los bucles de velocidad, es
+proporcional a la aceleraci&Atilde;&sup3;n y puede compensar
+la inercia. En ambos casos, si se usa correctamente puede
+resultar en un mejor ajuste.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF2</b>
+float in</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de segundo orden. Produce una
+contribuci&Atilde;&sup3;n a la salida que es <b>FF2</b>
+multiplicada por la segunda derivada del valor ordenado.
+Para los bucles de posici&Atilde;&sup3;n, la
+contribuci&Atilde;&sup3;n es proporcional a la
+aceleraci&Atilde;&sup3;n y puede usarse para compensar la
+inercia. Para los bucles de velocidad, la
+contribuci&Atilde;&sup3;n es proporcional al jerk
+(aceleracion de la aceleracion), y generalmente debe dejarse
+en cero.</p>
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.FF3</b>
+float in</p>
+
+<p style="margin-left:22%;">T&Atilde;&copy;rmino de
+retroalimentaci&Atilde;&sup3;n de tercer orden. Produce una
+contribuci&Atilde;&sup3;n a la salida que es<b>FF3</b>
+multiplicada por la tercera derivada del valor ordenado.
+Para los bucles de posici&Atilde;&sup3;n, la
+contribuci&Atilde;&sup3;n es proporcional al jerk, y se
+puede utilizar para compensar errores residuales durante la
+aceleraci&Atilde;&sup3;n. Para los bucles de velocidad, la
+contribuci&Atilde;&sup3;n es proporcional al snap ( o
+jounce), y generalmente debe dejarse en cero. Ver
+https://w.wiki/a8N</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.deadband</b>
+float in</p>
+
+<p style="margin-left:22%;">Define un rango de error
+&quot;aceptable&quot;. Si el valor absoluto de <b>error</b>
+es menor que <b>deadband</b>, se tratar&Atilde;&iexcl; como
+si el error fuera cero. Cuando se utilizan dispositivos de
+retroalimentaci&Atilde;&sup3;n, como codificadores que
+est&Atilde;&iexcl;n inherentemente cuantificados, la banda
+muerta debe establecerse un poco m&Atilde;&iexcl;s de la
+mitad del conteo, para evitar que el bucle de control busque
+de un lado a otro si el comando est&Atilde;&iexcl; entre dos
+valores de codificador adyacentes (hunting). Cuando el valor
+absoluto del error es mayor que la banda muerta, el valor de
+la banda muerta se resta del error antes de realizar los
+c&Atilde;&iexcl;lculos de bucle, para evitar un paso en la
+funci&Atilde;&sup3;n de transferencia en el limite de la
+banda muerta. (Ver<b>BUGS</b>.)</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxoutput</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de salida. No se
+permitir&Atilde;&iexcl; que el valor absoluto de la salida
+exceda <b>maxoutput</b>, a menos que <b>maxoutput</b> sea
+cero. Cuando la salida es limitada, el integrador de errores
+se mantendr&Atilde;&iexcl; en lugar de integrarse, para
+evitar windup y sobredisparo.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxerror</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de la variable de
+error interno utilizada para P, I y D. Se puede utilizar
+para evitar que los valores altos de <b>Pgain</b> generen
+salidas grandes en condiciones en las que el error es grande
+(por ejemplo, cuando el comando realiza un cambio de paso).
+Normalmente no es necesario, pero puede ser
+&Atilde;&ordm;til al ajustar sistemas no lineales.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxerrorD</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en la derivada de
+error. La tasa de cambio de error utilizada por el
+t&Atilde;&copy;rmino <b>Dgain</b> se limitar&Atilde;&iexcl;
+a este valor, a menos que el valor sea cero. Se puede usar
+para limitar el efecto de&nbsp;fBDgain y evitar picos de
+salida grandes debido a pasos en el comando y/o
+retroalimentacion. Normalmente no es necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxerrorI</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite de integrador de
+errores. El integrador de errores utilizado por el
+t&Atilde;&copy;rmino <b>Igain</b> estar&Atilde;&iexcl;
+limitado a este valor, a menos que sea cero. Se puede
+utilizar para evitar windup del integrador y el sobredisparo
+resultante durante/despu&Atilde;&copy;s de errores
+sostenidos. Normalmente no es necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxcmdD</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en derivada del
+comando. La derivada de comando utilizada por <b>FF1</b>
+estar&Atilde;&iexcl; limitada a este valor, a menos que el
+valor sea cero. Se puede usar para evitar que <b>FF1</b>
+produzca picos de salida grandes si hay un cambio de paso en
+el comando. Normalmente no es necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxcmdDD</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en la segunda
+derivada del comando. La segunda derivada de comando
+utilizada por <b>FF2</b> estar&Atilde;&iexcl; limitada a
+este valor, a menos que el valor sea cero. Se puede usar
+para evitar que <b>FF2</b> produzca picos de salida grandes
+si hay un cambio de paso en el comando. Normalmente no es
+necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.maxcmdDDD</b>
+float in</p>
+
+<p style="margin-left:22%;">L&Atilde;mite en la tercera
+derivada del comando. La tercera derivada de comando
+utilizada por <b>FF3</b> estar&Atilde;&iexcl; limitada a
+este valor, a menos que el valor sea cero. Se puede usar
+para evitar que&nbsp;fBFF3 produzca picos de salida grandes
+si hay un cambio de paso en el comando. Normalmente no es
+necesario.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.saturated</b>
+bit out</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, la salida PID
+actual est&Atilde;&iexcl; saturada. Es decir,</p>
+
+<p style="margin-left:29%;"><b>output</b> = &plusmn;
+<b>maxoutput</b>.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.saturated-s</b>
+float out <b><br>
+pid.</b><i>N</i><b>.saturated-count</b> s32 out</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, la salida del
+PID se satur&Atilde;&sup3; continuamente durante estos
+(<b>saturated-s</b>) segundos o (<b>saturated-count</b>)
+per&Atilde;- odos.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pid.</b><i>N</i><b>.errorI</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Integral de error. Este es el
+valor que se multiplica por <b>Igain</b> para producir el
+t&Atilde;&copy;rmino integral de la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.errorD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Derivada del error. Este es el
+valor que se multiplica por <b>Dgain</b> para producir el
+t&Atilde;&copy;rmino derivativo de la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.commandD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Derivada del comando. Este es
+el valor que se multiplica por <b>FF1</b> para producir el
+t&Atilde;&copy;rmino de avance de primer orden de la
+salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.commandDD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Segunda derivada del comando.
+Este es el valor que se multiplica por <b>FF2</b> para
+producir el t&Atilde;&copy;rmino de avance de segundo orden
+de la salida.</p>
+
+
+<p style="margin-left:11%;"><b>pid.</b><i>N</i><b>.commandDDD</b>
+float ro (solo si debug=1)</p>
+
+<p style="margin-left:22%;">Tercera derivada del comando.
+Este es el valor que se multiplica por <b>FF3</b> para
+producir el t&Atilde;&copy;rmino de avance de tercer orden
+de la salida.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Algunas
+personas argumentan que la banda muerta debe implementarse
+de manera que el error se trate como cero si
+est&Atilde;&iexcl; dentro de la banda muerta, y no se
+modifique si est&Atilde;&iexcl; fuera de la banda muerta.
+Esto no se hizo porque causar&Atilde;a un paso en la
+funci&Atilde;&sup3;n de transferencia igual al
+tama&Atilde;&plusmn;o de la banda muerta. Las personas que
+prefieren ese comportamiento pueden agregar un
+par&Atilde;&iexcl;metro que cambie el comportamiento o
+escribir su propia versi&Atilde;&sup3;n de <b>pid</b>. Sin
+embargo, el comportamiento predeterminado no debe
+cambiarse.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las ganancias
+negativas pueden conducir a un comportamiento no deseado. En
+algunas situaciones es posible que las ganancias negativas
+de FF tengan sentido, pero en general todas las ganancias
+deber&Atilde;an ser positivas. Si alguna salida
+est&Atilde;&iexcl; en la direcci&Atilde;&sup3;n equivocada,
+negar las ganancias para arreglarlo es un error; establecer
+la escala correctamente en su lugar.</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:22 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>introducci&Atilde;&sup3;n</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">introducci&Atilde;&sup3;n</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#ARCHIVOS HEADER">ARCHIVOS HEADER</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#C&Atilde;DIGOS DE ESTADO RTAPI">C&Atilde;DIGOS DE ESTADO RTAPI</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi -
+Introducci&Atilde;&sup3;n a la API RTAPI</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">RTAPI es una
+biblioteca que proporciona una API uniforme para varios
+sistemas operativos en tiempo real. A partir de LinuxCNC
+2.7, se soportan hilos POSIX y RTAI.</p>
+
+<h2>ARCHIVOS HEADER
+<a name="ARCHIVOS HEADER"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi.h</b>
+<br>
+El archivo <b>rtapi.h</b> define el codigo RTAPI tanto en
+tiempo real como no real. Esto es un cambio desde Rev 2,
+donde la API no real (espacio de usuario) se
+defini&Atilde;&sup3; en ulapi.h y utiliz&Atilde;&sup3;
+diferentes nombres de funciones. Los s&Atilde;mbolos RTAPI y
+ULAPI se utilizan para determinar qu&Atilde;&copy; modo se
+est&Atilde;&iexcl; compilando; RTAPI para en tiempo real y
+ULAPI para no real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_math.h</b>
+<br>
+El archivo rtapi_math.h define funciones y constantes de
+punto flotante. Debe usarse en lugar de &lt;math.h&gt; en
+componentes rtapi en tiempo real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_string.h</b>
+<br>
+El archivo rtapi_string.h define funciones relacionadas con
+cadenas. Debe usarse en lugar de &lt;string.h&gt; en
+componentes rtapi en tiempo real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_byteorder.h</b>
+<br>
+Este archivo define las macros de preprocesador
+RTAPI_BIG_ENDIAN, RTAPI_LITTLE_ENDIAN y
+RTAPI_FLOAT_BIG_ENDIAN como verdadero o falso
+seg&Atilde;&ordm;n las caracter&Atilde;sticas del sistema
+objetivo. Debe usarse en lugar de <b>&lt;endian.h&gt;</b>
+(espacio de usuario) o <b>&lt;linux/byteorder.h&gt;</b>
+(espacio de kernel).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_limits.h</b>
+<br>
+Este archivo define el valor m&Atilde;nimo y
+m&Atilde;&iexcl;ximo de algunos tipos enteros fundamentales
+, como INT_MIN e INT_MAX. Esto debe usarse en lugar de
+<b>&lt;limits.h&gt;</b> porque ese archivo de encabezado no
+est&Atilde;&iexcl; disponible para los m&Atilde;&sup3;dulos
+del kernel.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>C&Atilde;&sup3;digo
+de espacio de usuario</b> <br>
+Ciertas funciones no est&Atilde;&iexcl;n disponibles en el
+c&Atilde;&sup3;digo del espacio de usuario. Esto incluye
+funciones que realizan acceso directo a dispositivos, como
+<b>rtapi_inb(3)</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">SS.
+C&Atilde;&sup3;digo Init/limpieza Ciertas funciones solo se
+pueden invocar desde el c&Atilde;&sup3;digo de
+inicio/limpieza en tiempo real. Esto incluye funciones que
+realizan la asignaci&Atilde;&sup3;n de memoria, como
+<b>rtapi_shmem_new(3)</b>.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>C&Atilde;&sup3;digo
+en tiempo real</b> <br>
+Solo se pueden invocar algunas funciones desde el
+c&Atilde;&sup3;digo en tiempo real. Esto incluye funciones
+que realizan acceso directo a dispositivos, como
+<b>rtapi_inb(3)</b>. Excluye la mayor&Atilde;a de las API de
+kernel de Linux, como do_gettimeofday(3) y muchas API de
+rtapi como rtapi_shmem_new(3).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Simulador</b>
+<br>
+Para que un m&Atilde;&sup3;dulo RTAPI se pueda construir en
+el entorno &quot;sim&quot; (sistema en tiempo real falso,
+sin privilegios especiales), no debe usar <b>ninguna</b> API
+del kernel de Linux y no debe usar las API RTAPI para el
+acceso directo a dispositivos, como <b>rtapi_inb(3)</b>.
+Esto incluye autom&Atilde;&iexcl;ticamente cualquier
+controlador de dispositivo de hardware, y
+tambi&Atilde;&copy;n dispositivos que usan API de kernel de
+Linux para hacer cosas como crear dispositivos o entradas
+especiales en el sistema de archivos <b>/proc</b>.</p>
+
+<h2>C&Atilde;DIGOS DE ESTADO RTAPI
+<a name="C&Atilde;DIGOS DE ESTADO RTAPI"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Excepto como se
+indica en p&Atilde;&iexcl;ginas espec&Atilde;ficas del
+manual, RTAPI devuelve valores errno negativos para errores
+y valores no negativos para &Atilde;&copy;xito.</p>
+<hr>
+</body>
+</html>

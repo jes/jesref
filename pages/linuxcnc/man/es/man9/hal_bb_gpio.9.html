@@ -1,0 +1,176 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_bb_gpio</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_bb_gpio</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#LEDS DE USUARIO">LEDS DE USUARIO</a><br>
+<a href="#PINES DE ENTRADA">PINES DE ENTRADA</a><br>
+<a href="#PINES DE SALIDA">PINES DE SALIDA</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_bb_gpio -
+Controlador para pines GPIO beaglebone</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt hal_bb_gpio</b>
+<i>user_leds=#,... input_pins=#,...
+output_pins=#,...</i></p> </td></tr>
+</table>
+
+<h2>LEDS DE USUARIO
+<a name="LEDS DE USUARIO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El
+par&Atilde;&iexcl;metro de loadrt <i>user_leds</i> controla
+qu&Atilde;&copy; LED est&Atilde;&iexcl;n disponibles para
+HAL. Rango v&Atilde;&iexcl;lido: 0..3. Estos LED
+est&Atilde;&iexcl;n al lado del conector ethernet y los
+n&Atilde;&ordm;meros linuxcnc coinciden con la
+serigraf&Atilde;a en Beaglebone Black. Emp&Atilde;ricamente,
+estos parecen ser OR con cualquier funci&Atilde;&sup3;n
+asignada al LED en Linux.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>PINS <br>
+bb_gpio.userled</b><i>N</i> bit in <b><br>
+bb_gpio.userled</b><i>N</i><b>-invert</b> bit in</p>
+
+<p style="margin-left:22%;">El LED asociado se enciende si
+<b>userled</b><i>N</i> xor <b>userled</b><i>N</i>-invert
+<b>es verdad.</b></p>
+
+<h2>PINES DE ENTRADA
+<a name="PINES DE ENTRADA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El
+par&Atilde;&iexcl;metro de loadrt <i>input_pins</i> controla
+qu&Atilde;&copy; pines f&Atilde;sicos de E/S estan
+disponible para HAL como pines de entrada. La
+numeraci&Atilde;&sup3;n es &quot;800+N&quot; para el pin N
+en el conector P8 y &quot;900+N&quot; para el pin N en el
+conector P9. Por ejemplo, &quot;803&quot; significa conector
+P8 pin 3, que tambi&Atilde;&copy;n se describe en la
+documentaci&Atilde;&sup3;n de BeagleBone como
+&quot;gpmc_ad6&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La
+especificaci&Atilde;&sup3;n de pines que de otro modo
+est&Atilde;&iexcl;n en uso por el sistema puede tener
+indeseables efectos secundarios, como el bloqueo de
+rtapi_app o de todo el sistema.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>PINS <br>
+bb_gpio.p</b><i>N</i> <b>.in-</b><i>NN</i> bit out <b><br>
+bb_gpio.p</b><i>N</i><b>.in-</b><i>NN</i><b>-invert</b> bit
+in</p>
+
+<p style="margin-left:22%;"><b>in-</b><i>NN</i> es una
+instant&Atilde;&iexcl;nea del valor del pin f&Atilde;sico
+correspondiente XOR el valor del pin
+<b>in-</b><i>NN</i><b>-invert</b> correspondiente.</p>
+
+<h2>PINES DE SALIDA
+<a name="PINES DE SALIDA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El
+par&Atilde;&iexcl;metro de loadrt <i>input_pins</i> controla
+qu&Atilde;&copy; pines f&Atilde;sicos de E/S estan
+disponible para HAL como pines de entrada. La
+numeraci&Atilde;&sup3;n es &quot;800+N&quot; para el pin N
+en conector P8 y &quot;900+N&quot; para el pin N en el
+conector P9.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La
+especificaci&Atilde;&sup3;n de pines que de otro modo
+est&Atilde;&iexcl;n en uso por el sistema puede tener
+indeseables efectos secundarios, como el bloqueo de
+rtapi_app o de todo el sistema.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>PINS <br>
+bb_gpio.p</b><i>N</i><b>.out-</b><i>NN</i> bit out <b><br>
+bb_gpio.p</b><i>N</i><b>.out-</b><i>NN</i><b>-invert</b> bit
+in</p>
+
+<p style="margin-left:22%;">El pin f&Atilde;sico
+correspondiente se acciona con el resultado de
+<b>in-</b><i>NN</i> xor
+<b>in-</b><i>NN</i><b>-invert</b>.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguno</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>bb_gpio.read</b></p>
+
+<p style="margin-left:22%;">Actualizar pines HAL de pines
+f&Atilde;sicos</p>
+
+<p style="margin-left:11%;"><b>bb_gpio.write</b></p>
+
+<p style="margin-left:22%;">Actualizar pines f&Atilde;sicos
+de pines HAL</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

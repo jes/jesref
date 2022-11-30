@@ -1,0 +1,227 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:34 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>IOCONTROL - IO</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">IOCONTROL - IO</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">iocontrol -
+interacts with HAL or G-code in userspace</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[EMCIO] <br>
+EMCIO = io</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">I/O control
+handles I/O tasks like coolant, toolchange, e-stop and lube.
+The signals are turned on and off in userspace with G-code
+or in the case of e-stop in hal.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The following
+pins are created by the userspace IO controller, usually
+found in $LINUXCNC_HOME/bin/io</p>
+
+<p style="margin-left:11%; margin-top: 1em">The signals are
+turned on and off in userspace - if you have strict timing
+requirements or simply need more i/o, consider using the
+realtime synchronized i/o provided by <b>motion</b>(9)
+instead.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The inifile is
+searched for in the directory from which halcmd was run,
+unless an absolute path is specified.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>iocontrol.0.coolant-flood</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when flood
+coolant is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.coolant-mist</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when mist
+coolant is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.emc-enable-in</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven
+FALSE when an external estop condition exists.</p>
+
+<p style="margin-left:11%;"><b>iocontrol.0.lube</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when lube is
+requested. This pin gets driven True when the controller
+comes out of E-stop, and when the &quot;Lube On&quot;
+command gets sent to the controller. It gets driven False
+when the controller goes into E-stop, and when the
+&quot;Lube Off&quot; command gets sent to the
+controller.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.lube_level</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven
+FALSE when lubrication tank is empty.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-change</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when a tool
+change is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-changed</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven TRUE
+when a tool change is completed.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-number</b></p>
+
+<p style="margin-left:22%;">(s32, Out) Current tool
+number</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prep-number</b></p>
+
+<p style="margin-left:22%;">(s32, Out) The number of the
+next tool, from the RS274NGC T-word</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prep-pocket</b></p>
+
+<p style="margin-left:22%;">(s32, Out) This is the pocket
+number (location in the tool storage mechanism) of the tool
+requested by the most recent T-word.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prepare</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when a
+T<i>n</i> tool prepare is requested</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.tool-prepared</b></p>
+
+<p style="margin-left:22%;">(Bit, In) Should be driven TRUE
+when a tool prepare is completed.</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.user-enable-out</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) FALSE when an
+internal estop condition exists</p>
+
+
+<p style="margin-left:11%;"><b>iocontrol.0.user-request-enable</b></p>
+
+<p style="margin-left:22%;">(Bit, Out) TRUE when the user
+has requested that estop be cleared</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>iocontrol.0.tool-prep-index</b></p>
+
+<p style="margin-left:22%;">(s32, RO) IO&rsquo;s internal
+array index of the prepped tool requested by the most recent
+T-word. 0 if no tool is prepped. On Random toolchanger
+machines this is tool&rsquo;s pocket number (ie, the same as
+the tool-prep-pocket pin), on Non-random toolchanger
+machines this is a small integer corresponding to the
+tool&rsquo;s location in the internal representation of the
+tool table. This parameter returns to 0 after a successful
+tool change (M6).</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><a href="io.1.html"><b>io</b>(1),</a>
+<a href="iov2.1.html"><b>iov2</b>(1),</a>
+<a href="../man9/motion.9.html"><b>motion</b>(9)</a></p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs at
+<a href="https://github.com/LinuxCNC/linuxcnc/issues">https://github.com/LinuxCNC/linuxcnc/issues</a></p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Derived from a
+work by Fred Proctor &amp; Will Shackleford.</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2004 the LinuxCNC project. <br>
+This is free software; see the source for copying
+conditions. There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<hr>
+</body>
+</html>

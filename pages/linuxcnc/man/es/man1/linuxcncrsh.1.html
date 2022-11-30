@@ -1,0 +1,1066 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>linuxcncrsh</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">linuxcncrsh</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#Inicio de linuxcncrsh">Inicio de linuxcncrsh</a><br>
+<a href="#Conexi&Atilde;&sup3;n">Conexi&Atilde;&sup3;n</a><br>
+<a href="#Protocolo de red">Protocolo de red</a><br>
+<a href="#Subcomandos LinuxCNC">Subcomandos LinuxCNC</a><br>
+<a href="#Sesi&Atilde;&sup3;n de ejemplo">Sesi&Atilde;&sup3;n de ejemplo</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">linuxcncrsh -
+interfaz en modo texto para comandar LinuxCNC a
+trav&Atilde;&copy;s de la red</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">linuxcncrsh
+[OPCIONES] [-- LINUXCNC_OPCIONES]</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>linuxcncrsh</b>
+es una interfaz de usuario para LinuxCNC. En lugar de abrir
+una ventana GUI como axis(1) o touchy(1), procesa comandos
+en modo texto que recibe a trav&Atilde;&copy;s de la red. Un
+humano (o un programa) puede interactuar con
+<b>linuxcncrsh</b> usando telnet(1) o nc(1) o programas
+similares.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Todas las
+caracter&Atilde;sticas de LinuxCNC est&Atilde;&iexcl;n
+disponibles a trav&Atilde;&copy;s de la interfaz
+<b>linuxcncrsh</b>.</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-p,--port
+PORT_NUMBER</b></p>
+
+<p style="margin-left:22%;">Especifique el puerto de
+escucha para linuxcncrsh. El valor predeterminado es 5007 si
+se omite.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-n,--name
+SERVER_NAME</b></p>
+
+<p style="margin-left:22%;">Establece el nombre del
+servidor que linuxcncrsh usar&Atilde;&iexcl; para
+identificarse durante el reconocimiento con un nuevo
+cliente. El valor predeterminado es EMCNETSVR si se
+omite.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-w,--connectpw
+CONTRASE&Atilde;A</b></p>
+
+<p style="margin-left:22%;">Especifique la
+contrase&Atilde;&plusmn;a de conexi&Atilde;&sup3;n para usar
+durante el protocolo de enlace con un nuevo cliente. Tenga
+en cuenta que la contrase&Atilde;&plusmn;a se env&Atilde;a
+sin cifrar, por lo que puede leerse por cualquiera que pueda
+leer paquetes en la red entre el servidor y el cliente. El
+valor predeterminado es EMC si se omite.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-e,--enablepw
+CONTRASE&Atilde;A</b></p>
+
+<p style="margin-left:22%;">Especifique la
+contrase&Atilde;&plusmn;a requerida para habilitar LinuxCNC
+a trav&Atilde;&copy;s de linuxcncrsh. Tenga en cuenta que la
+contrase&Atilde;&plusmn;a se env&Atilde;a sin cifrar, por lo
+que cualquier persona que pueda leer paquetes en la red
+entre el servidor y el cliente puede leerla. Por defecto es
+EMCTOO si se omite.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-s,--sessions
+MAX_SESSIONS</b></p>
+
+<p style="margin-left:22%;">Especifique el
+n&Atilde;&ordm;mero m&Atilde;&iexcl;ximo de conexiones
+simult&Atilde;&iexcl;neas. El valor predeterminado es -1
+(sin l&Atilde;mite) si no se especifica.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">Adem&Atilde;&iexcl;s
+de las opciones enumeradas anteriormente, linuxcncrsh acepta
+una opci&Atilde;&sup3;n LINUXCNC_OPTION especial al
+final:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>-ini
+LINUXCNC_INI_FILE</b></p>
+
+<p style="margin-left:22%;">Archivo LinuxCNC .ini a usar.
+La opci&Atilde;&sup3;n -ini <b>debe</b> estar precedida por
+dos guiones: &quot;--&quot;. El valor predeterminado es
+emc.ini si se omite.</p>
+
+<h2>Inicio de linuxcncrsh
+<a name="Inicio de linuxcncrsh"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Para usar
+linuxcncrsh en lugar de una GUI LinuxCNC normal como Axis o
+Touchy, especifique su archivo .ini as&Atilde;:</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>[DISPLAY]</b></p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>DISPLAY=linuxcncrsh</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Para usar
+linuxcncrsh adem&Atilde;&iexcl;s de una GUI normal, puede
+iniciarlo al final de su archivo .hal, o ejecutarlo a mano
+en una ventana de terminal.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Para iniciarlo
+desde hal, agregue una l&Atilde;nea como esta al final de su
+archivo .hal:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>loadusr
+linuxcncrsh [OPCIONES] [-- LINUXCNC_OPTIONS]</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Para iniciarlo
+desde la terminal, ejecute linuxcncrsh manualmente de esta
+manera:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>linuxcncrsh
+[OPCIONES] [-- LINUXCNC_OPTIONS]</b></p>
+
+<h2>Conexi&Atilde;&sup3;n
+<a name="Conexi&Atilde;&sup3;n"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Una vez que
+LinuxCNC est&Atilde;&copy; activo y se est&Atilde;&copy;
+ejecutando linuxcncrsh, puede conectarse a &Atilde;&copy;l
+utilizando <b>telnet</b> o <b>nc</b> o similar:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>telnet HOST
+PORT</b></p>
+
+<p style="margin-left:32%;">HOST es el nombre de host o la
+direcci&Atilde;&sup3;n IP de la computadora que ejecuta
+linuxcncrsh, y PORT es el puerto en el que
+est&Atilde;&iexcl; escuchando (5007 si no le dio a
+linuxcncrsh la opci&Atilde;&sup3;n --port).</p>
+
+<h2>Protocolo de red
+<a name="Protocolo de red"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">linuxcncrsh
+acepta conexiones TCP en el puerto especificado por la
+opci&Atilde;&sup3;n --port, o 5007 si no se especifica.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El cliente
+env&Atilde;a solicitudes y el servidor linuxcncrsh devuelve
+respuestas. Las solicitudes consisten en una palabra de
+comando seguida de par&Atilde;&iexcl;metros
+espec&Atilde;ficos del comando. Las solicitudes y la
+mayor&Atilde;a de los par&Atilde;&iexcl;metros de solicitud
+son insensibles a may&Atilde;&ordm;sculas y
+min&Atilde;&ordm;sculas. Las excepciones son
+contrase&Atilde;&plusmn;as, rutas de archivo y cadenas de
+texto.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las solicitudes
+de linuxcncrsh se finalizan con terminaciones de
+l&Atilde;nea; cualquier combinaci&Atilde;&sup3;n de uno o
+m&Atilde;&iexcl;s caracteres &rsquo;\r&rsquo; y
+&rsquo;\n&rsquo;. Las respuestas de linuxcncrsh finalizan
+con la secuencia &acute;\r\n&acute;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los comandos
+admitidos son los siguientes:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>hello
+&lt;contrase&Atilde;&plusmn;a&gt; &lt;cliente&gt;
+&lt;versi&Atilde;&sup3;n&gt;</b></p>
+
+
+<p style="margin-left:22%;">&lt;contrase&Atilde;&plusmn;a&gt;
+debe coincidir con la contrase&Atilde;&plusmn;a de
+conexi&Atilde;&sup3;n de linuxcncrsh o &quot;EMC&quot; si no
+se suministr&Atilde;&sup3; --connectpw. Los tres argumentos
+pueden no contener espacios en blanco. Si se
+ingres&Atilde;&sup3; una contrase&Atilde;&plusmn;a
+v&Atilde;&iexcl;lida, el servidor responder&Atilde;&iexcl;
+con:</p>
+
+<p style="margin-left:32%;"><i>HELLO ACK &lt;Nombre del
+servidor&gt; &lt;Versi&Atilde;&sup3;n del
+servidor&gt;</i></p>
+
+<p style="margin-left:22%; margin-top: 1em">Si se produce
+una contrase&Atilde;&plusmn;a no v&Atilde;&iexcl;lida o
+cualquier otro error de sintaxis, el servidor responde
+con:</p>
+
+<p style="margin-left:32%;"><i>HELLO NAK</i></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>get
+&lt;subcommand&gt;
+[&lt;par&Atilde;&iexcl;metros&gt;]</b></p>
+
+<p style="margin-left:22%;">El comando get toma uno de los
+subcomandos LinuxCNC (descrito en la secci&Atilde;&sup3;n
+<b>Subcomandos LinuxCNC</b>, a continuaci&Atilde;&sup3;n) y
+cero o m&Atilde;&iexcl;s par&Atilde;&iexcl;metros
+adicionales espec&Atilde;ficos del subcomando.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>set
+&lt;subcommand&gt; &lt;par&Atilde;&iexcl;metros&gt;</b></p>
+
+<p style="margin-left:22%;">El comando set toma uno de los
+subcomandos LinuxCNC (descrito en el secci&Atilde;&sup3;n
+<b>Subcomandos LinuxCNC</b>, a continuaci&Atilde;&sup3;n) y
+uno o m&Atilde;&iexcl;s par&Atilde;&iexcl;metros
+adicionales.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>quit</b></p>
+
+<p style="margin-left:22%;">El comando quit desconecta la
+conexi&Atilde;&sup3;n de socket asociada.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>shutdown</b></p>
+
+<p style="margin-left:22%;">El comando shutdown le dice a
+LinuxCNC que apague y desconecte la sesi&Atilde;&sup3;n.
+Este comando solo se puede emitir si el reconocimiento ha
+sido negociado con &Atilde;&copy;xito y la
+conexi&Atilde;&sup3;n tiene el control del CNC (ver
+subcomando <b>enable</b> en la secci&Atilde;&sup3;n
+<b>Subcomandos LinuxCNC</b>, a
+continuaci&Atilde;&sup3;n).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>help</b></p>
+
+<p style="margin-left:22%;">El comando de ayuda
+devolver&Atilde;&iexcl; informaci&Atilde;&sup3;n de ayuda en
+formato de texto sobre la conexi&Atilde;&sup3;n. Si no se
+especifican par&Atilde;&iexcl;metros,
+detallar&Atilde;&iexcl; los comandos disponibles. Si se
+especifica un comando, proporcionar&Atilde;&iexcl;
+informaci&Atilde;&sup3;n de uso para el comando
+especificado. La ayuda responder&Atilde;&iexcl;
+independientemente de si un &quot;Hello&quot; se ha
+negociado con &Atilde;&copy;xito.</p>
+
+<h2>Subcomandos LinuxCNC
+<a name="Subcomandos LinuxCNC"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los subcomandos
+para <b>get</b> y <b>set</b> son:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>echo
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro on/off y es devuelto el estado de
+eco actual. Con set, se establece el estado del eco como se
+especifica. El eco por defecto es on cuando se establece la
+conexi&Atilde;&sup3;n por primera vez. Cuando el eco
+est&Atilde;&iexcl; activado, todos los comandos
+har&Atilde;&iexcl; eco al recibirlo. Este estado es local
+para cada conexi&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>verbose
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, cualquier
+par&Atilde;&iexcl;metro on/off se ignora y es devuelto el
+estado detallado actual. Con set, se establece el estado
+detallado como se especifica. Cuando el modo detallado
+est&Atilde;&iexcl; activado, todos los comandos set
+devuelven un reconocimiento positivo en la forma SET
+&lt;COMMAND&gt; ACK, y se emitir&Atilde;&iexcl;n mensajes de
+error de texto (FIXME: no se lo que esto significa). El
+estado detallado es local para cada conexi&Atilde;&sup3;n, y
+comienza OFF en nuevas conexiones.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>enable
+{&lt;passwd&gt;|off}</b></p>
+
+<p style="margin-left:22%;">El estado de
+habilitaci&Atilde;&sup3;n de la sesi&Atilde;&sup3;n indica
+si la conexi&Atilde;&sup3;n actual est&Atilde;&iexcl;
+habilitada para realizar funciones de control. Con get, se
+ignora cualquier par&Atilde;&iexcl;metro, y se devuelve el
+estado de habilitaci&Atilde;&sup3;n actual. Con set y una
+contrase&Atilde;&plusmn;a v&Atilde;&iexcl;lida coincidente
+con --enablepw (EMCTOO si no se especifica), la
+conexi&Atilde;&sup3;n actual est&Atilde;&iexcl; habilitada
+para las funciones de control. &quot;OFF&quot; no puede
+usarse como una contrase&Atilde;&plusmn;a y deshabilita las
+funciones de control para esta conexi&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>config
+[TBD]</b></p>
+
+<p style="margin-left:22%;">Sin usar, ignorar por
+ahora.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>comm_mode
+{ascii| binary}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y se devuelve el modo de
+comunicacion actual. Con set, se establecer&Atilde;&iexcl;
+el modo de comunicaciones en el modo especificado El modo
+ascii es el modo de solicitud/respuesta de texto, el
+protocolo binario no est&Atilde;&iexcl; actualmente
+dise&Atilde;&plusmn;ado o implementado.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>comm_prot
+&lt;versi&Atilde;&sup3;n&gt;</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y se devuelve la
+versi&Atilde;&sup3;n actual del protocolo utilizado por el
+servidor. Con set, se configura el servidor para que use la
+versi&Atilde;&sup3;n de protocolo especificada, siempre que
+sea inferior o igual al mayor n&Atilde;&ordm;mero de
+versi&Atilde;&sup3;n compatible con la
+implementaci&Atilde;&sup3;n del servidor.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>inifile</b></p>
+
+<p style="margin-left:22%;">&Acirc;&iexcl;Actualmente no
+implementado! Con get, devuelve la cadena
+&quot;emc.ini&quot;. Deber&Atilde;a devolver la ruta
+completa y el nombre de archivo de la
+configuraci&Atilde;&sup3;n actual inifile. Set no hace
+nada.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>plat</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la cadena
+&quot;Linux&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>ini
+&lt;var&gt; &lt;secci&Atilde;&sup3;n&gt;</b></p>
+
+<p style="margin-left:22%;">Actualmente no implementado,
+&Acirc;&iexcl;no lo use! Deber&Atilde;a devolver el valor de
+la cadena &lt;var&gt; en la secci&Atilde;&sup3;n
+&lt;secci&Atilde;&sup3;n&gt; del archivo ini.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>debug
+&lt;valor&gt;</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y se devuelve el valor entero actual
+de EMC_DEBUG. Tenga en cuenta que el valor de EMC_DEBUG
+devuelto es el del archivo ini de la UI, que puede ser
+diferente al archivo ini de emc. Con set, se env&Atilde;a un
+comando a EMC para establecer el nuevo nivel de
+depuraci&Atilde;&sup3;n y establece el EMC_DEBUG global
+aqu&Atilde; con el mismo valor. Esto har&Atilde;&iexcl; que
+los dos valores sean iguales, ya que realmente
+deber&Atilde;an ser iguales.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>set_wait
+{recived|done}</b></p>
+
+<p style="margin-left:22%;">La configuraci&Atilde;&sup3;n
+set_wait controla la espera despu&Atilde;&copy;s de recibir
+un comando. Puede ser &quot;recived&quot;
+(despu&Atilde;&copy;s de que el comando fue enviado y
+recibido) o &quot;done&quot; (despu&Atilde;&copy;s de que se
+ejecuto el comando). Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y se devuelve la
+configuraci&Atilde;&sup3;n actual de set_wait. Con set, se
+establece la configuraci&Atilde;&sup3;n set_wait al valor
+especificado.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>wait
+{recived|done}</b></p>
+
+<p style="margin-left:22%;">Con set, fuerza una espera para
+que se reciba el comando anterior, o done.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>set_timeout
+&lt;timeout&gt;</b></p>
+
+<p style="margin-left:22%;">Con set, establece el tiempo de
+espera para que los comandos vuelvan a los &lt;timeout&gt;
+segundos. El tiempo de espera es un n&Atilde;&ordm;mero
+real. Si es &lt;= 0.0, significa esperar para siempre. El
+valor predeterminado es 0.0, espera para siempre.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>update
+{none|auto}</b></p>
+
+<p style="margin-left:22%;">El modo de
+actualizaci&Atilde;&sup3;n controla si se deben devolver
+valores nuevos u obsoletos para &quot;obtener&quot;
+solicitudes. Cuando el modo de actualizaci&Atilde;&sup3;n es
+&quot;none&quot;, devuelve valores obsoletos; cuando es
+&quot;auto&quot; devuelve valores nuevos. El valor
+predeterminado es &quot;auto&quot; para nuevas conexiones.
+Aj&Atilde;&ordm;stelo a &quot;none&quot; si quiere
+confundirse.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>error</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la cadena de
+error actual o &quot;ok&quot; si no hay error.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>operator_display</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la cadena de
+visualizaci&Atilde;&sup3;n del operador actual, o
+&quot;ok&quot; si no hay ninguno.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>operator_text</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la cadena de
+texto del operador actual, o &quot;ok&quot; si no hay
+ninguno.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>time</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el tiempo, en
+segundos, desde el comienzo del epoch. El tiempo de inicio
+depende de la plataforma.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>estop
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, ignora cualquier
+par&Atilde;&iexcl;metro y devuelve la
+configuraci&Atilde;&sup3;n actual de estop como
+&quot;on&quot; o &quot;off&quot;. Con set, establece estop
+como se especifica. Estop &quot;on&quot; significa que la
+m&Atilde;&iexcl;quina est&Atilde;&iexcl; en estado de parada
+y no actuar&Atilde;&iexcl;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>machine
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, ignora cualquier
+par&Atilde;&iexcl;metro y devuelve el encendido actual de la
+m&Atilde;&iexcl;quina configurando como &quot;on&quot; o
+&quot;off&quot;. Con set, enciende o apaga la
+m&Atilde;&iexcl;quina como se especifique.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>mode
+{manual|auto|mdi}</b></p>
+
+<p style="margin-left:22%;">Con get, ignora cualquier
+par&Atilde;&iexcl;metro y devuelve el modo de
+m&Atilde;&iexcl;quina actual. Con set, establece el modo de
+m&Atilde;&iexcl;quina como se especifica.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>mist
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, ignora cualquier
+par&Atilde;&iexcl;metro y devuelve el ajuste de refrigerante
+de niebla actual. Con set, establece la
+configuraci&Atilde;&sup3;n de niebla como se especifica.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>flood
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, ignora cualquier
+par&Atilde;&iexcl;metro y devuelve el ajuste de refrigerante
+de inundaci&Atilde;&sup3;n actual. Con set, establece la
+configuraci&Atilde;&sup3;n de inundaci&Atilde;&sup3;n como
+se especifica.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>lube
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, ignora cualquier
+par&Atilde;&iexcl;metro y devuelveel ajuste de la bomba de
+lubricaci&Atilde;&sup3;n actual. Con set, establece la
+configuraci&Atilde;&sup3;n de la bomba de
+lubricaci&Atilde;&sup3;n como se especifica.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>lube_level</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la lectura
+del sensor de nivel de lubricante como &quot;ok&quot; o
+&quot;low&quot;. Con set, no hay efecto real.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>spindle
+{forward|reverse|increase|decrease|constant|off}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y el estado actual del cabezal es
+devuelto como &quot;forward&quot;, &quot;reverse&quot;,
+&quot;increase&quot;, &quot;decrease&quot;,
+&quot;constant&quot; o &quot;off&quot;. Con set, establece
+el husillo como se especifica. Tenga en cuenta que
+&quot;increase&quot; y &quot;decrease&quot;
+provocar&Atilde;&iexcl; un cambio de velocidad en la
+direcci&Atilde;&sup3;n correspondiente hasta que se
+env&Atilde;a el comando &quot;constant&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>brake
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y la configuraci&Atilde;&sup3;n
+actual del freno es devuelta. Con set, el freno se establece
+como se especifica.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>tool</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+identificaci&Atilde;&sup3;n de la herramienta cargada
+actualmente.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>tool_offset</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el
+desplazamiento de longitud de herramienta aplicado
+actualmente.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>load_tool_table
+&lt;archivo&gt;</b></p>
+
+<p style="margin-left:22%;">Con set, carga la tabla de
+herramientas especificada por &lt;archivo&gt;.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>home
+{0|1|2|...}|-1</b></p>
+
+<p style="margin-left:22%;">Con set, pone home a la
+articulaci&Atilde;&sup3;n indicada o, si -1, home Todas las
+articulaciones</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>jog_stop
+joint_number|axis_letter</b></p>
+
+<p style="margin-left:22%;">Con set, detiene cualquier jog
+en curso en la articulaci&Atilde;&sup3;n o eje especificado.
+Si TELEOP_ENABLE es NO, use joint_number; Si TELEOP_ENABLE
+es S&Atilde;, use axis_letter.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>jog
+joint_number|axis_letter &lt;speed&gt;</b></p>
+
+<p style="margin-left:22%;">Con set, mueve la
+articulaci&Atilde;&sup3;n o eje especificado a la
+&lt;velocidad&gt;; el signo de velocidad es
+direcci&Atilde;&sup3;n. Si TELEOP_ENABLE es NO, use
+joint_number; Si TELEOP_ENABLE es S&Atilde;, use
+axis_letter.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>jog_incr
+jog_number|axis_letter &lt;speed&gt; &lt;incr&gt;</b></p>
+
+<p style="margin-left:22%;">Con set, mueve la
+articulaci&Atilde;&sup3;n o eje indicado por incremento
+&lt;incr&gt; en &lt;speed&gt;; el signo de la velocidad es
+direcci&Atilde;&sup3;n. Si TELEOP_ENABLE es NO, use
+joint_number; Si TELEOP_ENABLE es S&Atilde;, use
+axis_letter.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>feed_override
+&lt;percent&gt;</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y retorna el ajuste de
+alimentaci&Atilde;&sup3;n actual (como un porcentaje del
+feed ordenado). Con set, establece el ajuste de feed como se
+especifica.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>spindle_override
+&lt;percent&gt;</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y retorna el ajuste de husillo
+actual (como un porcentaje de husillo ordenado). Con set,
+establece el ajuste de husillo como se especifica.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>abs_cmd_pos
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+posici&Atilde;&sup3;n ordenada del eje especificado en
+absoluto coordenadas Si no se especifica ning&Atilde;&ordm;n
+eje, devuelve todos los ejes ordenados posici&Atilde;&sup3;n
+absoluta</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>abs_act_pos
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+posici&Atilde;&sup3;n real del eje especificado en absoluto
+coordenadas Si no se especifica ning&Atilde;&ordm;n eje,
+devuelve el absoluto real de todos los ejes
+posici&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>rel_cmd_pos
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+posici&Atilde;&sup3;n ordenada del eje especificado en
+relaci&Atilde;&sup3;n coordenadas, incluido el
+desplazamiento de la longitud de la herramienta. Si no se
+especifica ning&Atilde;&ordm;n eje, devuelve la
+posici&Atilde;&sup3;n relativa ordenada de todos los
+ejes.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>rel_act_pos
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+posici&Atilde;&sup3;n real del eje especificado en
+relaci&Atilde;&sup3;n coordenadas, incluido el
+desplazamiento de la longitud de la herramienta. Si no se
+especifica ning&Atilde;&ordm;n eje, devuelve la
+posici&Atilde;&sup3;n relativa real de todos los ejes.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>joint_pos
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+posici&Atilde;&sup3;n real de la articulaci&Atilde;&sup3;n
+especificada en absoluto coordenadas, excluyendo el
+desplazamiento de la longitud de la herramienta. Si no se
+especifica una junta, devuelve la posici&Atilde;&sup3;n
+absoluta real de todas las articulaciones.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pos_offset
+[{X|Y|Z|R|P|W}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el
+desplazamiento de posici&Atilde;&sup3;n asociado con la
+coordenada mundial previsto.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>joint_limit
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el estado
+l&Atilde;mite de la uni&Atilde;&sup3;n especificada como
+&quot;ok&quot;, &quot;minsoft&quot;, &quot;minhard&quot;,
+&quot;maxsoft&quot; o &quot;maxhard&quot;. Si no se
+especifica un n&Atilde;&ordm;mero conjunto, devuelve el
+estado l&Atilde;mite de todas las articulaciones.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>joint_fault
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el estado de
+falla de la uni&Atilde;&sup3;n especificada como
+&quot;ok&quot; o &quot;culpa&quot;. Si no se especifica un
+n&Atilde;&ordm;mero conjunto, devuelve el estado de falla de
+Todas las articulaciones.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>joint_homed
+[{0|1|...}]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el estado de
+referencia de la uni&Atilde;&sup3;n especificada como
+&quot;referenciada&quot; o no&quot;. Si no se especifica un
+n&Atilde;&ordm;mero conjunto, devuelve el estado de inicio
+de Todas las articulaciones.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>mdi
+&lt;cadena&gt;</b></p>
+
+<p style="margin-left:22%;">Con set, env&Atilde;a
+&lt;cadena&gt; como un comando MDI.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>task_plan_init</b></p>
+
+<p style="margin-left:22%;">Con set, inicializa el
+int&Atilde;&copy;rprete de programa.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>open
+&lt;nombre de archivo&gt;</b></p>
+
+<p style="margin-left:22%;">Con set, abre el archivo con
+nombre. El &lt;nombre de archivo&gt; es abierto por
+linuxcnc, por lo que deber&Atilde;a ser una ruta absoluta o
+una ruta relativa que comience en el directorio de trabajo
+de linuxcnc (el directorio del archivo .ini activo).</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>run
+[&lt;StartLine&gt;]</b></p>
+
+<p style="margin-left:22%;">Con set, ejecuta el programa
+abierto. Si no se especifica StartLine, se ejecuta desde el
+principio. Si se especifica una l&Atilde;nea de inicio, la
+l&Atilde;nea de inicio se ejecuta desde esa linea. Una
+l&Atilde;nea de inicio de &nbsp;-1 se ejecuta en modo de
+verificaci&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pause</b></p>
+
+<p style="margin-left:22%;">Con set, pausa la
+ejecuci&Atilde;&sup3;n del programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>resume</b></p>
+
+<p style="margin-left:22%;">Con set, reanudar la
+ejecuci&Atilde;&sup3;n del programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>abort</b></p>
+
+<p style="margin-left:22%;">Con set, abortar programa o
+ejecuci&Atilde;&sup3;n MDI.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>step</b></p>
+
+<p style="margin-left:22%;">Con set, pasa el programa una
+l&Atilde;nea.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el nombre del
+programa abierto actualmente o &quot;ninguno&quot;.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program_line</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la
+l&Atilde;nea actualmente en ejecuci&Atilde;&sup3;n del
+programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program_status</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;inactivo&quot;, &quot;en ejecuci&Atilde;&sup3;n&quot;
+o &quot;en pausa&quot;.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program_codes</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve la cadena
+para los c&Atilde;&sup3;digos de programa actualmente
+activos.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>joint_type
+[&lt;joint&gt;]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;lineal&quot;, &quot;angular&quot; o
+&quot;personalizado&quot; para el tipo de junta especificada
+(o para todas las juntas si no se especifica ninguna).</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>joint_units
+[&lt;unidad&gt;]</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;inch&quot;, &quot;mm&quot;, &quot;cm&quot; o
+&quot;deg&quot;, &quot;rad&quot;, &quot;grad&quot; o
+&quot;personalizado&quot;, para las unidades nativas
+correspondientes de la uni&Atilde;&sup3;n especificada (o
+para todas las juntas si no se especifica ninguna). El tipo
+del eje (lineal o angular) se utiliza para resolver
+qu&Atilde;&copy; tipo de unidades se devuelven. las unidades
+se obtienen heur&Atilde;sticamente, en base a las unidades
+num&Atilde;&copy;ricas EMC_AXIS_STAT :: valor de unidades de
+usuario por mm o deg. Para juntas lineales, algo cercano a
+0.03937 se considera &quot;pulgada&quot;, 1.000 es
+&quot;mm&quot;, 0.1 es &quot;cm&quot;, de lo contrario es
+&quot;personalizado&quot;. Para juntas angulares, algo
+cercano a 1,000 se considera &quot;deg&quot;, PI / 180 es
+&quot;rad&quot;, 100/90 es &quot;grad&quot;, de lo contrario
+es &quot;personalizado&quot;.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program_units</b></p>
+
+<p style="margin-left:22%;">Sin&Atilde;&sup3;nimo de
+program_linear_units.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program_linear_units</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;inch&quot;, &quot;mm&quot;, &quot;cm&quot; o
+&quot;none&quot;, para el correspondiente unidades lineales
+que est&Atilde;&iexcl;n activas en el
+int&Atilde;&copy;rprete de programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>program_angular_units</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;deg&quot;, &quot;rad&quot;, &quot;grad&quot; o
+&quot;none&quot; para el correspondiente unidades angulares
+que est&Atilde;&iexcl;n activas en el
+int&Atilde;&copy;rprete de programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>user_linear_units</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;inch&quot;, &quot;mm&quot;, &quot;cm&quot; o
+&quot;custom&quot;, para el correspondiente Unidades
+lineales de usuario nativo del nivel de trayectoria
+LinuxCNC. Esto se obtiene heur&Atilde;sticamente, basado en
+el valor num&Atilde;&copy;rico EMC_TRAJ_STAT :: linearUnits
+de unidades de usuario por mm. Algo cercano a 0.03937 se
+considera &quot;pulgada&quot;, 1.000 es &quot;mm&quot;, 0.1
+es &quot;cm&quot;, de lo contrario es
+&quot;personalizado&quot;.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>user_angular_units</b></p>
+
+<p style="margin-left:22%;">Devuelve &quot;deg&quot;,
+&quot;rad&quot;, &quot;grad&quot; o &quot;custom&quot; para
+el nativo correspondiente Unidades angulares de usuario del
+nivel de trayectoria LinuxCNC. Al igual que con las unidades
+lineales, Esto se obtiene heur&Atilde;sticamente.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>display_linear_units</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;inch&quot;, &quot;mm&quot;, &quot;cm&quot; o
+&quot;personalizado&quot; para el lineal unidades que
+est&Atilde;&iexcl;n activas en la pantalla. Este es
+efectivamente el valor de linearUnitConversion.</p>
+
+
+<p style="margin-left:11%;"><b>display_angular_units</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve
+&quot;deg&quot;, &quot;rad&quot;, &quot;grad&quot; o
+&quot;custom&quot;, para el angular unidades que
+est&Atilde;&iexcl;n activas en la pantalla. Este es
+efectivamente el valor de angularUnitConversion.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>linear_unit_conversion
+{inch|mm|cm|auto}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y la conversi&Atilde;&sup3;n de
+unidad activa es devuelto Con set, establece la unidad que
+se mostrar&Atilde;&iexcl;. Si es &quot;auto&quot;, las
+unidades que se mostrar&Atilde;&iexcl;n coinciden con las
+unidades del programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>angular_unit_conversion
+{deg|rad|grad|auto}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y la conversi&Atilde;&sup3;n de
+unidad activa es devuelto Con set, establece las unidades
+que se mostrar&Atilde;&iexcl;n. Si es &quot;auto&quot;, las
+unidades que se mostrar&Atilde;&iexcl;n coinciden con las
+unidades del programa.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>probe_clear</b></p>
+
+<p style="margin-left:22%;">Con el set, borre la bandera de
+la sonda disparada.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>probe_tripped</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el estado de
+la sonda: &Acirc;&iquest;se ha disparado la sonda desde el
+&Atilde;&ordm;ltimo borrado?</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>probe_value</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el valor
+actual de la se&Atilde;&plusmn;al de la sonda.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>probe</b></p>
+
+<p style="margin-left:22%;">Con el set,
+mu&Atilde;&copy;vete hacia una determinada
+ubicaci&Atilde;&sup3;n. Si la sonda se dispara la forma de
+detener el movimiento, registrar la posici&Atilde;&sup3;n y
+levantar la bandera de la sonda disparada.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>teleop_enable
+[on|off]</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y el modo teleop actual es devuelto
+Con set, establece el modo teleop como se especifica.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>kinematics_type</b></p>
+
+<p style="margin-left:22%;">Con get, devuelve el tipo de
+funciones cinem&Atilde;&iexcl;ticas utilizadas (identidad =
+1, serial = 2, paralelo = 3, personalizado = 4).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>override_limits
+{on|off}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y la configuraci&Atilde;&sup3;n
+override_limits es devuelto Con set, el
+par&Atilde;&iexcl;metro override_limits se establece como se
+especifica. Si override_limits est&Atilde;&iexcl; activado,
+deshabilita los l&Atilde;mites de hardware de fin de viaje
+para permitir correr fuera de un l&Atilde;- mite. Si los
+par&Atilde;&iexcl;metros est&Atilde;&iexcl;n desactivados,
+entonces los l&Atilde;- mites de hardware
+est&Atilde;&iexcl;n habilitados</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>optional_stop
+{0|1}</b></p>
+
+<p style="margin-left:22%;">Con get, se ignora cualquier
+par&Atilde;&iexcl;metro y la actual &quot;parada opcional en
+M1&quot; Se devuelve la configuraci&Atilde;&sup3;n. Con set,
+la configuraci&Atilde;&sup3;n se establece como se
+especifica.</p>
+
+<h2>Sesi&Atilde;&sup3;n de ejemplo
+<a name="Sesi&Atilde;&sup3;n de ejemplo"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+secci&Atilde;&sup3;n muestra una sesi&Atilde;&sup3;n de
+ejemplo para la m&Atilde;&iexcl;quina local
+(<b>localhost</b>). Usted escribe los elementos en negrita,
+la salida de m&Atilde;&iexcl;quina no es negrita. Los
+valores predeterminados se muestran para --port PORT_NUMBER
+(<b>5007</b>), --conectpw PASSWORD (<b>EMC</b>) y --enablepw
+CONTRASE&Atilde;A (<b>EMCTOO</b>).</p>
+
+<p style="margin-left:11%; margin-top: 1em">El usuario se
+conecta a linuxcncrsh, reconocimiento con el servidor
+(hello), habilita comandos para la m&Atilde;&iexcl;quina de
+esta sesi&Atilde;&sup3;n (set enable), saca la
+m&Atilde;&iexcl;quina de parada (apaga estop) y la enciende
+(la m&Atilde;&iexcl;quina), hace todos los home de los ejes,
+cambia la m&Atilde;&iexcl;quina al modo mdi, env&Atilde;a un
+comando MDI de c&Atilde;&sup3;digo g, luego se desconecta y
+apaga LinuxCNC.</p>
+
+<p style="margin-left:11%; margin-top: 1em">&gt; <b>telnet
+localhost 5007</b> <br>
+Trying 127.0.0.1... <br>
+Connected to 127.0.0.1 <br>
+Escape character is &rsquo;^]&rsquo;. <b><br>
+hello EMC user-typing-at-telnet 1.0</b> <br>
+HELLO ACK EMCNETSVR 1.1 <b><br>
+set enable EMCTOO</b> <br>
+set enable EMCTOO <b><br>
+set mode manual</b> <br>
+set mode manual <b><br>
+set estop off</b> <br>
+set estop off <b><br>
+set machine on</b> <br>
+set machine on <b><br>
+set home 0</b> <br>
+set home 0 <b><br>
+set home 1</b> <br>
+set home 1 <b><br>
+set home 2</b> <br>
+set home 2 <b><br>
+set mode mdi</b> <br>
+set mode mdi <b><br>
+set mdi g0x1</b> <br>
+set mdi g0x1 <b><br>
+help</b> <br>
+help <br>
+Available commands: <br>
+Hello &lt;password&gt; &lt;client name&gt; &lt;protocol
+version&gt; <br>
+Get &lt;emc command&gt; <br>
+Set &lt;emc command&gt; <br>
+Shutdown <br>
+Help &lt;command&gt; <b><br>
+help get</b> <br>
+help get <br>
+Usage: Get &lt;emc command&gt; <br>
+Get commands require that a hello has been successfully
+negotiated. <br>
+Emc command may be one of: <br>
+Abs_act_pos <br>
+Abs_cmd_pos <b><br>
+... <br>
+shutdown</b> <br>
+shutdown <br>
+Connection closed by foreign host.</p>
+<hr>
+</body>
+</html>

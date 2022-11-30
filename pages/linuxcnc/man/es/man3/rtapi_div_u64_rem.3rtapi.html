@@ -1,0 +1,146 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:22 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_div_u64</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_div_u64</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#ARGUMENTS">ARGUMENTS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#NOTES">NOTES</a><br>
+<a href="#REALTIME CONSIDERATIONS">REALTIME CONSIDERATIONS</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_div_u64 -
+unsigned division of a 64-bit number by a 32-bit number</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__u64 rtapi_div_u64_rem(__u64
+<i>dividend</i>, __u32 <i>divisor</i>, __u32
+*<i>remainder</i>)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__u64 rtapi_div_u64(__u64
+<i>dividend</i>, __u32 <i>divisor</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__s64 rtapi_div_s64(__s64
+<i>dividend</i>, __s32 <i>divisor</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__s64 rtapi_div_s64_rem(__s64
+<i>dividend</i>, __s32 <i>divisor</i>, __s32
+*<i>remainder</i>)</p> </td></tr>
+</table>
+
+<h2>ARGUMENTS
+<a name="ARGUMENTS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>dividend</i></p>
+
+<p style="margin-left:22%;">The value to be divided</p>
+
+<p style="margin-left:11%;"><i>divisor</i></p>
+
+<p style="margin-left:22%;">The value to divide by</p>
+
+<p style="margin-left:11%;"><i>remainder</i></p>
+
+<p style="margin-left:22%;">Pointer to the location to
+store the remainder. This may not be a NULL pointer. If the
+remainder is not desired, call <b>rtapi_div_u64</b> or
+<b>rtapi_div_s64</b>.</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Perform integer
+division (and optionally compute the remainder) with a
+64-bit dividend and 32-bit divisor.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The result of
+integer division of <i>dividend / divisor</i>. In versions
+with the <i>remainder</i> argument, the remainder is stored
+in the pointed-to location.</p>
+
+<h2>NOTES
+<a name="NOTES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">If the result
+of the division does not fit in the return type, the result
+is undefined.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This function
+exists because in kernel space the use of the division
+operator on a 64-bit type can lead to an undefined symbol
+such as __umoddi3 when the module is loaded.</p>
+
+<h2>REALTIME CONSIDERATIONS
+<a name="REALTIME CONSIDERATIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">May be called
+from init/cleanup code and from within realtime tasks.
+Available in userspace components.</p>
+<hr>
+</body>
+</html>

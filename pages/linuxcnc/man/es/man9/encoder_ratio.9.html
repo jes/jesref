@@ -1,0 +1,190 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:26 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>ENCODER_RATIO</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">ENCODER_RATIO</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#NOMBRES">NOMBRES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">encoder_ratio-
+engranaje electr&Atilde;&sup3;nico para sincronizar dos
+ejes</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+encoder_ratio [num_chan=</b><i>num</i> <b>|
+names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder_ratio</b>
+se puede utilizar para sincronizar dos ejes (como un
+&quot;engranaje electr&Atilde;&sup3;nico&quot;). Cuenta los
+pulsos del encoder de ambos ejes en el software, y produce
+un valor de error que se puede usar con un bucle PID para
+hacer que el encoder esclavo siga al encoder maestro con una
+relaci&Atilde;&sup3;n espec&Atilde;fica.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Este
+m&Atilde;&sup3;dulo admite hasta ocho pares de ejes. El
+n&Atilde;&ordm;mero de pares lo establece el
+par&Atilde;&iexcl;metro de m&Atilde;&sup3;dulo
+<b>num_chan</b>. Alternativamente, especifique <b>names=</b>
+y nombres &Atilde;&ordm;nicos separado por comas.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+especificadores <b>num_chan=</b> y <b>names=</b> son
+mutuamente excluyentes. Si no se especifica <b>num_chan=</b>
+ni <b>names=</b>, el valor predeterminado es uno.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder-ratio.sample</b></p>
+
+<p style="margin-left:22%;">Lee todos los pines de entrada.
+Debe llamarse al doble de la tasa de conteo
+m&Atilde;&iexcl;xima deseada.</p>
+
+<p style="margin-left:11%;"><b>encoder-ratio.update (usa
+punto flotante)</b></p>
+
+<p style="margin-left:22%;">Actualiza todos los pines de
+salida. Se puede llamar desde un hilo m&Atilde;&iexcl;s
+lento.</p>
+
+<h2>NOMBRES
+<a name="NOMBRES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los nombres de
+pines y par&Atilde;&iexcl;metros tienen el prefijo: <b><br>
+encoder-ratio.N.</b> for N=0,1,...,num-1 when using
+<b>num_chan=num <br>
+nameN.</b> for nameN=name1,name2,... when using
+<b>names=name1,name2,...</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">El formato
+<b>encoder-ratio.N.</b> se muestra en las siguientes
+descripciones.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder-ratio.</b><i>N</i><b>.master-A</b>
+bit in <b><br>
+encoder-ratio.</b><i>N</i><b>.master-B</b> bit in <b><br>
+encoder-ratio.</b><i>N</i><b>.slave-A</b> bit in <b><br>
+encoder-ratio.</b><i>N</i><b>.slave-B</b> bit in</p>
+
+<p style="margin-left:22%;">Los canales de encoder de los
+ejes maestro y esclavo.</p>
+
+
+<p style="margin-left:11%;"><b>encoder-ratio.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando el pin de
+habilitaci&Atilde;&sup3;n es FALSE, el pin de error
+simplemente informa posici&Atilde;&sup3;n del eje esclavo,
+en revoluciones. Como tal, normalmente estar&Atilde;a
+conectado al pin de retroalimentaci&Atilde;&sup3;n de un
+bloque PID para el control de bucle cerrado del eje esclavo.
+Normalmente, la entrada de comando del bloque PID se deja
+desconectada (cero), por lo que el eje esclavo simplemente
+se queda quieto. Sin embargo, cuando la entrada de
+habilitaci&Atilde;&sup3;n se vuelve TRUE, el pin de error se
+convierte en la posici&Atilde;&sup3;n esclava menos la
+posici&Atilde;&sup3;n maestra escalada. El factor de escala
+es la relaci&Atilde;&sup3;n de dientes maestros a dientes
+esclavos. A medida que el maestro se mueve, el error se
+vuelve distinto de cero y el bucle PID
+conducir&Atilde;&iexcl; al eje esclavo para rastrear al
+maestro.</p>
+
+
+<p style="margin-left:11%;"><b>encoder-ratio.</b><i>N</i><b>.error</b>
+float out</p>
+
+<p style="margin-left:22%;">Error en la
+posici&Atilde;&sup3;n del esclavo (en revoluciones)</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder-ratio.N.master-ppr</b>
+unsigned rw <b><br>
+encoder-ratio.N.slave-ppr</b> unsigned rw</p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero de pulsos
+por revoluci&Atilde;&sup3;n de los ejes maestro y
+esclavo</p>
+
+
+<p style="margin-left:11%;"><b>encoder-ratio.N.master-teeth</b>
+unsigned rw <b><br>
+encoder-ratio.N.slave-teeth</b> unsigned rw</p>
+
+<p style="margin-left:22%;">N&Atilde;&ordm;mero de
+&quot;dientes&quot; en los engranajes maestro y esclavo.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder
+(9)</b></p>
+<hr>
+</body>
+</html>

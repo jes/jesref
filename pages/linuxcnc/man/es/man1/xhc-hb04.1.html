@@ -1,0 +1,605 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>XHC-HB04</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">XHC-HB04</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#UDEV">UDEV</a><br>
+<a href="#Uso Independiente">Uso Independiente</a><br>
+<a href="#Opciones">Opciones</a><br>
+<a href="#Formato de archivo button-cfg-file">Formato de archivo button-cfg-file</a><br>
+<a href="#Uso Hal">Uso Hal</a><br>
+<a href="#Pines de entrada (control)">Pines de entrada (control)</a><br>
+<a href="#Pines de entrada (a la pantalla LCD colgante)">Pines de entrada (a la pantalla LCD colgante)</a><br>
+<a href="#Pines de salida (estado)">Pines de salida (estado)</a><br>
+<a href="#Pines de salida (para jog usando axis.N.jog-counts)">Pines de salida (para jog usando axis.N.jog-counts)</a><br>
+<a href="#Experimental: Pines para jog halui plus/minus">Experimental: Pines para jog halui plus/minus</a><br>
+<a href="#Pines de salida de bot&Atilde;&sup3;n (para layout2 de 18 botones)">Pines de salida de bot&Atilde;&sup3;n (para layout2 de 18 botones)</a><br>
+<a href="#Pines de botones sintetizados">Pines de botones sintetizados</a><br>
+<a href="#DEPURACI&Atilde;N">DEPURACI&Atilde;N</a><br>
+<a href="#Configuraciones Sim">Configuraciones Sim</a><br>
+<a href="#Autor">Autor</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xhc-hb04 -
+Componente HAL de espacio de usuario para el colgante
+xhc-hb04.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El componente
+xhc-hb04 admite un colgante USB com&Atilde;&ordm;n que
+proporciona cierta cantidad de botones, un generador de
+pulso manual (mpg o jog wheel), y un interruptor selector
+para la rueda.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Hay al menos
+dos versiones de hardware: una con 16 botones y otra,
+m&Atilde;&iexcl;s com&Atilde;&ordm;n, con 18 botones. La
+informaci&Atilde;&sup3;n aqu&Atilde; contenida
+est&Atilde;&iexcl; basada en el dispositivo de 18 botones
+con el C&Atilde;&sup3;digo USB proveedor:producto
+10CE:EB70.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">Adem&Atilde;&iexcl;s
+de los botones, el colgante proporciona una pantalla LCD
+para el multiplicador de tama&Atilde;&plusmn;o de pasos (de
+un conjunto de valores enteros disponibles) ,
+posici&Atilde;&sup3;n (absoluta y relativa, etiquetada MC y
+WC respectivamente), avance (ajuste de porcentaje y valor en
+unidades por minuto) y velocidad del husillo (ajuste de
+porcentaje y valor en revoluciones por minuto (RPM)). La
+pantalla est&Atilde;&iexcl; gestionada por un interruptor
+rotativo que selecciona uno de los cuatro ejes para el
+posicionamiento de la rueda, ajuste de
+alimentaci&Atilde;&sup3;n, ajuste del husillo o OFF.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La pantalla del
+colgante, su interruptor selector giratorio y los nombres de
+los pines del componente usan designadores x, y, z, a.
+Mientras este arreglo presume una m&Atilde;&iexcl;quina
+configurada como XYZA, los pines se pueden asignar de forma
+independiente como se requiera en una
+configuraci&Atilde;&sup3;n HAL.</p>
+
+<h2>UDEV
+<a name="UDEV"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El ejecutable
+xhc-hb04 necesita permiso para leer el Dispositivo colgante
+USB. Las instalaciones de paquetes Debian (debs) manejan
+esto autom&Atilde;&iexcl;ticamente pero las compilaciones
+Run-In-Place (RIP) pueden necesitar un archivo de reglas
+udev. Este archivo debe crearse (usando sudo y un editor de
+texto) como:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>/etc/udev/rules.d/99-xhc-hb04.rules</b>
+con una sola l&Atilde;nea:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">ATTR{idProduct}==&quot;eb70&quot;,
+ATTR{idVendor}==&quot;10ce&quot;, MODE=&quot;0666&quot;,
+OWNER=&quot;root&quot;, GROUP=&quot;plugdev&quot;</p>
+
+<h2>Uso Independiente
+<a name="Uso Independiente"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El programa
+xhc-hb04 se puede ejecutar desde la l&Atilde;nea de comandos
+sin LinuxCNC para probar un colgante en modo de
+simulaci&Atilde;&sup3;n. Este modo independiente se utiliza
+para identificar los c&Atilde;&sup3;digos de
+bot&Atilde;&sup3;n producidos para cada bot&Atilde;&sup3;n y
+para verificar el conteo adecuado de la rueda de
+selecci&Atilde;&sup3;n. Los c&Atilde;&sup3;digos de
+bot&Atilde;&sup3;n identificados pueden ser usados para
+crear un <b>button-cfg-file</b>. Cuando un
+<b>button-cfg-file</b> existe, la operaci&Atilde;&sup3;n del
+dispositivo se puede verificar utilizando la
+opci&Atilde;&sup3;n -I para especificar el archivo.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Uso:</p>
+
+<p style="margin-left:11%; margin-top: 1em">$ xhc-hb04
+[opciones]</p>
+
+<h2>Opciones
+<a name="Opciones"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-h</b>
+enumera las opciones de l&Atilde;nea de comando y sale
+<b><br>
+-I button-cfg-file</b> (vea a continuaci&Atilde;&sup3;n el
+formato del archivo) <b><br>
+-H</b> se ejecuta en modo HAL en tiempo real (el modo de
+simulaci&Atilde;&sup3;n es el <br>
+predeterminado) <b><br>
+-x</b> espera la detecci&Atilde;&sup3;n del colgante antes
+de crear pines HAL. <b><br>
+-s n</b> n es una de las siguientes secuencias de
+tama&Atilde;&plusmn;o de pasos</p>
+
+<p style="margin-left:11%; margin-top: 1em">1:
+1,10,100,1000 (predeterminado) <br>
+2: 1,5,10,20 <br>
+3: 1,10,100 <br>
+4: 1,5,10,20,50,100 <br>
+5: 1,10,50,100,1000 <br>
+El tama&Atilde;&plusmn;o de pasos seleccionado siempre se
+multiplica por 0.001</p>
+
+<h2>Formato de archivo button-cfg-file
+<a name="Formato de archivo button-cfg-file"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los archivos de
+configuraci&Atilde;&sup3;n est&Atilde;&iexcl;ndar se
+proporcionan en la distribuci&Atilde;&sup3;n para
+configuraciones de botones conocidas: <br>
+/usr/share/linuxcnc/hallib/xhc-hb04-layout1.cfg <br>
+/usr/share/linuxcnc/hallib/xhc-hb04-layout2.cfg <br>
+o para una compilaci&Atilde;&sup3;n RIP: <br>
+rip_base_dir/lib/hallib/xhc-hb04-layout1.cfg <br>
+rip_base_dir/lib/hallib/xhc-hb04-layout2.cfg</p>
+
+<p style="margin-left:11%; margin-top: 1em">layout1
+describe el colgante de 16 botones, layout2 describe el
+colgante de 18 botones m&Atilde;&iexcl;s
+com&Atilde;&ordm;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El archivo de
+configuraci&Atilde;&sup3;n de botones sigue el mismo formato
+que los archivos ini pero debe usar un sufijo de archivo
+.cfg.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Formato de
+archivo: <br>
+[XHC-HB04] <br>
+BUTTON=X1:button-thename1 <br>
+BUTTON=X2:button-thename2 <br>
+BUTTON=X3:button-thename3 <br>
+etc.</p>
+
+<p style="margin-left:11%; margin-top: 1em">XN es el
+c&Atilde;&sup3;digo reportado para presionar un
+bot&Atilde;&sup3;n y button-thenameN es el nombre que se
+asignar&Atilde;&iexcl; al pin creado para el
+bot&Atilde;&sup3;n.</p>
+
+<h2>Uso Hal
+<a name="Uso Hal"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Use la
+opci&Atilde;&sup3;n -H para especificar el modo HAL y otras
+opciones seg&Atilde;&ordm;n sea necesario:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><i>loadusr
+-W</i> <b>xhc-hb04</b> <i>-H [Options]</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Ejemplo:
+<i>loadusr -W</i> <b>xhc-hb04</b> <i>-H -I path_to_cfg_file
+-s 2</i></p>
+
+<h2>Pines de entrada (control)
+<a name="Pines de entrada (control)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(bit in)
+<i>xhc-hb04.stepsize-up</i> Un pulso 1 en este pin cambia
+el</p>
+
+<p style="margin-left:22%;">paso al siguiente paso
+m&Atilde;&iexcl;s alto en la secuencia de pasos especificada
+en el comando xhc-hb04 (loadusr).</p>
+
+<p style="margin-left:11%;">(bit in)
+<i>xhc-hb04.stepsize-down</i> Un pulso 1 en este pin cambia
+el</p>
+
+<p style="margin-left:22%;">paso al siguiente paso inferior
+en la secuencia de pasos especificada en el comando xhc-hb04
+(loadusr).</p>
+
+<h2>Pines de entrada (a la pantalla LCD colgante)
+<a name="Pines de entrada (a la pantalla LCD colgante)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(float)
+<i>xhc-hb04.[xyza].pos-absolute</i> Indicaci&Atilde;&sup3;n
+de posici&Atilde;&sup3;n absoluta.</p>
+
+<p style="margin-left:22%;">(normalmente se conecta a:
+halui.axis.N.pos-feedback). La pantalla LCD para
+pos-absolute es un formato fijo con un signo, 4
+d&Atilde;gitos num&Atilde;&copy;ricos y 3 d&Atilde;gitos de
+fracci&Atilde;&sup3;n (+ XXXX.XXX), requieren: -9999.999
+&lt;= valor &lt;= 9999.999.</p>
+
+<p style="margin-left:11%;">(float)
+<i>xhc-hb04.[xyza].pos-relative</i>
+Visualizaci&Atilde;&sup3;n de posici&Atilde;&sup3;n <br>
+relativa.</p>
+
+<p style="margin-left:22%;">(normalmente se conecta a:
+halui.axis.N.pos-relative). La pantalla LCD para
+pos-relative es un formato fijo con un signo, 4
+d&Atilde;gitos num&Atilde;&copy;ricos y 3 d&Atilde;gitos de
+fracci&Atilde;&sup3;n (+ XXXX.XXX), requieren:-9999.999
+&lt;= valor &lt;= 9999.999.</p>
+
+<p style="margin-left:11%;">(float)
+<i>xhc-hb04.feed-override</i> Feed-override value.</p>
+
+<p style="margin-left:22%;">El valor float se convierte en
+un entero de 16 bits y se multiplica por 100 para mostrarse
+como porcentaje, requiere: 0 &lt;= pinvalue &lt;= 655
+(normalmente se conecta a: halui.feed-override.value)</p>
+
+<p style="margin-left:11%;">(float)
+<i>xhc-hb04.feed-value</i> Valor de
+alimentaci&Atilde;&sup3;n actual <br>
+(unidades/seg).</p>
+
+<p style="margin-left:22%;">El valor float se convierte en
+un entero de 16 bits y se multiplica por 60 para mostrarse
+como unidades por minuto, requiere: 0 &lt;= pinvalue &lt;=
+1092 (65520 unidades por minuto) (normalmente se conecta a:
+motion.current-vel)</p>
+
+<p style="margin-left:11%;">(float)
+<i>xhc-hb04.spindle-override</i> Spindle-override value.</p>
+
+<p style="margin-left:22%;">El valor float se convierte en
+un entero de 16 bits y se multiplica por 100 para que se
+muestre como porcentaje, requiere: 0 &lt;= pinvalue &lt;=
+655) (normalmente se conecta a:
+halui.spindle-override.value)</p>
+
+<p style="margin-left:11%;">(float)
+<i>xhc-hb04.spindle-rps</i> Velocidad del cabezal en
+rps.</p>
+
+<p style="margin-left:22%;">(revoluciones por segundo). El
+valor float se convierte en un entero de 16 bits. y
+multiplicado por 60 para mostrarse como RPM, requiere: 0
+&lt;= pinvalue &lt;= 1092 (65520 RPM) (normalmente se
+conecta a: spindle.N.speed-out-rps-abs)</p>
+
+<p style="margin-left:11%;">(bit in)
+<i>xhc-hb04.inch-icon</i> Use el icono en pulgadas (el valor
+<br>
+predeterminado es mm)</p>
+
+<h2>Pines de salida (estado)
+<a name="Pines de salida (estado)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(bit out)
+<i>xhc-hb04.sleeping</i> Verdadero cuando el driver recibe
+un <br>
+mensaje de</p>
+
+<p style="margin-left:22%;">colgante inactivo
+(durmiendo).</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.jog.enable-off</i> Verdadero cuando el
+interruptor <br>
+rotativo selector</p>
+
+<p style="margin-left:22%;">del colgante est&Atilde;&iexcl;
+en la posici&Atilde;&sup3;n de OFF o cuando el colgante
+est&Atilde;&iexcl; durmiendo.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.enable-[xyza]</i> Verdadero cuando el
+interruptor <br>
+selector rotativo</p>
+
+<p style="margin-left:22%;">del colgante est&Atilde;&iexcl;
+en la posici&Atilde;&sup3;n [xyza] y no duerme.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.enable-spindle-override</i> Verdadero cuando el
+<br>
+interruptor rotativo selector</p>
+
+<p style="margin-left:22%;">del colgante est&Atilde;&iexcl;
+en la posici&Atilde;&sup3;n de husillo y no
+est&Atilde;&iexcl; dormido. (normalmente se conecta a:
+halui.spindle-override-count-enable)</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.enable-feed-override</i> Verdadero cuando el
+interruptor <br>
+rotativo selector</p>
+
+<p style="margin-left:22%;">del colgante est&Atilde;&iexcl;
+en la posici&Atilde;&sup3;n de alimentaci&Atilde;&sup3;n y
+no duerme. (normalmente se conecta a:
+halui.feed-override-count-enable)</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.connected</i> Verdadero cuando la
+conexi&Atilde;&sup3;n al colgante</p>
+
+<p style="margin-left:22%;">se establece a
+trav&Atilde;&copy;s de la interfaz USB.</p>
+
+<p style="margin-left:11%;">(bit out)
+<i>xhc-hb04.require_pendant</i> Verdadero si el controlador
+comenz&Atilde;&sup3; <br>
+con</p>
+
+<p style="margin-left:22%;">la opci&Atilde;&sup3;n -x.</p>
+
+<p style="margin-left:11%;">(salida s32)
+<i>xhc-hb04.stepsize</i> Tama&Atilde;&plusmn;o de paso
+actual en la secuencia <br>
+de pasos</p>
+
+<p style="margin-left:22%;">seg&Atilde;&ordm;n lo
+controlado por los pines stepsize-up y/o stepsize-down.</p>
+
+<h2>Pines de salida (para jog usando axis.N.jog-counts)
+<a name="Pines de salida (para jog usando axis.N.jog-counts)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">(salida s32)
+<i>xhc-hb04.jog.counts</i> N&Atilde;&ordm;mero de recuentos
+de la rueda desde</p>
+
+<p style="margin-left:22%;">start-up (50 cuentas por
+revoluci&Atilde;&sup3;n de la rueda). (normalmente se
+conecta a axis.N.jog-counts (el filtrado de paso bajo puede
+ser &Atilde;&ordm;til))</p>
+
+<p style="margin-left:11%;">(salida s32)
+<i>xhc-hb04.jog.counts-neg</i> El valor de</p>
+
+<p style="margin-left:22%;">xhc-hb04.jog.counts
+multiplicado por -1.</p>
+
+<p style="margin-left:11%;">(float)
+<i>xhc-hb04.jog.scale</i> El valor es el
+tama&Atilde;&plusmn;o de paso actual</p>
+
+<p style="margin-left:22%;">multiplicado por 0.001.
+(normalmente se conecta a axis.N.jog-scale)</p>
+
+<h2>Experimental: Pines para jog halui plus/minus
+<a name="Experimental: Pines para jog halui plus/minus"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estos pines
+proporcionan cierto soporte para no-trivkins, jog en modo
+mundial. <br>
+(float) <i>xhc-hb04.jog.max-velocity</i>
+Con&Atilde;&copy;ctese a halui.max-velocity.value <br>
+(float) <i>xhc-hb04.jog.velocity</i> Con&Atilde;&copy;ctese
+a halui.jog-speed <br>
+(bit out) <i>xhc-hb04.jog.plus-[xyza]</i>
+Con&Atilde;&copy;ctese a halui.jog.N.plus <br>
+(bit out) <i>xhc-hb04.jog.minus-[xyza]</i>
+Con&Atilde;&copy;ctese a halui.jog.N.minus <br>
+(float) <i>xhc-hb04.jog.increment</i> Pin de
+depuraci&Atilde;&sup3;n -- abs(delta_pos)</p>
+
+<h2>Pines de salida de bot&Atilde;&sup3;n (para layout2 de 18 botones)
+<a name="Pines de salida de bot&Atilde;&sup3;n (para layout2 de 18 botones)"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los pines del
+tipo bit de salida son TRUE cuando se presiona el
+bot&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em">FILA 1 <br>
+(bit out) xhc-hb04.button-reset <br>
+(bit out) xhc-hb04.button-stop</p>
+
+<p style="margin-left:11%; margin-top: 1em">FILA 2 <br>
+(bit out) xhc-hb04.button-goto-zero <br>
+(bit out) xhc-hb04.button-rewind <br>
+(bit out) xhc-hb04.button-start-pause <br>
+(bit out) xhc-hb04.button-probe-z</p>
+
+<p style="margin-left:11%; margin-top: 1em">FILA 3 <br>
+(bit out) xhc-hb04.button-spindle <br>
+(bit out) xhc-hb04.button-half <br>
+(bit out) xhc-hb04.button-zero <br>
+(bit out) xhc-hb04.button-safe-z</p>
+
+<p style="margin-left:11%; margin-top: 1em">FILA 4 <br>
+(bit out) xhc-hb04.button-home <br>
+(bit out) xhc-hb04.button-macro-1 <br>
+(bit out) xhc-hb04.button-macro-2 <br>
+(bit out) xhc-hb04.button-macro-3</p>
+
+<p style="margin-left:11%; margin-top: 1em">FILA 5 <br>
+(bit out) xhc-hb04.button-step <br>
+(bit out) xhc-hb04.button-mode <br>
+(bit out) xhc-hb04.button-macro-6 <br>
+(bit out) xhc-hb04.button-macro-7</p>
+
+<h2>Pines de botones sintetizados
+<a name="Pines de botones sintetizados"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se sintetizan
+botones adicionales para los botones denominados
+<b>zero</b>, <b>goto-zero</b> y <b>half</b>. Estos botones
+sintetizados est&Atilde;&iexcl;n activos cuando se presiona
+el bot&Atilde;&sup3;n Y el selector-interruptor se establece
+en el eje correspondiente [xyza].</p>
+
+<p style="margin-left:11%; margin-top: 1em">(bit out)
+xhc-hb04.button-zero-[xyza] <br>
+(bit out) xhc-hb04.button-goto-zero-[xyza] <br>
+(bit out) xhc-hb04.button-half-[xyza]</p>
+
+<h2>DEPURACI&Atilde;N
+<a name="DEPURACI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Para depurar la
+actividad USB, use la variable de entorno LIBUSB_DEBUG: <br>
+export LIBUSB_DEBUG=[2 | 3 | 4]; xhc-hb04 [options]</p>
+
+<p style="margin-left:22%;">2:warning, 3:info, 4:debug</p>
+
+<h2>Configuraciones Sim
+<a name="Configuraciones Sim"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La
+distribuci&Atilde;&sup3;n incluye varias configuraciones de
+simulaci&Atilde;&sup3;n en el directorio: <br>
+
+/usr/share/doc/linuxcnc/examples/sample-configs/sim/axis/xhc-hb04/
+<br>
+o para una compilaci&Atilde;&sup3;n RIP: <br>
+rip_base_dir/configs/sim/axis/xhc-hb04/</p>
+
+<p style="margin-left:11%; margin-top: 1em">Estas
+configuraciones utilizan un script proporcionado por la
+distribuci&Atilde;&sup3;n (xhc-hb04.tcl) configurar el
+colgante y hacer las conexiones HAL necesarias de acuerdo a
+una serie de configuraciones de archivo ini. El script usa
+un Componente HAL adicional (xhc_hb04_util) para
+proporcionar una funcionalidad com&Atilde;&ordm;n e incluye
+soporte para un m&Atilde;&copy;todo est&Atilde;&iexcl;ndar
+para el bot&Atilde;&sup3;n de pausa/inicio.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las
+configuraciones disponibles incluyen: <br>
+1) especifique el bot&Atilde;&sup3;n-cfg-file para layout1 o
+layout2 <br>
+2) seleccionar ejes (hasta 4 ejes del conjunto de x y z a b
+c u v w) <br>
+3) implementar coeficientes de filtrado por eje <br>
+4) implementar aceleraci&Atilde;&sup3;n por eje para jog mpg
+<br>
+5) implementar configuraciones de escala por eje <br>
+6) seleccionar modos de desplazamiento normal o basado en
+velocidad <br>
+7) seleccionar secuencia de pasos <br>
+8) opci&Atilde;&sup3;n para inicializar pin para icono de
+pantalla en pulgadas o mm <br>
+9) opci&Atilde;&sup3;n para requerir colgante en el
+inicio</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las
+configuraciones sim ilustran conexiones de botones que: <br>
+1) conecta el bot&Atilde;&sup3;n stepsize-up al pin de
+entrada de paso. <br>
+2) conecta los botones a los pines halui.* <br>
+3) conecta los botones a pines motion.*</p>
+
+<p style="margin-left:11%; margin-top: 1em">Se incluye otro
+script para monitorear el colgante e informar la
+p&Atilde;&copy;rdida de conectividad USB. Ver los archivos
+README y .txt en el anterior directorio de uso.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Nota:</b>
+Las configuraciones sim utilizan la interfaz
+gr&Atilde;&iexcl;fica de usuario Axis pero los scripts estan
+disponible con cualquier configuraci&Atilde;&sup3;n HAL o
+gui. Los mismos guiones pueden utilizarse para adaptar el
+xhc-hb04 a las configuraciones existentes siempre que los
+pines halui, motion y axis.N no se soliciten en otro lugar.
+Las instrucciones se incluyen en el archivo README en el
+directorio mencionado anteriormente.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Use halcmd para
+mostrar los pines y se&Atilde;&plusmn;ales utilizados por
+xhc-hb04.tcl gui&Atilde;&sup3;n: <br>
+halcmd show pin xhc-hb04 (mostrar todos los pines
+xhc-hb04)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<p>halcmd show pin pendant_util</p><td width="14%"></td>
+<td width="-6%"></td>
+<td width="38%"></td>
+<td width="8%"></td>
+<td width="8%"></td>
+<td width="38%">
+
+
+<p>(mostrar todos los pines pendant_util) <br>
+halcmd show sig pendant</p></td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="-6%"></td>
+<td width="38%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="38%">
+
+
+<p>(muestra todas las se&Atilde;&plusmn;ales)</p></td></tr>
+</table>
+
+<h2>Autor
+<a name="Autor"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Frederick Rible
+(frible@teaser.fr)</p>
+<hr>
+</body>
+</html>

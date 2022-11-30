@@ -1,0 +1,341 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:31 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SIM_AXIS_HARDWARE</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SIM_AXIS_HARDWARE</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">sim_axis_hardware
+- A component to simulate home and limit switches</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="87%">
+
+
+<p style="margin-top: 1em"><b>loadrt sim_axis_hardware
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="2%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+creates simulated home and limit switches based on the
+current position. <br>
+It currently can supply simulation for X,Y,Z,U,V and A
+axes.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-axis-hardware.</b><i>N</i><b>.update</b>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-axis-hardware.</b><i>N</i><b>.Xcurrent-pos</b>
+float in</p>
+
+<p style="margin-left:22%;">The current position on the
+axis - eg connect to joint.0.motor-pos-fb</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Ycurrent-pos</b>
+float in <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zcurrent-pos</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Acurrent-pos</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ucurrent-pos</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vcurrent-pos</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xhomesw-pos</b> float in
+(default: <i>1</i>)</p>
+
+<p style="margin-left:22%;">The position of the home
+switch</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Yhomesw-pos</b>
+float in (default: <i>1</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zhomesw-pos</b> float in
+(default: <i>1</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ahomesw-pos</b> float in
+(default: <i>1</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uhomesw-pos</b> float in
+(default: <i>1</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vhomesw-pos</b> float in
+(default: <i>1</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xmaxsw-upper</b> float
+in</p>
+
+<p style="margin-left:22%;">The upper range of the maximum
+limit switch, above this is false.</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Ymaxsw-upper</b>
+float in <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zmaxsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Amaxsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Umaxsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vmaxsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xmaxsw-lower</b> float
+in</p>
+
+<p style="margin-left:22%;">The lower range of the maximum
+limit switch, below this is false.</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Ymaxsw-lower</b>
+float in <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zmaxsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Amaxsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Umaxsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vmaxsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xminsw-upper</b> float
+in</p>
+
+<p style="margin-left:22%;">The upper range of the minimum
+limit switch, above this is false.</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Yminsw-upper</b>
+float in <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zminsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Aminsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uminsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vminsw-upper</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xminsw-lower</b> float
+in</p>
+
+<p style="margin-left:22%;">The lower range of the minimum
+limit switch, below this is false.</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Yminsw-lower</b>
+float in <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zminsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Aminsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uminsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vminsw-lower</b> float in
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xhomesw-hyst</b> float in
+(default: <i>.02</i>)</p>
+
+<p style="margin-left:22%;">range that home switch will be
+true +- half this to the home position</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Yhomesw-hyst</b>
+float in (default: <i>.02</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zhomesw-hyst</b> float in
+(default: <i>.02</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ahomesw-hyst</b> float in
+(default: <i>.02</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uhomesw-hyst</b> float in
+(default: <i>.02</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vhomesw-hyst</b> float in
+(default: <i>.02</i>) <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xhomesw-out</b> bit
+out</p>
+
+<p style="margin-left:22%;">Home switch for the X axis</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Yhomesw-out</b>
+bit out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zhomesw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ahomesw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uhomesw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vhomesw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.homesw-all</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xmaxsw-out</b> bit out</p>
+
+<p style="margin-left:22%;">Max limit switch</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Xminsw-out</b>
+bit out</p>
+
+<p style="margin-left:22%;">min limit switch</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Xbothsw-out</b>
+bit out</p>
+
+<p style="margin-left:22%;">True for both max and min limit
+switch</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Ymaxsw-out</b>
+bit out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Yminsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ybothsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zmaxsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zminsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zbothsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Amaxsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Aminsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Abothsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Umaxsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uminsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ubothsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vmaxsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vminsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vbothsw-out</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.limitsw-all</b> bit out
+<b><br>
+sim-axis-hardware.</b><i>N</i><b>.limitsw-homesw-all</b> bit
+out</p>
+
+<p style="margin-left:22%;">True for all limits and all
+home.</p>
+
+
+<p style="margin-left:11%;"><b>sim-axis-hardware.</b><i>N</i><b>.Xmaxsw-homesw-out</b>
+bit out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xminsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Xbothsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ymaxsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Yminsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ybothsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zmaxsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zminsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Zbothsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Amaxsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Aminsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Abothsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Umaxsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Uminsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Ubothsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vmaxsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vminsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.Vbothsw-homesw-out</b> bit
+out <b><br>
+sim-axis-hardware.</b><i>N</i><b>.limit-offset</b> float in
+(default: <i>.01</i>)</p>
+
+<p style="margin-left:22%;">how much the limit switches are
+offset from inputed position. added to max, subracted from
+min</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Chris
+Morley</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

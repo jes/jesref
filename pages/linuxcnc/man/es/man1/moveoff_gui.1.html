@@ -1,0 +1,288 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>moveoff_gui</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">moveoff_gui</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#OTRAS OPCIONES">OTRAS OPCIONES</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+<a href="#USO">USO</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">moveoff_gui -
+GUI para el componente moveoff</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>moveoff_gui
+[--help | -- -h | -?]</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>moveoff_gui
+[opciones</b>]</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Moveoff_gui es
+una interfaz grafica de usuario (GUI) para controlar un
+componente moveoff de Hal para implementar offsets. Ver la
+pagina de manual (man moveoff) para <b>IMPORTANTES
+Limitaciones y Advertencias</b> .</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las
+configuraciones compatibles deben usar un modulo de
+cinematica conocido como
+<b>KINEMATICS_TYPE=KINEMATICS_IDENTITY</b> . Los modulos
+actualmente soportados son: <b><br>
+trivkins</b></p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>--help | -?
+|-- -h</b></p>
+
+<p style="margin-left:22%;">Mostrar opciones y salir</p>
+
+<p style="margin-left:11%;"><b>-mode onpause</b> |
+always</p>
+
+<p style="margin-left:22%;">Onpause: gui emergente para
+controlar los offsets cuando el programa esta en pausa <br>
+always: mostrar siempre la gui para controlar los offsets.
+<br>
+Predeterminado: <b>onpause</b></p>
+
+<p style="margin-left:11%;"><b>-axes</b> axisnames</p>
+
+<p style="margin-left:22%;">Letras del conjunto {x y z a b
+c u v w} <br>
+Ejemplos:-axes x,-axes xyz,-axes xz (sin espacios) <br>
+Predeterminado: <b>xyz</b></p>
+
+<p style="margin-left:11%;"><b>-inc</b> incrementvalue</p>
+
+<p style="margin-left:22%;">Especifica un valor de
+incremento por -inc (hasta 4) <br>
+Valores predeterminados: <b>0.001 0.01 0.10 1.0</b></p>
+
+<p style="margin-left:11%;"><b>-size</b> integer</p>
+
+<p style="margin-left:22%;">El tama&ntilde;o total de la
+interfaz grafica de usuario se basa en el tama&ntilde;o de
+la fuente, normalmente entre 8 y 20 <br>
+Predeterminado: <b>14</b></p>
+
+<p style="margin-left:11%;"><b>-loc</b> center | +x+y</p>
+
+<p style="margin-left:22%;">Ubicacion inicial en pantalla
+<br>
+Ejemplos:-loc center, -loc +20+100 <br>
+Predeterminado: <b>center</b></p>
+
+<p style="margin-left:11%;"><b>-autoresume</b></p>
+
+<p style="margin-left:22%;">Reanudar el programa cuando se
+desactiva move-enable <br>
+Predeterminado: no utilizado</p>
+
+<p style="margin-left:11%;"><b>-delay</b> delay_secs</p>
+
+<p style="margin-left:22%;">Retraso para autoresume (dar
+tiempo para restaurar la velocidad del husillo, etc.)
+Predeterminado: <b>5</b></p>
+
+<h2>OTRAS OPCIONES
+<a name="OTRAS OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Estas opciones
+estan disponibles para casos especiales: <b><br>
+-noentry</b></p>
+
+<p style="margin-left:22%;">Desactiva la creacion de
+widgets de entrada. <br>
+Predeterminado: no utilizado</p>
+
+<p style="margin-left:11%;"><b>-no_resume_inhibit</b></p>
+
+<p style="margin-left:22%;">Deshabilitar el uso de
+reanudar-inhibir para controlar gui <br>
+Predeterminado: no utilizado</p>
+
+
+<p style="margin-left:11%;"><b>-no_pause_requirement</b></p>
+
+<p style="margin-left:22%;">Desactivar la comprobacion de
+halui.program.is-paused <br>
+Predeterminado: no utilizado</p>
+
+
+<p style="margin-left:11%;"><b>-no_cancel_autoresume</b></p>
+
+<p style="margin-left:22%;">util para retraer
+compensaciones con controles externos simples <br>
+Predeterminado: no utilizado</p>
+
+<p style="margin-left:11%;"><b>-no_display</b></p>
+
+<p style="margin-left:22%;">Se usa cuando los controles
+externos y las pantallas externas estan en uso <br>
+Predeterminado: no utilizado</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">LinuxCNC debe
+estar ejecutandose.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Halui debe
+estar cargado; configuracion tipica de archivo ini <b><br>
+[HAL]HALUI = halui</b> .</p>
+
+<p style="margin-left:11%; margin-top: 1em">El componente
+moveoff debe cargarse con el nombre &rsquo;mv&rsquo;:
+<b><br>
+loadrt moveoff names=mv personality=number_of_axes</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Si el pin
+mv.motion-enable <b>no</b> esta conectado cuando se inicia
+moveoff_gui, <b>controls se proporcionara controles</b> para
+habilitar las compensaciones y establecer valores de
+desplazamiento. Si el pin <b>esta</b> conectado, se muestra
+<b>solo una pantalla</b> de compensaciones y el control debe
+hacerse por conexiones HAL <b>externas</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si un pin
+llamado *.resume-inhibit existe y no esta conectado, lo hara
+Se establece mientras se aplican las compensaciones. Este
+pin puede ser proporcionado por el controlando linuxcnc gui
+en uso. El uso del pin puede estar deshabilitado. con la
+opcion-no_resume_inhibit.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La
+opcion-autoresume usa halui.program.resume para reanudar
+automaticamente la ejecucion del programa cuando el pin de
+move-enable esta desactivado y todas las compensaciones se
+eliminan. El pin de reanudacion no esta activado hasta que
+transcurra un intervalo adicional (-delay delay_secs). El
+intervalo de demora puede ser util para reiniciar equipos
+relacionados (un motor de husillo, por ejemplo). Mientras se
+sincroniza el retraso, se muestra una ventana emergente que
+ofrece cancelar la reanudacion automatica del programa.</p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El archivo ini
+en el directorio de configuracion debe proporcionar HALFILEs
+para cargar el componente de movimiento, conectar sus pines
+y agregar sus funciones de lectura y escritura en el orden
+correcto. Estos pasos pueden ser hecho en tiempo de
+ejecucion utilizando un archivo ini de configuracion
+existente y especificando una biblioteca del sistema HALFILE
+<b>hookup_moveoff.tcl</b> como se ilustra:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>[HAL]</b>
+<br>
+HALUI = halui <br>
+HALFILE = user_halfile_1 <br>
+etc ... <br>
+HALFILE = user_halfile_n <b><br>
+HALFILE = LIB:hookup_moveoff.tcl</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">El halfile
+<b>hookup_moveoff.tcl</b> usara la configuracion del archivo
+ini para los pines de control del componente moveoff:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[OFFSET]</b>
+<br>
+EPSILON = <br>
+WAYPOINT_SAMPLE_SECS = <br>
+WAYPOINT_THRESHOLD = <br>
+BACKTRACK_ENABLE =</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hookup_moveoff.tcl</b>
+utilizara la configuracion del archivo ini para los limites
+por eje de moveoff:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[AXIS_m]</b>
+<br>
+OFFSET_MAX_VELOCITY = <br>
+OFFSET_MAX_ACCELERATION = <br>
+OFFSET_MAX_LIMIT = <br>
+OFFSET_MIN_LIMIT =</p>
+
+<p style="margin-left:11%; margin-top: 1em">El programa
+moveoff_gui debe especificarse en las APPLICATIONS del
+archivo ini, por ejemplo:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[APLICACIONES]</b>
+<br>
+DELAY = delay_in_secs_to_allow_hal_connections <b><br>
+APP = moveoff_gui-option1-option2 ...</b></p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Las
+configuraciones de simulacion que demuestran moveoff_gui y
+el componente moveoff se encuentran en:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">configs/sim/axis/moveoff
+(axis-ui) <br>
+configs/sim/touchy/ngcgui (touchy-ui)</p>
+
+<p style="margin-left:11%; margin-top: 1em">Pagina del
+manual para el componente moveoff:<b>moveoff</b>(9)</p>
+<hr>
+</body>
+</html>

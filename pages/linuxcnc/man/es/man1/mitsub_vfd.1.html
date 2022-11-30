@@ -1,0 +1,263 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:18 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>mitsub_vfd</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">mitsub_vfd</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#HARDWARE SETUP">HARDWARE SETUP</a><br>
+<a href="#This driver assumes certain other VFD settings:">This driver assumes certain other VFD settings:</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#SAMPLE HAL">SAMPLE HAL</a><br>
+<a href="#ISSUES">ISSUES</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">mitsub_vfd -
+HAL userspace component for Mitsubishi A500 F500 E500 A500
+D700 E700 F700-series VFDs (others may work)</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+mitsub_vfd [--baud 4800] [--port /dev/ttyUSB0]
+name1=number1[,name2=numer2...] <br>
+name1</b> is user selectable (usually a description of the
+controlled device). <b><br>
+number1</b> is the slave number that was set on the VFD.
+must be two digits (Parameter 117) <b><br>
+name=number</b> can be repeated for multiple VFD&rsquo;s
+connected together <b><br>
+--baud</b> is optional as it defaults to 9600 <br>
+all networked vfds must be set to the same baudrate <b><br>
+--port</b> is optional as it defaults to ttyS0</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The mitsub_vfd
+component interfaces a Mitsubishi VFD to LinuxCNC. The VFD
+is connected via RS-485 serial to the computer&rsquo;s USB
+or serial port using a RS-232/RS-485 converter</p>
+
+<h2>HARDWARE SETUP
+<a name="HARDWARE SETUP"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">reference
+manual &rsquo;communication option reference manual&rsquo;
+and A500 technical manual for 500 series. Fr-A700 F700 E700
+D700 technical manual for the 700 series <br>
+The inverter must be set manually for communication <br>
+( you may have to set PR 77 to 1 to unlock PR modifcation )
+<br>
+You must power cycle the inverter for some of these. (eg 79)
+<b><br>
+VFD INTERNAL PARAMETERS:</b></p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+79</b> - 1 or 0</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+117</b> station number - 1 <br>
+(can be optionally set 0 - 31) if component is also set</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+118</b> communication speed 96 <br>
+(can be optionally set 48,96,192 if component is also
+set)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+119</b> stop bit/data length - 0 <br>
+(8 bits, two stop - don&rsquo;t change)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+120</b> parity - 0 <br>
+(no parity - don&rsquo;t change)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+121</b> COM tries - 10 <br>
+(if maximuim 10 COM errors then inverter faults- can
+change)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+122</b> COM check time interval 9999 <br>
+(never check - if communication is lost inverter will not
+know (can change)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+123</b> wait time - 9999 <br>
+no wait time is added to the serial data frame (don&rsquo;t
+change)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>PARAMETER
+124</b> CR selection - 0 <br>
+don&rsquo;t change</p>
+
+<h2>This driver assumes certain other VFD settings:
+<a name="This driver assumes certain other VFD settings:"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">-That the motor
+frequency status is set to show herts. <br>
+-That the status bit 3 is up to speed <br>
+-That the status bit 7 is alarm</p>
+
+<p style="margin-left:11%; margin-top: 1em">some models (eg
+E500) cannot monitor status. <br>
+You must set set the monitor pin to false. <br>
+In this case pins such as up-to-speed, amps, alarm and
+status bits are not useful.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[VFD
+NAME].fwd</b> (bit, in):: <br>
+forward/reverse pin <b><br>
+[VFD NAME].run</b> (bit, in):: <br>
+run/stop pin <b><br>
+[VFD NAME].debug</b> (bit, in):: <br>
+set debug mode pin <br>
+This will print many messages to the terminal <b><br>
+[VFD NAME].monitor</b> (bit, in):: <br>
+set monitor mode pin <br>
+If false request-status command will not be sent to vfd.
+<br>
+Status, amps, power, motor-feedback, and alarm would then
+not <br>
+be useful. <b><br>
+[VFD NAME].estop</b> (bit, in):: <br>
+set estop mode pin <br>
+This will stop the VFD. <br>
+Restarting requires the run pin to cycle.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>[VFD
+NAME].fwd</b> (bit, out):: <br>
+up-to-speed status pin <br>
+Motor is at requested speed within VFD&rsquo;s settings
+tolerance. <b><br>
+[VFD NAME].alarm</b> (bit, out):: <br>
+alarm status pin</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>[VFD
+NAME].motor-cmd</b> (float, in):: <br>
+The requested motor speed, is Hertz</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>[VFD
+NAME].motor-fb</b> (float, out):: <br>
+The motor feedback speed (from vfd) in hertz <b><br>
+[VFD NAME].motor-amps</b> (float, out):: <br>
+The motor current, in amps <b><br>
+[VFD NAME].motor-power</b> (float, out):: <br>
+The motor power</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>[VFD
+NAME].scale-cmd</b> (float, in):: <br>
+Motor command&rsquo;s scale setting defaults to 1 <b><br>
+[VFD NAME].scale-cmd</b> (float, in):: <br>
+Motor command&rsquo;s scale setting defaults to 1 <b><br>
+[VFD NAME].scale-cmd</b> (float, in):: <br>
+Motor command&rsquo;s scale setting defaults to 1</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>[VFD
+NAME].stat-bit-0</b> (bit, out):: <br>
+raw status bit <b><br>
+[VFD NAME].stat-bit-1</b> (bit, out):: <br>
+raw status bit <b><br>
+[VFD NAME].stat-bit-2</b> (bit, out):: <br>
+raw status bit <b><br>
+[VFD NAME].stat-bit-3</b> (bit, out):: <br>
+raw status bit <br>
+set the VFD so this is motor-at-speed status <b><br>
+[VFD NAME].stat-bit-4</b> (bit, out):: <br>
+raw status bit <b><br>
+[VFD NAME].stat-bit-5</b> (bit, out):: <br>
+raw status bit <b><br>
+[VFD NAME].stat-bit-6</b> (bit, out):: <br>
+raw status bit <b><br>
+[VFD NAME].stat-bit-7</b> (bit, out):: <br>
+raw status bit <br>
+Set the VFD so this in the alarm bit</p>
+
+<h2>SAMPLE HAL
+<a name="SAMPLE HAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">loadusr -Wn
+coolant mitsub_vfd --port /dev/ttyUSB0 spindle=02 coolant=01
+<br>
+# **************** Spindle VFD setup slave 2
+**************** <br>
+net spindle-vel-cmd spindle.motor-cmd <br>
+net spindle-cw spindle.fwd <br>
+net spindle-on spindle.run <br>
+net spindle-at-speed spindle.up-to-speed <br>
+net estop-out spindle.estop <br>
+# cmd scaled to RPM (belt/gearbox driven) <br>
+setp spindle.scale-cmd .135 <br>
+# feedback is in rpm (recipicale of command) <br>
+setp spindle.scale-fb 7.411 <br>
+# turn on monitoring so feedback works <br>
+setp spindle.monitor 1 <br>
+net spindle-speed-indicator spindle.motor-fb <br>
+# *************** Coolant vfd setup slave 1
+***************** <br>
+net coolant-flood coolant.run <br>
+net coolant-is-on coolant.up-to-speed <br>
+# cmd and feedback scaled to hertz <br>
+setp coolant.scale-cmd 1 <br>
+setp coolant.scale-fb 1 <br>
+# command full speed <br>
+setp coolant.motor-cmd 60 <br>
+# allows us to see status <br>
+setp coolant.monitor 1 <br>
+net estop-out coolant.estop</p>
+
+<h2>ISSUES
+<a name="ISSUES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">some models (eg
+E500) cannot monitor status, so set the monitor pin to false
+In this case pins such as up-to-speed, amps, alarm and
+status bits are not useful.</p>
+<hr>
+</body>
+</html>

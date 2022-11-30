@@ -1,0 +1,179 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:16 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>GLADEVCP</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">GLADEVCP</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">gladevcp -
+Panel de Control Virtual para LinuxCNC basado en widgets
+Glade, Gtk y HAL</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>gladevcp</b>
+[-g <i>WxH+X+Y</i>] [-c <i>nombre-componente</i>] [-u
+<i>handler</i>] [-U <i>opcionusuario</i>] [-H
+<i>ficheroHAL</i>] [-d] <i>mifichero.ui</i></p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i><b>-g</b>
+WxH+X+Y</i></p>
+
+<p style="margin-left:22%;">Establecer la geometria inicial
+de la ventana raiz. Use &rsquo;WxH&rsquo; para el
+tama&ntilde;o, &rsquo;+ X + Y&rsquo; para la posicion, o
+&rsquo;WxH+X+Y&rsquo; para ambos. Tama&ntilde;o / posicion
+utilizan unidades de pixeles. La posicion esta referenciada
+desde la parte superior izquierda.</p>
+
+<p style="margin-left:11%;"><b>-c</b>
+<i>nombre-componente</i></p>
+
+<p style="margin-left:22%;">Use <i>nombre-componente</i>
+como el nombre del componente HAL. Si el nombre del
+componente no se especifica, se usa el nombre base del
+fichero .ui.</p>
+
+<p style="margin-left:11%;"><b>-u</b> <i>handler</i></p>
+
+<p style="margin-left:22%;">Instruye a gladevcp para
+inspeccionar el script Python <i>handler</i> para
+manejadores de eventos y los conecta a se&ntilde;ales en el
+fichero .ui.</p>
+
+<p style="margin-left:11%;"><b>-U</b>
+<i>opcionusuario</i></p>
+
+<p style="margin-left:22%;">gladevcp colecciona todas las
+cadenas <i>opcionusuario</i> y las pasa al metodo del
+manejador init() como una lista de cadenas, sin mas
+inspeccion.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>-x</b> <i>XID</i></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Hace de una ventana <i>XID</i> existente la ventana
+padre de gladevcp, en lugar de crear una ventana nueva de
+nivel superior.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>-H</b> <i>ficheroHAL</i></p>
+
+<p style="margin-left:22%;">gladevcp ejecuta
+<i>ficheroHAL</i> - una lista de comandos HAL - mediante
+<i>halcmd -c ficheroHAL</i> despues de la finalizacion del
+componente HAL.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-d</b></p></td>
+<td width="8%"></td>
+<td width="35%">
+
+
+<p>activa la salida debug.</p></td>
+<td width="43%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>-R</b> <i>gtkrcfile</i></p>
+
+<p style="margin-left:22%;">carga explicitamente un fichero
+gtkrc.</p>
+
+<p style="margin-left:11%;"><b>-t</b> <i>THEME</i></p>
+
+<p style="margin-left:22%;">Establece un tema gtk. El tema
+por defecto es <i>system</i>. Diferentes paneles pueden
+tener diferentes temas.</p>
+
+<p style="margin-left:11%;"><b>-m</b> <i>MAXIMUM</i></p>
+
+<p style="margin-left:22%;">fuerza el maximizado de la
+ventana de panel. Junto con la opcion <i>-g geometry</i>
+puede mover el panel a un segundo monitor y forzarlo a usar
+toda la pantalla.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-R</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>desactivar explicitamente la solucion para el error gtk
+que hace coincidir widgets y widget_class en el tema gtk y
+fallos de los archivos gtkrc. Normalmente no es
+necesario.</p> </td></tr>
+</table>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>GladeVCP</i>
+en la documentacion de LinuxCNC para una descripcion de las
+capacidades de gladevcp y el conjunto de widgets HAL
+asociados, junto con ejemplos.</p>
+<hr>
+</body>
+</html>

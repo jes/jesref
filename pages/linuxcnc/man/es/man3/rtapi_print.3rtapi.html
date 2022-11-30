@@ -1,0 +1,195 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_print</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_print</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_print,
+rtapi_print_msg - imprimir mensajes de
+diagn&Atilde;&sup3;stico</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">void rtapi_print(const char
+*<i>fmt</i>, <i>...</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">void rtapi_print_msg(int level,
+const char *<i>fmt</i>, <i>...</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">typedef
+void(*<b>rtapi_msg_handler_t</b>)(msg_level_t <i>level</i>,
+const char *<i>msg</i>);</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">void
+<b>rtapi_set_msg_handler</b>(rtapi_msg_handler_t
+<i>handler</i>);</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">rtapi_msg_handler_t
+<b>rtapi_get_msg_handler</b>(void);</p> </td></tr>
+</table>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="7%"></td>
+<td width="4%"></td>
+<td width="78%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><i>level</i></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>el nivel del mensaje: uno de <b>RTAPI_MSG_ERR</b>,
+<b>RTAPI_MSG_WARN</b>, <b>RTAPI_MSG_INFO</b> o
+<b>RTAPI_MSG_DBG</b>.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>handler</i></p>
+
+<p style="margin-left:22%;">Una funci&Atilde;&sup3;n para
+llamar desde <b>rtapi_print</b> o <b>rtapi_print_msg</b>
+para dar salida al mensaje.</p>
+
+<p style="margin-left:11%;"><i>fmt,&nbsp;...</i></p>
+
+<p style="margin-left:22%;">Otros argumentos son para
+<i>rtapi_vsnprintf(3rtapi)</i>.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_print</b>
+y <b>rtapi_print_msg</b> actuan como funciones printf de C
+est&Atilde;&iexcl;ndar, excepto que son soportadas un
+conjunto reducido de operaciones de formateo . En
+particular, no se admite el formato de valores long long, y
+el formateo de valores de punto flotante tiene un
+comportamiento diferente al de printf
+est&Atilde;&iexcl;ndar.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Dependiendo del
+RTOS, el valor predeterminado puede ser imprimir el mensaje
+en stdout, stderr, un registro de kernel, etc. En el
+c&Atilde;&sup3;digo RTAPI, la acci&Atilde;&sup3;n puede ser
+cambiada por una llamada a <b>rtapi_set_msg_handler</b>. Un
+argumento <b>NULL</b> para <b>rtapi_set_msg_handler</b>
+restaura el controlador predeterminado.
+<b>rtapi_msg_get_handler</b> devuelve el controlador actual.
+Cuando el mensaje vino de <b>rtapi_print</b>, <i>level</i>
+es RTAPI_MSG_ALL.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_print_msg</b>
+funciona como rtapi_print pero solo imprime si <i>level</i>
+es menor o igual que el nivel de mensaje actual.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_print</b>
+y <b>rtapi_print_msg</b> se pueden llamar desde
+c&Atilde;&sup3;digo de usuario, init/cleanup y
+c&Atilde;&sup3;digo en tiempo real.
+<b>rtapi_get_msg_handler</b> y <b>rtapi_set_msg_handler</b>
+se puede llamar desde init/cleanup en tiempo real. Un
+controlador de mensajes pasado a
+<b>rtapi_set_msg_handler</b> solo puede llamar a funciones
+que se pueden llamar desde c&Atilde;&sup3;digo en tiempo
+real.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguno.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_set_msg_level(3rtapi)</b>,
+<b>rtapi_get_msg_level(3rtapi)</b>,
+<b>rtapi_vsnprintf(3rtapi)</b></p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>QTvcp Handler file code snippets</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>QTvcp Handler file code snippets</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:qtvcp-code"><p>Here are bits of ideas to put in the handler file.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preference_file_loading_saving">1. Preference file loading/saving</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Here is how to load and save at closing time a number and some text:<br />
+You must have included a preference file option in the screenoptions widget.<br /></p></div>
+<div class="paragraph"><p>under the <em>def initialized__(self):</em> function add:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>PREFS_<span style="color: #990000">:</span>
+            <span style="font-style: italic"><span style="color: #9A1900"># variable name                     (entry name, default value, type, section name)</span></span>
+            self<span style="color: #990000">.</span>int_value <span style="color: #990000">=</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>PREFS_<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">getpref</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Integer_value'</span><span style="color: #990000">,</span> <span style="color: #993399">75</span><span style="color: #990000">,</span> int<span style="color: #990000">,</span> <span style="color: #FF0000">'CUSTOM_FORM_ENTRIES'</span><span style="color: #990000">)</span>
+            self<span style="color: #990000">.</span>string_value <span style="color: #990000">=</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>PREFS_<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">getpref</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'String_value'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'on'</span><span style="color: #990000">,</span> str<span style="color: #990000">,</span> <span style="color: #FF0000">'CUSTOM_FORM_ENTRIES'</span><span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>under the <em>def closing_cleanup__(self):</em> function add:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>PREFS_<span style="color: #990000">:</span>
+            <span style="font-style: italic"><span style="color: #9A1900">#                     entry name, variable name, type, section name)</span></span>
+            self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>PREFS_<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">putpref</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Integer_value'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>integer_value<span style="color: #990000">,</span> int<span style="color: #990000">,</span> <span style="color: #FF0000">'CUSTOM_FORM_ENTRIES'</span><span style="color: #990000">)</span>
+            self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>PREFS_<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">putpref</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'String_value'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>string_value<span style="color: #990000">,</span> str<span style="color: #990000">,</span> <span style="color: #FF0000">'CUSTOM_FORM_ENTRIES'</span><span style="color: #990000">)</span>
+</tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_add_a_basic_style_editor">2. Add a basic style editor</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Being able to edit a style on a running screen is convienant.<br /></p></div>
+<div class="paragraph"><p>In the <em>IMPORT SECTION</em>:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>widgets<span style="color: #990000">.</span>stylesheeteditor <span style="font-weight: bold"><span style="color: #000080">import</span></span>  StyleSheetEditor as SSE
+STYLEEDITOR <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">SSE</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>In the <em>INITIALIZE SECTION</em>
+Under the <em>__init__.(self, halcomp, widgets, paths):</em> function<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        KEYBIND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">add_call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Key_F12'</span><span style="color: #990000">,</span><span style="color: #FF0000">'on_keycall_F12'</span><span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Finally lets make f12 launch it.<br />
+In the <em>KEYBINDING SECTION</em> add:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_F12</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            STYLEEDITOR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">load_dialog</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_request_dialog_entry">3. Request Dialog Entry</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Qtvcp uses STATUS messages to pop up and return information from dialogs.<br />
+prebuilt dialogs keep track of their last position and include options for focus shading and sound.<br />
+To get information back from the dialog requires using a STATUS general message.<br /></p></div>
+<div class="paragraph"><p>In the <em>IMPORT SECTION</em> make sure there is an entry similar to this:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Status
+STATUS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Status</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>This loads and initializes the STATUS library.<br /></p></div>
+<div class="paragraph"><p>In the <em>INITIALIZE SECTION</em>
+Under the <em>__init__.(self, halcomp, widgets, paths):</em> function<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'general'</span><span style="color: #990000">,</span>self<span style="color: #990000">.</span>return_value<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>This registers STATUS to call the function <em>self.return_value</em> when a general message is sent.<br /></p></div>
+<div class="paragraph"><p>In the <em>GENERAL FUNCTIONS SECTION</em></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">request_number</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        mess <span style="color: #990000">=</span> <span style="color: #990000">{</span><span style="color: #FF0000">'NAME'</span><span style="color: #990000">:</span><span style="color: #FF0000">'ENTRY'</span><span style="color: #990000">,</span><span style="color: #FF0000">'ID'</span><span style="color: #990000">:</span><span style="color: #FF0000">'FORM__NUMBER'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'TITLE'</span><span style="color: #990000">:</span><span style="color: #FF0000">'Set Tool Offset'</span><span style="color: #990000">}</span>
+        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">emit</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'dialog-request'</span><span style="color: #990000">,</span> mess<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>This is the function to request an entry dialog.<br />
+NAME needs to be set to the dialogs unique launch name.<br />
+ID needs to be set to a unique name that the function supplies<br />
+It creates a python dict. The NAME sets which dialog to request - <em>ENTRY</em> or <em>CALCULATOR</em> allows entering numbers.<br />
+The ID should be a unique key. TITLE sets the dialog title. You can also add arbitrary data to the dict -+
+the dialog will ignore them but send them back to the return code.<br /></p></div>
+<div class="paragraph"><p>In the <em>CALLBACKS FROM STATUS SECTION</em></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>   <span style="font-style: italic"><span style="color: #9A1900"># process the STATUS return message from set-tool-offset</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">return_value</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> w<span style="color: #990000">,</span> message<span style="color: #990000">):</span>
+        num <span style="color: #990000">=</span> message<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'RETURN'</span><span style="color: #990000">)</span>
+        id_code <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">bool</span></span><span style="color: #990000">(</span>message<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'ID'</span><span style="color: #990000">)</span> <span style="color: #990000">==</span> <span style="color: #FF0000">'FORM__NUMBER'</span><span style="color: #990000">)</span>
+        name <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">bool</span></span><span style="color: #990000">(</span>message<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'NAME'</span><span style="color: #990000">)</span> <span style="color: #990000">==</span> <span style="color: #FF0000">'ENTRY'</span><span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> id_code <span style="font-weight: bold"><span style="color: #0000FF">and</span></span> name <span style="font-weight: bold"><span style="color: #0000FF">and</span></span> num <span style="font-weight: bold"><span style="color: #0000FF">is</span></span> <span style="font-weight: bold"><span style="color: #0000FF">not</span></span> None<span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'The {} number from {} was: {}'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span><span style="color: #990000">(</span>name<span style="color: #990000">,</span> id_code<span style="color: #990000">,</span> num<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>This catches all general messages so must check the dialog type and id code to confirm it&#8217;s our dialog.<br />
+In this case we had requested an <em>ENTRY</em> dialog and our unique id was <em>ENTRY_NUMBER</em>, so now we know the message is for us.<br />
+Entry or Calculator dialogs return a float number.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_speak_a_startup_greeting">4. Speak a Startup Greeting</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This requires the <em>espeak</em> library installed on the system.<br /></p></div>
+<div class="paragraph"><p>In the <em>IMPORT SECTION</em> make sure there is an entry similar to this:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Status
+STATUS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Status</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>In the <em>INITIALIZE SECTION</em>
+Under the <em>__init__.(self, halcomp, widgets, paths):</em> function<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">emit</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'play-alert'</span><span style="color: #990000">,</span><span style="color: #FF0000">'SPEAK Please remember to oil the ways.'</span><span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p><em>SPEAK</em> is a key work, everything after it will be pronounced</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_toolbar_functions">5. ToolBar Functions.</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Toolbar buttons and submenus are added in Designer but the code to make them do something is added in the handler file.<br />
+In this example we assume you added a tool bar with one submenu and three actions.<br />
+These will be configure to creat a recent file selection menu, an about pop up dialog action, a quit program action and<br />
+a user defined function action.<br />
+You can add submenus in designer by adding an qaction (by typing in the toolbar column) then clicking the <em>plus</em> icon on the right.<br />
+This will ad a sub column that you need to type a name into. Now the original Qaction will be a Qmenu instead.<br />
+Now erase the Qaction you added to that Qmenu - the menu will stay as a menu.<br /></p></div>
+<div class="paragraph"><p>The objectName of the toolbar button is used to identify the button when configuring it - descriptive names help.<br />
+Using the action editor menu, right click and select edit. Edit the object name, text, and button type for an appropriate action.<br />
+In this example the submenu name must be : <em>menuRecent</em>. The actions must be <em>actionAbout</em>, <em>actionQuit</em>, <em>actionMyFunction</em><br /></p></div>
+<div class="paragraph"><p>In the <em>IMPORT SECTION</em> add:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>lib<span style="color: #990000">.</span>toolbar_actions <span style="font-weight: bold"><span style="color: #000080">import</span></span> ToolBarActions</tt></pre></div></div>
+<div class="paragraph"><p>Loads the toolbar library.</p></div>
+<div class="paragraph"><p>in the <em>INSTANTIATE LIBRARY</em> Section add:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>TOOLBAR <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">ToolBarActions</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>In the <em>SPECIAL FUNCTIONS SECTION</em>
+Under the <em>def initialized__(self):</em> function add:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_submenu</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>menuRecent<span style="color: #990000">,</span> <span style="color: #FF0000">'recent_submenu'</span><span style="color: #990000">)</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionAbout<span style="color: #990000">,</span> <span style="color: #FF0000">'about'</span><span style="color: #990000">)</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionQuit<span style="color: #990000">,</span> <span style="color: #FF0000">'Quit'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> d<span style="color: #990000">:</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">close</span></span><span style="color: #990000">())</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionMyFunction<span style="color: #990000">,</span> <span style="color: #FF0000">'My Function'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>my_function<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Configures the action.</p></div>
+<div class="paragraph"><p>In the <em>GENERAL FUNCTIONS SECTION</em> ADD:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>   <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">my_function</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> widget<span style="color: #990000">,</span> state<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'My function State = ()'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span><span style="color: #990000">(</span>state<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>The function to be called if the actionMyFunction button is pressed.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_add_hal_pins_that_call_functions">6. Add HAL Pins that call functions</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In this way you don&#8217;t need to poll the state of input pins.<br />
+Under the initialised__ function, make sure there is an entry similar to this:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Special Functions called from QTVCP</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the widgets are instantiated.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the HAL pins are built but HAL is not set ready</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>pin_cycle_start_in <span style="color: #990000">=</span> self<span style="color: #990000">.</span>hal<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">newpin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'cycle-start-in'</span><span style="color: #990000">,</span>hal<span style="color: #990000">.</span>HAL_BIT<span style="color: #990000">,</span> hal<span style="color: #990000">.</span>HAL_IN<span style="color: #990000">)</span>
+        self<span style="color: #990000">.</span>pin_cycle_start_in<span style="color: #990000">.</span>value_changed<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> s<span style="color: #990000">:</span> self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">cycleStart</span></span><span style="color: #990000">(</span>s<span style="color: #990000">))</span></tt></pre></div></div>
+<div class="paragraph"><p>Add a function that gets called when the pin state changes.<br />
+This function assumes there is a Tab widget named <em>mainTab</em><br />
+that has tabs with the names <em>tab_auto</em>, <em>tab_graphics</em>,<br />
+<em>tab_filemanager</em> and <em>tab_mdi</em>. In this way the cycle start<br />
+button works differently depending on what tab is showing.<br />
+This is simplified - checking state and error trapping might<br />
+be helpful.<br /></p></div>
+<div class="paragraph"><p>In the <em>GENERAL FUNCTIONS SECTION</em> add:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># general functions #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">cycleStart</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> state<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            tab <span style="color: #990000">=</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>mainTab<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">currentWidget</span></span><span style="color: #990000">()</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">if</span></span>  tab <span style="font-weight: bold"><span style="color: #0000FF">in</span></span><span style="color: #990000">(</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>tab_auto<span style="color: #990000">,</span>  self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>tab_graphics<span style="color: #990000">):</span>
+                ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">RUN</span></span><span style="color: #990000">(</span>line<span style="color: #990000">=</span><span style="color: #993399">0</span><span style="color: #990000">)</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> tab <span style="color: #990000">==</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>tab_files<span style="color: #990000">:</span>
+                    self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>filemanager<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">load</span></span><span style="color: #990000">()</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> tab <span style="color: #990000">==</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>tab_mdi<span style="color: #990000">:</span>
+                self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>mditouchy<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">run_command</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_add_a_special_max_velocity_slider_based_on_percent">7. Add a special Max Velocity Slider based on percent</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Some times you want to build a widget to do something not built in.<br />
+The built in Max velocity slider acts on units per minute, here we show how to do percent:<br />
+The STATUS command makes sure the slider adjusts if linuxcnc changes the current max velocity.<br />
+valueChanged.connect() calls a function when the slider is moved.<br /></p></div>
+<div class="paragraph"><p>In Designer add a QSlider widget called <em>mvPercent</em>
+Then add the code to the handler file.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#############################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># SPECIAL FUNCTIONS SECTION #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#############################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>mvPercent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setMaximum</span></span><span style="color: #990000">(</span><span style="color: #993399">100</span><span style="color: #990000">)</span>
+        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'max-velocity-override-changed'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> w<span style="color: #990000">,</span> data<span style="color: #990000">:</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>mvPercent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setValue</span></span><span style="color: #990000">((</span>data <span style="color: #990000">/</span> INFO<span style="color: #990000">.</span>MAX_TRAJ_VELOCITY<span style="color: #990000">)*</span><span style="color: #993399">100</span><span style="color: #990000">))</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>mvPercent<span style="color: #990000">.</span>valueChanged<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>setMVPercentValue<span style="color: #990000">)</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># GENERAL FUNCTIONS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+   <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">setMVPercentValue</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> value<span style="color: #990000">):</span>
+        ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MAX_VELOCITY_RATE</span></span><span style="color: #990000">(</span>INFO<span style="color: #990000">.</span>MAX_TRAJ_VELOCITY <span style="color: #990000">*</span> <span style="color: #990000">(</span>value<span style="color: #990000">/</span><span style="color: #993399">100.0</span><span style="color: #990000">))</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_toggle_continuous_jog_on_and_off">8. Toggle Continuous Jog On and Off</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Generally selecting continuous jogging is a momentary button, that requires you to select<br />
+the previous jog increment after. We will build a button that toggles between continuous jog and whatever<br />
+increment that was already selected.<br />
+<br />
+In Designer:<br />
+use an action button with no action. call it <em>btn_toggle_continuous</em><br />
+set the AbstractButton property <em>checkable</em> true<br />
+set the ActionButton properties <em>incr_imperial_number</em> and <em>incr_mm_number</em> to 0<br />
+Use designer&#8217;s slot editor to use the button signal <em>clicked(bool)</em> to call form&#8217;s handler function <em>toggle_continuous_clicked()</em><br />
+<a href="qtvcp.html#cha:designer-slots">Using Designer to add slots</a>
+<br />
+Then add this code snippets to the handler file:<br />
+Under the initialized__ function, make sure there is an entry similar to this:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># at this point:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the widgets are instantiated.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the HAL pins are built but HAL is not set ready</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'jogincrement-changed'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> w<span style="color: #990000">,</span> d<span style="color: #990000">,</span> t<span style="color: #990000">:</span> self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">record_jog_incr</span></span><span style="color: #990000">(</span>d<span style="color: #990000">,</span>t<span style="color: #990000">))</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># set a default increment to toggle back to</span></span>
+        self<span style="color: #990000">.</span>L_incr <span style="color: #990000">=</span> <span style="color: #993399">0.01</span>
+        self<span style="color: #990000">.</span>L_text <span style="color: #990000">=</span> <span style="color: #FF0000">"0.01in"</span></tt></pre></div></div>
+<div class="paragraph"><p>In the <em>GENERAL FUNCTIONS SECTION</em> ADD:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># general functions #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># if it isn't continuous, record the latest jog increment</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># and untoggle the continuous button</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">record_jog_incr</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>d<span style="color: #990000">,</span> t<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> d <span style="color: #990000">!=</span> <span style="color: #993399">0</span><span style="color: #990000">:</span>
+            self<span style="color: #990000">.</span>L_incr <span style="color: #990000">=</span> d
+            self<span style="color: #990000">.</span>L_text <span style="color: #990000">=</span> t
+            self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>btn_toggle_continuous<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">safecheck</span></span><span style="color: #990000">(</span>False<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>In the <em>CALLBACKS FROM FORM SECTION</em> ADD:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#######################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># CALLBACKS FROM FORM #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#######################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">toggle_continuous_clicked</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> state<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            <span style="font-style: italic"><span style="color: #9A1900"># set continuous (call the actionbutton's function)</span></span>
+            self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>btn_toggle_continuous<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">incr_action</span></span><span style="color: #990000">()</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+            <span style="font-style: italic"><span style="color: #9A1900"># reset previously recorded increment</span></span>
+            ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_JOG_INCR</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>L_incr<span style="color: #990000">,</span> self<span style="color: #990000">.</span>L_text<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_class_patch_the_file_manager_widget">9. Class Patch the file manager widget</h2>
+<div class="sectionbody">
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Class patching (monkey patching) is a little like black magic - so use it only if needed.<br /></td>
+</tr></table>
+</div>
+<div class="paragraph"><p>The File manager widget is designed to load a selected program in linuxcnc.<br />
+But maybe you want to print the file name first.<br />
+We can <em>class patch</em> the library to redirect the function call.<br /></p></div>
+<div class="paragraph"><p>In the <em>IMPORT SECTION</em> add:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>widgets<span style="color: #990000">.</span>file_manager <span style="font-weight: bold"><span style="color: #000080">import</span></span> FileManager as FM</tt></pre></div></div>
+<div class="paragraph"><p>Here we are going to keep a reference to the original function, so we can still call it<br />
+Then we redirect the class to call our custom function in the handler file instead.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Special Functions called from QTVCP</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># For changing functions in widgets we can 'class patch'.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># class patching must be done before the class is instantiated.</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">class_patch__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>old_load <span style="color: #990000">=</span> FM<span style="color: #990000">.</span>load <span style="font-style: italic"><span style="color: #9A1900"># keep a reference of the old function</span></span>
+        FM<span style="color: #990000">.</span>load <span style="color: #990000">=</span> self<span style="color: #990000">.</span>our_load <span style="font-style: italic"><span style="color: #9A1900"># redirect function to our handle file function</span></span></tt></pre></div></div>
+<div class="paragraph"><p>Ok Now we write a custom function to replace the original.<br />
+This function must have the same signature as the original function.<br />
+In this example we are still going to call the original function by using the<br />
+reference to it we recorded earlier. It requires the first argument to be the widget instance<br />
+which in this case is self.w.filemanager (the name given in the designer editor)<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># GENERAL FUNCTIONS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">our_load</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>fname<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> fname
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">old_load</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>filemanager<span style="color: #990000">,</span>fname<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Now our custom function will print the file path to the terminal before loading the file.<br />
+Obviously boring but shows the principle.<br /></p></div>
+<div class="paragraph"><p>There is another slightly different way to do this that can have advantages.<br />
+You can store the reference to the original function in the original class.<br />
+the trick here is to make sure the function name you use to store it, is not already<br />
+used in the class. <em>super__</em> added to the function name would be a good choice<br />
+We won&#8217;t use that in built in qtvcp widgets.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Special Functions called from QTVCP</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># For changing functions in widgets we can 'class patch'.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># class patching must be done before the class is instantiated.</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">class_patch__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        FM<span style="color: #990000">.</span>super__load <span style="color: #990000">=</span> FM<span style="color: #990000">.</span>load <span style="font-style: italic"><span style="color: #9A1900"># keep a reference of the old function in the original class</span></span>
+        FM<span style="color: #990000">.</span>load <span style="color: #990000">=</span> self<span style="color: #990000">.</span>our_load <span style="font-style: italic"><span style="color: #9A1900"># redirect function to our handle file function</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># GENERAL FUNCTIONS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">our_load</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>fname<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> fname
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>filemanager<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">super__load</span></span><span style="color: #990000">(</span>fname<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_adding_widgets_programmatically">10. Adding widgets Programmatically</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In some situation it is only possible to add widgets with python code rather then using the Designer editor.<br />
+When adding Qtvcp widgets programmatically, sometimes there are extra steps to be taken.<br />
+Here we are going to add a spindle speed indicator bar and up-to-speed LED to a tab widget corner.<br />
+Designer does not support adding corner widgets to tabs but PyQt does.<br />
+This is a cut down example from Qtaxis screen&#8217;s handler file.<br /></p></div>
+<div class="paragraph"><p>First we must import the libraries we need.<br />
+often these libraries are already imported in the handler file.<br />
+QtWidgets gives us access to the QProgress bar<br />
+QColor is for the LED color<br />
+StateLED is the Qtvcp library used to create the spindle-at-speed LED<br />
+Status is used to catch linuxcnc status information.<br />
+Info gives us information about the machine configuration.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> PyQt5 <span style="font-weight: bold"><span style="color: #000080">import</span></span> QtWidgets
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> PyQt5<span style="color: #990000">.</span>QtGui <span style="font-weight: bold"><span style="color: #000080">import</span></span> QColor
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>widgets<span style="color: #990000">.</span>state_led <span style="font-weight: bold"><span style="color: #000080">import</span></span> StateLED as LED
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Status<span style="color: #990000">,</span> Info</tt></pre></div></div>
+<div class="paragraph"><p>STATUS and INFO are initialized outside the handler class so as to be a global reference (no self. in front)<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** instantiate libraries section **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+STATUS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Status</span></span><span style="color: #990000">()</span>
+INFO <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Info</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>For the spindle speed indicator we need to know the current spindle speed:<br />
+We register with STATUS to catch the <em>actual-spindle-speed-changed</em> signal to call<br />
+a function named: <em>self.update_spindle()</em><br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># **** INITIALIZE **** #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># widgets allows access to  widgets from the qtvcp files</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point the widgets and hal pins are not instantiated</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>hal <span style="color: #990000">=</span> halcomp
+        self<span style="color: #990000">.</span>w <span style="color: #990000">=</span> widgets
+        self<span style="color: #990000">.</span>PATHS <span style="color: #990000">=</span> paths
+
+        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'actual-spindle-speed-changed'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> w<span style="color: #990000">,</span>speed<span style="color: #990000">:</span> self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">update_spindle</span></span><span style="color: #990000">(</span>speed<span style="color: #990000">))</span></tt></pre></div></div>
+<div class="paragraph"><p>We need to make sure the Designer widgets are already built before we try to add to them.<br />
+We add a function call <em>self.make_corner_widgets()</em> to build our extra widgets at the right time.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Special Functions called from QTSCREEN</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the widgets are instantiated.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the HAL pins are built but HAL is not set ready</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">make_corner_widgets</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>Ok let&#8217;s code the function to build the widgets and add them in the tab widget.<br />
+We are assuming there is a tab widget built with Designer called <em>rightTab</em>.<br /></p></div>
+<div class="paragraph"><p><em>self.w.led = LED()</em> - this initializes the basic StateLed widget and uses self.w.led as the reference from then on.<br />
+<em>self.w.led.setProperty("is_spindle_at_speed_status",True)</em> - since the stateLED can be used for many indications<br />
+we must set the property that designates it as a  spindle-at-speed LED.<br />
+<em>self.w.led.setProperty("color",QColor(0,255,0,255))</em> this sets it as green when on.<br />
+<em>self.w.led.hal_init(HAL_NAME = "spindle_is_at_speed")</em> - this is the extra function call required with some Qtvcp widgets.<br />
+If HAL_NAME is omitted it will use the widget objectName if there is one.<br />
+It gives the special widgets reference to:<br /></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+self.HAL_GCOMP_ - The HAL component wrapped in qtvcp&#8217;s core QComponent
+</p>
+</li>
+<li>
+<p>
+self.HAL_NAME_ -The HAL widget name
+</p>
+</li>
+<li>
+<p>
+self.QT_OBJECT_ -the  actual object
+</p>
+</li>
+<li>
+<p>
+self.QTVCP_INSTANCE_- The window object
+</p>
+</li>
+<li>
+<p>
+self.PATHS_ -the path library
+</p>
+</li>
+<li>
+<p>
+self.PREFS_ -the preference object.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><em>self.w.rpm_bar = QtWidgets.QProgressBar()</em> - initialize a PyQt5 QProgress bar.<br />
+<em>self.w.rpm_bar.setRange(0, INFO.MAX_SPINDLE_SPEED)</em> - set the max range of the Progress bar to the max specified in the INI.<br /></p></div>
+<div class="paragraph"><p>Since you can only add one widget to the tab corner and we have two we want there, we must add the two into a container.<br />
+We create a QWidget and add a QHBoxLayout to the QWidget.<br />
+The we add our QProgress bar and LED to the layout.<br /></p></div>
+<div class="paragraph"><p><em>self.w.rightTab.setCornerWidget(w)</em> - finally we add the QWidget (with our QProgress bar and LED in it) to the tab widget&#8217;s corner.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># general functions #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">make_corner_widgets</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># make a spindle-at-speed green LED</span></span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>led <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">LED</span></span><span style="color: #990000">()</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>led<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setProperty</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'is_spindle_at_speed_status'</span><span style="color: #990000">,</span>True<span style="color: #990000">)</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>led<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setProperty</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'color'</span><span style="color: #990000">,</span><span style="font-weight: bold"><span style="color: #000000">QColor</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">255</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">255</span><span style="color: #990000">))</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>led<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">hal_init</span></span><span style="color: #990000">(</span>HAL_NAME <span style="color: #990000">=</span> <span style="color: #FF0000">'spindle_is_at_speed'</span><span style="color: #990000">)</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># make a spindle speed bar</span></span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rpm_bar <span style="color: #990000">=</span> QtWidgets<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">QProgressBar</span></span><span style="color: #990000">()</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rpm_bar<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setRange</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">,</span> INFO<span style="color: #990000">.</span>MAX_SPINDLE_SPEED<span style="color: #990000">)</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># container</span></span>
+        w <span style="color: #990000">=</span> QtWidgets<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">QWidget</span></span><span style="color: #990000">()</span>
+        w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setContentsMargins</span></span><span style="color: #990000">(</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">6</span><span style="color: #990000">)</span>
+        w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setMinimumHeight</span></span><span style="color: #990000">(</span><span style="color: #993399">40</span><span style="color: #990000">)</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># layout</span></span>
+        hbox <span style="color: #990000">=</span> QtWidgets<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">QHBoxLayout</span></span><span style="color: #990000">()</span>
+        hbox<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">addWidget</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rpm_bar<span style="color: #990000">)</span>
+        hbox<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">addWidget</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>led<span style="color: #990000">)</span>
+        w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setLayout</span></span><span style="color: #990000">(</span>hbox<span style="color: #990000">)</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># add the container to the corner of the right tab widget</span></span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rightTab<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setCornerWidget</span></span><span style="color: #990000">(</span>w<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Now we build the function to actually update out QProgressBar when STATUS updates the spindle speed.<br />
+<em>self.w.rpm_bar.setInvertedAppearance()</em> - In this case we chose to display left-to-right or right-to-left depending if we are turning clockwise or anticlockwise.<br />
+<em>self.w.rpm_bar.setFormat()</em> - This formats the writing in the bar.<br />
+<em>self.w.rpm_bar.setValue()</em> - This sets the length of the colored bar.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># callbacks from STATUS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">update_spindle</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> data<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rpm_bar<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setInvertedAppearance</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">bool</span></span><span style="color: #990000">(</span>data<span style="color: #990000">&lt;</span><span style="color: #993399">0</span><span style="color: #990000">))</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rpm_bar<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setFormat</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'{0:d} RPM'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">int</span></span><span style="color: #990000">(</span>data<span style="color: #990000">)))</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>rpm_bar<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setValue</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">abs</span></span><span style="color: #990000">(</span>data<span style="color: #990000">))</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_external_control_with_zmq_messaging_reading">11. external control with ZMQ messaging reading</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Sometimes you want to control the screen with a separate program.<br />
+Qtvcp can automatically set up ZMQ messaging to send and/or receive remote messages.<br />
+It uses ZMQ&#8217;s publish/subscribe pattern of messages.<br />
+As always consider security before letting programs interface though messaging.<br />
+In the screenoptions widget, you can select the property <em>use_receive_zmq_option</em><br />
+You could also set this property directly in the handler file (as in this sample).<br />
+We assume the screenoption widget is called <em>screen_options</em> in designer:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># **** INITIALIZE **** #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># widgets allows access to  widgets from the qtvcp files</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point the widgets and hal pins are not instantiated</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">):</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># directly select ZMQ message receiving</span></span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>screen_options<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setProperty</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'use_receive_zmq_option'</span><span style="color: #990000">,</span>True<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>This allows an external program to call functions in the handler file.<br />
+Let&#8217;s add a specific function for testing.<br />
+You will need to run linuxcnc from a terminal to see the printed text.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># general functions #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">test_zmq_function</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> arg1<span style="color: #990000">,</span> arg2<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'zmq test function called:'</span><span style="color: #990000">,</span>arg1<span style="color: #990000">,</span> arg2</tt></pre></div></div>
+<div class="paragraph"><p>Here is a sample program to call a function.<br />
+It alternates between two data sets every second.<br />
+Run this in a separate terminal from linuxcnc to see the sent messages.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">#!/usr/bin/env python</span></span>
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> time <span style="font-weight: bold"><span style="color: #000080">import</span></span> sleep
+
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> zmq
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> json
+
+context <span style="color: #990000">=</span> zmq<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">Context</span></span><span style="color: #990000">()</span>
+socket <span style="color: #990000">=</span> context<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">socket</span></span><span style="color: #990000">(</span>zmq<span style="color: #990000">.</span>PUB<span style="color: #990000">)</span>
+socket<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">bind</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"tcp://127.0.0.1:5690"</span><span style="color: #990000">)</span>
+topic <span style="color: #990000">=</span> b<span style="color: #FF0000">'Qtvcp'</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># prebuild message 1</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># makes a dict of function to call plus any arguments</span></span>
+x <span style="color: #990000">=</span> <span style="color: #990000">{</span>
+  <span style="color: #FF0000">"FUNCTION"</span><span style="color: #990000">:</span> <span style="color: #FF0000">"test_zmq_function"</span><span style="color: #990000">,</span>
+  <span style="color: #FF0000">"ARGS"</span><span style="color: #990000">:</span> <span style="color: #990000">[</span>True<span style="color: #990000">,</span><span style="color: #993399">200</span><span style="color: #990000">]</span>
+<span style="color: #990000">}</span>
+<span style="font-style: italic"><span style="color: #9A1900"># convert to json object</span></span>
+m1 <span style="color: #990000">=</span> json<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">dumps</span></span><span style="color: #990000">(</span>x<span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># prebuild message 2</span></span>
+x <span style="color: #990000">=</span> <span style="color: #990000">{</span>
+  <span style="color: #FF0000">"FUNCTION"</span><span style="color: #990000">:</span> <span style="color: #FF0000">"test_zmq_function"</span><span style="color: #990000">,</span>
+  <span style="color: #FF0000">"ARGS"</span><span style="color: #990000">:</span> <span style="color: #990000">[</span>False<span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">],</span>
+<span style="color: #990000">}</span>
+<span style="font-style: italic"><span style="color: #9A1900"># convert to json object</span></span>
+m2 <span style="color: #990000">=</span> json<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">dumps</span></span><span style="color: #990000">(</span>x<span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">if</span></span> __name__ <span style="color: #990000">==</span> <span style="color: #FF0000">'__main__'</span><span style="color: #990000">:</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">while</span></span> True<span style="color: #990000">:</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'send message 1'</span>
+        socket<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">send_multipart</span></span><span style="color: #990000">([</span>topic<span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #000000">bytes</span></span><span style="color: #990000">((</span>m1<span style="color: #990000">).</span><span style="font-weight: bold"><span style="color: #000000">encode</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'utf-8'</span><span style="color: #990000">))])</span>
+        <span style="font-weight: bold"><span style="color: #000000">sleep</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">ms</span></span><span style="color: #990000">(</span><span style="color: #993399">1000</span><span style="color: #990000">))</span>
+
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'send message 2'</span>
+        socket<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">send_multipart</span></span><span style="color: #990000">([</span>topic<span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #000000">bytes</span></span><span style="color: #990000">((</span>m2<span style="color: #990000">).</span><span style="font-weight: bold"><span style="color: #000000">encode</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'utf-8'</span><span style="color: #990000">))])</span>
+        <span style="font-weight: bold"><span style="color: #000000">sleep</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #000000">ms</span></span><span style="color: #990000">(</span><span style="color: #993399">1000</span><span style="color: #990000">))</span></tt></pre></div></div>
+<div class="paragraph"><p>Note the line <em>x = {"FUNCTION": "test_zmq_function", "ARGS": [True,200]}</em> sets<br />
+the function to call and the arguments to send to that function.<br />
+you will need to know the signature of the function you wish to call.<br />
+Also note that the message is converted to a json object.<br />
+This is because ZMQ sends byte messages not python objects.<br />
+json converts python to bytes and will be converted back when received.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_external_control_with_zmq_messaging_writing">12. external control with ZMQ messaging writing</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>You also my want to communicate with a separate program from the screen.<br />
+Qtvcp can automatically set up ZMQ messaging to send and/or receive remote messages.<br />
+It uses ZMQ&#8217;s publish/subscribe pattern of messages.<br />
+As always consider security before letting programs interface though messaging.<br />
+In the screenoptions widget, you can select the property <em>use_send_zmq_message</em><br />
+You could also set this property directly in the handler file (as in this sample).<br />
+We assume the screenoption widget is called <em>screen_options</em> in designer:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># **** INITIALIZE **** #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># widgets allows access to  widgets from the qtvcp files</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point the widgets and hal pins are not instantiated</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">):</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># directly select ZMQ message sending</span></span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>screen_options<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setProperty</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'use_send_zmq_option'</span><span style="color: #990000">,</span>True<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>This allows sending messages to a separate program.<br />
+The message sent will depend on what the external program is expecting.<br />
+Let&#8217;s add a specific function for testing.<br />
+You will need to run linuxcnc from a terminal to see the printed text.<br />
+We assume the screenoption widget is called <em>screen_options</em> in designer:<br />
+You need to add something to call this function, such as a button click.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># general functions #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">send_zmq_message</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># This could be any python object json can convert</span></span>
+        message <span style="color: #990000">=</span> <span style="color: #990000">{</span><span style="color: #FF0000">"name"</span><span style="color: #990000">:</span> <span style="color: #FF0000">"John"</span><span style="color: #990000">,</span> <span style="color: #FF0000">"age"</span><span style="color: #990000">:</span> <span style="color: #993399">30</span><span style="color: #990000">}</span>
+        self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>screen_options<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">send_zmq_message</span></span><span style="color: #990000">(</span>message<span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>Here is a sample program that will receive the message and print it to the terminal.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000080">import</span></span> zmq
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> json
+
+<span style="font-style: italic"><span style="color: #9A1900"># ZeroMQ Context</span></span>
+context <span style="color: #990000">=</span> zmq<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">Context</span></span><span style="color: #990000">()</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># Define the socket using the "Context"</span></span>
+sock <span style="color: #990000">=</span> context<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">socket</span></span><span style="color: #990000">(</span>zmq<span style="color: #990000">.</span>SUB<span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># Define subscription and messages with topic to accept.</span></span>
+topic <span style="color: #990000">=</span> <span style="color: #FF0000">""</span> <span style="font-style: italic"><span style="color: #9A1900"># all topics</span></span>
+sock<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">setsockopt</span></span><span style="color: #990000">(</span>zmq<span style="color: #990000">.</span>SUBSCRIBE<span style="color: #990000">,</span> topic<span style="color: #990000">)</span>
+sock<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"tcp://127.0.0.1:5690"</span><span style="color: #990000">)</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">while</span></span> True<span style="color: #990000">:</span>
+    topic<span style="color: #990000">,</span> message <span style="color: #990000">=</span> sock<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">recv_multipart</span></span><span style="color: #990000">()</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'{} sent message:{}'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span><span style="color: #990000">(</span>topic<span style="color: #990000">,</span>json<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">loads</span></span><span style="color: #990000">(</span>message<span style="color: #990000">))</span>
+</tt></pre></div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

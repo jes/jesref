@@ -1,0 +1,442 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:33 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_parport</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_parport</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#USAGE">USAGE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_parport -
+Realtime HAL component to communicate with one or more pc
+parallel ports.</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+hal_parport cfg=&quot;</b><i>port_addr</i> [<i>type</i>]
+[[<i>port_addr</i> [<i>type</i>] ...]<b>&quot;</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The hal_parport
+component is a realtime component that provides connections
+from HAL via halpins to the physical pins of one or more
+parallel ports. It provides a read and write function to
+send and receive data to the attached parallel port(s).</p>
+
+<p style="margin-left:11%; margin-top: 1em">The hal_parport
+component supports up to <b>8</b> physical parallel
+ports.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>cfg=&quot;port_addr
+[type] [[port_addr [type] ...]&quot;</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">The cfg string
+tells hal_parport the address(es) of the parallel port(s)
+and whether the port(s) is/are used as an input or output
+port(s). Up to eight parallel ports are supported by the
+component.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The
+<b>port_addr</b> parameter of the configuration string may
+be either the physical base address of a parallel port or
+specified as the detected parallel port via Linux parport_pc
+driver. In which case, a <b>port_addr</b> of <i>0</i> is the
+first parallel port detected on the system, <i>1</i> is the
+next, and so on.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The <b>type</b>
+parameter of the configuration string determines how the I/O
+bits of the port are used. There are four possible options
+and if none is specified will default to out.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><i>in</i> -
+Sets the 8 bits of the data port to input. In this mode the
+parallel port has a total of 13 input pins and 4 output
+pins.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><i>out</i> -
+Sets the 8 bits of the data port to output. In this mode the
+parallel port has a total of 5 input pins and 12 output
+pins.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><i>epp</i> -
+This option is the same as setting to out, but can cause the
+computer to change the electrical characteristics of the
+port. (<i>See USAGE below</i>.)</p>
+
+<p style="margin-left:22%; margin-top: 1em"><i>x</i> - The
+option allows ports with open collectorts on the control
+group pins to be configured as inputs resulting in 8 output
+pins and 9 input pins. (<i>See USAGE below</i>.)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The pins
+created by the hal_parport component depends on how it is
+<br>
+configured in the <b>cfg=&quot;&quot;</b> string passed to
+it. (<i>See OPTIONS</i>.)</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>parport.&lt;p&gt;.pin-&lt;n&gt;-out
+(bit)</b> Drives a physical output pin.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>parport.&lt;p&gt;.pin-&lt;n&gt;-in
+(bit)</b> Tracks a physical input pin.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>parport.&lt;p&gt;.pin-&lt;n&gt;-in-not
+(bit)</b> Tracks a physical input pin, but inverted.</p>
+
+<p style="margin-left:22%; margin-top: 1em">For each pin
+created, <b>&lt;p&gt;</b> is the port number, and
+<b>&lt;n&gt;</b> is the physical pin number in the 25 pin
+D-shell connector.</p>
+
+<p style="margin-left:22%; margin-top: 1em">For each
+physical output pin, the driver creates a single HAL pin,
+for example: <b>parport.0.pin-14-out</b>.</p>
+
+<p style="margin-left:22%; margin-top: 1em">For each
+physical input pin, the driver creates two HAL pins, for
+example: <b>parport.0.pin-12-in</b> and
+<b>parport.0.pin-12-in-not</b>.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The <b>-in</b>
+HAL pin is TRUE if the physical pin is high, and FALSE if
+the physical pin is low. The <b>-in-not</b> HAL pin is
+inverted and is FALSE if the physical pin is high.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The following
+lists the input and output pins by the type setting used in
+the cfg=&quot;&quot; string.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>in</b>: Pins
+2,3,4,5,6,7,8,9,10,11,12,13,15 are input pins and pins
+1,14,16 and 17 are output pins.</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>out/epp</b>:
+Pins 10,11,12,13 and 15 are input pins and pins
+1,2,3,4,5,6,7,8,9,14,16 and 17 are output pins.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>x</b>: Pins
+1,10,11,12,13,14,15,16 and 17 are input pins and pins
+2,3,4,5,6,7,8,9 are output pins. (<i>See USAGE
+section</i>.)</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>parport.&lt;p&gt;.pin-&lt;n&gt;-out-invert
+(bit)</b></p>
+
+<p style="margin-left:22%;">Inverts an output pin.</p>
+
+
+<p style="margin-left:11%;"><b>parport.&lt;p&gt;.pin-&lt;n&gt;-out-reset
+(bit)</b></p>
+
+<p style="margin-left:22%;">(only for out pins) TRUE if
+this pin should be reset when the .reset function is
+executed.</p>
+
+
+<p style="margin-left:11%;"><b>parport.&lt;p&gt;.reset-time&rsquo;
+(U32)</b></p>
+
+<p style="margin-left:22%;">The time (in nanoseconds)
+between a pin is set by write and reset by the reset
+function if it is enabled.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>parport.&lt;p&gt;.read(funct)</b></p>
+
+<p style="margin-left:22%;">Reads physical input pins of
+port &lt;portnum&gt; and updates HAL -in and -in-not
+pins.</p>
+
+<p style="margin-left:11%;"><b>parport.read-all
+(funct)</b></p>
+
+<p style="margin-left:22%;">Reads physical input pins of
+all ports and updates HAL -in and -in-not pins.</p>
+
+<p style="margin-left:11%;"><b>parport.&lt;p&gt;.write
+(funct)</b></p>
+
+<p style="margin-left:22%;">Reads HAL -out pins of port
+&lt;p&gt; and updates that port&acirc;s physical output
+pins.</p>
+
+<p style="margin-left:11%;"><b>parport.write-all
+(funct)</b></p>
+
+<p style="margin-left:22%;">Reads HAL -out pins of all
+ports and updates all physical output pins.</p>
+
+<p style="margin-left:11%;"><b>parport.&lt;p&gt;.reset
+(funct)</b></p>
+
+<p style="margin-left:22%;">Waits until <i>reset-time</i>
+has elapsed since the associated write, then resets pins to
+values indicated by <i>-out-reset</i> and <i>-out-invert</i>
+settings. reset must be later in the same thread as write.
+&rsquo;If &rsquo;<i>-out-reset</i> is TRUE, then the reset
+function will set the pin to the value of
+<i>-out-invert</i>. This can be used in conjunction with
+stepgen&acirc;s doublefreq to produce one step per period.
+The stepgen stepspace for that pin must be set to 0 to
+enable doublefreq.</p>
+
+<h2>USAGE
+<a name="USAGE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The hal_parport
+component is a driver for the traditional PC parallel port.
+The port has a total of 25 physical pins of which 17 are
+used for signals. The original parallel port divided those
+pins into three groups: data, control, and status. The data
+group consists of 8 output pins, the control group consists
+of 4 output pins, and the status group consists of 5 input
+pins.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In the early
+1990&acirc;s, the bidirectional parallel port was
+introduced, which allows the data group to be used for
+output or input. The HAL driver supports the bidirectional
+port, and allows the user to set the data group as either
+input or output. If configured as <i>out</i>, a port
+provides a total of 12 outputs and 5 inputs. If configured
+as <i>in</i>, it provides 4 outputs and 13 inputs.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In some
+parallel ports, the control group pins are open collectors,
+which may also be driven low by an external gate. On a board
+with open collector control pins, if configured as <i>x</i>,
+it provides 8 outputs, and 9 inputs.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In some
+parallel ports, the control group has push-pull drivers and
+cannot be used as an input. <b><br>
+Note: HAL and Open Collectors</b></p>
+
+<p style="margin-left:22%;">HAL cannot automatically
+determine if the x mode bidirectional pins are actually open
+collectors (OC). If they are not, they cannot be used as
+inputs, and attempting to drive them LOW from an external
+source can damage the hardware.</p>
+
+<p style="margin-left:22%; margin-top: 1em">To determine
+whether your port has open collector pins, load hal_parport
+in x mode. With no device attached, HAL should read the pin
+as TRUE. Next, insert a 470 ohm resistor from one of the
+control pins to GND. If the resulting voltage on the control
+pin is close to 0V, and HAL now reads the pin as FALSE, then
+you have an OC port. If the resulting voltage is far from
+0V, or HAL does not read the pin as FALSE, then your port
+cannot be used in x mode.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The external
+hardware that drives the control pins should also use open
+collector gates (e.g., 74LS05).</p>
+
+<p style="margin-left:22%; margin-top: 1em">On some
+computers, BIOS settings may affect whether x mode can be
+used. SPP mode is most likely to work.</p>
+
+<p style="margin-left:11%; margin-top: 1em">No other
+combinations are supported, and a port cannot be changed
+from input to output once the driver is installed.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The parport
+driver can control up to 8 ports (defined by MAX_PORTS in
+hal_parport.c). The ports are numbered starting at zero.
+<b><br>
+Loading the hal_parport component</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">The hal_parport
+driver is a real time component so it must be loaded into
+the real time thread with loadrt. The configuration string
+describes the parallel ports to be used, and (optionally)
+their types. If the configuration string does not describe
+at least one port, it is an error.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>loadrt
+hal_parport cfg=&quot;port [type] [port [type]
+...]&quot;</b></p>
+
+<p style="margin-left:11%;"><b>Specifying the Port</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">Numbers below
+16 refer to parallel ports detected by the system. This is
+the simplest way to configure the hal_parport driver, and
+cooperates with the Linux parport_pc driver if it is loaded.
+A port of 0 is the first parallel port detected on the
+system, 1 is the next, and so on.</p>
+
+<p style="margin-left:11%;"><b>Basic configuration</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">This will use
+the first parallel port Linux detects:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>loadrt
+hal_parport cfg=&quot;0&quot;</b></p>
+
+<p style="margin-left:11%;"><b>Using the Port
+Address</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">Instead, the
+port address may be specified using the hex notation 0x then
+the address.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>loadrt
+hal_parport cfg=&quot;0x378&quot;</b></p>
+
+<p style="margin-left:11%;"><b>Specifying a port
+Type</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">For each
+parallel port handled by the hal_parport driver, a type can
+optionally be specified. The type is one of in, out, epp, or
+x.</p>
+
+<p style="margin-left:22%; margin-top: 1em">If the type is
+not specified, the default is out.</p>
+
+<p style="margin-left:22%; margin-top: 1em">A type of epp
+is the same as out, but the hal_parport driver requests that
+the port switch into EPP mode. The hal_parport driver does
+not use the EPP bus protocol, but on some systems EPP mode
+changes the electrical characteristics of the port in a way
+that may make some marginal hardware work better. The Gecko
+G540&acirc;s charge pump is known to require this on some
+parallel ports.</p>
+
+<p style="margin-left:22%; margin-top: 1em">See the Note
+above about mode x.</p>
+
+<p style="margin-left:11%;"><b>Example with two parallel
+ports</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">This will
+enable two system-detected parallel ports, the first in
+output mode and the second in input mode:</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>loadrt
+hal_parport cfg=&quot;0 out 1 in&quot;</b></p>
+
+<p style="margin-left:11%;"><b>Functions single
+port</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">You must also
+direct LinuxCNC to run the read and write functions.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>addf
+parport.read-all base-thread <br>
+addf parport.write-all base-thread</b></p>
+
+<p style="margin-left:11%;"><b>Functions multiple
+ports</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">You can direct
+LinuxCNC to ruin the read and write functions for all the
+attached ports.</p>
+
+<p style="margin-left:22%; margin-top: 1em"><b>addf
+parport.0.read base-thread <br>
+addf parport.0.write base-thread</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">The individual
+functions are provided for situations where one port needs
+to be updated in a very fast thread, but other ports can be
+updated in a slower thread to save CPU time. It is probably
+not a good idea to use both an -all function and an
+individual function at the same time.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Parallel Port
+Driver (Hardware Drivers Section of LinuxCNC Docs) PCI
+Parallel Port Example (Hardware Examples Section of LinuxCNC
+Docs)</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This man page
+written by Joe Hildreth as part of the LinuxCNC project.
+Most of this information was taken from the parallel-port
+docs located in the Hardware Drivers section of the
+documentation. To the best of my knowledge that
+documentation was written by Sebastian Kuzminsky and Chris
+Radek.</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph"><p><a id="cha:qtdragon-gui"></a></p></div>
+<h1 id="_silverdragon_gui">SilverDragon GUI</h1>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>SilverDragon is built with the QTVCP framework.
+Much of it is based on the excellent work of others in the LinuxCNC community.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">SilverDragon and QtVcp are new programs added into linuxcnc.
+Bugs and oddities are possible. Please test carefully when using a
+dangerous machine. Please forward reports to the forum or maillist.</td>
+</tr></table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/silverdragon.png" alt="QTDragon Router" />
+</div>
+<div class="title">Figure 1. qtdragon - 3 or 4 Axis Sample</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_started">2. Getting Started</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If your configuration is not currently set up to use SilverDragon,
+you can change it by editing the INI file.<br />
+In the section <em>[DISPLAY]</em> change the <em>DISPLAY</em> line to read:<br />
+<a href="../config/ini-config.html#sec:display-section">Display Section</a></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[DISPLAY]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">DISPLAY </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> qtvcp qtdragon</span></tt></pre></div></div>
+<div class="paragraph"><p>To keep track of preferences, qtdragon looks for a preference text file.<br />
+add the following entry under the <em>[DISPLAY]</em> heading.
+(other options are possible see the qtvcp&#8217;s screenoption widget docs.)<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">PREFERENCE_FILE_PATH </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> WORKINGFOLDER/qtdragon.pref</span></tt></pre></div></div>
+<div class="paragraph"><p>You can specify where to save history/logs.<br />
+In the section <em>[DISPLAY]</em> add:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">MDI_HISTORY_FILE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> mdi_history.dat</span>
+<span style="font-weight: bold"><span style="color: #0000FF">MACHINE_LOG_PATH </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> machine_log.dat</span>
+<span style="font-weight: bold"><span style="color: #0000FF">LOG_FILE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> qtdragon.log</span></tt></pre></div></div>
+<div class="paragraph"><p>For the basicprobe routines to work the SUBROUTINE_PATH must be set properly.<br />
+(Your path may be different then this sample)<br />
+<a href="../config/ini-config.html#sec:rs274ngc-section">RS274ngc Section</a></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[RS274NGC]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">SUBROUTINE_PATH </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> ../../../../nc_files/probe/basic_probe/macros</span></tt></pre></div></div>
+<div class="paragraph"><p>It also requires extra analog I/O pins for probing.<br />
+Make sure this line in the HAL file has the <em>num_aio=13</em> entry:<br />
+The rest of the line depends on your setup and could be different and should not be changed.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">loadrt</span></span> <span style="font-weight: bold"><span style="color: #000000">motmod</span></span> <span style="font-weight: bold"><span style="color: #000000">servo_period_nsec</span></span> <span style="color: #990000">=</span> [<span style="font-weight: bold"><span style="color: #000000">EMCMOT</span></span>] <span style="font-weight: bold"><span style="color: #000000">SERVO_PERIOD</span></span> <span style="font-weight: bold"><span style="color: #000000">num_joints</span></span> <span style="color: #990000">=</span> <span style="color: #993399">4</span> <span style="font-weight: bold"><span style="color: #000000">num_aio</span></span> <span style="color: #990000">=</span> <span style="color: #993399">13</span></tt></pre></div></div>
+<div class="paragraph"><p>SilverDragon has custom INI entries:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[TOOLSENSOR]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">MAXPROBE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 40</span>
+<span style="font-weight: bold"><span style="color: #0000FF">SEARCH_VEL </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 200</span>
+<span style="font-weight: bold"><span style="color: #0000FF">PROBE_VEL </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 50</span>
+<span style="font-weight: bold"><span style="color: #0000FF">TOUCH </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 29.7</span>
+
+<span style="font-weight: bold"><span style="color: #000000">[LASER]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">X </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 106.9</span>
+<span style="font-weight: bold"><span style="color: #0000FF">Y </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> -16.85</span></tt></pre></div></div>
+<div class="paragraph"><p>The sample configuration
+<em>sim/qtvcp_screens/qtdragon/qtdragon_xyza.ini</em> is already configured to use SilverDragon as its front-end.<br />
+There are several others, to demonstrate different machine configurations.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_key_bindings">3. Key Bindings</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>SilverDragon is not intended to primarily use a keyboard for machine control.<br />
+There are several key presses that will control the machine for convenience.<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>F1 - Estop on/off
+F2 - Machine on/off
+F12 - Style Editor
+Home - Home All Joint of the Machine
+Escape - Abort Movement
+Pause -Pause Machine Movement</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_buttons">4. Buttons</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Buttons that are checkable will change their text colour when checked.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtual_keyboard">5. Virtual Keyboard</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>QtDragon includes a virtual keyboard for use with touchscreens.<br />
+To enable the keyboard, check the Use Virtual Keyboard checkbox in the Settings page.<br />
+Clicking on any input field, such as probe parameters or tool table entries, will show the keyboard.<br />
+It can also be shown by clicking the KEYBD button on the top of the screen,<br />
+unless the machine is in AUTO mode. To hide the keyboard, do one of the following:<br />
+  -  click the MAIN page button<br />
+  - click the KEYBD button
+  - go into AUTO mode<br /></p></div>
+<div class="paragraph"><p>It should be noted that keyboard jogging is disabled when using the virtual keyboard.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hal_pins">6. HAL Pins</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>These pins are specific to the qtDragon screen, There are of course are many more HAL pins<br />
+that must be connected for linuxcnc to function.<br /></p></div>
+<div class="paragraph"><p>If you need a manual tool change prompt, add these lines in your postgui file.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">tool-change</span></span>      <span style="color: #009900">hal_manualtoolchange.change</span>   <span style="color: #990000">&lt;=</span>  <span style="color: #009900">iocontrol.0.tool-change</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">tool-changed</span></span>     <span style="color: #009900">hal_manualtoolchange.changed</span>  <span style="color: #990000">&lt;=</span>  <span style="color: #009900">iocontrol.0.tool-changed</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">tool-prep-number</span></span> <span style="color: #009900">hal_manualtoolchange.number</span>   <span style="color: #990000">&lt;=</span>  <span style="color: #009900">iocontrol.0.tool-prep-number</span></tt></pre></div></div>
+<div class="paragraph"><p>These pins must be connected in the postgui file for probing to work:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">xwidth</span></span>           <span style="color: #009900">motion.analog-out-00</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.x_width</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">ywidth</span></span>           <span style="color: #009900">motion.analog-out-01</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.y_width</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">avg_dia</span></span>          <span style="color: #009900">motion.analog-out-02</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.avg_diameter</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">edge_angle</span></span>       <span style="color: #009900">motion.analog-out-03</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.edge_angle</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">edge_delta</span></span>       <span style="color: #009900">motion.analog-out-04</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.edge_delta</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">xminus</span></span>           <span style="color: #009900">motion.analog-out-05</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.x_minus</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">yminus</span></span>           <span style="color: #009900">motion.analog-out-06</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.y_minus</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">zminus</span></span>           <span style="color: #009900">motion.analog-out-07</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.z_minus</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">xplus</span></span>            <span style="color: #009900">motion.analog-out-08</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.x_plus</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">yplus</span></span>            <span style="color: #009900">motion.analog-out-09</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.y_plus</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">xcenter</span></span>          <span style="color: #009900">motion.analog-out-10</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.x_center</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">ycenter</span></span>          <span style="color: #009900">motion.analog-out-11</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.y_center</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">cal_offset</span></span>       <span style="color: #009900">motion.analog-out-12</span> <span style="color: #990000">=&gt;</span> <span style="color: #009900">qtdragon.cal_offset</span></tt></pre></div></div>
+<div class="paragraph"><p>This input pin should be connected to indicate probe state:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.hal_led_probe</span></tt></pre></div></div>
+<div class="paragraph"><p>These pins can be connected to indicate home switch states:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.hal_led_home_x</span>
+<span style="color: #009900">qtdragon.hal_led_home_y</span>
+<span style="color: #009900">qtdragon.hal_led_home_z</span></tt></pre></div></div>
+<div class="paragraph"><p>These pins are inputs related to spindle VFD indicating:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.modbus-errors</span>
+<span style="color: #009900">qtdragon.spindle_amps</span>
+<span style="color: #009900">qtdragon.spindle_fault</span>
+<span style="color: #009900">qtdragon.spindle_volts</span></tt></pre></div></div>
+<div class="paragraph"><p>This pin is an output to the spindle control to pause it:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.spindle_pause</span></tt></pre></div></div>
+<div class="paragraph"><p>This output pins can be connected to turn on a laser:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.btn_laser_on</span></tt></pre></div></div>
+<div class="paragraph"><p>These output pins indicate buttons that were pushed,
+they are probably of limited use:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.btn_dimensions</span>
+<span style="color: #009900">qtdragon.btn_gcode_edit</span>
+<span style="color: #009900">qtdragon.btn_home_x</span>
+<span style="color: #009900">qtdragon.btn_home_y</span>
+<span style="color: #009900">qtdragon.btn_home_z</span>
+<span style="color: #009900">qtdragon.btn_jog_a_slow</span>
+<span style="color: #009900">qtdragon.btn_jog_l_slow</span>
+<span style="color: #009900">qtdragon.btn_keyboard</span>
+<span style="color: #009900">qtdragon.btn_probe_help</span>
+<span style="color: #009900">qtdragon.btn_probe_mode</span>
+<span style="color: #009900">qtdragon.btn_select_log</span>
+<span style="color: #009900">qtdragon.btn_tool_add</span>
+<span style="color: #009900">qtdragon.btn_tool_delete</span></tt></pre></div></div>
+<div class="paragraph"><p>These pins are related to external offsets if they are used:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">qtdragon.eoffset_clear</span>
+<span style="color: #009900">qtdragon.eoffset_count</span>
+<span style="color: #009900">qtdragon.eoffset_enable</span>
+<span style="color: #009900">qtdragon.eoffset_value</span>
+<span style="color: #009900">qtdragon.led_eoffset_limit</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hal_files">7. HAL files</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The HAL files supplied are for simulation only. A real machine needs its own custom HAL files. The qtdragon screen
+works with 3 or 4 axes with one joint per axis or 3 or 4 axes in a gantry configuration. (2 joints on 1 axis)</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manual_tool_changes">8. Manual Tool Changes</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>If your machine requires manual tool changes, SilverDragon can pop a message box to direct you.<br />
+You must connect the proper HAL pin in the post_gui file.
+For example:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">tool-change</span></span>      <span style="color: #009900">hal_manualtoolchange.change</span>   <span style="color: #990000">&lt;=</span>  <span style="color: #009900">iocontrol.0.tool-change</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">tool-changed</span></span>     <span style="color: #009900">hal_manualtoolchange.changed</span>  <span style="color: #990000">&lt;=</span>  <span style="color: #009900">iocontrol.0.tool-changed</span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">tool-prep-number</span></span> <span style="color: #009900">hal_manualtoolchange.number</span>   <span style="color: #990000">&lt;=</span>  <span style="color: #009900">iocontrol.0.tool-prep-number</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_spindle">9. Spindle</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The screen is intended to interface to a VFD, but will still work without it. There are a number of VFD drivers included
+in the linuxcnc distribution. It is up to the end user to supply the appropriate driver and HAL file connections according
+to his own machine setup.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_probing">10. Probing</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The probe screen has been through basic testing but there could still be some minor bugs.
+When running probing routines, use extreme caution until you are familiar
+with how everything works. Probe routines run without blocking the main GUI. This gives the operator the opportunity
+to watch the DROs and stop the routine at any time.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Probing is very unforgiving to mistakes; be sure to check settings before using.</td>
+</tr></table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/silverdragon_probe.png" alt="QTDragon Probe" />
+</div>
+<div class="title">Figure 2. qtdragon - Probe Sample</div>
+</div>
+<div class="paragraph"><p>QtDragon has 2 possible methods for setting Z0. The first is a touchplate, where a metal plate of known thickness is placed on top of the workpiece and then the tool is lowered until it touches the plate, triggering the probe signal. Z0 is set to probe height - plate thickness.<br /></p></div>
+<div class="paragraph"><p>The second method uses a tool setter in a fixed position and a known height above the table where the probe signal will be triggered. In order to set Z0 to the top of the workpiece, it has to know how far above the table the probe trigger point is (tool setter height) and how far above the table the top of the workpiece is. This operation has to be done every time the tool is changed as the tool length is not saved.</p></div>
+<div class="paragraph"><p>For touching off with a touch probe, whether you use the touchplate operation with thickness set to 0 or use a probing routine, the height from table to top of workpiece parameter is not taken into account and can be ignored. It is only for the tool setter.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run_from_line">11. Run from Line</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A gcode program can be started at any line by clicking on the desired line in the gcode display while in AUTO mode.<br />
+It is the operator&#8217;s responsibility to ensure the machine is in the desired operational mode.<br />
+A dialog will be shown allowing the spindle direction and speed to be preset.<br />
+The start line is indicated in the box labelled LINE, next to the CYCLE START button.<br />
+The run from line feature can be disabled in the settings page.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Linuxcnc&#8217;s run-from-line is not very user friendly. eg. It does not start the spindle or confirm the proper tool.
+It does not handle subroutines well. If used it is best to start on a rapid move.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_laser_buttons">12. Laser buttons</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The LASER ON/OFF button in intended to turn an output on or off which is connected to a small laser crosshair projector.
+When the crosshair is positioned over a desired reference point on the workpiece, the REF LASER button can be pushed which then sets
+the X and Y offsets to the values indicated by the LASER OFFSET fields in the Settings page and the INI file.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setup_tab">13. Setup Tab</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>It&#8217;s possible to load Html file (.html ending) with setup notes. They will be displayed in the setup tab.<br />
+Some program, such as Fusion and Aspire will create this files for you.</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="images/silverdragon_setup.png" alt="QTDragon Setup Tab" />
+</div>
+<div class="title">Figure 3. qtdragon - Setup Tab Sample</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_styles">14. Styles</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Nearly all aspects of the GUI appearance are configurable via the qtdragon.qss stylesheet file. The file can be edited manually or
+through the stylesheet dialog widget in the GUI. To call up the dialog, press F12 on the main window. New styles can be applied
+temporarily and then saved to a new qss file, or overwrite the current qss file.</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="images/style-comparison.png" alt="QTDragon stlyes" />
+</div>
+<div class="title">Figure 4. qtdragon - Two Style Examples</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_screen_resolution">15. Screen resolution</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This GUI was initially developed for a screen with 1440 x 900 resolution. It is not resizable. It will work in window mode on
+any monitor with higher resolution but not on monitors with lower resolution.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_customization">16. Customization</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>All aspects of the GUI are fully customizable through qtdesigner. This is included with the qtvcp development environment.
+The extensive use of qtvcp widgets keeps the amount of required python code to a minimum, allowing relatively easy modifications.
+The LinuxCNC website has extensive documentation on the installation and use of qtvcp libraries.
+<a href="qtvcp.html#cha:qtvcp">QtVCP Overview</a> for more information</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="images/silverdragon_custom.png" alt="QTDragon customized" />
+</div>
+<div class="title">Figure 5. qtdragon - Customized Silverdragon</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

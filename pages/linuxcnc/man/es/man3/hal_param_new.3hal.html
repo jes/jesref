@@ -1,0 +1,198 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:20 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_param_new</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_param_new</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_param_new -
+Crea un par&Atilde;&iexcl;metro HAL</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_bit_new(const char *<i>name</i>, hal_param_dir_t
+<i>dir</i>, hal_bit_t * <i>data_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_float_new(const char *<i>name</i>, hal_param_dir_t
+<i>dir</i>, hal_float_t * <i>data_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_u32_new(const char *<i>name</i>, hal_param_dir_t
+<i>dir</i>, hal_u32_t * <i>data_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_s32_new(const char *<i>name</i>, hal_param_dir_t
+<i>dir</i>, hal_s32_t * <i>data_addr</i>, int
+<i>comp_id</i>)</p> </table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_bit_newf(hal_param_dir_t <i>dir</i>, hal_bit_t *
+<i>data_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_float_newf(hal_param_dir_t <i>dir</i>, hal_float_t
+* <i>data_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_u32_newf(hal_param_dir_t <i>dir</i>, hal_u32_t *
+<i>data_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_s32_newf(hal_param_dir_t <i>dir</i>, hal_s32_t *
+<i>data_addr</i>, int <i>comp_id</i>, const char
+*<i>fmt</i>, <i>...</i>)</p></table>
+
+<p style="margin-left:22%; margin-top: 1em">int
+hal_param_new(const char *<i>name</i>, hal_type_t
+<i>type</i>, hal_param_dir_t <i>dir</i>, void
+*<i>data_addr</i>, int <i>comp_id</i>)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="6%"></td>
+<td width="5%"></td>
+<td width="78%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>name</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>El nombre que se le dar&Atilde;&iexcl; al
+par&Atilde;&iexcl;metro creado.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>dir</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>La direcci&Atilde;&sup3;n del par&Atilde;&iexcl;metro,
+desde el punto de vista del componente. Puede ser
+<b>HAL_RO</b>, o <b>HAL_RW</b> . Un componente puede asignar
+un valor a cualquier par&Atilde;&iexcl;metro, pero otros
+programas (como halcmd) solo pueden asignar un valor a un
+par&Atilde;&iexcl;metro que sea <b>HAL_RW</b>.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>data_addr</i></p>
+
+<p style="margin-left:22%;">La direcci&Atilde;&sup3;n de
+los datos, que debe estar dentro de la memoria asignada por
+<b>hal_malloc</b>.</p>
+
+<p style="margin-left:11%;"><i>comp_id</i></p>
+
+<p style="margin-left:22%;">Un identificador de componente
+HAL devuelto por una llamada anterior a <b>hal_init</b>.</p>
+
+<p style="margin-left:11%;"><i>fmt,&nbsp;...</i></p>
+
+<p style="margin-left:22%;">Una cadena de formato de estilo
+printf y argumentos</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>type</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>El tipo del par&Atilde;&iexcl;metro, como se especifica
+en <b>hal_type_t(3hal)</b>.</p></td></tr>
+</table>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La familia de
+funciones <b>hal_param_new</b> crea un nuevo objeto
+<i>param</i>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Hay funciones
+para cada uno de los tipos de datos que admite HAL. Los
+pines pueden estar vinculados solo a se&Atilde;&plusmn;ales
+del mismo tipo.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve un
+c&Atilde;&sup3;digo de estado HAL.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_type_t(3hal)</b></p>
+<hr>
+</body>
+</html>

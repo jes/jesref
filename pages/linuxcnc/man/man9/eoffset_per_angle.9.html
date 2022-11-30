@@ -1,0 +1,267 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:45 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>EOFFSET_PER_ANGLE</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">EOFFSET_PER_ANGLE</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">eoffset_per_angle
+- Compute External Offset Per Angle</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="87%">
+
+
+<p style="margin-top: 1em"><b>loadrt eoffset_per_angle
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="2%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">An offset is
+computed (from one of several functions) based on an input
+angle in degrees. The angle could be a rotary coordinate
+value or a spindle angle.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The computed
+offset is represented as an s32 <b>kcounts</b> output pin
+that is a compatible input to external offset pins like
+<b>axis.L.eoffset-counts</b> where <b>L</b> is the
+coordinate letter. Scaling of the s32 <b>kcounts</b> is
+controlled by the input (<b>k</b>) -- its reciprocal value
+is presented on an output pin (<b>kreciprocal</b>) for
+connection to <b>axis.L.eoffset-scale</b>. The default value
+for <b>k</b> should be suitable for most uses.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The built-in
+functions use pins <b>fmult</b> and <b>rfraction</b> to
+control the output frequency (or number of polygon sides)
+and amplitude respectively. The <b>rfraction</b> pin
+controls the offset amplitude as a fraction of the
+<b>radius-ref</b> pin.</p>
+
+<p style="margin-left:11%; margin-top: 1em">One of the four
+built-in functions is specified by the <b>fnum</b> pin:
+<b><br>
+0</b>: f0 inside polygon (requires <b>fmult</b> == nsides
+&gt;= 3) <b><br>
+1</b>: f1 outside polygon (requires <b>fmult</b> == nsides
+&gt;= 3) <b><br>
+2</b>: f2 sinusoid <b><br>
+3</b>: f3 square wave</p>
+
+<p style="margin-left:11%; margin-top: 1em">Unsupported
+<b>fnum</b> values default to use function f0.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>NOTES:</b></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>radius-ref</b>:
+The computed offsets are based on the <b>radius-ref</b> pin
+value. This pin may be set to a constant radius value or
+controlled by a user interface or by g code program (using
+<b>M68</b> and a <b>motion.analog-out-NN pin for
+instance).</b></p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Stopping</b>:
+When the <b>enable-in</b> pin is deasserted, the offset is
+returned to zero respecting the allocated acceleration and
+velocity limits. The allocations for coordinate <b>L</b> are
+typically controlled by an ini file setting:
+<b>[AXIS_L]OFFSET_AV_RATIO</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>NOTES</b>:
+If unsupported parameters are supplied to a function (for
+instance a polygon with fewer than three sides), the current
+offset will be returned to zero (respecting velocity and
+acceleration constraints). After correcting the offending
+parameter, the <b>enable-in</b> pin must be toggled to
+resume offset computations.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>EXAMPLE:</b>
+An example simulation configuration is provided at:
+<b>configs/sim/axis/external_offsets/opa.ini</b>. A
+simulated XZC machine uses the <b>C</b> coordinate angle to
+offset the transverse <b>X</b> coordinate according to the
+selected <b>fnum</b> function.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>eoffset-per-angle.</b><i>N</i>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>eoffset-per-angle.</b><i>N</i><b>.active</b>
+bit in (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">From: motion.eoffset-active</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.is-on</b>
+bit in (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">From: halui.machine.is-on</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.enable-in</b>
+bit in (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">Enable Input</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.radius-ref</b>
+float in (default: <i>1</i>)</p>
+
+<p style="margin-left:22%;">Radius reference (see
+notes)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.angle</b>
+float in (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">Input angle (in degrees)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.start-angle</b>
+float in (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">Start angle (in degrees)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.fnum</b>
+s32 in (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">Function selector (default
+0)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.rfraction</b>
+float in (default: <i>0.1</i>)</p>
+
+<p style="margin-left:22%;">Offset amplitude (+/- fraction
+of radius_ref)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.fmult</b>
+float in (default: <i>6</i>)</p>
+
+<p style="margin-left:22%;">Offset frequency multiplier</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.k</b>
+u32 in (default: <i>10000</i>)</p>
+
+<p style="margin-left:22%;">Scaling Factor (if 0, use
+10000)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.is-off</b>
+bit out</p>
+
+<p style="margin-left:22%;">invert is_on (for
+convenience)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.enable-out</b>
+bit out</p>
+
+<p style="margin-left:22%;">To: axis.L.eoffset-enable</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.clear</b>
+bit out</p>
+
+<p style="margin-left:22%;">To: axis.L.eoffset-clear</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.kcounts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">To: axis.L.eoffset-counts</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.kreciprocal</b>
+float out</p>
+
+<p style="margin-left:22%;">To: axis.L.eoffset-scale
+(1/k)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.eoffset-dbg</b>
+float out</p>
+
+<p style="margin-left:22%;">offset (debug pin--use kcounts
+&amp; kreciprocal)</p>
+
+
+<p style="margin-left:11%;"><b>eoffset-per-angle.</b><i>N</i><b>.state-dbg</b>
+u32 out</p>
+
+<p style="margin-left:22%;">state (debug pin)</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

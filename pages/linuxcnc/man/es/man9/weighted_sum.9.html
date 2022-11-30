@@ -1,0 +1,126 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:33 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>WEIGHTED_SUM</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">WEIGHTED_SUM</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">weighted_sum -
+convierte un grupo de bits en un entero</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+weighted_sum wsum_sizes=</b><i>size[,size,...]</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">Crea grupos de
+suma ponderada cada uno con el n&Atilde;&ordm;mero dado de
+bits de entrada (<i>size</i>).</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Este componente
+es un &quot;sumador ponderado&quot;: su salida es el offset
+m&Atilde;&iexcl;s la suma del peso de cada bit de entrada
+TRUE. El valor predeterminado para cada peso es 2^n donde n
+es el n&Atilde;&ordm;mero de bit. Esto da como resultado una
+conversi&Atilde;&sup3;n de binario a entero sin signo.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Hay un
+l&Atilde;mite de 8 sumadores ponderados y cada uno puede
+tener hasta 16 bits de entrada.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>process_wsums
+(requiere hilo de punto flotante)</b></p>
+
+<p style="margin-left:22%;">Lee todos los valores de
+entrada y actualiza todos los valores de salida.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>wsum.</b><i>N</i><b>.bit.</b><i>M</i><b>.in</b>
+bit in</p>
+
+<p style="margin-left:22%;">La entrada<i>m</i>-esima de
+sumador ponderado<i>n</i>.</p>
+
+
+<p style="margin-left:11%;"><b>wsum.</b><i>N</i><b>.hold</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando es TRUE, la salida
+<i>sum</i> no cambia. Cuando es FALSE, la salida <i>sum</i>
+rastrea las entradas <i>bit</i> de acuerdo con los pesos y
+el offset.</p>
+
+
+<p style="margin-left:11%;"><b>wsum.</b><i>N</i><b>.sum</b>
+s32 out</p>
+
+<p style="margin-left:22%;">La salida de la suma
+ponderada</p>
+
+
+<p style="margin-left:11%;"><b>wsum.</b><i>N</i><b>.bit.</b><i>M</i><b>.weight</b>
+s32 rw</p>
+
+<p style="margin-left:22%;">El peso de la entrada
+<i>m</i>-esima de suma ponderada <i>n</i>. El valor
+predeterminado es 2^<i>m</i>.</p>
+
+
+<p style="margin-left:11%;"><b>wsum.</b><i>N</i><b>.offset</b>
+s32 rw</p>
+
+<p style="margin-left:22%;">El offset se agrega a los pesos
+correspondientes a todas las entradas TRUE para dar la suma
+final.</p>
+<hr>
+</body>
+</html>

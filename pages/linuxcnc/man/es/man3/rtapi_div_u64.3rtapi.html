@@ -1,0 +1,153 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:22 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_div_u64</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_div_u64</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_div_u64 -
+divisi&Atilde;&sup3;n sin signo de un n&Atilde;&ordm;mero de
+64 bits por un n&Atilde;&ordm;mero de 32 bits</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__u64 rtapi_div_u64_rem(__u64
+<i>dividend</i>, __u32 <i>divisor</i>, __u32
+*<i>remainder</i>)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__u64 rtapi_div_u64(__u64
+<i>dividend</i>, __u32 <i>divisor</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__s64 rtapi_div_s64(__s64
+<i>dividend</i>, __s32 <i>divisor</i>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">__s64 rtapi_div_s64_rem(__s64
+<i>dividend</i>, __s32 <i>divisor</i>, __s32
+*<i>remainder</i>)</p> </td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>dividend</i></p>
+
+<p style="margin-left:22%;">El valor a dividir</p>
+
+<p style="margin-left:11%;"><i>divisor</i></p>
+
+<p style="margin-left:22%;">El valor entre el que
+dividir</p>
+
+<p style="margin-left:11%;"><i>remainder</i></p>
+
+<p style="margin-left:22%;">Puntero a la
+ubicaci&Atilde;&sup3;n para almacenar el resto. Esto no
+puede ser un puntero NULL. Si no desea el resto, llame a
+<b>rtapi_div_u64</b> o <b>rtapi_div_s64</b>.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Realiza la
+divisi&Atilde;&sup3;n de enteros (y opcionalmente calcula el
+resto) con un dividendo de 64 bits y un divisor de 32
+bits.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El resultado de
+la divisi&Atilde;&sup3;n entera de <i>dividendo /
+divisor</i>. En versiones con el argumento <i>remainder</i>,
+el resto se almacena en la ubicaci&Atilde;&sup3;n
+se&Atilde;&plusmn;alada.</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Si el resultado
+de la divisi&Atilde;&sup3;n no cabe en el tipo de retorno,
+el resultado es indefinido</p>
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+funci&Atilde;&sup3;n existe porque en el espacio del
+n&Atilde;&ordm;cleo el uso del operador de
+divisi&Atilde;&sup3;n en un tipo de 64 bits puede conducir a
+un s&Atilde;mbolo indefinido como __umoddi3 cuando el
+m&Atilde;&sup3;dulo es cargado.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde el c&Atilde;&sup3;digo de inicio/limpieza y desde las
+tareas en tiempo real. Disponible en componentes de espacio
+de usuario.</p>
+<hr>
+</body>
+</html>

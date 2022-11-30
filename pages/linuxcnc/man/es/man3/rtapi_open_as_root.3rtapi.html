@@ -1,0 +1,71 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:23 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<hr>
+
+
+<p style="margin-top: 1em">q.TH rtapi_open_as_root
+&quot;3rtapi&quot; &quot;&quot;
+&quot;Documentaci&Atilde;&sup3;n LinuxCNC&quot;
+&quot;RTAPI&quot;</p>
+
+<p style="margin-top: 1em">rtapi_open_as_root &minus; Abre
+un archivo con privilegio &quot;root&quot;</p>
+
+<p style="margin-top: 1em">El nombre del archivo a abrir,
+como en <b>open(2)</b>. Tenga en cuenta que rtapi no tiene
+un &quot;directorio actual&quot; bien definido, por lo que
+esta deber&Atilde;a ser una ruta absoluta, pero esto no es
+obligatorio. Las banderas open, como en <b>open(2)</b>.
+Nunca debe incluir bits que abren o crean archivos (por
+ejemplo, O_CREAT, O_APPEND, etc.) ya que esta API no
+est&Atilde;&iexcl; destinada a crear o escribir archivos,
+aunque esto no se fuerza.</p>
+
+<p style="margin-top: 1em">En tiempo real
+&quot;uspace&quot;, los privilegios de root se eliminan
+siempre que sea posible. Esta API activa temporalmente los
+privilegios de root para abrir un archivo y los desactiva
+antes de regresar. Esto puede ser &Atilde;&ordm;til, por
+ejemplo, al acceder a nodos de dispositivo o E/S mapeadas en
+memoria.</p>
+
+<p style="margin-top: 1em">En el caso de dispositivos PCI
+en sistemas x86 y x86-64, es preferible el estilo Linux de
+Interfaces PCI proporcionadas en
+<b>&lt;rtapi_pci.h&gt;</b>.</p>
+
+<p style="margin-top: 1em">En caso de &Atilde;&copy;xito,
+se abre el descriptor de archivo no negativo. Si el llamador
+no lo cierra, permanece abierto hasta que se sale de
+rtapi_app.</p>
+
+<p style="margin-top: 1em">En caso de fallo, un valor errno
+negativo.</p>
+
+<p style="margin-top: 1em">Llame solo desde codigo de
+inicio del tiempo real en tiempo real
+&quot;uspace&quot;.</p>
+
+<p style="margin-top: 1em"><b>open(2)</b>,
+<b>rtapi_pci(3)</b></p>
+<hr>
+</body>
+</html>

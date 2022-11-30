@@ -1,0 +1,191 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:33 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>LinuxCNC</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">LinuxCNC</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">elbpcom -
+Communicate with Mesa ethernet cards</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Common
+options:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="10%">
+
+
+<p style="margin-top: 1em"><b>elbpcom</b></p></td>
+<td width="2%"></td>
+<td width="66%">
+
+
+<p style="margin-top: 1em"><b>[--ip=</b><i>IP</i><b>]
+[--port=</b><i>PORT</i><b>]
+[--timeout=</b><i>TIMEOUT</i><b>]</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Reading
+data:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="10%">
+
+
+<p><b>elbpcom</b></p></td>
+<td width="2%"></td>
+<td width="60%">
+
+
+<p><b>[</b><i>common&nbsp;options</i><b>]
+--space=</b><i>SPACE</i> <b>[--info]
+--address=</b><i>ADDRESS</i> <b>--read=</b><i>LENGTH</i></p></td>
+<td width="6%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Writing
+data:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="10%">
+
+
+<p><b>elbpcom</b></p></td>
+<td width="2%"></td>
+<td width="66%">
+
+
+<p><b>[</b><i>common&nbsp;options</i><b>]
+--space=</b><i>SPACE</i> <b>--address=</b><i>ADDRESS</i>
+<b>--write=</b><i>HEXDATA</i></p> </td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Sending
+arbitrary packets:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="22%"></td>
+<td width="10%">
+
+
+<p><b>elbpcom</b></p></td>
+<td width="2%"></td>
+<td width="37%">
+
+
+<p><b>[</b><i>common&nbsp;options</i><b>]</b>
+<i>HEXDATA</i></p> </td>
+<td width="29%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Read or write
+data from a Mesa ethernet card that uses the LBP16 protocol,
+such as the 7i80. This can be useful for performing certain
+low-level tasks.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For more
+information about the meaning of each address space, see the
+card documentation. Incorrect use of this utility can have
+negative effects such as changing the board&rsquo;s IP
+address or even corrupting the FPGA bitfile in the eeprom.
+For some tasks, such as updating FPGA bitfiles and setting
+IP addresses, <b>mesaflash</b>(1) is a more appropriate
+tool.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If not
+specified, the default values are</p>
+
+
+<p style="margin-left:22%;"><b>--ip=</b><i>192.168.1.121</i>
+<b>--port=</b><i>27181</i> <b>--timeout=</b><i>.2</i></p>
+
+<p style="margin-left:11%; margin-top: 1em">This example
+demonstrates reading the HOSTMOT2 identifying string from
+the IDROM in space 0:</p>
+
+<p style="margin-left:22%;">$ elbpcom --space 0 --address
+0x104 --read 8 <br>
+&gt; 82420401 <br>
+&lt; 484f53544d4f5432 <br>
+HOSTMOT2</p>
+
+<p style="margin-left:11%;">First the request is shown in
+hex. Then the response (if any) is shown in hex. Finally,
+the response is shown in ASCII, with &quot;.&quot; replacing
+any non-ASCII characters. This is similar to the following
+invocations of mesaflash:</p>
+
+<p style="margin-left:22%;">$ ./mesaflash --device 7i80
+--rpo 0x104 <br>
+54534F48 <br>
+$ ./mesaflash --device 7i80 --rpo 0x108 <br>
+32544F4D</p>
+
+<p style="margin-left:11%;">but notice its different
+treatment of byte order.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mesaflash</b>(1),
+<b>hostmot2</b>(9), <b>hm2_eth</b>(9),
+<a href="http://www.mesanet.com">Mesa&rsquo;s documentation
+for the Anything I/O boards</a>.</p>
+<hr>
+</body>
+</html>

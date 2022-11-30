@@ -1,0 +1,179 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:24 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_task_new</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_task_new</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_task_new
+- crea una tarea en tiempo real</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="86%">
+</td>
+<td width="3%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="86%">
+
+
+<p style="margin-top: 1em">int rtapi_task_new(void
+(*<i>taskcode</i>)(void*), void *<i>arg</i>,</p></td>
+<td width="3%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;">int <i>prio</i>, unsigned long
+<i>stacksize</i>, int <i>uses_fp</i>)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="52%">
+
+
+<p style="margin-top: 1em">int rtapi_task_delete(int
+<i>task_id</i>)</p> </td>
+<td width="37%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>taskcode</i></p>
+
+<p style="margin-left:22%;">Un puntero a la
+funci&Atilde;&sup3;n que se llamar&Atilde;&iexcl; cuando se
+inicie la tarea</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>arg</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Un argumento para pasar a la funci&Atilde;&sup3;n
+<i>taskcode</i> cuando la tarea esta empezado</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>prio</i></p></td>
+<td width="5%"></td>
+<td width="78%">
+
+
+<p>Un valor de prioridad de tarea devuelto por
+<b>rtapi_prio_xxxx</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><i>uses_fp</i></p>
+
+<p style="margin-left:22%;">Una bandera que le dice al
+sistema operativo si la tarea usa punto flotante o no.</p>
+
+<p style="margin-left:11%;"><i>task_id</i></p>
+
+<p style="margin-left:22%;">Una ID de tarea devuelta por
+una llamada previa a <b>rtapi_task_new</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_task_new</b>
+crea pero no inicia una tarea en tiempo real. La tarea es
+creada en el estado &quot;en pausa&quot;. Para iniciarla,
+llame a <b>rtapi_task_start</b> para tareas
+peri&Atilde;&sup3;dicas, o <b>rtapi_task_resume</b> para
+tareas de ejecuci&Atilde;&sup3;n libre.</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Llame solo
+desde el c&Atilde;&sup3;digo de inicio/limpieza, no desde
+tareas en tiempo real.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">En caso de
+&Atilde;&copy;xito, devuelve una ID de tarea entero
+positivo. Esta identificaci&Atilde;&sup3;n se utiliza para
+todas las llamadas posteriores que necesitan actuar en la
+tarea. En caso de fracaso, devuelve un c&Atilde;&sup3;digo
+de estado RTAPI.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_prio(3rtapi)</b>,
+<b>rtapi_task_start(3rtapi)</b>,
+<b>rtapi_task_wait(3rtapi)</b>,
+<b>rtapi_task_resume(3rtapi)</b></p>
+<hr>
+</body>
+</html>

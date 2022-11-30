@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Configuración de motores a pasos</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Configuración de motores a pasos</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:stepper-quickstart"><p>Esta sección asume que una instalación estándar a partir de un LiveCd
+ha sido realizada. Posterior a la instalación es recomendable conectar
+la computadora al internet y esperar por la aparición del manejador de
+actualizaciones y obtener las ultimas actualizaciones para el EMC
+y Ubuntu antes de continuar. Para instalaciones mas complejas vea el
+manual del integrador.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prueba_de_latencia">1. Prueba de Latencia</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La prueba de latencia determina cuanto tiempo le toma al procesador
+de su computadora responder a una solicitud de procesamiento. Algunos
+Hardware pueden interrumpir el procesamiento lo que puede traducirse
+a la perdida de algunos pasos cuando se opera una maquina CNC. Esto
+es la primer cosa que se requiere hacer posterior a la instalación.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:Sherline">2. Sherline</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Si usted posee una maquina marca Sherline varias configuraciones predefinidas
+están disponibles. Estas configuraciones se encuentran en el menú principal
+CNC/EMC donde puede seleccionar la configuración que sea compatible con el tipo de
+maquina que posea y hacer clic, para copiarla y salvarla.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:Xylotex">3. Xylotex</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p>Si usted tiene una maquina marca Xylotex, usted puede escapar las siguientes secciones
+para pasar directamente a la sección de Asistente de Configuración de Motores a Pasos
+ubicada en <a href="stepconf_es.html#cha:stepconf-wizard">Wizard</a>. EMC provee una configuración rápida para maquinas
+Xylotex.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_información_sobre_la_maquina">4. Información sobre la Maquina</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Obtenga la información sobre cada eje de su maquina.</p></div>
+<div class="paragraph"><p>Los tiempos de los controladores están en nanosegundos. Si usted no esta seguro
+con respecto a los tiempos de su controlador de motor a pasos algunos tiempos
+específicos para controladores populares están incluidos en el asistente de configuración
+de motores a pasos.
+Nota: Algunos controladores marca Gecko de nueva generación tienen tiempos
+que difieren con los originales. Una lista con tiempos de diversos controladores es mantenida
+en el sitio wiki del LinuxCNC que es administrado por los mismos usuarios,
+en la siguiente dirección: <a href="http://wiki.linuxcnc.org/">list</a></p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<thead>
+<tr>
+<th align="left" valign="top">Eje  </th>
+<th align="left" valign="top"> Tipo de controlador </th>
+<th align="left" valign="top"> Tiempo de paso en ns </th>
+<th align="left" valign="top"> Tiempo entre pasos en ns </th>
+<th align="left" valign="top"> Dir. Mantener en ns </th>
+<th align="left" valign="top"> Dir. Cambiar en ns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Y</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Z</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_información_de_los_pines_de_salida">5. Información de los pines de salida</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Obtenga la información sobre las conecciones de su maquina hacia el puerto
+Paralelo de su computadora.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<thead>
+<tr>
+<th align="left" valign="top">Pin de Salida </th>
+<th align="left" valign="top"> Función Típica         </th>
+<th align="left" valign="top"> Si es Diferente </th>
+<th align="left" valign="top"> Pin de Entrada </th>
+<th align="left" valign="top"> Función típica   </th>
+<th align="left" valign="top"> Si es Diferente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">1</p></td>
+<td align="left" valign="top"><p class="table">Salida de Paro E-stop</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">10</p></td>
+<td align="left" valign="top"><p class="table">X Limite/Casa</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2</p></td>
+<td align="left" valign="top"><p class="table">Paso eje X</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">11</p></td>
+<td align="left" valign="top"><p class="table">Y Limite/Casa</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">3</p></td>
+<td align="left" valign="top"><p class="table">Dirección Eje X</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">12</p></td>
+<td align="left" valign="top"><p class="table">Z Limite/Casa</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">4</p></td>
+<td align="left" valign="top"><p class="table">Paso eje Y</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">13</p></td>
+<td align="left" valign="top"><p class="table">A Limite/Casa</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">5</p></td>
+<td align="left" valign="top"><p class="table">Dirección Eje Y</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table">15</p></td>
+<td align="left" valign="top"><p class="table">Zonda de Prueba</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">6</p></td>
+<td align="left" valign="top"><p class="table">Paso eje Z</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">7</p></td>
+<td align="left" valign="top"><p class="table">Dirección Eje Z</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">8</p></td>
+<td align="left" valign="top"><p class="table">Paso eje A</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">9</p></td>
+<td align="left" valign="top"><p class="table">Dirección Eje A</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">14</p></td>
+<td align="left" valign="top"><p class="table">Husillo CW</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">16</p></td>
+<td align="left" valign="top"><p class="table">Husillo PWM</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">17</p></td>
+<td align="left" valign="top"><p class="table">Amplificador Habilitado</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Nota: Cualquier pin no usado debe ser definido como <strong>Unused</strong> en el menú desplegable de configuaracion.
+Esto puede ser cambiado posteriormente ejecutando de nuevo el programa Stepconf</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_información_mecánica">6. Información Mecánica</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Obtenga la información de sus motores a pasos y en caso de existir de las reducciones mecánicas que este usando.
+El resultado sera el desplazamiento lineal en cada eje por paso en el motor, esta información sera utilizada
+en el parámetro SCALE del archivo de configuración .ini.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<thead>
+<tr>
+<th align="left" valign="top">Eje  </th>
+<th align="left" valign="top"> Pasos/Rev. </th>
+<th align="left" valign="top"> Micro Pasos </th>
+<th align="left" valign="top"> Dientes del motor </th>
+<th align="left" valign="top"> Dientes en el tornillo guía </th>
+<th align="left" valign="top"> Paso del tornillo guía</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">X</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Y</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Z</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Pasos por revolución</em> - indica cuantos pasos del motor le toma a la flecha del motor
+completar una revolución completa, un valor típico es 200 Pasos/Rev.
+</p>
+</li>
+<li>
+<p>
+<em>Micro Pasos</em> - este parámetro indica cuantos pasos generador por el software
+necesita el controlador del motor para producir un paso completo en el motor
+Algunos controladores dividen los pasos del motor para aumentar la resolución
+si no se utilizaran Micro Pasos este parámetro debe ser puesto en 1, en caso
+de utilizar micro pasos el valor dependera del Hardware especifico usado.
+</p>
+</li>
+<li>
+<p>
+<em>Dientes del Motor y *Dientes del tornillo guía</em> - estos parámetros se utilizan si
+se esta utilizando algún tipo de reducción mecánica (engranes, cadenas, bandas de tiempo, etc.)
+entre el motor y el tornillo guía.
+Si no se utiliza reducción el parámetro debe ser puesto al valor 1.
+</p>
+</li>
+<li>
+<p>
+<em>Paso del tornillo guía</em> - es cuanto movimiento lineal ocurre
+(en las unidades de usuario) cuando el tornillo guía da una vuelta completa.
+Si se utilizan pulgadas entonces es pulgadas por revolución.
+Si se utilizan milímetros entonces es milímetros por revolución
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El resultado de la combinación de parámetros que se busca es cuantos
+pasos producidos por el software CNC le tomara al eje moverse linealmente
+una unidad de usuario (pulgadas o mm).</p></div>
+<div class="exampleblock">
+<div class="title">Example 1. Unidades Pulgadas</div>
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre><code>Motor a Pasos             = 200 Pasos por revolución
+Controlador de Motor      =  10 micro pasos por paso
+Dientes del motor         =  20
+Dientes del tornillo guía =  40
+Paso del tornillo guía    =   0.2000 pulgadas por revolución</code></pre>
+</div></div>
+</div></div>
+<div class="paragraph"><p>A partir de la información anterior, el tornillo guía se mueve 0.200 pulgadas por vuelta.
+ - El motor da  2 vueltas por una vuelta del tornillo guía.
+ - El controlador necesita 10 micro pasos de entrada para hacer al motor dar un paso.
+ - El controlador necesita 2000 pasos para hacer que el motor de una revolución.
+Por lo tanto la escala necesitada es:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/step-calc-inch-math.png" alt="images/step-calc-inch-math.png" />
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Unidades mm</div>
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre><code>Motor a Pasos             = 200 Pasos por revolución
+Controlador de Motor      =  8 micro pasos por paso
+Dientes del motor         =  30
+Dientes del tornillo guía =  90
+Paso del tornillo guía    =   5.00 mm por revolución</code></pre>
+</div></div>
+</div></div>
+<div class="paragraph"><p>A partir de la información anterior, el tornillo guía se mueve 5.00 mm por vuelta.
+ - El motor da  3 vueltas por una vuelta del tornillo guía.
+ - El controlador necesita 8 micro pasos de entrada para hacer al motor dar un paso.
+ - El controlador necesita 1600 pasos para hacer que el motor de una revolución.
+Por lo tanto la escala necesitada es:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/step-calc-mm-math.png" alt="images/step-calc-mm-math.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

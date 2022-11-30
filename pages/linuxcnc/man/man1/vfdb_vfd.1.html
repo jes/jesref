@@ -1,0 +1,491 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:37 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>vfdb_vfd</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">vfdb_vfd</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#QUICK START">QUICK START</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#INI CONFIG VARIABLES">INI CONFIG VARIABLES</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#USAGE">USAGE</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>vfdb_vfd</b>
+- HAL userspace component for Delta VFD-B Variable Frequency
+Drives</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>vfdb_vfd</b>
+[OPTIONS]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This manual
+page explains the <b>vfdb_vfd</b> component. This component
+reads and writes to the VFD-B device via a Modbus
+connection.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>vfdb_vfd</b>
+is for use with LinuxCNC.</p>
+
+<h2>QUICK START
+<a name="QUICK START"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The VFD-B ships
+in a configuration that can not talk to this driver. The
+VFD-B must be reconfigured via the face plate by the
+integrator before it will work. This section gives a brief
+description of what changes need to be made, consult your
+Delta VFD-B manual for more details.</p>
+
+<p style="margin-left:22%;">Switch the VFD-B to Modbus RTU
+frame format:</p>
+
+<p style="margin-left:32%;">Switch parameter 09-04 from the
+factory default of 0 (Ascii framing) to 3, 4, or 5 (RTU
+framing). The setting you choose will determine several
+serial parameters in addition to the Modbus framing
+protocol.</p>
+
+<p style="margin-left:22%;">Set the frequency control
+source to be Modbus, not the keypad:</p>
+
+<p style="margin-left:32%;">Switch parameter 02-00 from
+factory default of 00 (keypad control) to 5 (control from
+RS-485).</p>
+
+<p style="margin-left:22%;">Set the run/stop control source
+to be Modbus, not the keypad:</p>
+
+<p style="margin-left:32%;">Switch parameter 02-01 from the
+factory default of 0 (control from keypad) to 3 (control
+from Modbus, with Stop enabled on the keypad).</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-n&nbsp;--name&nbsp;&lt;halname&gt;</b></p>
+
+<p style="margin-left:22%;">set the HAL component name</p>
+
+<p style="margin-left:11%;"><b>-d&nbsp;--debug</b></p>
+
+<p style="margin-left:22%;">Turn on debugging messages.
+Also toggled by sending a USR1 signal to the vfdb_vfd
+process.</p>
+
+
+<p style="margin-left:11%;"><b>-m&nbsp;--modbus-debug</b></p>
+
+<p style="margin-left:22%;">Turn on Modbus debugging
+messages. This will cause all Modbus messages to be printed
+in hex on the terminal. Also toggled by sending a USR2
+signal to the vfdb_vfd process.</p>
+
+
+<p style="margin-left:11%;"><b>-I&nbsp;--ini&nbsp;&lt;inifilename&gt;</b></p>
+
+<p style="margin-left:22%;">take configuration from this
+ini file. Defaults to environment variable INI_FILE_NAME.
+Most vfdb_vfd configuration comes from the ini file, not
+from command-line arguments.</p>
+
+
+<p style="margin-left:11%;"><b>-S&nbsp;--section&nbsp;&lt;section&nbsp;name&gt;</b></p>
+
+<p style="margin-left:22%;">take configuration from this
+section in the ini file. Defaults to
+&rsquo;VFD-B&rsquo;.</p>
+
+
+<p style="margin-left:11%;"><b>-r&nbsp;--report-device</b></p>
+
+<p style="margin-left:22%;">report device propertiers on
+console at startup</p>
+
+<h2>INI CONFIG VARIABLES
+<a name="INI CONFIG VARIABLES"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p style="margin-top: 1em"><b>DEBUG</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">Set to a non-zero value to
+enable general debug output from the VFD-B driver.
+Optional.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>MODBUS_DEBUG</b></p>
+
+<p style="margin-left:22%;">Set to a non-zero value to
+enable modbus debug output from the VFD-B driver.
+Optional.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>DEVICE</b></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Serial port device file to use for Modbus communication
+with the VFD-B. Defaults to &rsquo;/dev/ttyS0&rsquo;.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>BAUD</b></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Modbus baud rate. Defaults to 19200.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>BITS</b></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Modbus data bits. Defaults to 8.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>PARITY</b></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Modbus parity. Defaults to Even. Accepts
+&rsquo;Even&rsquo;, &rsquo;Odd&rsquo;, or
+&rsquo;None&rsquo;.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>STOPBITS</b></p>
+
+<p style="margin-left:22%;">Modbus stop bits. Defaults to
+1.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p><b>TARGET</b></p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Modbus target number of the VFD-B to speak to. Defaults
+to 1.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>POLLCYCLES</b></p>
+
+<p style="margin-left:22%;">Only read the less important
+variables from the VFD-B once in this many poll cycles.
+Defaults to 10.</p>
+
+<p style="margin-left:11%;"><b>RECONNECT_DELAY</b></p>
+
+<p style="margin-left:22%;">If the connection to the VFD-B
+is broken, wait this many seconds before reconnecting.
+Defaults to 1.</p>
+
+
+<p style="margin-left:11%;"><b>MOTOR_HZ,&nbsp;MOTOR_RPM</b></p>
+
+<p style="margin-left:22%;">The frequency of the motor (in
+Hz) and the corresponding speed of the motor (in RPM). This
+information is provided by the motor manufacturer, and is
+generally printed on the motor&rsquo;s name plate.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;name&gt;.at-speed&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">True when drive is at commanded
+speed (see <i>speed-tolerance</i> below)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.enable&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">Enable the VFD. If False, all
+operating parameters are still read but control is released
+and panel control is enabled (subject to VFD setup).</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.frequency-command&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Current target frequency in HZ
+as set through speed-command (which is in RPM), from the
+VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.frequency-out&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Current output frequency of the
+VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.inverter-load-percentage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Current load report from
+VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.is-e-stopped&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">The VFD is in emergency stop
+status (blinking &quot;E&quot; on panel).</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.is-stopped&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">True when the VFD reports 0 Hz
+output.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.jog-mode&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">1 for ON and 0 for OFF, enables
+the VFD-B &rsquo;jog mode&rsquo;. Speed control is disabled.
+This might be useful for spindle orientation.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.max-rpm&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Actual RPM limit based on
+maximum frequency the VFD may generate, and the motors
+nameplate values. For instance, if <i>nameplate-HZ</i> is
+50, and <i>nameplate-RPM</i> is 1410, but the VFD may
+generate up to 80Hz, then <i>max-rpm</i> would read as 2256
+(80*1410/50). The frequency limit is read from the VFD at
+startup. To increase the upper frequency limit, the UL and
+FH parameters must be changed on the panel. See the VFD-B
+manual for instructions how to set the maximum
+frequency.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.modbus-ok&nbsp;(bit,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">True when the Modbus session is
+successfully established and the last 10 transactions
+returned without error.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.motor-RPM&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Estimated current RPM value,
+from the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.motor-RPS&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Estimated current RPS value,
+from the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.output-voltage&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">From the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.output-current&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">From the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.speed-command&nbsp;(float,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">Speed sent to VFD in RPM. It is
+an error to send a speed faster than the Motor Max RPM as
+set in the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-on&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">1 for ON and 0 for OFF sent to
+VFD, only on when running.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.max-speed&nbsp;(bit,&nbsp;in)</b></p>
+
+<p style="margin-left:22%;">Ignore the loop-time parameter
+and run Modbus at maximum speed, at the expense of higher
+CPU usage. Suggested use during spindle positioning.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.status&nbsp;(s32,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Drive Status of the VFD (see
+the VFD manual). A bitmap.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.error-count&nbsp;(s32,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Total number of transactions
+returning a Modbus error.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.error-code&nbsp;(s32,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Most recent Error Code from
+VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.frequency-limit&nbsp;(float,&nbsp;out)</b></p>
+
+<p style="margin-left:22%;">Upper limit read from VFD
+setup.</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;name&gt;.loop-time&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">How often the Modbus is polled
+(default interval 0.1 seconds).</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.nameplate-HZ&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">Nameplate Hz of motor (default
+50). Used to calculate target frequency (together with
+<i>nameplate-RPM</i> ) for a target RPM value as given by
+speed-command.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.nameplate-RPM&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">Nameplate RPM of motor (default
+1410)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.rpm-limit&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">Do-not-exceed soft limit for
+motor RPM (defaults to <i>nameplate-RPM</i> ).</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.tolerance&nbsp;(float,&nbsp;RW)</b></p>
+
+<p style="margin-left:22%;">Speed tolerance (default 0.01)
+for determining whether spindle is at speed (0.01 meaning:
+output frequency is within 1% of target frequency).</p>
+
+<h2>USAGE
+<a name="USAGE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The vfdb_vfd
+driver takes precedence over panel control while it is
+enabled (see <i>.enable</i> pin), effectively disabling the
+panel. Clearing the <i>.enable</i> pin re-enables the panel.
+Pins and parameters can still be set, but will not be
+written to the VFD untile the .enable pin is set. Operating
+parameters are still read while bus control is disabled.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Exiting the
+vfdb_vfd driver in a controlled way will release the VFD
+from the bus and restore panel control.</p>
+
+<p style="margin-left:11%; margin-top: 1em">See the
+LinuxCNC Integrators Manual for more information. For a
+detailed register description of the Delta VFD-B, see the
+VFD manual.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Yishin Li;
+based on vfd11_vfd by Michael Haberler.</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

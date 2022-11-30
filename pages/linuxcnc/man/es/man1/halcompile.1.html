@@ -1,0 +1,214 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>halcompile</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">halcompile</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halcompile -
+Construye, compila e instala componentes HAL de LinuxCNC</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:18%; margin-top: 1em"><b>halcompile</b>
+[<b>--compile</b> | <b>--preprocess</b> | <b>--document</b>
+| <b>--view-doc</b>] archivo.comp...</p>
+
+<p style="margin-left:11%;"><i>sudo</i> <b>halcompile</b>
+[<b>--install</b>|<b>--install-doc</b>] archivo.comp...</p>
+
+<p style="margin-left:18%;"><b>halcompile --compile
+--userspace</b> archivo.c...</p>
+
+<p style="margin-left:11%;"><i>sudo</i> <b>halcompile
+--install --userspace</b> archivo.c... <i><br>
+sudo</i> <b>halcompile --install --userspace</b>
+archivo.py...</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cuando se
+utilizan personalidades en un archivo de
+compilaci&Atilde;&sup3;n, las instancias de hal se exportan
+secuencialmente (por lo general, por los
+par&Atilde;&iexcl;metros count= o names= mutuamente
+excluyentes). Si el n&Atilde;&ordm;mero de exportaciones
+excede el n&Atilde;&ordm;mero m&Atilde;&iexcl;ximo de
+personalidades, a las personalidades posteriores se les
+asigna m&Atilde;&sup3;dulo al n&Atilde;&ordm;mero
+m&Atilde;&iexcl;ximo de personalidades permitido.</p>
+
+<p style="margin-left:11%; margin-top: 1em">De forma
+predeterminada, el n&Atilde;&ordm;mero m&Atilde;&iexcl;ximo
+de personalidades es 64. Para modificar este l&Atilde;mite,
+use la opci&Atilde;&sup3;n <b>--personalities=</b> con
+halcompile. Por ejemplo, para establecer el
+m&Atilde;&iexcl;ximo de elementos de personalidad en 4: <br>
+[sudo] <b>halcompile --personalities=4</b> --install ...</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halcompile</b>
+realiza muchas funciones diferentes:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Compila los archivos <b>.comp</b> y <b>.c</b> en
+<b>.so</b> o <b>.ko</b> como componentes HAL en tiempo real
+(la bandera <b>--compile</b>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Compila los archivos <b>.comp</b> y <b>.c</b> en
+componentes de espacio de usuario HAL (bandera <b>--compile
+--userspace</b>)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Preprocesa archivos <b>.comp</b> en archivos <b>.c</b>
+(bandera <b>--preprocess</b>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Extrae la documentacion de los archivos <b>.comp</b> en
+archivos de paginas de manual de <b>.9</b> (bandera
+<b>--document</b>)</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Muestra la documentacion de los archivos <b>.comp</b> en
+pantalla (bandera <b>--view-doc</b>)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Compila e instala los archivos <b>.comp</b> y <b>.c</b>
+en el directorio adecuado para los componentes HAL en tiempo
+real (bandera <b>--install</b>), lo que puede requerir que
+<i>sudo</i> escriba en el sistema de directorios.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Instala los archivos <b>.c</b> y <b>.py</b> en el
+directorio adecuado para los componentes HAL de espacio de
+usuario (bandera <b>--install --userspace</b>),lo que puede
+requerir que <i>sudo</i> escriba en el sistema de
+directorios.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="83%">
+
+
+<p>Extrae documentacion de los archivos <b>.comp</b> en los
+archivos de paginas de manual de <b>.9</b> en el directorio
+del sistema adecuado (bandera <b>--install</b> ), lo que
+puede requerir que <i>sudo</i> escriba en el sistema de
+directorios.</p> </td></tr>
+</table>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+<p style="margin-left:11%;"><i>Halcompile Generador de
+Componentes HAL</i> en la documentacion de LinuxCNC para
+obtener una descripcion completa de la sintaxis de archivos
+<b>.comp</b>, junto con ejemplos. <b>pydoc hal</b> y
+<i>Creando Componentes Python de Espacio de Usuario</i> en
+la documentacion de LinuxCNC para obtener documentacion
+sobre la interfaz de Python para los componentes HAL</p>
+<hr>
+</body>
+</html>

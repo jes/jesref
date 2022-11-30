@@ -1,0 +1,228 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:31 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SETSERIAL</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SETSERIAL</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#USO">USO</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">setsserial -
+una utilidad para configurar los par&Atilde;&iexcl;metros de
+Smart Serial NVRAM.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>NOTA: esta
+utilidad bastante torpe ya no es necesaria, excepto para
+actualizar el nuevo firmware remoto smart-serial.</b> Los
+par&Atilde;&iexcl;metros remotos de smart-serial ahora se
+pueden configurar en el archivo HAL de la manera normal.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt setsserial
+cmd=&quot;set hm2_8i20.001f.nvmaxcurrent 750&quot;</b></p></td></tr>
+</table>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguna</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguna</p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">loadrt
+setsserial cmd=&quot;{command} {parameter/device}
+{value/filename}&quot;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los comandos
+disponibles son <b>set</b> y <b>flash</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Esta utilidad
+se debe usar en halcmd, sin LinuxCNC
+ejecut&Atilde;&iexcl;ndose ni ejecutando hilos en tiempo
+real.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Una secuencia
+de comando t&Atilde;pica ser&Atilde;a:</p>
+
+<p style="margin-left:11%; margin-top: 1em">halrun <br>
+loadrt hostmot2 use_serial_numbers=1 <br>
+loadrt hm2_pci
+config=&quot;firmware=hm2/5i23/svss8_8.bit&quot; <br>
+show param <br>
+loadrt setsserial cmd=&quot;set hm2_8i20.001f.nvmaxcurrent
+750&quot; <br>
+exit</p>
+
+<p style="margin-left:11%; margin-top: 1em">Este ejemplo
+usa la opci&Atilde;&sup3;n de tener los pines y
+par&Atilde;&iexcl;metros hal etiquetados con el
+n&Atilde;&ordm;mero de serie del remoto. Esto no es
+necesario, pero puede reducir el margen de
+confusi&Atilde;&sup3;n. (El n&Atilde;&ordm;mero de serie
+normalmente est&Atilde;&iexcl; en una etiqueta en el
+dispositivo).</p>
+
+<p style="margin-left:11%; margin-top: 1em">La siguiente
+l&Atilde;nea carga el controlador hm2_pci de la manera
+normal. El controlador hm2_7i43 deber&Atilde;a funcionar
+igual de bien, al igual que cualquier otro controlador 7i80
+futuro. Si la tarjeta ya se ha instalado y se ha cargado un
+firmware, entonces se puede omitir la cadena de
+configuraci&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em">&quot;show
+param&quot; es opcional, pero proporciona una lista
+pr&Atilde;&iexcl;ctica de todos los dispositivos y
+par&Atilde;&iexcl;metros. Tambi&Atilde;&copy;n muestra los
+valores actuales de los par&Atilde;&iexcl;metros que pueden
+ser &Atilde;&ordm;tiles para determinar la escala. Los
+valores de pin u32 siempre se muestran en hexadecimal, pero
+los valores nuevos se pueden ingresar en decimal o
+hexadecimal. Use el formato Ox123ABC para ingresar un valor
+hexadecimal.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La siguiente
+l&Atilde;nea invoca setsserial. Esto se ejecuta de una
+manera un poco extra&Atilde;&plusmn;a para tener acceso a
+nivel de kernel a una configuraci&Atilde;&sup3;n de Hostmot2
+en vivo. B&Atilde;&iexcl;sicamente es un m&Atilde;&sup3;dulo
+HAL que siempre falla su carga. Esto puede provocar que se
+impriman mensajes de error en el indicador de halcmd. Estos
+a menudo pueden ser ignorados. Todos los comentarios reales
+son a trav&Atilde;&copy;s del comando dmesg. Se sugiere
+tener una segunda ventana de terminal abierta para ejecutar
+dmesg despu&Atilde;&copy;s de cada comando.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Al salir,
+normalmente habr&Atilde;&iexcl; otro mensaje de error
+relacionado con la falla del controlador al descargar
+setsserial. Esto puede ser ignorado.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los cambios de
+par&Atilde;&iexcl;metros no se mostrar&Atilde;&iexcl;n hasta
+que se vuelvan a cargar los controladores. //TODO// Agregar
+un comando &quot;get&quot; para evitar este problema.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Flasheo del
+Firmware</b> Para actualizar el nuevo firmware a una tarjeta
+FPGA, como la 5i25 o 5i20, se debe utilizar la utilidad
+&quot;mesaflash&quot;. setsserial solo es &Atilde;&ordm;til
+para cambiar/actualizar el firmare en un control remoto
+smart-serial como el 8i20. El firmware debe colocarse en
+alg&Atilde;&ordm;n lugar del &Atilde;&iexcl;rbol
+/lib/firmware/hm2, donde las macros de carga de firmware de
+Linux pueden encontrarlo.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La rutina de
+flasheo opera en un hilo en tiempo real, y solo puede enviar
+mensajes al usuario a trav&Atilde;&copy;s del registro del
+n&Atilde;&ordm;cleo (dmesg). Es m&Atilde;&iexcl;s
+conveniente abrir dos ventanas de terminal, una para la
+entrada de comandos y otra para monitorear el progreso.</p>
+
+<p style="margin-left:11%; margin-top: 1em">En la primera
+terminal ingrese</p>
+
+<p style="margin-left:11%; margin-top: 1em">tail -f
+/var/log/kern.log</p>
+
+<p style="margin-left:11%; margin-top: 1em">Este terminal
+ahora mostrar&Atilde;&iexcl; informaci&Atilde;&sup3;n de
+estado.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La segunda
+ventana se usar&Atilde;&iexcl; para ingresar los comandos.
+Es importante que LinuxCNC y/o HAL no est&Atilde;&copy;n
+cargados cuando se inicia el proceso. Para actualizar el
+nuevo firmware es necesario mover un puente en la unidad
+remota smart-serial y cambiar la comunicaci&Atilde;&sup3;n a
+una velocidad de transmisi&Atilde;&sup3;n m&Atilde;&iexcl;s
+lenta.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Una secuencia
+de comando t&Atilde;pica es entonces: <br>
+halrun <br>
+loadrt hostmot2 sserial_baudrate=115200 <br>
+loadrt hm2_pci
+config=&quot;firmware=hm2/5i23/svss8_8.bit&quot; <br>
+loadrt setsserial cmd=&quot;flash hm2_5i23.0.8i20.0.1
+hm2/8i20/8i20T.BIN&quot; <br>
+exit</p>
+
+<p style="margin-left:11%; margin-top: 1em">No es necesario
+(o &Atilde;&ordm;til) especificar una cadena de
+configuraci&Atilde;&sup3;n en un sistema usando las tarjetas
+5i25 o 6i25.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Tenga en cuenta
+que es necesario salir de Halrun y descargar el entorno en
+tiempo real antes de flashear la pr&Atilde;&sup3;xima
+tarjeta (exit)</p>
+
+<p style="margin-left:11%; margin-top: 1em">El nombre de
+canal sserial correcto para usar se puede ver en la salida
+dmesg en el terminal de retroalimentaci&Atilde;&sup3;n
+despu&Atilde;&copy;s del paso loadrt hm2_pci de la
+secuencia.</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

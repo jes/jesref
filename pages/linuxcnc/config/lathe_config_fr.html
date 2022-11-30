@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Tours</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Tours</h1>
+<div id="toc">
+  <div id="toctitle">Table des matières</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:Configuration-tour">1. Plan par défaut</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Quand l&#8217;interpréteur de LinuxCNC à été créé, il à été écrit pour les
+fraiseuses. C&#8217;est pourquoi le plan par défaut est le plan XY (G17). Sur
+un tour standard on utilise seulement les axes du plan XZ (G18). Pour
+changer le plan par défaut d&#8217;un tour, mettez la ligne suivante dans la
+section RS274NGC du fichier ini.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>RS274NGC_STARTUP_CODE = G18</code></pre>
+</div></div>
+<div class="paragraph"><p>La ligne de commande ci-dessus peut être remplacées par des G codes placés
+dans le préambule du programme G-code.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_réglages_ini">2. Réglages INI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Les réglages du fichier .ini suivants sont nécessaires dans Axis en mode tour,
+en remplacement ou ajout au fichier .ini normal.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = axis
+LATHE = 1
+[TRAJ]
+AXES = 3
+COORDINATES = X Z
+[AXIS_0]
+...
+[AXIS_2]
+...</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Dernière mise à jour
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

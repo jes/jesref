@@ -1,0 +1,233 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:17 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HALSAMPLER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HALSAMPLER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#OPCIONES">OPCIONES</a><br>
+<a href="#USO">USO</a><br>
+<a href="#ESTADO DE SALIDA">ESTADO DE SALIDA</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+<a href="#HISTORIA">HISTORIA</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#AUTOR">AUTOR</a><br>
+<a href="#REPORTAR ERRORES">REPORTAR ERRORES</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">halsampler -
+muestrea datos de HAL en tiempo real</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halsampler</b>
+[opciones]</p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler(9)</b>
+y <b>halsampler</b> se utilizan juntos para muestrear datos
+HAL en tiempo real y almacenarlos en un archivo.
+<b>sampler</b> es un componente HAL en tiempo real que
+exporta pines HAL y crea una FIFO en la memoria compartida.
+Luego comienza a muestrear los datos de HAL y los almacena
+en la FIFO. <b>halsampler</b> es un programa de espacio de
+usuario que copia los datos de la FIFO a la salida estandar,
+donde pueden ser redirigidos a un archivo o canalizados a
+algun otro programa.</p>
+
+<h2>OPCIONES
+<a name="OPCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-c</b>
+<i>CHAN</i></p>
+
+<p style="margin-left:22%;">Instruye a <b>halsampler</b>
+para leer de la FIFO <i>CHAN.</i> Las FIFO se numeran desde
+cero y el valor predeterminado es cero, por lo que esta
+opcion no es necesaria a menos que se hayan creado multiples
+FIFOs.</p>
+
+<p style="margin-left:11%;"><b>-n</b> <i>COUNT</i></p>
+
+<p style="margin-left:22%;">Instruye a <b>halsampler</b>
+para leer <i>COUNT</i> muestras de la FIFO y luego salir. Si
+<b>-n</b> no se especifica, <b>halsampler</b> Leera
+continuamente hasta que se mate.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p><b>-t</b></p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Instruye a <b>halsampler</b> para etiquetar cada linea
+imprimiendo el numero de muestra en la primera columna.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>FILENAME</b></p>
+
+<p style="margin-left:22%;">Instruye a <b>halsampler</b>
+para escribir en <b>FILENAME</b> en lugar de en stdout.</p>
+
+<h2>USO
+<a name="USO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Debe crearse
+primero una FIFO, cargando <b>sampler</b>(9) con <b>halcmd
+loadrt</b> o con un comando <b>loadrt</b> en un archivo
+.hal. Despues <b>halsampler</b> se puede invocar para
+comenzar a imprimir datos desde la FIFO a la salida
+estandar.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los datos se
+imprimen una linea por muestra. Si se especifico <b>-t</b> ,
+el numero de muestra se imprime primero. Siguen los datos,
+en el orden que los pines fueron definidos en la cadena de
+configuracion. Por ejemplo, si la cadena de configuracion de
+<b>sampler</b> era &quot;ffbs&quot;, entonces una linea
+tipica de salida (sin <b>-t)</b> se veria como</p>
+
+<p style="margin-left:11%; margin-top: 1em">123.55 33.4 0
+-12</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>halsampler</b>
+imprime los datos lo mas rapido posible hasta que la FIFO
+queda vacia, luego reintenta a intervalos regulares, hasta
+que se elimina o se imprime <i>COUNT</i> muestras
+solicitadas por <b>-n.</b> Por lo general, pero no siempre,
+los datos impresos por <b>halsampler</b> seran redirigido a
+un archivo o canalizados a algun otro programa.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El
+tama&ntilde;o de la FIFO debe elegirse para absorber las
+muestras capturadas durante cualquier interrupcion
+momentanea en el flujo de datos, como busquedas en disco,
+desplazamiento del terminal o limitaciones de procesamiento
+del programa posterior en una tuberia. Si la FIFO se llena,
+y <b>sampler</b> queda obligado a sobrescribir los datos
+antiguos, <b>halsampler</b> imprimira
+&rsquo;sobrepasado&rsquo; en una linea para marcar cada gap
+en el muestreo de datos. Si se especifico <b>-t</b> , los
+gaps en los numeros de muestra secuenciales en la primera
+columna se pueden usar para determinar exactamente cuantas
+muestras se perdieron.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El formato de
+datos de salida de <b>halsampler</b> es el mismo que el de
+entrada de <b>halstreamer(1)</b> , por lo que &rsquo;formas
+de onda&rsquo; capturadas con <b>halsampler</b> se puede
+reproducir utilizando <b>halstreamer.</b> La opcion
+<b>-t</b> no debe ser utilizada en este caso.</p>
+
+<h2>ESTADO DE SALIDA
+<a name="ESTADO DE SALIDA"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Si se encuentra
+un problema durante la inicializacion, <b>halsampler</b>
+imprime un mensaje a stderr y devuelve el error.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Al imprimir
+<i>COUNT</i> muestras (si <b>-n</b> fue especificado) se
+cerrara y devolvera exito. Si es terminado antes de imprimir
+el numero especificado de muestras, devuelve error. Esto
+significa que cuando <b>-n</b> no se especifica, siempre
+devolvera un error cuando termine.</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sampler(9)
+streamer(9) halstreamer(1)</b></p>
+
+<h2>HISTORIA
+<a name="HISTORIA"></a>
+</h2>
+
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<h2>AUTOR
+<a name="AUTOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Version
+original de John Kasunich, como parte del proyecto LinuxCNC.
+Mejoras de varios otros miembros del equipo de desarrollo de
+LinuxCNC.</p>
+
+<h2>REPORTAR ERRORES
+<a name="REPORTAR ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Informar
+errores a jmkasunich AT usuarios DOT sourceforge DOT net</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2006 John Kasunich. <br>
+Este es un software libre; ver las fuentes para condiciones
+de copia. No hay garantia; ni siquiera para COMERCIABILIDAD
+o APTITUD PARA UN PROPoSITO PARTICULAR.</p>
+<hr>
+</body>
+</html>

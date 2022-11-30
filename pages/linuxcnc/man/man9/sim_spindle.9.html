@@ -1,0 +1,120 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:50 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SIM_SPINDLE</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SIM_SPINDLE</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">sim_spindle -
+Simulated spindle with index pulse</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em"><b>loadrt sim_spindle
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="11%">
+</td></tr>
+</table>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-spindle.</b><i>N</i>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-spindle.</b><i>N</i><b>.velocity-cmd</b>
+float in</p>
+
+<p style="margin-left:22%;">Commanded speed</p>
+
+
+<p style="margin-left:11%;"><b>sim-spindle.</b><i>N</i><b>.position-fb</b>
+float out</p>
+
+<p style="margin-left:22%;">Feedback position, in
+revolutions</p>
+
+
+<p style="margin-left:11%;"><b>sim-spindle.</b><i>N</i><b>.index-enable</b>
+bit io</p>
+
+<p style="margin-left:22%;">Reset <b>position-fb</b> to 0
+at the next full rotation</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>sim-spindle.</b><i>N</i><b>.scale</b>
+float rw (default: <i>1.0</i>)</p>
+
+<p style="margin-left:22%;">factor applied to
+<b>velocity-cmd</b>.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The result of
+&rsquo;<b>velocity-cmd</b> * <b>scale</b>&rsquo; be in
+revolutions per second. For example, if <b>velocity-cmd</b>
+is in revolutions/minute, <b>scale</b> should be set to 1/60
+or 0.016666667.</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:33 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_manualtoolchange</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_manualtoolchange</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#USAGE">USAGE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_manualtoolchange
+- HAL userspace component to enable manual tool changes.</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">loadusr
+hal_manualtoolchange</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_manualtoolchange
+is a LinuxCNC userspace component that allows users with
+machines lacking automatic tool changers to make manual tool
+changes. In use when a M6 tool change is encountered, the
+motion component will stop the spindle and pause the
+program. The hal_manualtoolchange component will then
+receive a signal from the motion component causing it to
+display a tool change window prompting the user which tool
+number to load based on the last T- number programmed. The
+dialog will stay active until the &quot;continue&quot;
+button is pressed. When the &quot;continue&quot; button is
+pressed, hal_manualtoolchange will then signal the motion
+component that the tool change is complete thus allowing
+motion to turn the spindle back on and resume program
+execution.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Additionally,
+The hal_manualtoolchange component includes a hal pin for a
+button that can be connected to a physical button to
+complete the tool change and remove the window prompt
+(hal_manualtoolchange.change_button).</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_manualtoolchange
+can be used even when AXIS is not used as the GUI. This
+component is most useful if you have presettable tools and
+you use the tool table.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_manualtoolchange.number</b>
+s32 in</p>
+
+<p style="margin-left:22%;">Receives last programmed T-
+number.</p>
+
+
+<p style="margin-left:11%;"><b>hal_manualtoolchange.change</b>
+bit in</p>
+
+<p style="margin-left:22%;">Receives signal to do tool
+change.</p>
+
+
+<p style="margin-left:11%;"><b>hal_manualtoolchange.changed</b>
+bit out</p>
+
+<p style="margin-left:22%;">Signifies that the tool change
+is complete.</p>
+
+
+<p style="margin-left:11%;"><b>hal_manualtoolchange.change_button</b>
+bit in</p>
+
+<p style="margin-left:22%;">Pin to allow an external switch
+to signify that the tool change is complete.</p>
+
+<h2>USAGE
+<a name="USAGE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Normal usage is
+to load the component in your HAL file and net the
+appropriate pins from the <i>motion</i> and <i>io</i>
+components. The following lines are typical in a HAL file
+when using the hal_manualtoolchange userspace component.
+<b><br>
+loadusr -W hal_manualtoolchange</b></p>
+
+<p style="margin-left:22%;">This will load the
+hal_manualtoolchange userspace component waiting for the
+component to be ready before continuing.</p>
+
+<p style="margin-left:11%;"><b>net tool-change
+iocontrol.0.tool-change =&gt;
+hal_manualtoolchange.change</b></p>
+
+<p style="margin-left:22%;">When an M6 code is run, motion
+sets <i>iocontrol.0.tool-change</i> to high indicating a
+tool change. This pin should be netted to
+<i>hal_manualtoolchange.change</i>. This causes the Tool
+change dialog to be displayed on screen and wait for the
+user to either click the continue button on the dialog or
+press an externally connected button.</p>
+
+<p style="margin-left:11%;"><b>net tool-changed
+iocontrol.0.tool-changed &lt;= <br>
+hal_manualtoolchange.changed</b></p>
+
+<p style="margin-left:22%;">When the Tool change
+dialog&rsquo;s continue button is pressed, it will set the
+<i>hal_manualtoolchange.changed</i> pin to high, this should
+be netted to the <i>iocontrol.0.tool-changed</i> pin,
+indicating to the motion controller that the tool change has
+been completed and can continue with the execution of the
+G-code program.</p>
+
+<p style="margin-left:11%;"><b>net tool-number
+iocontrol.0.tool-prep-number =&gt; <br>
+hal_manualtoolchange.number</b></p>
+
+<p style="margin-left:22%;">When a T- command is executed
+in a G-code program, the tool number will held in the
+<i>iocontrol.0.tool-prep-number</i>. This pin should be
+netted to <i>hal_manualtoolchange.number</i>. The value of
+this pin, the tool number is displayed in the Tool change
+dialog to let the user know which tool should be loaded.</p>
+
+<p style="margin-left:11%;"><b>net tool-prepare-loopback
+iocontrol.0.tool-prepare =&gt; <br>
+iocontrol.0.tool-prepared</b></p>
+
+<p style="margin-left:22%;">The
+<i>iocontrol.0.tool-prepare</i> pin will go true when a Tn
+tool prepare is requested. Since there is not automated tool
+changer this pin should be netted to
+<i>iocontrol.0.tool-prepared</i> to indocate that the tool
+has been prepared.</p>
+
+<p style="margin-left:11%; margin-top: 1em">If you wish to
+use an external button to signal the hal_manualtoolchange
+component that the tool change is complete simply bring the
+button into HAL (via a parport input pin or a hostmot2 gpio
+input or similar), and wire it directly to the
+<i>hal_manualtoolchange.change_button</i> pin. For
+Example:</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>net
+tool-changed-btn hal_manualtoolchange.change_button &lt;=
+parport.0.pin-15-in</b></p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">motion(1)
+iocontrol(1) halcmd(1)</p>
+<hr>
+</body>
+</html>

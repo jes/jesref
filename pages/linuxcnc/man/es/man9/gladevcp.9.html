@@ -1,0 +1,91 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>gladevcp</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">gladevcp</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#PROBLEMAS">PROBLEMAS</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">gladevcp -
+muestra paneles de control virtuales construidos con
+GTK/GLADE</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadusr
+gladevcp [-c componentname0x</b><i>N</i><b>] [-g
+WxH+Xoffset+Yoffset0x</b><i>N</i><b>] [-H halcmdfile] [-x
+windowid] gladefile.glade</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">gladevcp
+analiza un archivo glade y muestra los widgets en una
+ventana. Luego llama a gladevcp_makepins, que nuevamente
+analiza el archivo gladevc buscando widgets HAL
+espec&Atilde;ficos y luego crea pines HAL y configura la
+actualizaci&Atilde;&sup3;n para ellos. El nombre del
+componente HAL se establece por defecto en el nombre base
+del archivo glade. La opci&Atilde;&sup3;n -x ordena a
+gladevcp que se reparentee a s&Atilde; mismo bajo esta
+identificaci&Atilde;&sup3;n de ventana X en lugar de crear
+su propia ventana de nivel superior. La opci&Atilde;&sup3;n
+-H pasa un archivo de entrada para que se ejecute halcmd
+despu&Atilde;&copy;s de inicializar el componente gladevcp.
+Esto se usa en Axis cuando se ejecuta gladevcp en una
+pesta&Atilde;&plusmn;a con la funci&Atilde;&sup3;n de
+archivo ini EMBED_TAB_NAME/EMBED_TAB_COMMAND.</p>
+
+<p style="margin-left:11%; margin-top: 1em">gladevcp admite
+archivos gtkbuilder o libglade, aunque algunos widgets
+a&Atilde;&ordm;n no son totalmente compatibles con
+gtkbuilder.</p>
+
+<h2>PROBLEMAS
+<a name="PROBLEMAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Por ahora, los
+enlaces del sistema deben agregarse en las carpetas de la
+biblioteca de Glade para apuntar a nuestros nuevos widgets y
+archivos de cat&Atilde;&iexcl;logo. Mirar en
+lib/python/gladevcp/READ_ME para m&Atilde;&iexcl;s
+detalles</p>
+<hr>
+</body>
+</html>

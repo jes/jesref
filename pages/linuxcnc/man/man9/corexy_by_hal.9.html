@@ -1,0 +1,181 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:45 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>COREXY_BY_HAL</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">COREXY_BY_HAL</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">corexy_by_hal -
+CoreXY kinematics</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em"><b>loadrt corexy_by_hal
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="8%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Implement
+<b>CoreXY</b> forward and inverse transformations <b>in
+HAL</b>. This component provides an alternative method for
+implementing <b>CoreXY</b> kinematics.</p>
+
+<p style="margin-left:11%; margin-top: 1em">In the INI
+file, use:</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>[KINS]KINEMATICS=trivkins
+coordinates=xyz kinstype=both</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">This component
+accepts two joint (<b>j0,j1</b>) motor position commands for
+a trivkins coordinates=xyz configuration and computes
+equivalent <b>CoreXY</b> motor commands for two motors
+identified as <b>alpha,beta</b>. Similarly, the component
+accepts feedback values for the <b>alpha,beta</b> motor
+controllers and converts to equivalent joint (<b>j0,j1</b>)
+motor position feedback values.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Notes:</p>
+
+<p style="margin-left:11%; margin-top: 1em">1) Using
+<b>trivkins</b> with this module allows home switches to
+trigger according to the <b>Cartesian x,y</b> positions</p>
+
+<p style="margin-left:11%; margin-top: 1em">2) Joint pin
+names are based on <b>coordinates=xyz</b> and the
+corresponding joint number assignments used by
+<b>trivkins</b> so <b>j0==x, j1==y</b> (man trivkins for
+more information)</p>
+
+<p style="margin-left:11%; margin-top: 1em">3)
+<b>CoreXY</b> kinematics can also be implemented using the
+kinematics module named <b>corexykins</b> with home switches
+triggered by the <b>j0,j1 motor</b> positions. (man kins for
+more information)</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>corexy-by-hal.</b><i>N</i>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>corexy-by-hal.</b><i>N</i><b>.alpha-fb</b>
+float in</p>
+
+<p style="margin-left:22%;">typ: feedback from alpha motor
+controller</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.beta-fb</b>
+float in</p>
+
+<p style="margin-left:22%;">typ: feedback from beta motor
+controller</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.j0-motor-pos-cmd</b>
+float in</p>
+
+<p style="margin-left:22%;">typ: from
+joint.0.motor-pos-cmd</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.j1-motor-pos-cmd</b>
+float in</p>
+
+<p style="margin-left:22%;">typ: from
+joint.1.motor-pos-cmd</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.j0-motor-pos-fb</b>
+float out</p>
+
+<p style="margin-left:22%;">typ: to
+joint.0.motor-pos-fb</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.j1-motor-pos-fb</b>
+float out</p>
+
+<p style="margin-left:22%;">typ: to
+joint.1.motor-pos-fb</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.alpha-cmd</b>
+float out</p>
+
+<p style="margin-left:22%;">typ: command to alpha motor</p>
+
+
+<p style="margin-left:11%;"><b>corexy-by-hal.</b><i>N</i><b>.beta-cmd</b>
+float out</p>
+
+<p style="margin-left:22%;">typ: command to beta ts
+motor</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

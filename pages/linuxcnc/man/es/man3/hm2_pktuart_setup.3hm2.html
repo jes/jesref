@@ -1,0 +1,466 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:21 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_pktuart_setup</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_pktuart_setup</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#DESARROLLO FUTURO">DESARROLLO FUTURO</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_pktuart_setup
+- configura una instancia de Hostmot2 PktUART</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_pktuart_setup(char
+*name, int bitrate, rtapi_s32 tx_mode, rtapi_s32 rx_mode,
+int txclear, int rxclear)</p></td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_pktuart_setup</b>
+Configura la tasa de bits para un PktUART llamado
+&quot;name&quot;. &quot;name&quot; es una cadena
+&Atilde;&ordm;nica dada a cada PktUART durante el setup de
+hostmot2. Los nombres de las UART disponibles se imprimen en
+la salida est&Atilde;&iexcl;ndar durante el proceso de carga
+del controlador y toman la forma: hm2_&lt;nombre de la
+tarjeta&gt;.&lt;&Atilde;ndice de la
+tarjeta&gt;.pktuart.&lt;&Atilde;- ndice&gt; . Por ejemplo
+hm2_5i25.0.pktuart.0.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los UART de
+Hostmot2 son buenos hasta aproximadamente 10 Mb/seg, pero a
+velocidades de datos m&Atilde;&iexcl;s altas (con cualquier
+UART) son susceptibles al ruido por impulsos.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La
+funci&Atilde;&sup3;n PktUART permite diferentes velocidades
+de bits RX y TX, pero eso no es actualmente compatible con
+este controlador.</p>
+
+<p style="margin-left:11%; margin-top: 1em">tx_mode es la
+m&Atilde;&iexcl;scara de bits definida en el mapa de
+registros Hostmot2:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 21</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>FrameBuffer tiene datos</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bits 20..16</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%"></td>
+<td width="69%">
+
+
+<p><b>Frame para enviar</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bits 15..8</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%"></td>
+<td width="69%">
+
+
+<p><b>Interframes delay en tiempos de bits</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 7</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Send ocupado, Transmit Logic activa</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 6</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Bit Drive Enable (habilita el controlador
+externo</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>RS-422/485 cuando
+est&Atilde;&iexcl; configurado)</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 5</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Drive enable Auto (Activaci&Atilde;&sup3;n de unidad
+externa</b></p> </td></tr>
+</table>
+
+
+<p style="margin-left:11%;"><b>autom&Atilde;&iexcl;tica)</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 4</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Error SCFIFO</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bits 3..0</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+
+
+<p><b>Drive enable delay (demora desde la
+habilitaci&Atilde;&sup3;n de la</b></p></td>
+<td width="69%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>unidad</b></p>
+
+<p style="margin-left:22%;">para iniciar la
+transmisi&Atilde;&sup3;n de datos. En per&Atilde;odos bajos
+de clock</p>
+
+<p style="margin-left:11%;">rx_mode es una
+m&Atilde;&iexcl;scara de bits definida en regmap de
+Hostmot2:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 21</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>FrameBuffer tiene datos</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bits 20..16</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%"></td>
+<td width="69%">
+
+
+<p><b>Frames recibidos</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bits 15..8</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%"></td>
+<td width="69%">
+
+
+<p><b>InterFrame delay en tiempos de bits</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 7</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Rx L&Atilde;&sup3;gica activa</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 6</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>RXMask</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 5</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>sin usar</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 4</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Error RCFIFO</b></p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 3</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>RXEnable (debe configurarse para recibir
+paquetes)</b></p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 2</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>RXMask Enable (habilita el enmascaramiento de datos
+de</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>entrada al
+transmitir)</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 1</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Error de desbordamiento (sin bit de parada cuando
+se</b></p> </td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>esperaba) (sticky)</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="-3%">
+
+
+<p><b>Bit 0</b></p></td>
+<td width="7%"></td>
+<td width="8%"></td>
+<td width="8%">
+</td>
+<td width="69%">
+
+
+<p><b>Bit de error de falso inicio (sticky)</b></p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Los registros
+rx_mode y tx_mode son actualmente de solo escritura. Se
+puede obtener el n&Atilde;&ordm;mero de instancia de una
+instancia de PktUART con la ayuda de la funci&Atilde;&sup3;n
+hm2_get_pktuart en orden a leer y escribir en registros Rx y
+Tx.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Para escribir
+solo en el bit tx_mode DriveEnable, llame a esta
+funci&Atilde;&sup3;n con la tasa de bits sin cambios y -1
+como rx_mode Para cambiar la tasa de bits sin alterar la
+configuraci&Atilde;&sup3;n del modo, env&Atilde;e -1 a ambos
+modos.</p>
+
+<p style="margin-left:11%; margin-top: 1em">txclear==1
+aborta cualquier env&Atilde;o en proceso, borra los datos
+FIFO y borra el conteo de env&Atilde;o FIFO.</p>
+
+<p style="margin-left:11%; margin-top: 1em">rxclear==1
+cancela cualquier recepci&Atilde;&sup3;n en proceso, borra
+los datos FIFO y borra el recuento de recepci&Atilde;&sup3;n
+FIFO.</p>
+
+<p style="margin-left:11%; margin-top: 1em">txclear!=1 o
+rxclear!=1 deja los registros correspondientes sin
+cambios.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve 0 en
+caso de &Atilde;&copy;xito y -1 o -EINVAL en caso de
+error.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>man
+hm2_pktuart_send, man hm2_pktuart_read</b> <br>
+Consulte src/hal/drivers/mesa_pktgyro_test.comp para ver un
+ejemplo de <br>
+uso.</p>
+
+<h2>DESARROLLO FUTURO
+<a name="DESARROLLO FUTURO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Esta
+funci&Atilde;&sup3;n est&Atilde;&iexcl; sujeta a cambios ya
+que se agregar&Atilde;&iexcl;n filtros digitales en Rx UART,
+y el registro de velocidad de bits ganar&Atilde;&iexcl; un
+campo de 12 bits para la constante de filtro de entrada.</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:24 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>funct</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">funct</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_strlcpy -
+Funciones de manipulaci&Atilde;&sup3;n de cadenas RTAPI</p>
+
+<p style="margin-left:11%; margin-top: 1em">Sintaxis
+.SH</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">#include
+&lt;rtapi_string.h&gt;</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">size_t rtapi_strlcpy(char *dst,
+const char *src, size_t sz); #define rtapi_strxcpy(dst, src)
+... size_t rtapi_strlcat(char *dst, const char *src, size_t
+sz); #define rtapi_strxcat(dst, src) ...</p></td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_strlcpy
+copiar&Atilde;&iexcl; como m&Atilde;&iexcl;ximo
+&rsquo;sz&rsquo; caracteres de &rsquo;src&rsquo; a
+&rsquo;dst&rsquo;. Siempre deja &rsquo;dst&rsquo; terminado
+en NUL, excepto si sz es 0.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_strxcpy(dst,
+src) comprueba que dst es una matriz con un
+tama&Atilde;&plusmn;o conocido, y llama a rtapi_strlcpy(dst,
+src, sizeof(dst)). Si no es una matriz con un
+tama&Atilde;&plusmn;o conocido, es un error de sintaxis
+(&Acirc;&iexcl;posiblemente cr&Atilde;ptico!).</p>
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_strlcat
+agregar&Atilde;&iexcl; caracteres desde &rsquo;src&rsquo; a
+&rsquo;dst&rsquo;, deteni&Atilde;&copy;ndose cuando se
+alcanza el final de &rsquo;src&rsquo; o &rsquo;dst&rsquo;
+usa &rsquo;sz&rsquo; bytes de almacenamiento, incluido el
+nul de prueba.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_strxcat(dst,
+src) comprueba que dst es una matriz con un
+tama&Atilde;&plusmn;o conocido, y llama a rtapi_strlcat(dst,
+src, sizeof(dst)). Si no es una matriz con un
+tama&Atilde;&plusmn;o conocido, es un error de sintaxis
+(&Acirc;&iexcl;posiblemente cr&Atilde;ptico!).</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La longitud
+total de la cadena que strlcpy o strlcat
+intent&Atilde;&sup3; crear. Para strlcpy() eso significa la
+longitud de src. Si el valor de retorno es mayor o igual que
+sz, el resultado se trunca.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">strlcpy(3bsd),
+strlcat(3bsd)</p>
+<hr>
+</body>
+</html>

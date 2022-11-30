@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>MPG Pendant</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>MPG Pendant</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:mpg-pendant"><p>This example is to explain how to hook up the common MPG pendants
+found on the market today. This example uses an MPG3 pendant and a
+C22 pendant interface card from CNC4PC connected to a second parallel
+port plugged into the PCI slot. This example gives you 3 axes with 3
+step increments of 0.1, 0.01, 0.001</p></div>
+<div class="paragraph"><p>In your custom.hal file or jog.hal file add the following, making
+sure you don&#8217;t have mux4 or an encoder already in use. If you do just
+increase the counts and change the reference numbers. More information
+about mux4 and encoder can be found in the HAL manual or the man page.</p></div>
+<div class="paragraph"><p>See the <a href="../config/ini-config.html#sec:hal-section">HAL Ini Section</a> of the manual for more
+information on adding a hal file.</p></div>
+<div class="paragraph"><p>Jog management pins are provided for each joint and all coordinate
+letters.  This example uses the axis jog pins for jogging in world
+mode.  Machines with non-identity kinematics may need use additional
+connections for jogging in joint mode.</p></div>
+<div class="listingblock">
+<div class="title">jog.hal</div>
+<div class="content">
+<pre><code># Jog Pendant
+loadrt encoder num_chan=1
+loadrt mux4 count=1
+addf encoder.capture-position servo-thread
+addf encoder.update-counters base-thread
+addf mux4.0 servo-thread
+
+# If your MPG outputs a quadrature signal per click set x4 to 1
+# If your MPG puts out 1 pulse per click set x4 to 0
+setp encoder.0.x4-mode 0
+
+# For velocity mode, set to 1
+# In velocity mode the axis stops when the dial is stopped
+# even if that means the commanded motion is not completed,
+# For position mode (the default), set to 0
+# In position mode the axis will move exactly jog-scale
+# units for each count, regardless of how long that might take,
+setp axis.x.jog-vel-mode 0
+setp axis.y.jog-vel-mode 0
+setp axis.z.jog-vel-mode 0
+
+# This sets the scale that will be used based on the input to the mux4
+setp mux4.0.in0 0.1
+setp mux4.0.in1 0.01
+setp mux4.0.in2 0.001
+
+# The inputs to the mux4 component
+net scale1 mux4.0.sel0 &lt;= parport.1.pin-09-in
+net scale2 mux4.0.sel1 &lt;= parport.1.pin-10-in
+
+# The output from the mux4 is sent to each axis jog scale
+net mpg-scale &lt;= mux4.0.out
+net mpg-scale =&gt; axis.x.jog-scale
+net mpg-scale =&gt; axis.y.jog-scale
+net mpg-scale =&gt; axis.z.jog-scale
+
+# The MPG inputs
+net mpg-a encoder.0.phase-A &lt;= parport.1.pin-02-in
+net mpg-b encoder.0.phase-B &lt;= parport.1.pin-03-in
+
+# The Axis select inputs
+net mpg-x axis.x.jog-enable &lt;= parport.1.pin-04-in
+net mpg-y axis.y.jog-enable &lt;= parport.1.pin-05-in
+net mpg-z axis.z.jog-enable &lt;= parport.1.pin-06-in
+
+# The encoder output counts to the axis. Only the selected axis will move.
+net encoder-counts  &lt;= encoder.0.counts
+net encoder-counts =&gt; axis.x.jog-counts
+net encoder-counts =&gt; axis.y.jog-counts
+net encoder-counts =&gt; axis.z.jog-counts</code></pre>
+</div></div>
+<div class="paragraph"><p>If the machine is capable of high acceleration to smooth out the moves
+for each click of the MPG use the <a href="../hal/components.html#sec:ilowpass">ilowpass</a> component to
+limit the acceleration.</p></div>
+<div class="listingblock">
+<div class="title">jog.hal with ilowpass</div>
+<div class="content">
+<pre><code>loadrt encoder num_chan=1
+loadrt mux4 count=1
+addf encoder.capture-position servo-thread
+addf encoder.update-counters base-thread
+addf mux4.0 servo-thread
+
+loadrt ilowpass
+addf ilowpass.0 servo-thread
+
+setp ilowpass.0.scale 1000
+setp ilowpass.0.gain 0.01
+
+# If your MPG outputs a quadrature signal per click set x4 to 1
+# If your MPG puts out 1 pulse per click set x4 to 0
+setp encoder.0.x4-mode 0
+
+# For velocity mode, set to 1
+# In velocity mode the axis stops when the dial is stopped
+# even if that means the commanded motion is not completed,
+# For position mode (the default), set to 0
+# In position mode the axis will move exactly jog-scale
+# units for each count, regardless of how long that might take,
+setp axis.x.jog-vel-mode 0
+setp axis.y.jog-vel-mode 0
+setp axis.z.jog-vel-mode 0
+
+# This sets the scale that will be used based on the input to the mux4
+# The scale used here has to be multiplied by the ilowpass scale
+setp mux4.0.in0 0.0001
+setp mux4.0.in1 0.00001
+setp mux4.0.in2 0.000001
+
+# The inputs to the mux4 component
+net scale1 mux4.0.sel0 &lt;= parport.1.pin-09-in
+net scale2 mux4.0.sel1 &lt;= parport.1.pin-10-in
+
+# The output from encoder counts is sent to ilowpass
+net mpg-out ilowpass.0.in &lt;= encoder.0.counts
+
+# The output from the mux4 is sent to each axis jog scale
+net mpg-scale &lt;= mux4.0.out
+net mpg-scale =&gt; axis.x.jog-scale
+net mpg-scale =&gt; axis.y.jog-scale
+net mpg-scale =&gt; axis.z.jog-scale
+
+# The MPG inputs
+net mpg-a encoder.0.phase-A &lt;= parport.1.pin-02-in
+net mpg-b encoder.0.phase-B &lt;= parport.1.pin-03-in
+
+# The Axis select inputs
+net mpg-x axis.x.jog-enable &lt;= parport.1.pin-04-in
+net mpg-y axis.y.jog-enable &lt;= parport.1.pin-05-in
+net mpg-z axis.z.jog-enable &lt;= parport.1.pin-06-in
+
+# The output from the ilowpass is sent to each axis jog count
+# Only the selected axis will move.
+net encoder-counts  &lt;= ilowpass.0.out
+net encoder-counts =&gt; axis.x.jog-counts
+net encoder-counts =&gt; axis.y.jog-counts
+net encoder-counts =&gt; axis.z.jog-counts</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

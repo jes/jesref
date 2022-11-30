@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Otros códigos</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Otros códigos</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="sec:set-feed-rate">1. F: Establecer velocidad de alimentación</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p><em>Fx</em> - establece la velocidad de avance a <em>x</em>. <em>x</em> usualmente está en unidades máquina
+(pulgadas o milímetros) por minuto.</p></div>
+<div class="paragraph"><p>La aplicación de la velocidad de alimentación es como se describe en la Sección
+<a href="machining-center_es.html#sub:feed-rate">Velocidad de alimentación</a>, a menos que estén vigentes <em>modo de velocidad de alimentación de tiempo inverso</em> o <em>modo de avance por revolución</em>, en cuyo caso la velocidad de avance
+es como se describe en la  Sección <a href="g-code_es.html#gcode:g93-g94-g95">G93 G94 G95</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:set-spindle-speed">2. S: Establecer la velocidad de husillo</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p><em>Sx [$n]</em> - establece la velocidad del husillo a <em>x</em> revoluciones por minuto (RPM).
+Con el $ opcional establece la velocidad del husillo para un husillo específico. Sin el $,
+el comando pasará por defecto a spindle.0</p></div>
+<div class="paragraph"><p>Los husillos o husillo seleccionado girarán a esa velocidad cuando un <em>M3</em> o <em>M4</em>
+esté en efecto. Está bien programar una palabra S si el husillo está girando o
+no. Si el interruptor de ajuste de velocidad está habilitado y no está configurado al 100%, la velocidad
+será diferente de lo programado.</p></div>
+<div class="paragraph"><p>Está bien programar S0; el husillo no girará.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el número S es negativo.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:select-tool">3. T: Seleccionar herramienta</h2>
+<div class="sectionbody">
+<div class="paragraph"><p></p></div>
+<div class="paragraph"><p><em>Tx</em>: prepára el cambio a la herramienta <em>x</em>.</p></div>
+<div class="paragraph"><p>La herramienta no se cambia hasta que se programa un <em>M6</em> (consulte la sección
+<a href="m-code_es.html#mcode:m6">M6</a>). La palabra T puede aparecer en la misma línea que el
+<em>M6</em> o en una línea anterior. Está bien si las palabras T aparecen en dos o más
+líneas sin cambio de herramienta. Solo la palabra T más reciente tomará
+efecto en el siguiente cambio de herramienta.</p></div>
+<div class="paragraph"><p>NOTA: Cuando LinuxCNC está configurado para un cambiador de herramientas no aleatorio (consulte
+la entrada para RANDOM_TOOLCHANGER en <a href="../config/ini-config_es.html#sec:emcio-section">EMCIO</a>),
+<em>T0</em> tiene un manejo especial: no se seleccionará ninguna herramienta. Esto
+es útil si desea que el husillo quede vacío después de un cambio de herramienta.</p></div>
+<div class="paragraph"><p>NOTA: Cuando LinuxCNC está configurado para un cambiador de herramientas aleatorio (consulte
+la entrada para RANDOM_TOOLCHANGER en <a href="../config/ini-config_es.html#sec:emcio-section">EMCIO</a>), <em>T0</em> no recibe
+ningún tratamiento especial: T0 es una herramienta válida como cualquier otra. Es costumbre
+usar T0 en un cambiador de herramientas aleatorio
+para rastrear una ranura vacía, para que se comporte como cambiador de herramientas
+no aleatorio y descargue el husillo.</p></div>
+<div class="paragraph"><p>Es un error si:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+se usa un número T negativo,
+</p>
+</li>
+<li>
+<p>
+Se utiliza un número T que no aparece en el archivo de la tabla de herramientas (con
+    la excepción de que T0 en cambiadores de herramientas no aleatorios, que <strong>es</strong> aceptado
+    como se señaló anteriormente).
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>En algunas máquinas, el carrusel se moverá cuando se programe una palabra T,
+Al mismo tiempo, se está mecanizando. En tales máquinas, la programación
+de la palabra T varias líneas antes de un cambio de herramienta ahorrará tiempo. Una práctica común
+de programación para tales máquinas es poner la palabra T para la
+siguiente herramienta que se utilizará en la línea después de un cambio de herramienta. Esto maximiza
+el tiempo disponible para que el carrusel se mueva.</p></div>
+<div class="paragraph"><p>Los movimientos rápidos después de una <em>T&lt;n&gt;</em> no se mostrarán en la vista previa de AXIS hasta después
+un movimiento de alimentación. Esto es para máquinas que viajan largas distancias para cambiar
+la herramienta, como un torno. Esto puede ser muy confuso al principio. Para desactivar
+esta característica para la herramienta actual, programe un G1 sin ningún
+movimiento después de <em>T&lt;n&gt;</em>.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>HAL TWOPASS</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>HAL TWOPASS</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:hal-twopass">1. TWOPASS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>LinuxCNC 2.5 supports TWOPASS processing of hal configuration files
+that can help in the modularization and readability of hal files.
+(Hal files are specified in an LinuxCNC ini file in the HAL stanza
+as [HAL]HALFILE=filename).</p></div>
+<div class="paragraph"><p>Normally, a set of one or more hal configuration files must use
+a single, unique loadrt line to load a kernel module that may
+handle multiple instances of a component.  For example, if you
+use a two input AND gate component (and2) in three different
+places in your setup, you would need to have a single line
+somewhere to specify:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>   loadrt and2 count=3</code></pre>
+</div></div>
+<div class="paragraph"><p>resulting in components and2.0, and2.1, and2.2.</p></div>
+<div class="paragraph"><p>Configurations are more readable if you specify with the
+names=option for components where it is supported, e.g.,:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt and2 names=aa,ab,ac</code></pre>
+</div></div>
+<div class="paragraph"><p>resulting in components aa,ab,ac.</p></div>
+<div class="paragraph"><p>It can be a maintenance problem to keep track of the components
+and their names since when you add (or remove) a component, you
+must find and update the single loadrt directive applicable to
+the component.</p></div>
+<div class="paragraph"><p>TWOPASS processing is enabled by including an ini file parameter in
+the [HAL] section:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+
+TWOPASS = anystring</code></pre>
+</div></div>
+<div class="paragraph"><p>Where "anystring" can be any non-null string.
+With this setting, you can have multiple specifications like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt and2 names=aa
+...
+loadrt and2 names=ab,ac
+...
+loadrt and2 names=ad</code></pre>
+</div></div>
+<div class="paragraph"><p>These commands can appear in different HALFILES.  The HALFILES
+are processed in the order of their appearance in the ini file.</p></div>
+<div class="paragraph"><p>The TWOPASS option can be specified with options to add output for
+debugging (verbose) and to prevent deletion of temporary files (nodelete).
+The options are separated with commas.</p></div>
+<div class="paragraph"><p>Example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+
+TWOPASS = on,verbose,nodelete</code></pre>
+</div></div>
+<div class="paragraph"><p>With TWOPASS processing, all [HAL]HALFILES are first read and
+multiple appearances of loadrt directives for each module are
+accumulated.  User components (loadusr) are loaded in order
+but no other hal commands are executed in the initial pass.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">User components should use the wait (-W) option to ensure
+the component is ready before other commands are executed.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>After the initial pass, the realtime modules are loaded (loadrt)
+automatically with a number equal to the total number when using
+the count= option or with all of the individual names specified
+when using the names= option.</p></div>
+<div class="paragraph"><p>A second pass is then made to execute all of the other hal
+instructions specified in the HALFILES.  The addf commands that
+associate a component&#8217;s functions with thread execution are
+executed in the order of appearance with other commands during
+this second pass.</p></div>
+<div class="paragraph"><p>While you can use either the count= or names= options, they are
+mutually exclusive&#8201;&#8212;&#8201;only one type can  be specified for a
+given module.</p></div>
+<div class="paragraph"><p>TWOPASS processing is most effective when using the names=
+option.  This option allows you to provide unique names that
+are mnemonic or otherwise relevant to the configuration.   For
+example, if you use a derivative component to estimate the
+velocities and accelerations on each (x,y,z) coordinate, using
+the count= method will give arcane component names like ddt.0,
+ddt.1, ddt.2, etc.</p></div>
+<div class="paragraph"><p>Alternatively, using the names= option like:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt ddt names=xvel,yvel,zvel
+...
+loadrt ddt names=xaccel,yaccel,zaccel</code></pre>
+</div></div>
+<div class="paragraph"><p>results in components sensibly named xvel,yvel,zvel, xaccel,yaccel,zaccel.</p></div>
+<div class="paragraph"><p>Many comps supplied with the distribution are created with the
+halcompile utility and support the names= option.  These include the
+common logic components that are the glue of many hal configurations.</p></div>
+<div class="paragraph"><p>User-created comps that use the halcompile utility automatically
+support the names= option as well.  In addition to comps generated
+with the halcompile utility, numerous other comps support the names=option.
+Comps that support names= option include: at_pid, encoder,
+encoder_ratio, pid, siggen, and sim_encoder.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_post_gui">2. Post GUI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Some GUIs support halfiles that are processed after the GUI is started in order
+to connect hal pins that are created by the GUI.  When using a postgui halfile with
+TWOPASS processing, include all loadrt items for components added by postgui halfiles
+in a separate halfile that is processed before the GUI.  The addf commands can also
+be included in the file.
+Example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+TWOPASS = on
+HALFILE = file_1.hal
+...
+HALFILE = file_n.hal
+HALFILE = file_with_all_loads_for_postgui.hal
+...
+POSTGUI_HALFILE = the_postgui_file.hal</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exluding_hal_files">3. Exluding .hal files</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>TWOPASS processing converts <em>.hal</em> files to equivalent <em>.tcl</em> files and uses
+haltcl to find loadrt and addf commands in order to accumulate and consolidate
+their usage.  Loadrt parameters that conform to the simple <em>names=</em> (or
+<em>count=</em>) parameters accepted by the HAL Component Generator (<em>halcompile</em>) are
+expected.  More complex parameter items included in specialized hal components
+may not be handled properly.</p></div>
+<div class="paragraph"><p>A <em>.hal</em> file may be excluded from TWOPASS processing by including a magic
+comment line anywhere in the <em>.hal</em> file.   The magic comment line must begin
+with the string: <em>#NOTWOPASS</em>.  Files specified with this magic comment are
+sourced by halcmd using the <em>-k</em> (keep going if failure) and <em>-v</em> (verbose)
+options.</p></div>
+<div class="paragraph"><p>This exclusion provision can be used to isolate problems or for loading any
+special hal component that does not require or benefit from TWOPASS processing.</p></div>
+<div class="paragraph"><p>Ordinarily, the loadrt ordering of realtime components is not critical,
+but loadrt ordering for special components can be enforced by placing the
+such loadrt directives in an excluded file.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">While the order of loadrt directives is not usually critical,
+ordering of addf directives is often very important for proper
+operation of servo loop components.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Excluded <em>.hal</em> file example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ cat twopass_excluded.hal
+# The following magic comment causes this file to
+# be excluded from twopass processing:
+# NOTWOPASS
+
+# debugging component with complex options:
+loadrt mycomponent parm1="abc def" parm2=ghi
+show pin mycomponent
+
+# ordering special components
+loadrt component_1
+loadrt component_2</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Case and whitespace within the magic comment are ignored.  The loading of
+components that use names= or count= parameters (typically built by
+halcompile) should not be used in excluded files as that would eliminate
+the benefits of TWOPASS processing.  The hal commands that create signals
+(net) and commands that establish execution order (addf) should not be
+placed in excluded files.  This is especially true for addf commands since
+their ordering may be important.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples">4. Examples</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Examples of TWOPASS usage for a simulator are included in the directories:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>configs/sim/axis/twopass/</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>configs/sim/axis/simtcl/</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

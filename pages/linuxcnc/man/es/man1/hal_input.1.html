@@ -1,0 +1,346 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:16 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HAL_INPUT</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HAL_INPUT</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#ESPECIFICACIONES DE ENTRADA">ESPECIFICACIONES DE ENTRADA</a><br>
+<a href="#CARACTERISTICAS DEL DISPOSITIVO SOPORTADAS">CARACTERISTICAS DEL DISPOSITIVO SOPORTADAS</a><br>
+<a href="#PINES Y PARAMETROS HAL">PINES Y PARAMETROS HAL</a><br>
+<a href="#PERMISOS Y UDEV">PERMISOS Y UDEV</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+<a href="#VER TAMBIEN">VER TAMBIEN</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_input -
+controla los pines HAL con cualquier dispositivo de entrada
+de Linux, incluidos los dispositivos USB HID</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>loadusr</i>
+<b>hal_input</b> <i>[-KRAL] inputspec ...</i></p>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_input es
+una interfaz entre HAL y cualquier dispositivo de entrada de
+Linux, incluido dispositivos USB HID. Para cada dispositivo
+nombrado, <b>hal_input</b> crea los pines correspondientes a
+sus teclas, ejes absolutos, y leds. Sincroniza el
+dispositivo y los pines HAL a una tasa fija de
+aproximadamente 10 ms,</p>
+
+<h2>ESPECIFICACIONES DE ENTRADA
+<a name="ESPECIFICACIONES DE ENTRADA"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>inputspec</i>
+puede estar en una de varias formas: <br>
+Una cadena <i>S</i></p>
+
+<p style="margin-left:22%;">Se comparara una subcadena o un
+patron de estilo de shell con el &quot;nombre&quot; del
+dispositivo, el &quot;phys&quot; (que proporciona
+informacion sobre como est&Atilde;&iexcl; conectado), y el
+&quot;id&quot;, que es una cadena con el formato &quot;Bus =
+... Vendor = ... Product = ... Version = ... &quot;. Puede
+ver el nombre, el estado fisico y la identificacion de los
+dispositivos conectados ejecutando <b>less
+/proc/bus/input/devices</b>. Ejemplos:</p>
+
+<p style="margin-left:29%;">SpaceBall <br>
+&quot;Vendor=001f Product=0001&quot; <br>
+serio*/input0</p>
+
+<p style="margin-left:11%;">Un numero <i>N</i></p>
+
+<p style="margin-left:22%;">Esto abre
+<b>/dev/input/event</b><i>N</i>. A excepcion de los
+dispositivos que estan siempre conectados al sistema, este
+numero puede cambiar durante los reinicios o cuando el
+dispositivo es removido. Por esta razon, no se recomienda
+usar un numero entero.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cuando varios
+dispositivos est&Atilde;&iexcl;n identificados por la misma
+cadena, agregue &quot;<b>:</b><i>N</i>&quot; donde <i>N</i>
+es el indice del dispositivo deseado. Por ejemplo, si
+<b>Mouse</b> coincide con <b>input3</b> y con
+<b>input10</b>, entonces <b>Mouse</b> y <b>Mouse:0</b>
+selecciona <b>input3</b>. Especificando <b>mouse:1</b>
+seleccionainput10.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Para
+dispositivos que aparecen como entradas multiples en
+/dev/input, es probable que estos indices permanezcan igual
+cada vez. Para multiples dispositivos
+id&Atilde;&copy;nticos, es probable que los indices dependan
+del orden de insercion, pero permanezcan iguales en el
+reinicio, siempre que los dispositivos no se muevan a
+puertos diferentes o se desenchufen mientras se arranca la
+maquina.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Si el primer
+caracter de <i>inputspec</i> es un &quot;+&quot;, entonces
+<b>hal_input</b> solicita acceso exclusivo al dispositivo.
+Se utiliza l primer dispositivo que coincida con
+<i>inputspec</i>. Se puede usar cualquier numero de
+<i>inputspec</i>s.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La opcion
+<i>subset puede preceder a cada inputspec</i>. La opcion
+sunset comienza con un guion. Cada letra en la opcion subset
+especifica una carecteristica del dispositivo a
+<b>incluir</b>. Se excluyen las caracteristicas que no esten
+especificadas. Por ejemplo, para exportar los LED del
+teclado a HAL sin exportar teclas, use</p>
+
+<p style="margin-left:29%;">hal_input -L <i>keyboard</i>
+...</p>
+
+<h2>CARACTERISTICAS DEL DISPOSITIVO SOPORTADAS
+<a name="CARACTERISTICAS DEL DISPOSITIVO SOPORTADAS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p style="margin-top: 1em">&bull;</p></td>
+<td width="5%"></td>
+<td width="75%">
+
+
+<p style="margin-top: 1em">EV_KEY (botones y teclas).
+Subset -K</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="75%">
+
+
+<p>EV_ABS (entradas analogicas absolutas). Subset -A</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="75%">
+
+
+<p>EV_REL (entradas analogicas relativas). Subset -R</p></td>
+<td width="8%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="5%"></td>
+<td width="75%">
+
+
+<p>EV_LED (salidas LED). Subset -L</p></td>
+<td width="8%">
+</td></tr>
+</table>
+
+<h2>PINES Y PARAMETROS HAL
+<a name="PINES Y PARAMETROS HAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Para botones
+<br>
+input.</b><i>N</i><b>.btn-</b><i>name</i> bit out <b><br>
+input.</b><i>N</i><b>.btn-</b><i>name</i><b>-not</b> bit
+out</p>
+
+<p style="margin-left:22%;">Creado para cada boton en el
+dispositivo.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Para teclas
+<br>
+input.</b><i>N</i><b>.key-</b><i>name</i> <b><br>
+input.</b><i>N</i><b>.key-</b><i>name</i><b>-not</b></p>
+
+<p style="margin-left:22%;">Creado para cada tecla en el
+dispositivo.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>para ejes
+absolutos <br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-counts</b> s32
+out <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-position</b>
+float out <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-scale</b>
+parameter float rw <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-offset</b>
+parameter float rw <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-fuzz</b>
+parameter s32 rw <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-flat</b>
+parameter s32 rw <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-min</b>
+parameter s32 r <b><br>
+input.</b><i>N</i><b>.abs-</b><i>name</i><b>-max</b>
+parameter s32 r</p>
+
+<p style="margin-left:22%;">Creado para cada eje absoluto
+en el dispositivo. Posiciones del dispositivo mas cercanas
+que <b>flat</b> a <b>offset</b> se reportan como
+<b>offset</b> en <b>counts</b>, y <b>counts</b> no cambia
+hasta que la posicion del dispositivo cambie al menos
+<b>fuzz</b>. La posicion se calcula como</p>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>position</b>
+= (<b>counts</b> -<b>offset</b>) / <b>scale</b></p>
+
+<p style="margin-left:22%; margin-top: 1em">El valor
+predeterminado de <b>scale</b> y <b>offset</b> asigna el
+rango del eje reportado por el sistema operativo a [-1,1].
+Los valores predeterminados de <b>fuzz</b> y <b>flat</b> son
+los informados por el operador del sistema. Los valores de
+<b>min</b> y <b>max</b> son los reportados por el sistema
+operativo.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>para ejes
+relativos <br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-counts</b> s32
+out <b><br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-position</b>
+float out <b><br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-reset</b> bit
+in <b><br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-scale</b>
+parameter float rw <b><br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-absolute</b>
+parameter s32 rw <b><br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-precision</b>
+parameter s32 rw <b><br>
+input.</b><i>N</i><b>.rel-</b><i>name</i><b>-last</b>
+parameter s32 rw</p>
+
+<p style="margin-left:22%;">Creado para cada eje relativo
+en el dispositivo. Siempre que <b>reset</b> sea TRUE,
+<b>counts</b> se restablece a cero independientemente de
+cualquier movimiento anterior o actual del eje. De lo
+contrario, <b>counts</b> aumenta o disminuye de acuerdo con
+el movimiento del eje. <b>counts</b> se divide porposition
+-scale para dar <b>position</b>. El valor predeterminado de
+<b>position</b> es 1. Hay algunos dispositivos, en
+particular ruedas de desplazamiento, que devuelven valores
+con signo con resolucion menor de 32 bits. El valor
+predeterminado de <b>precision</b> es 32. <b>precision</b>
+se puede establecer en 8 para un dispositivo que devuelve
+valores de 8 bits con signo, o cualquier otro valor de 1 a
+32. <b>absolute</b>, cuando se establece TRUE, ignora los
+eventos duplicados con el mismo valor. Esto permite que los
+dispositivos que repiten eventos sin ninguna accion del
+usuario funcionen. correctamente. <b>last</b> muestra el
+valor de conteo mas reciente devuelto por el dispositivo, y
+se utiliza en la implementacion de <b>absolute</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>para LEDs
+<br>
+input.</b><i>N</i><b>.led-</b><i>name</i> bit out <b><br>
+input.</b><i>N</i><b>.led-</b><i>name</i><b>-invert</b>
+parameter bit rw</p>
+
+<p style="margin-left:22%;">Creado para cada LED en el
+dispositivo.</p>
+
+<h2>PERMISOS Y UDEV
+<a name="PERMISOS Y UDEV"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Por defecto,
+los dispositivos de entrada pueden no ser accesibles para
+usuarios - <b>hal_input</b> requiere acceso de lectura y
+escritura, incluso si el dispositivo no tiene salidas.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las diferentes
+versiones de udev tienen sintaxis ligeramente diferentes e
+incompatibles. Por esta razon, no es posible que esta pagina
+de manual brinde informacion y ejemplo preciso.
+<b>udev(7)</b> La pagina de manual documenta la sintaxis
+utilizada en su distribucion de Linux. Para verlo en un
+terminal, el comando es</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>man 7
+udev</b>.</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El estado
+inicial de las teclas, botones y ejes absolutos se informa
+erroneamente como FALSE o 0 hasta que se reciba un evento
+para esa tecla, boton o eje.</p>
+
+<h2>VER TAMBIEN
+<a name="VER TAMBIEN"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>udev(8)</b>,
+<b>udev(7)</b></p>
+<hr>
+</body>
+</html>

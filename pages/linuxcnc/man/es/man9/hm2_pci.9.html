@@ -1,0 +1,108 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HM2_PCI</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HM2_PCI</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_pci -
+Controlador HAL LinuxCNC para las tarjetas Anything IO
+basadas en PCI de Mesa Electronics, con firmware
+HostMot2.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="58%">
+
+
+<p style="margin-top: 1em"><b>loadrt hm2_pci
+[config=</b><i>&quot;str[,str...]&quot;</i><b>]</b></p> </td>
+<td width="31%">
+</td></tr>
+</table>
+
+<p style="margin-left:17%;"><b>config</b> [predeterminado:
+&quot;&quot;]</p>
+
+<p style="margin-left:28%;">Cadenas de
+configuraci&Atilde;&sup3;n de HostMot2, descritas en la
+p&Atilde;&iexcl;gina de manual de hostmot2 (9).</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_pci es un
+controlador de dispositivo que interconecta tarjetas
+Mesa&rsquo;s PCI y PC-104/Plus based Anything I/O (con el
+firmware HostMot2) y LinuxCNC HAL</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las tarjetas
+compatibles son: 5i20, 5i21, 5i22, 5i23, 5i24 y 5i25 (todas
+en PCI); el 4i65, 4i68 y 4i69 (en PC-104/Plus) y 3x20
+(usando una tarjeta portadora 6i68 o 7i68) y 6i25 (en PCI
+Express).</p>
+
+<p style="margin-left:11%; margin-top: 1em">El controlador
+opcionalmente programa la FPGA de la tarjeta con firmware
+cuando registra la tarjeta con el controlador hostmot2. El
+firmware a cargar est&Atilde;&iexcl; especificado en el
+modparam <b>config</b>, como se describe en la
+p&Atilde;&iexcl;gina de manual hostmot2 (9), en la
+secci&Atilde;&sup3;n <i>config modparam</i>.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hostmot2
+(9)</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

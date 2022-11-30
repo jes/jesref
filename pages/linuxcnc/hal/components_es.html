@@ -1,0 +1,1250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Componentes HAL</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Componentes HAL</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:componentes-hal">1. Comandos y componentes de espacio de usuario</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Todos los comandos en la siguiente lista tienen páginas de manual.
+Algunos tendrán descripciones ampliadas y otros, limitadas.
+Con estas listas se sabe qué componentes existen. Usar <em>man n nombre</em> para obtener información adicional.
+Para ver la información en la página de manual, por ejemplo de Axis, escriba en una ventana de terminal:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>man axis (o tal vez 'man 1 axis' si su sistema lo requiere)</code></pre>
+</div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+axis
+</dt>
+<dd>
+<p>
+Interfaz gráfica de usuario AXIS para LinuxCNC (The Enhanced Machine Controller)
+</p>
+</dd>
+<dt class="hdlist1">
+axis-remote
+</dt>
+<dd>
+<p>
+Interface AXIS Remote.
+</p>
+</dd>
+<dt class="hdlist1">
+comp
+</dt>
+<dd>
+<p>
+Construye, compila e instala componentes HAL de LinuxCNC.
+</p>
+</dd>
+<dt class="hdlist1">
+gladevcp
+</dt>
+<dd>
+<p>
+Panel de control virtual para LinuxCNC basado en widgets Glade, Gtk y HAL.
+</p>
+</dd>
+<dt class="hdlist1">
+gs2
+</dt>
+<dd>
+<p>
+Componente HAL de espacio de usuario para VDF Automation Direct GS2.
+</p>
+</dd>
+<dt class="hdlist1">
+halcmd
+</dt>
+<dd>
+<p>
+Manipula HAL del controlador de máquina mejorado desde la línea de comandos.
+</p>
+</dd>
+<dt class="hdlist1">
+hal_input
+</dt>
+<dd>
+<p>
+Controlar los pines HAL con cualquier dispositivo de entrada de Linux, incluidos los dispositivos USB HID.
+</p>
+</dd>
+<dt class="hdlist1">
+halmeter
+</dt>
+<dd>
+<p>
+Observar pines, señales y parámetros de HAL.
+</p>
+</dd>
+<dt class="hdlist1">
+halrun
+</dt>
+<dd>
+<p>
+Manipular HAL del controlador de máquina mejorado desde la línea de comandos.
+</p>
+</dd>
+<dt class="hdlist1">
+halsampler
+</dt>
+<dd>
+<p>
+Muestreo de datos de HAL en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+halstreamer
+</dt>
+<dd>
+<p>
+Transmitir archivos de datos a HAL en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+halui
+</dt>
+<dd>
+<p>
+Observar los pines HAL y dar ordenes a LinuxCNC a través de NML.
+</p>
+</dd>
+<dt class="hdlist1">
+io
+</dt>
+<dd>
+<p>
+Acepta comandos de E/S NML e interactúa con HAL en el espacio de usuario.
+</p>
+</dd>
+<dt class="hdlist1">
+iocontrol
+</dt>
+<dd>
+<p>
+Acepta comandos de E/S NML e interactúa con HAL en el espacio de usuario.
+</p>
+</dd>
+<dt class="hdlist1">
+linuxcnc
+</dt>
+<dd>
+<p>
+LinuxCNC (The Enhanced Machine Controller).
+</p>
+</dd>
+<dt class="hdlist1">
+pyvcp
+</dt>
+<dd>
+<p>
+Panel de control virtual para LinuxCNC.
+</p>
+</dd>
+<dt class="hdlist1">
+shuttle
+</dt>
+<dd>
+<p>
+controla los pines HAL con los dispositivos ShuttleXpress y ShuttlePRO fabricados por Contour Design.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec:realtime-components">2. Lista de componentes en tiempo real</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Todos los comandos en la siguiente lista tienen páginas de manual.
+Algunos tendrán descripciones ampliadas y otros, limitadas.
+Con estas dos listas se sabe qué componentes existen. Usar <em>man n name</em> para obtener información adicional.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si el componente requiere un hilo de punto flotante, suele ser el hilo servo, más lento.</td>
+</tr></table>
+</div>
+<div class="sect2">
+<h3 id="_componentes_principales_de_linuxcnc">2.1. Componentes principales de LinuxCNC</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+motion
+</dt>
+<dd>
+<p>
+ Acepta comandos de movimiento NML e interactúa con HAL en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+axis
+</dt>
+<dd>
+<p>
+ Acepta comandos de movimiento NML e interactúa con HAL en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+classicladder
+</dt>
+<dd>
+<p>
+ Software PLC en tiempo real basado en lógica de escalera.
+Consulte el capítulo <a href="../ladder/classic-ladder_es.html#cha:classicladder">ClassicLadder</a> para obtener más información.
+</p>
+</dd>
+<dt class="hdlist1">
+gladevcp
+</dt>
+<dd>
+<p>
+ Muestra paneles de control virtuales construidos con GTK/Glade.
+</p>
+</dd>
+<dt class="hdlist1">
+threads
+</dt>
+<dd>
+<p>
+ Crea hilos HAL en tiempo real.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_componentes_lógicos_y_enfocados_a_bits_bitwise">2.2. Componentes lógicos y enfocados a bits (bitwise)</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+and2
+</dt>
+<dd>
+<p>
+ Puerta AND de dos entradas.  Para devolver TRUE, ambas entradas deben ser ciertas.
+</p>
+</dd>
+<dt class="hdlist1">
+not
+</dt>
+<dd>
+<p>
+ Inversor.
+</p>
+</dd>
+<dt class="hdlist1">
+or2
+</dt>
+<dd>
+<p>
+ Puerta OR de dos entradas.
+</p>
+</dd>
+<dt class="hdlist1">
+xor2
+</dt>
+<dd>
+<p>
+ Puerta XOR (OR exclusivo) de dos entradas.
+</p>
+</dd>
+<dt class="hdlist1">
+debounce
+</dt>
+<dd>
+<p>
+ Filtra ruido en las entradas digitales.
+</p>
+</dd>
+<dt class="hdlist1">
+edge
+</dt>
+<dd>
+<p>
+ Detector de flanco.
+</p>
+</dd>
+<dt class="hdlist1">
+flipflop
+</dt>
+<dd>
+<p>
+ flip-flop tipo D.
+</p>
+</dd>
+<dt class="hdlist1">
+oneshot
+</dt>
+<dd>
+<p>
+ Generador de disparos de un pulso.
+</p>
+</dd>
+<dt class="hdlist1">
+logic
+</dt>
+<dd>
+<p>
+ Componente de función lógica general.
+</p>
+</dd>
+<dt class="hdlist1">
+lut5
+</dt>
+<dd>
+<p>
+ Función lógica de 5 entradas basada en tabla de consulta (look-up table).
+</p>
+</dd>
+<dt class="hdlist1">
+match8
+</dt>
+<dd>
+<p>
+ Detector de coincidencia binaria de 8 bits.
+</p>
+</dd>
+<dt class="hdlist1">
+select8
+</dt>
+<dd>
+<p>
+ Detector de coincidencia binaria de 8 bits.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_componentes_aritméticos_y_de_punto_flotante">2.3. Componentes aritméticos y de punto flotante</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+abs
+</dt>
+<dd>
+<p>
+<a id="sub:abs"></a> Calcula el valor absoluto y el signo de la señal de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+blend
+</dt>
+<dd>
+<p>
+ Realiza interpolación lineal entre dos valores.
+</p>
+</dd>
+<dt class="hdlist1">
+comp
+</dt>
+<dd>
+<p>
+ Comparador de dos entradas con histéresis.
+</p>
+</dd>
+<dt class="hdlist1">
+constant
+</dt>
+<dd>
+<p>
+ Use un parámetro para establecer el valor de un pin.
+</p>
+</dd>
+<dt class="hdlist1">
+sum2
+</dt>
+<dd>
+<p>
+ Suma de dos entradas (cada una con una ganancia) y un desplazamiento.
+</p>
+</dd>
+<dt class="hdlist1">
+counter
+</dt>
+<dd>
+<p>
+ Cuenta los pulsos de entrada (obsoleto).
+Utilice el componente <a href="rtcomps_es.html#sec:encoder">encoder</a>.
+</p>
+</dd>
+<dt class="hdlist1">
+updown
+</dt>
+<dd>
+<p>
+ Cuenta hacia arriba o hacia abajo, con límites opcionales y comportamiento envolvente.
+</p>
+</dd>
+<dt class="hdlist1">
+ddt
+</dt>
+<dd>
+<p>
+ Calcula la derivada de la función de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+deadzone
+</dt>
+<dd>
+<p>
+ Devuelve el centro si está dentro del umbral.
+</p>
+</dd>
+<dt class="hdlist1">
+hypot
+</dt>
+<dd>
+<p>
+ Calculadora de hipotenusa de tres entradas (distancia euclidiana).
+</p>
+</dd>
+<dt class="hdlist1">
+mult2
+</dt>
+<dd>
+<p>
+ Producto de dos entradas.
+</p>
+</dd>
+<dt class="hdlist1">
+mux16
+</dt>
+<dd>
+<p>
+ Selecciona uno de entre dieciséis valores de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+mux2
+</dt>
+<dd>
+<p>
+ Selecciona uno entre dos valores de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+mux4
+</dt>
+<dd>
+<p>
+ Selecciona uno de entre cuatro valores de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+mux8
+</dt>
+<dd>
+<p>
+ Selecciona uno de entre ocho valores de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+near
+</dt>
+<dd>
+<p>
+ Determina si dos valores son aproximadamente iguales.
+</p>
+</dd>
+<dt class="hdlist1">
+offset
+</dt>
+<dd>
+<p>
+ Agrega un desplazamiento a una entrada y lo resta del valor de realimentación.
+</p>
+</dd>
+<dt class="hdlist1">
+integ
+</dt>
+<dd>
+<p>
+ Integrador.
+</p>
+</dd>
+<dt class="hdlist1">
+invert
+</dt>
+<dd>
+<p>
+ Calcula el inverso de la señal de entrada.
+</p>
+</dd>
+<dt class="hdlist1">
+wcomp
+</dt>
+<dd>
+<p>
+ Comparador de ventana.
+</p>
+</dd>
+<dt class="hdlist1">
+weighted_sum
+</dt>
+<dd>
+<p>
+ Convierte un grupo de bits a un entero.
+</p>
+</dd>
+<dt class="hdlist1">
+biquad
+</dt>
+<dd>
+<p>
+ Filtro Biquad IIR
+</p>
+</dd>
+<dt class="hdlist1">
+lowpass
+</dt>
+<dd>
+<p>
+ filtro de paso bajo
+</p>
+</dd>
+<dt class="hdlist1">
+limit1
+</dt>
+<dd>
+<p>
+ Limita la señal de salida para que caiga entre mín y máx. <span class="footnote"><br />[Cuando la entrada
+es una posición, esto significa que la <em>posición</em> está limitada.]<br /></span>
+</p>
+</dd>
+<dt class="hdlist1">
+limit2
+</dt>
+<dd>
+<p>
+ Limita la señal de salida para que caiga entre min y max.
+Limita la velocidad de giro a menos de maxv por segundo. <span class="footnote"><br />[Cuando la entrada
+es una posición, esto significa que <em>posición</em> y <em>velocidad</em> están limitadas.]<br /></span>
+</p>
+</dd>
+<dt class="hdlist1">
+limit3
+</dt>
+<dd>
+<p>
+ Limita la señal de salida para que caiga entre min y max.
+Limita su velocidad de giro a menos de maxv por segundo.
+Limita su segunda derivada a menos de MaxA por segundo al cuadrado. <span class="footnote"><br />[Cuando
+la entrada es una posición, esto significa que la <em>posición</em>, <em>velocidad</em>, y <em>aceleración</em> están limitadas.]<br /></span>
+</p>
+</dd>
+<dt class="hdlist1">
+maj3
+</dt>
+<dd>
+<p>
+ Calcula la mayor de 3 entradas.
+</p>
+</dd>
+<dt class="hdlist1">
+scale
+</dt>
+<dd>
+<p>
+ Aplica una escala y un desplazamiento a su entrada.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_conversion_de_tipos">2.4. Conversion de tipos</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+conv_bit_s32
+</dt>
+<dd>
+<p>
+ Convierte un valor bit a s32.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_bit_u32
+</dt>
+<dd>
+<p>
+ Convierte un valor bit a u32.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_float_s32
+</dt>
+<dd>
+<p>
+ Convierte un valor float a s32.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_float_u32
+</dt>
+<dd>
+<p>
+ Convierte un valor float a u32.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_s32_bit
+</dt>
+<dd>
+<p>
+ Convierte un valor s32 a bit.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_s32_float
+</dt>
+<dd>
+<p>
+ Convierte un valor s32 a float.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_s32_u32
+</dt>
+<dd>
+<p>
+ Convierte un valor s32 a u32.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_u32_bit
+</dt>
+<dd>
+<p>
+ Convierte un valor u32 a bit.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_u32_float
+</dt>
+<dd>
+<p>
+ Convierte un valor u32 a float.
+</p>
+</dd>
+<dt class="hdlist1">
+conv_u32_s32
+</dt>
+<dd>
+<p>
+ Convierte un valor u32 a s32.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_controladores_de_hardware">2.5. Controladores de hardware</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+hm2_7i43
+</dt>
+<dd>
+<p>
+ Controlador HAL para tarjetas EPP Anything Mesa Electronics 7i43 EPP con HostMot2.
+</p>
+</dd>
+<dt class="hdlist1">
+hm2_pci
+</dt>
+<dd>
+<p>
+ controlador HAL para Mesa Electronics 5i20, 5i22, 5i23, 4i65, 4i68 o cualquier placa de E/S, con firmware HostMot2.
+</p>
+</dd>
+<dt class="hdlist1">
+hostmot2
+</dt>
+<dd>
+<p>
+ controlador HAL para el firmware Mesa Electronics HostMot2.
+</p>
+</dd>
+<dt class="hdlist1">
+mesa_7i65
+</dt>
+<dd>
+<p>
+ Soporte para la tarjeta servo de ocho ejes Mesa 7i65.
+</p>
+</dd>
+<dt class="hdlist1">
+pluto_servo
+</dt>
+<dd>
+<p>
+ Controlador de hardware y firmware para la FPGA de puerto paralelo Pluto-P, para utilizar con servos.
+</p>
+</dd>
+<dt class="hdlist1">
+pluto_step
+</dt>
+<dd>
+<p>
+ Controlador de hardware y firmware para la FPGA de puerto paralelo Pluto-P, para utilizar con steppers.
+</p>
+</dd>
+<dt class="hdlist1">
+thc
+</dt>
+<dd>
+<p>
+ Control de la altura de antorcha utilizando una tarjeta Mesa THC.
+</p>
+</dd>
+<dt class="hdlist1">
+serport
+</dt>
+<dd>
+<p>
+ Controlador de hardware para los bits de E/S digitales del puerto serie 8250 y 16550.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_cinemática">2.6. Cinemática</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+kins
+</dt>
+<dd>
+<p>
+ Definiciones de cinemática para LinuxCNC.
+</p>
+</dd>
+<dt class="hdlist1">
+gantrykins
+</dt>
+<dd>
+<p>
+ Un módulo de cinemática que mapea un eje a múltiples articulaciones.
+</p>
+</dd>
+<dt class="hdlist1">
+genhexkins
+</dt>
+<dd>
+<p>
+ Da seis grados de libertad en posición y orientación (XYZABC). La ubicación de los motores
+se define en tiempo de compilación.
+</p>
+</dd>
+<dt class="hdlist1">
+genserkins
+</dt>
+<dd>
+<p>
+ Cinemática que puede modelar un manipulador general de eslabones en serie con hasta
+6 articulaciones angulares.
+</p>
+</dd>
+<dt class="hdlist1">
+maxkins
+</dt>
+<dd>
+<p>
+ Cinemática para una fresadora de 5 ejes llamada <em>max</em> con cabezal de inclinación (eje B) y rotativo horizontal montado sobre la mesa (eje C). Proporciona movimiento UVW en el sistema de coordenadas rotado. El archivo
+fuente, maxkins.c, puede ser un punto de inicio útil para otros sistemas de 5 ejes.
+</p>
+</dd>
+<dt class="hdlist1">
+tripodkins
+</dt>
+<dd>
+<p>
+ Las articulaciones representan la distancia del punto controlado desde tres ubicaciones
+predefinidas (los motores), dando tres grados de libertad en posición (XYZ).
+</p>
+</dd>
+<dt class="hdlist1">
+trivkins
+</dt>
+<dd>
+<p>
+ Las fresadoras y tornos estándar utilizan el módulo de cinemática trivial.
+Hay una correspondencia 1:1 entre articulaciones y ejes.
+</p>
+</dd>
+<dt class="hdlist1">
+pumakins
+</dt>
+<dd>
+<p>
+ Cinemática para robots estilo PUMA.
+</p>
+</dd>
+<dt class="hdlist1">
+rotatekins
+</dt>
+<dd>
+<p>
+ Los ejes X e Y se giran 45 grados en comparación con las articulaciones 0 y 1.
+</p>
+</dd>
+<dt class="hdlist1">
+scarakins
+</dt>
+<dd>
+<p>
+ Kinematics para robots tipo SCARA.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_control_del_motor">2.7. Control del motor</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+at_pid
+</dt>
+<dd>
+<p>
+ Controlador proporcional/integral/derivativo con ajuste automático.
+</p>
+</dd>
+<dt class="hdlist1">
+pid
+</dt>
+<dd>
+<p>
+Controlador proporcional/integral/derivativo.
+</p>
+</dd>
+<dt class="hdlist1">
+pwmgen
+</dt>
+<dd>
+<p>
+ Software de generación PWM/PDM.
+</p>
+</dd>
+<dt class="hdlist1">
+encoder
+</dt>
+<dd>
+<p>
+ Conteo por software de señales de encoder en cuadratura.
+</p>
+</dd>
+<dt class="hdlist1">
+stepgen
+</dt>
+<dd>
+<p>
+ Generación de pulsos de pasos de software.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_bldc_y_control_de_motores_trifásicos">2.8. BLDC y control de motores trifásicos</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+bldc_hall3
+</dt>
+<dd>
+<p>
+ Controlador de motor BLDC bipolar de 3 cables, de conmutación trapezoidal, que utiliza sensores Hall.
+</p>
+</dd>
+<dt class="hdlist1">
+clarke2
+</dt>
+<dd>
+<p>
+ Versión de dos entradas de la transformada de Clarke.
+</p>
+</dd>
+<dt class="hdlist1">
+clarke3
+</dt>
+<dd>
+<p>
+ Transformada Clarke (3 fases a cartesiana) .
+</p>
+</dd>
+<dt class="hdlist1">
+clarkeinv
+</dt>
+<dd>
+<p>
+ Transformada Clarke inversa.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_otros_componentes">2.9. Otros componentes</h3>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+charge_pump
+</dt>
+<dd>
+<p>
+ Crea una onda cuadrada para la entrada de <em>bomba de carga</em> de algunas placas controladoras.
+La <em>bomba de carga</em> debe agregarse a la función hilo base.  Cuando está habilitada, la salida está activada durante
+un período y desactivada durante otro.  Para calcular la frecuencia de la salida 1/(período de tiempo en segundos x 2) = hz.
+Por ejemplo, si tiene un período base de 100.000 ns, o 0,0001 segundos, la fórmula sería 1/(0,0001 x 2) = 5000 hz o 5 Khz.
+</p>
+</dd>
+<dt class="hdlist1">
+encoder_ratio
+</dt>
+<dd>
+<p>
+ Engranaje electrónico para sincronizar dos ejes.
+</p>
+</dd>
+<dt class="hdlist1">
+estop_latch
+</dt>
+<dd>
+<p>
+ ESTOP latch.
+</p>
+</dd>
+<dt class="hdlist1">
+feedcomp
+</dt>
+<dd>
+<p>
+ Multiplica la entrada por la relación de la velocidad actual a la velocidad de alimentación.
+</p>
+</dd>
+<dt class="hdlist1">
+gearchange
+</dt>
+<dd>
+<p>
+ Seleccion de uno de dos rangos de velocidad.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p><a id="sec:ilowpass"></a> </p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+ilowpass
+</dt>
+<dd>
+<p>
+Si bien puede encontrar otras aplicaciones, este componente se escribió para crear un movimiento más suave con un MPG.
+</p>
+<div class="paragraph"><p>En una máquina con alta aceleración, un jog corto puede comportarse casi como una funcion paso.
+Al poner el componente ilowpass entre l a salida de cuentas del codificador MPG
+y la entrada de jog-count del eje, se puede suavizar.</p></div>
+<div class="paragraph"><p>Elija la escala de forma conservadora para que durante una sesión nunca sea más de aproximadamente 2e9/escala pulsos vistos en el MPG.
+Elija la ganancia de acuerdo al nivel de suavizado deseado.  Divida los valores de axis.N.jog-scale por escala.</p></div>
+</dd>
+<dt class="hdlist1">
+joyhandle
+</dt>
+<dd>
+<p>
+ Establece movimientos de joypad no lineales, bandas muertas y escalas.
+</p>
+</dd>
+<dt class="hdlist1">
+knob2float
+</dt>
+<dd>
+<p>
+ Convierte los conteos (probablemente de un mando codificador) a un valor de punto flotante.
+</p>
+</dd>
+<dt class="hdlist1">
+minmax
+</dt>
+<dd>
+<p>
+ Realiza un seguimiento de los valores mínimo y máximo de la entrada a las salidas.
+</p>
+</dd>
+<dt class="hdlist1">
+sample_hold
+</dt>
+<dd>
+<p>
+ Muestreo y retencion.
+</p>
+</dd>
+<dt class="hdlist1">
+sampler
+</dt>
+<dd>
+<p>
+ Muestrea datos HAL en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+siggen
+</dt>
+<dd>
+<p>
+Generador de señal.
+</p>
+</dd>
+<dt class="hdlist1">
+sim_encoder
+</dt>
+<dd>
+<p>
+ codificador de cuadratura simulado.
+</p>
+</dd>
+<dt class="hdlist1">
+sphereprobe
+</dt>
+<dd>
+<p>
+ Sondeo de una semiesfera.
+</p>
+</dd>
+<dt class="hdlist1">
+steptest
+</dt>
+<dd>
+<p>
+ Utilizado por Stepconf para permitir la prueba de los valores de aceleración y velocidad de un eje.
+</p>
+</dd>
+<dt class="hdlist1">
+streamer
+</dt>
+<dd>
+<p>
+ Transmite archivos de datos HAL en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+supply
+</dt>
+<dd>
+<p>
+ Establece los pines de salida con valores de parámetros (en desuso).
+</p>
+</dd>
+<dt class="hdlist1">
+threadtest
+</dt>
+<dd>
+<p>
+ Componente para probar el comportamiento del hilo.
+</p>
+</dd>
+<dt class="hdlist1">
+time
+</dt>
+<dd>
+<p>
+ Temporizador acumulado de tiempo de ejecución que cuenta HH:MM:SS de entrada <em>activa</em>.
+</p>
+</dd>
+<dt class="hdlist1">
+timedelay
+</dt>
+<dd>
+<p>
+ El equivalente a un relé con retardo de tiempo.
+</p>
+</dd>
+<dt class="hdlist1">
+timedelta
+</dt>
+<dd>
+<p>
+ Componente que mide el comportamiento del tiempo de programación de subprocesos.
+</p>
+</dd>
+<dt class="hdlist1">
+toggle2nist
+</dt>
+<dd>
+<p>
+ Botón alternante para logica nist.
+</p>
+</dd>
+<dt class="hdlist1">
+toggle
+</dt>
+<dd>
+<p>
+ Push-on, push-off de pulsadores momentáneos.
+</p>
+</dd>
+<dt class="hdlist1">
+tristate_bit
+</dt>
+<dd>
+<p>
+ Coloca una señal en un pin de E/S solo cuando esté habilitado, similar a un
+buffer triestado en electrónica.
+</p>
+</dd>
+<dt class="hdlist1">
+tristate_float
+</dt>
+<dd>
+<p>
+ Coloca una señal en un pin de E/S solo cuando esté habilitado, similar a un
+buffer triestado en electrónica.
+</p>
+</dd>
+<dt class="hdlist1">
+watchdog
+</dt>
+<dd>
+<p>
+ Monitorea de una a treinta y dos entradas para un <em>latido</em>.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_llamadas_api_hal">3. Llamadas API HAL</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre><code>hal_add_funct_to_thread.3hal
+hal_bit_t.3hal
+hal_create_thread.3hal
+hal_del_funct_from_thread.3hal
+hal_exit.3hal
+hal_export_funct.3hal
+hal_float_t.3hal
+hal_get_lock.3hal
+hal_init.3hal
+hal_link.3hal
+hal_malloc.3hal
+hal_param_bit_new.3hal
+hal_param_bit_newf.3hal
+hal_param_float_new.3hal
+hal_param_float_newf.3hal
+hal_param_new.3hal
+hal_param_s32_new.3hal
+hal_param_s32_newf.3hal
+hal_param_u32_new.3hal
+hal_param_u32_newf.3hal
+hal_parport.3hal
+hal_pin_bit_new.3hal
+hal_pin_bit_newf.3hal
+hal_pin_float_new.3hal
+hal_pin_float_newf.3hal
+hal_pin_new.3hal
+hal_pin_s32_new.3hal
+hal_pin_s32_newf.3hal
+hal_pin_u32_new.3hal
+hal_pin_u32_newf.3hal
+hal_ready.3hal
+hal_s32_t.3hal
+hal_set_constructor.3hal
+hal_set_lock.3hal
+hal_signal_delete.3hal
+hal_signal_new.3hal
+hal_start_threads.3hal
+hal_type_t.3hal
+hal_u32_t.3hal
+hal_unlink.3hal
+intro.3hal
+indocument.3hal</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_llamadas_rtapi">4. Llamadas RTAPI</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre><code>EXPORT_FUNCTION.3rtapi
+MODULE_AUTHOR.3rtapi
+MODULE_DESCRIPTION.3rtapi
+MODULE_LICENSE.3rtapi
+RTAPI_MP_ARRAY_INT.3rtapi
+RTAPI_MP_ARRAY_LONG.3rtapi
+RTAPI_MP_ARRAY_STRING.3rtapi
+RTAPI_MP_INT.3rtapi
+RTAPI_MP_LONG.3rtapi
+RTAPI_MP_STRING.3rtapi
+intro.3rtapi
+rtapi_app_exit.3rtapi
+rtapi_app_main.3rtapi
+rtapi_clock_set_period.3rtapi
+rtapi_delay.3rtapi
+rtapi_delay_max.3rtapi
+rtapi_exit.3rtapi
+rtapi_get_clocks.3rtapi
+rtapi_get_msg_level.3rtapi
+rtapi_get_time.3rtapi
+rtapi_inb.3rtapi
+rtapi_init.3rtapi
+rtapi_module_param.3rtapi
+RTAPI_MP_ARRAY_INT.3rtapi
+RTAPI_MP_ARRAY_LONG.3rtapi
+RTAPI_MP_ARRAY_STRING.3rtapi
+RTAPI_MP_INT.3rtapi
+RTAPI_MP_LONG.3rtapi
+RTAPI_MP_STRING.3rtapi
+rtapi_mutex.3rtapi
+rtapi_outb.3rtapi
+rtapi_print.3rtap
+rtapi_prio.3rtapi
+rtapi_prio_highest.3rtapi
+rtapi_prio_lowest.3rtapi
+rtapi_prio_next_higher.3rtapi
+rtapi_prio_next_lower.3rtapi
+rtapi_region.3rtapi
+rtapi_release_region.3rtapi
+rtapi_request_region.3rtapi
+rtapi_set_msg_level.3rtapi
+rtapi_shmem.3rtapi
+rtapi_shmem_delete.3rtapi
+rtapi_shmem_getptr.3rtapi
+rtapi_shmem_new.3rtapi
+rtapi_snprintf.3rtapi
+rtapi_task_delete.3rtpi
+rtapi_task_new.3rtapi
+rtapi_task_pause.3rtapi
+rtapi_task_resume.3rtapi
+rtapi_task_start.3rtapi
+rtapi_task_wait.3rtapi</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

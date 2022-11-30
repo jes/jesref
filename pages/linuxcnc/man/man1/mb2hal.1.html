@@ -1,0 +1,138 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:35 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>mb2hal</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">mb2hal</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>mb2hal</b> -
+HAL userspace component for Modbus</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Default
+component name:</p>
+
+<p style="margin-left:22%;">loadusr -W mb2hal
+config=config_file.ini</p>
+
+<p style="margin-left:11%;">Custom component name:</p>
+
+<p style="margin-left:22%;">loadusr -Wn mymodule mb2hal
+config=config_file.ini</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">MB2HAL is a
+generic userspace HAL component to communicate with one or
+more Modbus devices. It supoorts Modbus RTU and Modbus
+TCP.</p>
+
+<p style="margin-left:11%; margin-top: 1em">See
+<a href="http://linuxcnc.org/docs/html/drivers/mb2hal.html">http://linuxcnc.org/docs/html/drivers/mb2hal.html</a>
+for more information.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>fnct_02_read_discrete_inputs:
+<br>
+mb2hal.m.n</b> bit out</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>fnct_03_read_holding_registers:
+<br>
+fnct_04_read_input_registers: <br>
+mb2hal.m.n.float</b> float out <b><br>
+mb2hal.m.n.int</b> s32 out</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>fnct_06_write_single_register:
+<br>
+mb2hal.m.n</b> float in</p>
+
+<p style="margin-left:22%;">NELEMENTS needs to be 1 or
+PIN_NAMES must contain just one name.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>fnct_15_write_multiple_coils:
+<br>
+mb2hal.m.n</b> bit in</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>fnct_16_write_multiple_registers:
+<br>
+mb2hal.m.n</b> float in</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>Each
+transaction <br>
+mb2hal.m.num_errors</b> u32 in</p>
+
+<p style="margin-left:22%;">Error counter</p>
+
+<p style="margin-left:11%; margin-top: 1em">m = HAL_TX_NAME
+or transaction number if not set, n = element number
+(NELEMENTS) <br>
+Example: <br>
+mb2hal.00.01.&lt;type&gt; (transaction=00, second
+register=01 (00 is the first one)) <br>
+mb2hal.TxName.01.&lt;type&gt; (HAL_TX_NAME=TxName, second
+register=01 (00 is the first one))</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Victor
+Rocco</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:29 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>MOVEOFF</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">MOVEOFF</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#EXAMPLES">EXAMPLES</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">moveoff -
+Component for Hal-only offsets</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt moveoff
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]
+[personality=</b><i>P,P,...</i><b>]</b></p> </td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The moveoff
+component is used to offset joint positions using custom Hal
+connections. Implementing an offset-while-program-is-paused
+functionality is supported with appropriate connections for
+the input pins. Nine joints are supported.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The axis offset
+pin values (offset-in-M) are continuously applied
+(respecting limits on value, velocity, and acceleration) to
+the output pins (offset-current-M, pos-plusoffset-M,
+fb-minusoffset-M) when both enabling input pins
+(apply-offsets and move-enable) are TRUE. The two enabling
+inputs are anded internally. A <b>warning</b> pin is set and
+a message issued if the apply-offsets pin is deasserted
+while offsets are applied. The warning pin remains TRUE
+until the offsets are removed or the apply-offsets pin is
+set.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Typically, the
+move-enable pin is connected to external controls and the
+apply-offsets pin is connected to halui.program.is-paused
+(for offsets only while paused) or set to TRUE (for
+continuously applied offsets).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Applied offsets
+are <b>automatically returned</b> to zero (respecting
+limits) when either of the enabling inputs is deactivated.
+The zero value tolerance is specified by the epsilon input
+pin value.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Waypoints are
+recorded when the moveoff componenent is enabled. Waypoints
+are managed with the waypoint-sample-secs and
+waypoint-threshold pins. When the backtrack-enable pin is
+TRUE, the auto-return path follows the recorded waypoints.
+When the memory available for waypoints is exhausted,
+offsets are frozen and the waypoint-limit pin is asserted.
+This restriction applies regardless of the state of the
+backtrack-enable pin. An enabling pin must be deasserted to
+allow a return to the original (non-offset position).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Backtracking
+through waypoints results in <b>slower</b> movement rates as
+the moves are point-to-point respecting velocity and
+acceleration settings. The velocity and acceleration limit
+pins can be managed dynamically to control offsets at all
+times.</p>
+
+<p style="margin-left:11%; margin-top: 1em">When
+backtrack-enable is FALSE, the auto-return move is
+<b>NOT</b> coordinated, each axis returns to zero at its own
+rate. If a controlled path is wanted in this condition, each
+axis should be manually returned to zero before deasserting
+an enabling pin.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+waypoint-sample-secs, waypoint-threshold, and epsilon pins
+are evaluated only when the component is idle.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+offsets-applied output pin is provided to indicate the
+current state to a GUI so that program resumption can be
+managed. If the offset(s) are non-zero when the
+apply-offsets pin is deasserted (for example when resuming a
+program when offsetting during a pause), offsets are
+returned to zero (respecting limits) and an <b>Error</b>
+message is issued.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>Caution:</b>
+If offsets are enabled and applied and the machine is turned
+off for any reason, any <b>external</b> Hal logic that
+manages the enabling pins and the offset-in-M inputs is
+responsible for their state when the machine is subsequently
+turned on again.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This Hal-only
+means of offsetting is typically not known to LinuxCNC nor
+available in GUI preview displays. <b>No protection is
+provided</b> for offset moves that exceed soft limits
+managed by LinuxCNC. Since soft limits are not honored, an
+offset move may encounter hard limits (or <b>CRASH</b> if
+there are no limit switches). Use of the offset-min-M and
+offset-max-M inputs to limit travel is recommended.
+Triggering a hard limit will turn off the machine -- see
+<b>Caution</b> above.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The offset-in-M
+values may be set with inifile settings, controlled by a
+GUI, or managed by other Hal components and connections.
+Fixed values may be appropriate in simple cases where the
+direction and amount of offset is well-defined but a control
+method is required to deactivate an enabling pin in order to
+return offsets to zero. GUIs may provide means for users to
+set, increment, decrement, and accumulate offset values for
+each axis and may set offset-in-M values to zero before
+deasserting an enabling pin.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The default
+values for accel, vel, min, max, epsilon,
+waypoint-sample-secs, and waypoint-threshold may not be
+suitable for any particular application. This Hal component
+is unaware of limits enforced elsewhere by LinuxCNC. Users
+should test usage in a simulator application and understand
+all hazards <b>before</b> use on hardware.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The module
+personality item sets the number of joints supported
+(default==3, maximum is 9).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Use of the
+names= option for naming is <b>required</b> for
+compatibility with the gui provided as scripts/moveoff_gui:
+<br>
+loadrt moveoff names=<b>mv</b>
+personality=number_of_joints</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>man
+moveoff_gui</b> for more information</p>
+
+<h2>EXAMPLES
+<a name="EXAMPLES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Example
+simulator configs that demonstrate the moveoff component and
+a simple gui (scripts/moveoff_gui) are located in
+configs/sim/axis/moveoff. The axis gui is used for the
+demonstrations and the configs can be adapted for other guis
+like touchy and gscreen. An example with the touchy gui is
+provided in configs/sim/touchy/ngcgui/.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>moveoff.</b><i>N</i><b>.read-inputs</b>
+(requires a floating-point thread)</p>
+
+<p style="margin-left:22%;">Read all inputs</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.write-outputs</b>
+(requires a floating-point thread)</p>
+
+<p style="margin-left:22%;">Write computed offset outputs
+(offset-current-M, pos-plusoffset-M, fb-minusoffset-M). All
+other outputs are updated by read-inputs()</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>moveoff.</b><i>N</i><b>.power-on</b>
+bit in</p>
+
+<p style="margin-left:22%;">Connect to
+motion.motion-enabled</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.move-enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">Enable offsets (Enabling
+requires apply-offset TRUE also)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.apply-offsets</b>
+bit in</p>
+
+<p style="margin-left:22%;">Enable offsets (Enabling
+requires move-enable TRUE also)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.backtrack-enable</b>
+bit in (default: <i>1</i>)</p>
+
+<p style="margin-left:22%;">Enable backtrack on
+auto-return</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.epsilon</b>
+float in (default: <i>0.0005</i>)</p>
+
+<p style="margin-left:22%;">When enabling pins are
+deactivated, return to un-offsetted position within epsilon
+units. Warning: values that are too small in value may cause
+overshoot, A minimum value of 0.0001 is <b>silently
+enforced</b></p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.waypoint-threshold</b>
+float in (default: <i>0.02</i>)</p>
+
+<p style="margin-left:22%;">Minimum distance (in a single
+axis) for a new waypoint</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.waypoint-sample-secs</b>
+float in (default: <i>0.02</i>)</p>
+
+<p style="margin-left:22%;">Minimum sample interval (in
+seconds) for a new waypoint</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.warning</b>
+bit out</p>
+
+<p style="margin-left:22%;">Set TRUE if apply-offsets is
+deasserted while offset-applied is TRUE</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-applied</b>
+bit out</p>
+
+<p style="margin-left:22%;">TRUE if one or more offsets are
+applied</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.waypoint-limit</b>
+bit out (default: <i>0</i>)</p>
+
+<p style="margin-left:22%;">Indicates waypoint limit
+reached (motion ceases), an enabling pin must be deasserted
+to initiate return to original position</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.waypoint-ct</b>
+s32 out</p>
+
+<p style="margin-left:22%;">Waypoint count (for
+debugging)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.waypoint-percent-used</b>
+s32 out</p>
+
+<p style="margin-left:22%;">Percent of available waypoints
+used</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-in-</b><i>M</i>
+float in (M=0..personality)</p>
+
+<p style="margin-left:22%;">Joint offset input value</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.pos-</b><i>M</i>
+float in (M=0..personality)</p>
+
+<p style="margin-left:22%;">Joint position (typ:
+axis.0.motor-pos-cmd)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.fb-</b><i>M</i>
+float in (M=0..personality)</p>
+
+<p style="margin-left:22%;">Joint feedback (typ from
+encoder and input to pid controller (pid.feedback))</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-current-</b><i>M</i>
+float out (M=0..personality)</p>
+
+<p style="margin-left:22%;">Joint offset current value</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.pos-plusoffset-</b><i>M</i>
+float out (M=0..personality)</p>
+
+<p style="margin-left:22%;">Computed joint position plus
+offset (typically connect to pid command input)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.fb-minusoffset-</b><i>M</i>
+float out (M=0..personality)</p>
+
+<p style="margin-left:22%;">Computed Joint feedback minus
+offset (typically connected to axis.0.motor-pos-fb</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-vel-</b><i>M</i>
+float in (M=0..personality) (default: <i>10</i>)</p>
+
+<p style="margin-left:22%;">Joint offset velocity limit</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-accel-</b><i>M</i>
+float in (M=0..personality) (default: <i>100</i>)</p>
+
+<p style="margin-left:22%;">Joint offset acceleration
+limit</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-min-</b><i>M</i>
+float in (M=0..personality) (default: <i>-1e20</i>)</p>
+
+<p style="margin-left:22%;">Minimum limit for applied joint
+offset (typ negative)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.offset-max-</b><i>M</i>
+float in (M=0..personality) (default: <i>1e20</i>)</p>
+
+<p style="margin-left:22%;">Maximum limit for applied
+offset (typ positive)</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.dbg-waypoint-limit-test</b>
+bit in</p>
+
+<p style="margin-left:22%;">Debug input to test with
+limited number of waypoints</p>
+
+
+<p style="margin-left:11%;"><b>moveoff.</b><i>N</i><b>.dbg-state</b>
+s32 out</p>
+
+<p style="margin-left:22%;">Debug output for current state
+of state machine</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

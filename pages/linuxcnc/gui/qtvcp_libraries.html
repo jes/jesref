@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>QTvcp Libraries modules</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>QTvcp Libraries modules</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:qtvcp-libraries"><p>libraries are prebuilt python modules that give added features to QTvcp.<br />
+In this way you can select what features you want - yet don&#8217;t have to build common ones yourself.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_status">1. STATUS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>STATUS is a library that sends GObject messages based on linuxcnc&#8217;s current state.<br />
+It is an extension of gladevcp&#8217;s GStat object. <a href="GStat.html#cha:GStat">GStats</a></p></div>
+<div class="paragraph"><p>It also has some functions to give status on such things as internal jog rate.<br />
+You connect a function call to the STATUS message you are interested in.<br />
+QTvcp will call this function when the message is sent from STATUS.<br /></p></div>
+<div class="paragraph"><p>To import this modules add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Status</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code to your instantiate section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>STATUS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Status</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>To connect to messages use GObject syntax. For example to catch machine on and off messages,<br /></p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">This example shows the two common ways of connecting signals.<br />
+Notice one uses lambda. lambda is used to strip off or manipulate arguments from the status message<br />
+before calling the function.<br />
+You can see the difference in the called function signature. the one that uses lambda<br />
+does not accept the status object - lambda did not pass it to the function.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>place these commands into the INITIALIZE section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'state-on'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>on_state_on<span style="color: #990000">)</span>
+        STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">connect</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'state-off'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span><span style="color: #990000">:</span> w<span style="color: #990000">,</span> self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">on_state_off</span></span><span style="color: #990000">())</span></tt></pre></div></div>
+<div class="paragraph"><p>These would call functions that looks like these:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>        <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_state_on</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> status_object<span style="color: #990000">):</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'Linuxcnc machine is on'</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_state_off</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'Linuxcnc machine is off'</span></tt></pre></div></div>
+<div class="paragraph"><p>In this example code when linuxcnc is in machine on state the function self.on_state_on will be called.<br />
+When linuxcnc is in machine off state the function self.on_state_off will be called.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_info">2. INFO</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>INFO is a library to collect and filters data from the INI file.<br /></p></div>
+<div class="paragraph"><p>The available data and defaults:<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>LINUXCNC_IS_RUNNING
+LINUXCNC_VERSION
+INIPATH
+INI = linuxcnc.ini(INIPATH)
+MDI_HISTORY_PATH = '~/.axis_mdi_history'
+QTVCP_LOG_HISTORY_PATH = '~/qtvcp.log'
+MACHINE_LOG_HISTORY_PATH = '~/.machine_log_history'
+PREFERENCE_PATH = '~/.Preferences'
+SUB_PATH = None
+SUB_PATH_LIST = []
+self.MACRO_PATH = None
+MACRO_PATH_LIST = []
+INI_MACROS = self.INI.findall("DISPLAY", "MACRO")
+
+IMAGE_PATH = IMAGEDIR
+LIB_PATH = os.path.join(HOME, "share","qtvcp")
+
+PROGRAM_FILTERS = None
+PARAMETER_FILE = None
+MACHINE_IS_LATHE = False
+MACHINE_IS_METRIC = False
+MACHINE_UNIT_CONVERSION = 1
+MACHINE_UNIT_CONVERSION_9 = [1]*9
+TRAJ_COORDINATES =
+JOINT_COUNT = int(self.INI.find("KINS","JOINTS")or 0)
+AVAILABLE_AXES = ['X','Y','Z']
+AVAILABLE_JOINTS = [0,1,2]
+GET_NAME_FROM_JOINT = {0:'X',1:'Y',2:'Z'}
+GET_JOG_FROM_NAME = {'X':0,'Y':1,'Z':2}
+NO_HOME_REQUIRED = False
+HOME_ALL_FLAG
+JOINT_TYPE = self.INI.find(section, "TYPE") or "LINEAR"
+JOINT_SEQUENCE_LIST
+JOINT_SYNC_LIST
+
+JOG_INCREMENTS = None
+ANGULAR_INCREMENTS = None
+GRID_INCREMENTS
+
+DEFAULT_LINEAR_JOG_VEL = 15 units per minute
+MIN_LINEAR_JOG_VEL = 60 units per minute
+MAX_LINEAR_JOG_VEL = 300 units per minute
+
+DEFAULT_ANGULAR_JOG_VEL =
+MIN_ANGULAR_JOG_VEL =
+MAX_ANGULAR_JOG_VEL =
+
+MAX_FEED_OVERRIDE =
+MAX_TRAJ_VELOCITY =
+
+AVAILABLE_SPINDLES = int(self.INI.find("TRAJ", "SPINDLES") or 1)
+DEFAULT_SPINDLE_0_SPEED = 200
+MAX_SPINDLE_0_SPEED = 2500
+MAX_SPINDLE_0_OVERRIDE = 100
+MIN_SPINDLE_0_OVERRIDE = 50
+
+MAX_FEED_OVERRIDE = 1.5
+MAX_TRAJ_VELOCITY
+
+# user message dialog info
+USRMESS_BOLDTEXT = self.INI.findall("DISPLAY", "MESSAGE_BOLDTEXT")
+USRMESS_TEXT = self.INI.findall("DISPLAY", "MESSAGE_TEXT")
+USRMESS_TYPE = self.INI.findall("DISPLAY", "MESSAGE_TYPE")
+USRMESS_PINNAME = self.INI.findall("DISPLAY", "MESSAGE_PINNAME")
+USRMESS_DETAILS = self.INI.findall("DISPLAY", "MESSAGE_DETAILS")
+USRMESS_ICON = self.INI.findall("DISPLAY", "MESSAGE_ICON")
+ZIPPED_USRMESS =
+
+self.GLADEVCP = (self.INI.find("DISPLAY", "GLADEVCP")) or None
+
+# embeded program info
+TAB_NAMES = (self.INI.findall("DISPLAY", "EMBED_TAB_NAME")) or None
+TAB_LOCATION = (self.INI.findall("DISPLAY", "EMBED_TAB_LOCATION")) or []
+TAB_CMD = (self.INI.findall("DISPLAY", "EMBED_TAB_COMMAND")) or None
+ZIPPED_TABS =
+
+MDI_COMMAND_LIST =      (heading: [MDI_COMMAND_LIST], title: MDI_COMMAND")
+TOOL_FILE_PATH =        (heading: [EMCIO], title:TOOL_TABLE)
+POSTGUI_HALFILE_PATH =  (heading: [HAL], title: POSTGUI_HALFILE)</code></pre>
+</div></div>
+<div class="paragraph"><p>There are some <em>helper functions</em> - mostly used for widget support<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>get_error_safe_setting(self, heading, detail, default=None)
+convert_metric_to_machine(data)
+convert_imperial_to_machine(data)
+convert_9_metric_to_machine(data)
+convert_9_imperial_to_machine(data)
+convert_units(data)
+convert_units_9(data)
+get_filter_program(fname)
+get_qt_filter_extensions()</code></pre>
+</div></div>
+<div class="paragraph"><p>To import this modules add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Info</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it in a handler file add this python code to your instantiate section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+INFO <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Info</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>To access INFO data use this general syntax:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>home_state <span style="color: #990000">=</span> INFO<span style="color: #990000">.</span>NO_HOME_REQUIRED
+<span style="font-weight: bold"><span style="color: #0000FF">if</span></span> INFO<span style="color: #990000">.</span>MACHINE_IS_METRIC <span style="font-weight: bold"><span style="color: #0000FF">is</span></span> True<span style="color: #990000">:</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'Metric based'</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_action">3. Action</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This library is used to command linuxcnc&#8217;s motion controller.<br />
+It tries to hide incidental details and add convenience methods for developers.<br /></p></div>
+<div class="paragraph"><p>To import this modules add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Action</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code to your instantiate section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+ACTION <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Action</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>To access Action commands use general syntax such as these:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_ESTOP_STATE</span></span><span style="color: #990000">(</span>state<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MACHINE_STATE</span></span><span style="color: #990000">(</span>state<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MACHINE_HOMING</span></span><span style="color: #990000">(</span>joint<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MACHINE_UNHOMED</span></span><span style="color: #990000">(</span>joint<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_LIMITS_OVERRIDE</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MDI_MODE</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MANUAL_MODE</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_AUTO_MODE</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_LIMITS_OVERRIDE</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">CALL_MDI</span></span><span style="color: #990000">(</span>code<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">CALL_MDI_WAIT</span></span><span style="color: #990000">(</span>code<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">CALL_INI_MDI</span></span><span style="color: #990000">(</span>number<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">CALL_OWORD</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">OPEN_PROGRAM</span></span><span style="color: #990000">(</span>filename<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SAVE_PROGRAM</span></span><span style="color: #990000">(</span>text_source<span style="color: #990000">,</span> fname<span style="color: #990000">):</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_AXIS_ORIGIN</span></span><span style="color: #990000">(</span>axis<span style="color: #990000">,</span>value<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_TOOL_OFFSET</span></span><span style="color: #990000">(</span>axis<span style="color: #990000">,</span>value<span style="color: #990000">,</span>fixture <span style="color: #990000">=</span> False<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">RUN</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ABORT</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PAUSE</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MAX_VELOCITY_RATE</span></span><span style="color: #990000">(</span>rate<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_RAPID_RATE</span></span><span style="color: #990000">(</span>rate<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_FEED_RATE</span></span><span style="color: #990000">(</span>rate<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_SPINDLE_RATE</span></span><span style="color: #990000">(</span>rate<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_JOG_RATE</span></span><span style="color: #990000">(</span>rate<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_JOG_INCR</span></span><span style="color: #990000">(</span>incr<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_JOG_RATE_ANGULAR</span></span><span style="color: #990000">(</span>rate<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_JOG_INCR_ANGULAR</span></span><span style="color: #990000">(</span>incr<span style="color: #990000">,</span> text<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_SPINDLE_ROTATION</span></span><span style="color: #990000">(</span>direction <span style="color: #990000">=</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> rpm <span style="color: #990000">=</span> <span style="color: #993399">100</span><span style="color: #990000">,</span> number <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_SPINDLE_FASTER</span></span><span style="color: #990000">(</span>number <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_SPINDLE_SLOWER</span></span><span style="color: #990000">(</span>number <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_SPINDLE_STOP</span></span><span style="color: #990000">(</span>number <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_USER_SYSTEM</span></span><span style="color: #990000">(</span>system<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ZERO_G92_OFFSET</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ZERO_ROTATIONAL_OFFSET</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">ZERO_G5X_OFFSET</span></span><span style="color: #990000">(</span>num<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">RECORD_CURRENT_MODE</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">RESTORE_RECORDED_MODE</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_SELECTED_AXIS</span></span><span style="color: #990000">(</span>jointnum<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">DO_JOG</span></span><span style="color: #990000">(</span>jointnum<span style="color: #990000">,</span> direction<span style="color: #990000">)</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">JOG</span></span><span style="color: #990000">(</span>jointnum<span style="color: #990000">,</span> direction<span style="color: #990000">,</span> rate<span style="color: #990000">,</span> distance<span style="color: #990000">=</span><span style="color: #993399">0</span><span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">TOGGLE_FLOOD</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_FLOOD_ON</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_FLOOD_OFF</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">TOGGLE_MIST</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MIST_ON</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MIST_OFF</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">RELOAD_TOOLTABLE</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">UPDATE_VAR_FILE</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">TOGGLE_OPTIONAL_STOP</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_OPTIONAL_STOP_ON</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_OPTIONAL_STOP_OFF</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">TOGGLE_BLOCK_DELETE</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_BLOCK_DELETE_ON</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_BLOCK_DELETE_OFF</span></span><span style="color: #990000">()</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">RELOAD_DISPLAY</span></span><span style="color: #990000">()</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_GRAPHICS_VIEW</span></span><span style="color: #990000">(</span>view<span style="color: #990000">)</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">UPDATE_MACHINE_LOG</span></span><span style="color: #990000">(</span>text<span style="color: #990000">,</span> option<span style="color: #990000">=</span>None<span style="color: #990000">):</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">CALL_DIALOG</span></span><span style="color: #990000">(</span>command<span style="color: #990000">):</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">HIDE_POINTER</span></span><span style="color: #990000">(</span>state<span style="color: #990000">):</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_SOUND</span></span><span style="color: #990000">(</span>path<span style="color: #990000">):</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_ERROR</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_DONE</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_READY</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_ATTENTION</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_LOGIN</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">PLAY_LOGOUT</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SPEAK</span></span><span style="color: #990000">(</span>speech<span style="color: #990000">):</span>
+
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">BEEP</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">BEEP_RING</span></span><span style="color: #990000">():</span>
+ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">BEEP_START</span></span><span style="color: #990000">():</span>
+</tt></pre></div></div>
+<div class="paragraph"><p>There are some <em>helper functions</em> - mostly used for this library&#8217;s support<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">get_jog_info</span></span> <span style="color: #990000">(</span>num<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000000">jnum_check</span></span><span style="color: #990000">(</span>num<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000000">ensure_mode</span></span><span style="color: #990000">(</span>modes<span style="color: #990000">)</span>
+<span style="font-weight: bold"><span style="color: #000000">open_filter_program</span></span><span style="color: #990000">(</span>filename<span style="color: #990000">,</span> filter<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tool">4. TOOL</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This library handles tool offset file changes.<br />
+Linuxcnc doesn&#8217;t handle third party manipulation of the tool file well.<br /></p></div>
+<div class="sect2">
+<h3 id="_get_tool_info_toolnumber">4.1. GET_TOOL_INFO(toolnumber)</h3>
+<div class="paragraph"><p>This will return a Python list of information on the requested tool number.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_tool_array">4.2. GET_TOOL_ARRAY()</h3>
+<div class="paragraph"><p>This return a single python list of python lists of tool information.<br />
+This is a raw list formed from the system tool file.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_tool_models">4.3. GET_TOOL_MODELS()</h3>
+<div class="paragraph"><p>This will return a python tuple of two Python lists of Python lists of tool information.<br />
+[0] will be real tools information<br />
+[1] will be wear tool information (tool numbers will be over 10000; Fanuc style tool wear)<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_add_tool_newtool_99_0_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_em_0_em_0_em_new_tool_em_br">4.4. ADD_TOOL(newtool = [-99, 0,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>,<em>0</em>, 0,<em>New Tool</em>])<br /></h3>
+<div class="paragraph"><p>This will by default, add a black tool entry with tool number -99.<br />
+You can preload the <em>newtool</em> array with tool information.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_delete_tools_tool">4.5. DELETE_TOOLS( tool)</h3>
+<div class="paragraph"><p>Delete the numbered tool</p></div>
+</div>
+<div class="sect2">
+<h3 id="_save_toolfile_toolarray">4.6. SAVE_TOOLFILE(toolarray)</h3>
+<div class="paragraph"><p>This will parse the toolarray and save it to the file specified in the INI as the tool path.<br />
+This tool array must contain all the available tools information.<br />
+This array is expected to use the linuxcnc raw tool array - (doesn&#8217;t have tool wear entries)<br />
+it will return True if there was an error.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_convert_to_wear_type_toolarray">4.7. CONVERT_TO_WEAR_TYPE(toolarray)</h3>
+<div class="paragraph"><p>This function converts a linuxcnc raw tool array to a qtvcp tool wear array.<br />
+Qtvcp&#8217;s array includes entries for X and Z axis tool wear.<br />
+inuxcnc covers tool wear by adding tool wear information into tool entries above 10000.<br />
+This also requires remap code to add the wear offsets at tool change time.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_convert_to_standard_type_toolarray">4.8. CONVERT_TO_STANDARD_TYPE(toolarray)</h3>
+<div class="paragraph"><p>This function converts qtvcp&#8217;s tool array into a linuxcnc raw tool array.<br />
+Qtvcp&#8217;s array includes entries for X and Z axis tool wear.<br />
+linuxcnc covers tool wear by adding tool wear information into tool entries above 10000.<br />
+This also requires remap code to add the wear offsets t tool change time.<br /></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_path">5. Path</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module give reference to important file paths.<br />
+To import this modules add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">,</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Path</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code to your instantiated section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+PATH <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Path</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="sect2">
+<h3 id="_here_is_a_list_of_the_variables">5.1. Here is a list of the variables:</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>PATH<span style="color: #990000">.</span>PREFS_FILENAME <span style="font-style: italic"><span style="color: #9A1900"># The preference file path</span></span>
+PATH<span style="color: #990000">.</span>WORKINGDIR     <span style="font-style: italic"><span style="color: #9A1900"># The directory qtvcp was launched from</span></span>
+PATH<span style="color: #990000">.</span>IS_SCREEN      <span style="font-style: italic"><span style="color: #9A1900"># Is this a screen or a VCP?</span></span>
+PATH<span style="color: #990000">.</span>CONFIGPATH     <span style="font-style: italic"><span style="color: #9A1900"># launched configuration folder</span></span>
+PATH<span style="color: #990000">.</span>BASEDIR        <span style="font-style: italic"><span style="color: #9A1900"># Base folder for linuxcnc</span></span>
+PATH<span style="color: #990000">.</span>BASENAME       <span style="font-style: italic"><span style="color: #9A1900"># The Designer files name (no ending)</span></span>
+PATH<span style="color: #990000">.</span>LIBDIR         <span style="font-style: italic"><span style="color: #9A1900"># The Qtvcp library folder</span></span>
+PATH<span style="color: #990000">.</span>IMAGEDIR       <span style="font-style: italic"><span style="color: #9A1900"># The Qtvcp image folder</span></span>
+PATH<span style="color: #990000">.</span>SCREENDIR      <span style="font-style: italic"><span style="color: #9A1900"># The Qtvcp builtin Screen folder</span></span>
+PATH<span style="color: #990000">.</span>PANELDIR       <span style="font-style: italic"><span style="color: #9A1900"># The Qtvcp builtin VCP folder</span></span>
+PATH<span style="color: #990000">.</span>HANDLER        <span style="font-style: italic"><span style="color: #9A1900"># Handler file Path</span></span>
+PATH<span style="color: #990000">.</span>XML            <span style="font-style: italic"><span style="color: #9A1900"># Qtvcp ui file path</span></span>
+PATH<span style="color: #990000">.</span>QSS            <span style="font-style: italic"><span style="color: #9A1900"># Qtvcp Qss file path</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># Not currently used:</span></span>
+PATH<span style="color: #990000">.</span>LOCALEDIR      <span style="font-style: italic"><span style="color: #9A1900"># Locale translation folder</span></span>
+PATH<span style="color: #990000">.</span>DOMAIN         <span style="font-style: italic"><span style="color: #9A1900"># Translation domain</span></span>
+</tt></pre></div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_vcpwindow">6. VCPWindow</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module give reference to the Main window and widgets.<br />
+Typically this would be used for a library (eg, toolbar library uses it.) as<br />
+the widgets get a reference to the main window from the _hal_init() function.<br /></p></div>
+<div class="paragraph"><p>To import this modules add this python code:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>qt_makegui <span style="font-weight: bold"><span style="color: #000080">import</span></span> VCPWindow</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+WIDGETS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">VCPWindow</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_aux_program_loader">7. aux_program_loader</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module allows an easy way to load auxiliary programs linuxcnc often uses.<br />
+To import this modules add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>lib<span style="color: #990000">.</span>aux_program_loader <span style="font-weight: bold"><span style="color: #000080">import</span></span> Aux_program_loader</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code to your instantiated section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+AUX_PRGM <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Aux_program_loader</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="sect2">
+<h3 id="_halmeter">7.1. HALmeter</h3>
+<div class="paragraph"><p>Halmeter is used to display one HAL pin data.
+load a halmeter with:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_halmeter()</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_classicladder_user_program">7.2. classicladder user program</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_ladder()</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_linuxcnc_status_program">7.3. linuxcnc status program</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_status()</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_halshow_configure_display_program">7.4. HALshow configure display program</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_halshow()</code></pre>
+</div></div>
+<div class="sect3">
+<h4 id="_halscope_program">7.4.1. HALscope program</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_halscope()</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tooledit_program">7.5. tooledit program</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_tooledit(TOOLEFILE_PATH)</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_calibration">7.6. calibration</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.load_calibration()</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_onboard_matchbox_keyboard">7.7. onboard/matchbox keyboard</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>AUX_PRGM.keyboard_onboard(ARGS)</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_keybindings">8. Keybindings</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module is used to allow each keypress to control a behavior such as jogging.<br />
+It&#8217;s used inside the handler file to facilitate keyboard jogging etc.<br /></p></div>
+<div class="sect2">
+<h3 id="_importing_and_initiating">8.1. Importing and Initiating</h3>
+<div class="paragraph"><p>To import this modules add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>lib<span style="color: #990000">.</span>keybindings <span style="font-weight: bold"><span style="color: #000080">import</span></span> Keylookup</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code to your instantiate section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+KEYBIND <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Keylookup</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_adding_key_bndings">8.2. adding key bndings</h3>
+<div class="paragraph"><p>Note keybindings require code under the <em>processed_key_event</em> function<br />
+to call <em>KEYBIND.call()</em> - most handler file already have this code.<br />
+In the handler file, under the <em>initialed</em> function use this general syntaxt:<br />
+<br />
+KEYBINDING.add_call("DEFINED_KEY","FUNCTION TO CALL", USER DATA)<br />
+<br />
+Here we add a keybinding for F10, 11 and 12<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Special Functions called from QTVCP</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the widgets are instantiated.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the HAL pins are built but HAL is not set ready</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        KEYBIND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">add_call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Key_F10'</span><span style="color: #990000">,</span><span style="color: #FF0000">'on_keycall_F10'</span><span style="color: #990000">,</span>None<span style="color: #990000">)</span>
+        KEYBIND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">add_call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Key_F11'</span><span style="color: #990000">,</span><span style="color: #FF0000">'on_keycall_override'</span><span style="color: #990000">,</span><span style="color: #993399">10</span><span style="color: #990000">)</span>
+        KEYBIND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">add_call</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Key_F12'</span><span style="color: #990000">,</span><span style="color: #FF0000">'on_keycall_override'</span><span style="color: #990000">,</span><span style="color: #993399">20</span><span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>And then need to add functions that get called:<br />
+In the handler file, under the <em>KEY BINDING CALLS</em><br />
+section add this:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># KEY BINDING CALLS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_F12</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">,</span>value<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'F12 pressed'</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_override</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">,</span>value<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'value = {}'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span><span style="color: #990000">(</span>value<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_messages">9. Messages</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This modules is used to display pop up dialog messages on the screen.<br />
+These are defined in the INI file and controlled by HAL pins.<br />
+<em>Boldtext</em> is generally a title.<br />
+<em>text</em> is below that and usually longer.<br />
+<em>Detail</em> is hidden unless clicked on.<br />
+<em>pinname</em> is the basename of the HAL pins.<br />
+<em>type</em> specifies whether its a yes/no, ok, or status message.<br />
+Status messages will be shown in the status bar and the notify dialog.<br />
+it requires no user intervention.<br />
+ok messages require the user to click ok to close the dialog.<br />
+ok messages have one HAL pin to launch the dialog and one to signify it&#8217;s waiting
+for response.<br />
+yes/no messages require the user to select yes or no buttons to close the dialog.<br />
+yes/no messages have three hal pins - one to show the dialog, one for waiting,<br />
+and one for the answer.<br />
+By default it will send STATUS messages for focus_overlay anf alert sound.<br />
+These will silently fail if those options are not set up.<br /></p></div>
+<div class="paragraph"><p>Here is a sample INI code. It would be under the [DISPLAY] heading.<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># This just shows in the status bar and desktop notify popup.
+MESSAGE_BOLDTEXT = NONE
+MESSAGE_TEXT = This is a statusbar test
+MESSAGE_DETAILS = STATUS DETAILS
+MESSAGE_TYPE = status
+MESSAGE_PINNAME = statustest
+
+# This will pop up a dialog that asks a yes no question
+MESSAGE_BOLDTEXT = NONE
+MESSAGE_TEXT = This is a yes no dialog test
+MESSAGE_DETAILS = Y/N DETAILS
+MESSAGE_TYPE = yesnodialog
+MESSAGE_PINNAME = yndialogtest
+
+# This pops up a dialog that requires an ok response and it shows in the status bar and
+# the destop notify popup.
+MESSAGE_BOLDTEXT = This is the short text
+MESSAGE_TEXT = This is the longer text of the both type test. It can be longer then the status bar text
+MESSAGE_DETAILS = BOTH DETAILS
+MESSAGE_TYPE = okdialog status
+MESSAGE_PINNAME = bothtest</code></pre>
+</div></div>
+<div class="paragraph"><p>The screenoptions widget can automatically set up the message system.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_notify">10. notify</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module is used to send messages that are integrated into the desktop.<br />
+it uses the pynotify library.<br /></p></div>
+<div class="paragraph"><p>Ubuntu/Mint does not follow the standard - you can&#8217;t set how long the message stays up for.<br />
+I suggest fixing this with a PPA off the net<br />
+ <a href="https://launchpad.net/~leolik/+archive/leolik?field.series_filter=lucid">https://launchpad.net/~leolik/+archive/leolik?field.series_filter=lucid</a><br /></p></div>
+<div class="paragraph"><p>you can set the title, message, icon, and timeout.<br />
+Notify keeps a list of all the alarm messages since starting in self.alarmpage.<br />
+If you click <em>show all messages</em> in the notify popup, it will print then to the terminal.<br />
+<br />
+The screenoptions widget can automatically set up the notify system.<br />
+Typically STATUS messages are used to sent notify messages.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preferences">11. preferences</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module allows one to load and save preference data permanently to storage media.<br />
+<br />
+The screenoptions widget can automatically set up the preference system.<br />
+qtvcp searches for the screenoption widget first and if found calls <em>pref_init().<br />
+This will create the preference object and return it to qtvcp to pass to all the widgets and<br />
+add it to the window object attributes. In this case the preferences object would be accesable<br />
+from the handler file&#8217;s initialized</em> method as self.w.PREFS_<br />
+Also all widgets can have access to a specific preference file at initialization time.<br />
+<br />
+The screenoptions widget can automatically set up the preference file.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_audio_player">12. audio player</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This module allows playing sounds using gstreamer, beep and espeak<br />
+It can play sounds/music files using <em>gstreamer</em> (non blocking)<br />
+It can play sounds using the <em>beep</em> library (currently blocks while beeping)<br />
+It can speak using the <em>espeak</em> library (non blocks while speaking)<br />
+There are default alert sounds using Mint or freedesktop default sounds.<br />
+You can play arbitrary sounds or even songs by specifying the path.<br />
+STATUS has messages to control this module.<br />
+The screenoptions widget can automatically set up the audio system.<br />
+Or to import this modules manually add this python code to your import section:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>lib<span style="color: #990000">.</span>audio_player <span style="font-weight: bold"><span style="color: #000080">import</span></span> Player</tt></pre></div></div>
+<div class="paragraph"><p>To instantiate the module so you can use it add this python code to your instantiated section:<br />
+_register_messages() function connects the audio player to the STATUS library for sounds can be played<br />
+with the STATUS message system.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+SOUND <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Player</span></span><span style="color: #990000">()</span>
+SOUND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">_register_messages</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p>To play sounds using STATUS messages use these general syntax:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">emit</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'play-alert'</span><span style="color: #990000">,</span><span style="color: #FF0000">'LOGOUT'</span><span style="color: #990000">)</span>
+STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">emit</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'play-alert'</span><span style="color: #990000">,</span><span style="color: #FF0000">'BEEP'</span><span style="color: #990000">)</span>
+STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">emit</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'play-alert'</span><span style="color: #990000">,</span><span style="color: #FF0000">'SPEAK This is a test screen for Qt V C P'</span><span style="color: #990000">)</span>
+STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">emit</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'play-sound'</span><span style="color: #990000">,</span> <span style="color: #FF0000">'PATH TO SOUND'</span><span style="color: #990000">)</span></tt></pre></div></div>
+<div class="paragraph"><p>There are default alerts to choose from:<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ERROR
+
+READY
+
+ATTENTION
+
+RING
+
+DONE
+
+LOGIN
+
+LOGOUT</code></pre>
+</div></div>
+<div class="paragraph"><p>There are three beeps:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>BEEP_RING
+
+BEEP_START
+
+BEEP</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtual_keyboard">13. virtual keyboard</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This library allows you to use STATUS messages to launch a virtual keyboard.<br />
+It uses Onboard or Matchbox library for the keyboard.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_toolbar_actions">14. TOOLBAR ACTIONS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>This library supplies prebuilt submenus and actions for toolbar menus and toolbar buttons.<br />
+Toolbuttons, menu and toolbar menus are built in designer and assigned actions/submenus in the handler file.<br /></p></div>
+<div class="paragraph"><p>Actions:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>estop
+power
+load
+reload
+gcode_properties
+run
+pause
+abort
+block_delete
+optional_stop
+touchoffworkplace
+touchofffixture
+runfromline
+load_calibration
+load_halmeter
+load_halshow
+load_status
+load_halscope
+about
+zoom_in
+zoom_out
+view_x
+view_y
+view_y2
+view_z
+view_z2
+view_p
+view_clear
+show_offsets
+quit
+system_shutdown
+tooloffsetdialog
+originoffsetdialog
+calculatordialog
+alphamode
+inhibit_selection
+show_dimensions</code></pre>
+</div></div>
+<div class="paragraph"><p>Submenus:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>recent_submenu
+home_submenu
+unhome_submenu
+zero_systems_submenu
+grid_size_submenu</code></pre>
+</div></div>
+<div class="sect2">
+<h3 id="_importing_and_initiating_2">14.1. Importing and Initiating</h3>
+<div class="paragraph"><p>Here is the typical code to add to the relevant handler file sections.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>lib<span style="color: #990000">.</span>toolbar_actions <span style="font-weight: bold"><span style="color: #000080">import</span></span> ToolBarActions
+
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** instantiate libraries section **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+TOOLBAR <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">ToolBarActions</span></span><span style="color: #990000">()</span>
+</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_assigning_tool_actions_to_toolbar_buttons">14.2. Assigning tool actions to toolbar buttons</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Special Functions called from QTVCP</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the widgets are instantiated.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the HAL pins are built but HAL is not set ready</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_submenu</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>menuHoming<span style="color: #990000">,</span> <span style="color: #FF0000">'home_submenu'</span><span style="color: #990000">)</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionEstop<span style="color: #990000">,</span> <span style="color: #FF0000">'estop'</span><span style="color: #990000">)</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionQuit<span style="color: #990000">,</span> <span style="color: #FF0000">'quit'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">lambda</span></span> d<span style="color: #990000">:</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">close</span></span><span style="color: #990000">())</span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionEdit<span style="color: #990000">,</span> <span style="color: #FF0000">'edit'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>edit<span style="color: #990000">)</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># Add a custom function</span></span>
+        TOOLBAR<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">configure_action</span></span><span style="color: #990000">(</span>self<span style="color: #990000">.</span>w<span style="color: #990000">.</span>actionMyFunction<span style="color: #990000">,</span> <span style="color: #FF0000">'my_Function'</span><span style="color: #990000">,</span> self<span style="color: #990000">.</span>my_function<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_add_a_custom_toolbar_function">14.3. Add a custom toolbar function:</h3>
+<div class="paragraph"><p>In the <em>GENERAL FUNCTIONS SECTION</em> ADD:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># general functions #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+   <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">my_function</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> widget<span style="color: #990000">,</span> state<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'My function State = ()'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span><span style="color: #990000">(</span>state<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

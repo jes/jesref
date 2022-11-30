@@ -1,0 +1,154 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:32 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>WATCHDOG</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">WATCHDOG</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">watchdog -
+supervisa m&Atilde;&ordm;ltiples entradas para un
+&quot;latido&quot;</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="43%">
+
+
+<p style="margin-top: 1em"><b>loadrt watchdog
+num_inputs=</b><i>N</i></p> </td>
+<td width="46%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Debe
+especificar el n&Atilde;&ordm;mero de entradas, de 1 a 32.
+Cada entrada tiene un valor de tiempo de espera
+separado.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+<p style="margin-top: 1em"><b>&nbsp;</b></p>
+
+<p style="margin-left:11%;">fProceso</p>
+
+<p style="margin-left:22%;">Verifique todos los pines de
+entrada para las transiciones, borre el pin <b>ok-out</b> si
+alguna entrada no tiene transici&Atilde;&sup3;n dentro de su
+per&Atilde;odo de tiempo de espera. Esta
+funci&Atilde;&sup3;n no utiliza punto flotante y debe
+agregarse a un hilo r&Atilde;&iexcl;pido.</p>
+
+<p style="margin-left:11%;"><b>set-timeouts</b></p>
+
+<p style="margin-left:22%;">Verifica los cambios de tiempo
+de espera y convierte las entradas float de tiempo de espera
+en valores int que se pueden usar en <b>process</b>. Esta
+funci&Atilde;&sup3;n tambi&Atilde;&copy;n supervisa
+<b>enable-in</b> para detectar transiciones de FALSE a TRUE,
+y vuelve a habilitar la supervisi&Atilde;&sup3;n cuando se
+detecta dicha transici&Atilde;&sup3;n. Esta
+funci&Atilde;&sup3;n usa punto flotante, y es apropiado
+agregarla al hilo del servo.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>watchdog.input-n</b>
+bit in</p>
+
+<p style="margin-left:22%;">Ingrese el n&Atilde;&ordm;mero
+n. Las entradas est&Atilde;&iexcl;n numeradas de 0 a
+<b>num_inputs</b>-1.</p>
+
+<p style="margin-left:11%;"><b>watchdog.enable-in</b> bit
+in (predeterminado: <i>FALSE</i>)</p>
+
+<p style="margin-left:22%;">Si es TRUE, obliga a -ok a ser
+FALSE. Adem&Atilde;&iexcl;s, si se produce un tiempo de
+espera en cualquier entrada, este pin debe configurarse como
+FALSE y TRUE nuevamente para reiniciar la
+supervisi&Atilde;&sup3;n de los pines de entrada.</p>
+
+<p style="margin-left:11%;"><b>watchdog.ok-out</b> bit out
+(predeterminado: <i>FALSE</i>)</p>
+
+<p style="margin-left:22%;">Salida OK. Este pin es TRUE
+solo si enable-in es TRUE y no se ha detectado
+ning&Atilde;&ordm;n tiempo de espera. Esta salida se puede
+conectar a la entrada de activaci&Atilde;&sup3;n de una
+<b>charge_pump</b> o <b>stepgen</b> (en modo v), para
+proporcionar una se&Atilde;&plusmn;al de latido al hardware
+de monitoreo externo.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>watchdog.timeout-n</b>
+float in</p>
+
+<p style="margin-left:22%;">Valor de tiempo de espera para
+el n&Atilde;&ordm;mero de entrada n. Las entradas
+est&Atilde;&iexcl;n numeradas de 0 a <b>num_inputs</b>-1. El
+tiempo de espera es en segundos y puede no ser inferior a
+cero. Tenga en cuenta que un tiempo de espera de 0.0
+probablemente evitar&Atilde;&iexcl; que <b>ok-out</b> se
+vuelva realidad. Tambi&Atilde;&copy;n tenga en cuenta que
+los tiempos de espera excesivamente largos son relativamente
+in&Atilde;&ordm;tiles para fines de monitoreo.</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

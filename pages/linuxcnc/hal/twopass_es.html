@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>HAL TWOPASS</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>HAL TWOPASS</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:hal-twopass">1. TWOPASS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Desde LinuxCNC 2.5 se admite el procesamiento TWOPASS de archivos de configuración hal.
+Esto puede ayudar a la modularización y legibilidad de los archivos hal.
+(Los archivos Hal se especifican en un archivo ini en la sección HAL
+como [HAL]HALFILE = nombre de archivo).</p></div>
+<div class="paragraph"><p>Normalmente, un conjunto de uno o más archivos de configuración hal deben usar
+una única línea, en uno de los archivos, para cargar un módulo de kernel que puede
+manejar múltiples instancias de un componente. Por ejemplo, si usted
+usa tres componentes AND de dos entradas (and2) en tres lugares diferentes
+en su configuración, bastará una sola línea en algún lugar para especificarlo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt and2 count=3</code></pre>
+</div></div>
+<div class="paragraph"><p>resultando los componentes and2.0, and2.1 y and2.2.</p></div>
+<div class="paragraph"><p>Las configuraciones son más legibles si especifican con
+names=opción en aquellos componentes donde se admita, por ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt and2 names=aa,ab,ac</code></pre>
+</div></div>
+<div class="paragraph"><p>dando como resultado las instancias de componente aa, ab y ac.</p></div>
+<div class="paragraph"><p>Al realizar un seguimiento de los componentes y sus nombres, puede darse un problema de mantenimiento
+cuando agrega (o elimina) un componente. Debe encontrar y actualizar la directiva loadrt única aplicable al
+componente.</p></div>
+<div class="paragraph"><p>El procesamiento TWOPASS se habilita al incluir un parámetro de archivo ini en
+la sección [HAL]:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+
+TWOPASS = cualquier-cadena</code></pre>
+</div></div>
+<div class="paragraph"><p>Donde "cualquier-cadena" puede ser cualquier cadena que no sea nula.
+Con esta configuración, puede tener múltiples especificaciones como:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt and2 names = aa
+...
+loadrt and2 names = ab, ac
+...
+loadrt and2 names = ad</code></pre>
+</div></div>
+<div class="paragraph"><p>Estos comandos pueden aparecer en HALFILES diferentes. Los HALFILES
+se procesan en el orden de su aparición en el archivo ini.</p></div>
+<div class="paragraph"><p>La opción TWOPASS se puede especificar con opciones para ampliar la salida para
+depuración (verbose) o para evitar la eliminación de archivos temporales (nodelete).
+Las opciones están separadas por comas.</p></div>
+<div class="paragraph"><p>Ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+
+TWOPASS = on, verbose, nodelete</code></pre>
+</div></div>
+<div class="paragraph"><p>Con el procesamiento de TWOPASS, todos los [HAL]HALFILES se leen primero y
+se acumulan las apariciones múltiples de las directivas loadrt para cada módulo.
+No se ejecutan comandos hal en esta pasada inicial.</p></div>
+<div class="paragraph"><p>Después de la pasada inicial, los módulos se cargan automáticamente
+con un número de instancias igual al número total, resultado de la opcion <em>count =</em>,
+o con todos los nombres individuales especificados al usar la opcion <em>names =</em>.</p></div>
+<div class="paragraph"><p>Luego se hace una segunda pasada para ejecutar todas las demás
+instrucciones HAL especificadas en los HALFILES. Los comandos addf que
+asocian las funciones de un componente con los hilos de ejecución, son
+ejecutadas en el orden de aparición con otros comandos durante
+esta segunda pasada.</p></div>
+<div class="paragraph"><p>Si bien puede usar las opciones count = o names =, éstas son
+mutuamente excluyentes - solo se puede especificar un tipo para un
+módulo dado.</p></div>
+<div class="paragraph"><p>El procesamiento TWOPASS es más efectivo cuando se usan opciones <em>names =</em>.
+Esta opción le permite proporcionar nombres únicos que
+son mnemotécnicos o relevantes para la configuración. Por
+ejemplo, si utiliza un componente derivativo para estimar la
+velocidades y aceleraciones en cada coordenada (x, y, z), usando
+el método <em>count =</em> dará nombres de componentes poco significativos, como ddt.0,
+ddt.1, ddt.2, etc.</p></div>
+<div class="paragraph"><p>Alternativamente, usando los <em>names =</em>, como:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt dd names = xvel, yvel, zvel
+...
+loadrt dd names = xacel, yacel, zacel</code></pre>
+</div></div>
+<div class="paragraph"><p>resultan componentes llamados xvel, yvel, zvel, xacel, yacel, zacel.</p></div>
+<div class="paragraph"><p>Muchos componentes suministrados con la distribución se crean con una
+utilidad de creacion de componentes y soportan la opción names =. Estos incluyen los
+componentes lógicos comunes que son el "<em>pegamento</em>" de muchas configuraciones hal.</p></div>
+<div class="paragraph"><p>Los componentes creados por el usuario que usan la utilidad soportan automáticamente
+la opción names =. Además de los componentes generados
+con la utilidad, muchos otros componentes admiten la opción names =,
+entre ellos:at_pid, encoder, encoder_ratio, pid, siggen, y sim_encoder.</p></div>
+<div class="paragraph"><p>El procesamiento en dos pasos ocurre antes de la carga de la interfaz gráfica de usuario. Cuando se utiliza un
+[HAL]POSTGUI_HALFILE, es conveniente colocar todo las
+declaraciones loadrt para los componentes necesarios en un halfile que se carge con anterioridad.</p></div>
+<div class="paragraph"><p>Ejemplo de una sección HAL cuando se usa un POSTGUI_HALFILE:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+
+TWOPASS = on
+HALFILE = core_sim.hal
+HALFILE = sim_spindle_encoder.hal
+HALFILE = axis_manualtoolchange.hal
+HALFILE = simulated_home.hal
+HALFILE = load_for_postgui.hal &lt;- líneas loadrt para componentes en postgui.hal
+
+POSTGUI_HALFILE = postgui.hal
+HALUI = halui</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_excluyendo_archivos_hal">2. Excluyendo archivos .hal</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El procesamiento TWOPASS convierte los archivos <em>.hal</em> en archivos <em>.tcl</em> equivalentes y utiliza
+haltcl para encontrar los comandos loadrt y addf para acumularlos y consolidar
+su uso. Se esperan parámetros de loadrt que se ajustan a los parámetros <em>nombres =</em> (o
+ <em>count =</em>) aceptados por el generador de componentes HAL (<em>halcompile</em>).
+Los elementos de parámetros más complejos incluidos en componentes hal especializados<br />
+no puede ser manejado adecuadamente.</p></div>
+<div class="paragraph"><p>Un archivo <em>.hal</em> puede ser excluido del procesamiento TWOPASS incluyendo una
+línea de comentarios especial en cualquier lugar del archivo. La línea de comentario debe comenzar
+con la cadena: <em>#NOTWOPASS</em>. Los archivos especificados con este comentario son
+tratados por halcmd usando las opciones <em>-k</em> (seguir adelante en caso de fallo) y <em>-v</em> (verbose).</p></div>
+<div class="paragraph"><p>Esta disposición de exclusión se puede utilizar para aislar problemas o para cargar cualquier
+componente hal que no requiere o no se beneficia del procesamiento TWOPASS que maneja
+múltiples instancias de componentes loadrt.</p></div>
+<div class="paragraph"><p>Ejemplo de archivo <em>.hal</em> excluido:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ cat twopass_excluded.hal
+# El siguiente 'comentario mágico' hace que este archivo
+# sea excluido del procesamiento de dos fases:
+# NOTWOPASS
+
+loadrt mycomponent parm1="abc def" parm2=ghi
+show pin mycomponent</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">El caso y los espacios en blanco dentro de # NOTWOPASS se ignoran.</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_post_gui">3. Post GUI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Algunas GUIs soportan halfiles que se procesan después de que se inicie la GUI, permitiendo
+conectar los pines hal que son creados por la propia GUI. Cuando se utiliza un halfile postgui con
+el procesamiento TWOPASS, incluya todos los elementos loadrt para los componentes agregados por los halfiles postgui
+en un halfile separado que se procese antes que la GUI. Los comandos addf también pueden
+ser incluido en el archivo.
+Ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[HAL]
+HALFILE = file_1.hal
+...
+HALFILE = file_n.hal
+HALFILE = file_with_all_loads_for_postgui.hal
+...
+POSTGUI_HALFILE = the_postgui_file.hal</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ejemplos">4. Ejemplos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Se incluyen ejemplos de uso de TWOPASS para simulador en los directorios:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>configs/sim/axis/twopass/</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>configs/sim/axis/simtcl/</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

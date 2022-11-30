@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Construyendo LinuxCNC</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Construyendo LinuxCNC</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_introducción">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Este documento describe cómo construir el software LinuxCNC y la
+documentación desde las fuentes. Esto es útil principalmente si eres un
+desarrollador que está modificando LinuxCNC. También puede ser útil si eres
+un usuario que está probando ramas de desarrollo, aunque también se tiene
+la opción de instalar paquetes unicos Debian desde buildboot:
+<a href="http://buildbot.linuxcnc.org">http://buildbot.linuxcnc.org</a></p></div>
+<div class="sect2">
+<h3 id="Quick-Start">1.1. Inicio rápido</h3>
+<div class="paragraph"><p>Si usted es un impaciente, intente esto (suponiendo que ha instalado git):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; git clone git://github.com/linuxcnc/linuxcnc.git linuxcnc-dev
+&gt; cd linuxcnc-dev/src
+&gt; ./autogen.sh
+&gt; ./configure --with-realtime = uspace
+&gt; make</code></pre>
+</div></div>
+<div class="paragraph"><p>¡Eso probablemente fallará!. No es culpa suya; solo significa que
+debe leer todo este documento para averiguar cómo solucionar sus problemas.
+Especialmente la sección sobre <a href="building-linuxcnc_es.html#Satisfying-Build-Dependencies">Satisfacer Dependencias de Construcción</a>.</p></div>
+<div class="paragraph"><p>Si está manejando un sistema con capacidad de tiempo real (como una instalación desde
+la imagen de LinuxCNC Live/Install, vea la sección <a href="building-linuxcnc_es.html#_realtime">Tiempo Real</a> mas abajo);
+se necesita un paso de compilación adicional:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; sudo make setuid</code></pre>
+</div></div>
+<div class="paragraph"><p>Después de haber compilado con éxito LinuxCNC, es hora de ejecutar las pruebas:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; source ../scripts/rip-environment
+&gt; runtests</code></pre>
+</div></div>
+<div class="paragraph"><p>¡Esto también podría fallar!. Lea todo este documento, pero especialmente la sección.
+en <a href="building-linuxcnc_es.html#Setting-up-the-environment">Configuración del entorno de prueba</a>.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_plataformas_compatibles">2. Plataformas compatibles</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El proyecto LinuxCNC apunta a distribuciones modernas basadas en Debian, que incluyen
+Debian, Ubuntu y Mint.</p></div>
+<div class="paragraph"><p>Probamos continuamente en las plataformas enumeradas en
+<a href="http://buildbot.linuxcnc.org">http://buildbot.linuxcnc.org</a>.</p></div>
+<div class="paragraph"><p>LinuxCNC compila en la mayoría de las otras distribuciones de Linux, aunque la gestión
+de dependencias será más manual. Siempre son bienvenidos parches para mejorar
+la portabilidad a nuevas plataformas .</p></div>
+<div class="sect2">
+<h3 id="_realtime">2.1. Realtime</h3>
+<div class="paragraph"><p>LinuxCNC es un controlador de máquina herramienta, y requiere una plataforma en tiempo real
+para hacer este trabajo. Esta versión de LinuxCNC admite tres plataformas en tiempo real.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+RTAI
+</dt>
+<dd>
+<p>
+    De <a href="https://www.rtai.org">https://www.rtai.org</a>. En el archivo de Debian en <a href="http://www.linuxcnc.org">http://www.linuxcnc.org</a>
+    hay disponible un kernel de Linux con el parche RTAI.
+    Ver <a href="../getting-started/getting-linuxcnc_es.html#cha:getting-linuxcnc">Obtener LinuxCNC</a> para las instrucciones de instalación.
+</p>
+</dd>
+<dt class="hdlist1">
+Xenomai
+</dt>
+<dd>
+<p>
+    De <a href="https://xenomai.org">https://xenomai.org</a>. Tendrá que compilar u obtener un kernel Xenomai
+    por usted mismo
+</p>
+</dd>
+<dt class="hdlist1">
+Preempt-RT
+</dt>
+<dd>
+<p>
+    De <a href="https://rt.wiki.kernel.org">https://rt.wiki.kernel.org</a>. Un kernel de Linux con el
+    parche Preempt-RT, que está disponible ocasionalmente en el archivo Debian
+    en <a href="https://www.debian.org">https://www.debian.org</a>, y desde la "máquina wayback" en
+    <a href="https://snapshot.debian.org">https://snapshot.debian.org</a>.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Para hacer uso de las capacidades en tiempo real de LinuxCNC, ciertas partes
+necesitan ejecutarse con privilegios root. Para habilitar root para estas
+partes, ejecute este comando adicional después del <code>make</code> que construye LinuxCNC:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; sudo make setuid</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_sin_tiempo_real">2.2. Sin Tiempo Real</h3>
+<div class="paragraph"><p>LinuxCNC también se puede construir y ejecutar en plataformas que no son de tiempo real, como
+una instalación normal de Debian o Ubuntu sin ningún kernel especial en tiempo real.</p></div>
+<div class="paragraph"><p>En este modo, LinuxCNC no es útil para controlar máquinas herramientas, pero
+es útil para simular la ejecución de código G y para probar las
+partes del sistema que no son en tiempo real (como las interfaces de usuario y algunos
+tipos de componentes y controladores de dispositivos).</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modos_de_compilación">3. Modos de compilación</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Hay dos formas de tener LinuxCNCen una maquina: "ejecución en
+el sitio” (run-in-place o RIP, el modo de mayor libertad) y el modo “empaquetado Debian”, fácil de usar para el usuario (pero difícilmente modificable).</p></div>
+<div class="sect2">
+<h3 id="_compilacion_run_in_place">3.1. Compilacion Run-In-Place</h3>
+<div class="paragraph"><p>En una compilación Run-In-Place, los programas LinuxCNC se compilan desde las fuentes
+y luego se ejecuta directamente desde el directorio de compilación. Nada queda
+instalado fuera del directorio de compilación.</p></div>
+<div class="paragraph"><p>El conjunto de pruebas LinuxCNC se ejecuta solo en una compilación Run-In-Place.</p></div>
+<div class="paragraph"><p>La mayoría de los desarrolladores de LinuxCNC compilan principalmente con este modo.</p></div>
+<div class="paragraph"><p>Para una compilacion Run-In-Place, sigua los pasos en la sección <a href="building-linuxcnc_es.html#Quick-Start">Inicio rápido</a> en la parte superior de este documento, posiblemente con
+diferentes argumentos para <code>src/configure</code> y` make`.</p></div>
+<div class="sect3">
+<h4 id="src-configure-arguments">3.1.1. Argumentos <code>src/configure</code></h4>
+<div class="paragraph"><p>El script <code>src/configure</code> configura cómo será compilado el código fuente.
+Admite muchos argumentos opcionales.</p></div>
+<div class="paragraph"><p>Enumere todos los argumentos para <code>src/configure</code> ejecutando:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; cd linuxcnc-dev/src
+&gt; ./configure --help</code></pre>
+</div></div>
+<div class="paragraph"><p>Los argumentos más utilizados son:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<code>--with-realtime=uspace</code>
+</dt>
+<dd>
+<p>
+    Compilar para cualquier plataforma en tiempo real, o no.
+    Los ejecutables LinuxCNC resultantes se ejecutarán tanto en un kernel de Linux
+    con parches Preempt-RT (que proporcionan control de la máquina en tiempo real) o
+    en un núcleo Linux original (sin parches) (que proporciona simulación de código G
+    pero sin control de máquina en tiempo real). Si los archivos de desarrollo están instalados
+    para Xenomai (típicamente del paquete libxenomai-dev) o RTAI (típicamente
+    desde un paquete con un nombre que comienza por "rtai-modules"), también estarán habilitado
+    soporte para estos núcleos en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+<code>--with-realtime=/usr/realtime-$VERSION</code>
+</dt>
+<dd>
+<p>
+    Compilación para la plataforma RTAI en tiempo real utilizando el antiguo
+    modelo "kernel realtime". Esto requiere tener
+    un kernel RTAI y los módulos RTAI instalados en
+    <code>/usr/realtime-$VERSION</code>. Los ejecutables LinuxCNC resultantes
+    solo se ejecutarán en el kernel RTAI especificado. A partir de LinuxCNC 2.7, esto
+    produce el mejor rendimiento en tiempo real.
+</p>
+</dd>
+<dt class="hdlist1">
+<code>--enable-build-documentation</code>
+</dt>
+<dd>
+<p>
+    Crear la documentación, además de los ejecutables. Esta opción
+    aumenta significativamente el tiempo requerido para la compilación, ya que construir
+    los documentos consumen bastante tiempo. Si no está trabajando activamente
+    en la documentación es posible que desee omitir este argumento.
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect3">
+<h4 id="make-arguments">3.1.2. Argumentos <code>make</code></h4>
+<div class="paragraph"><p>El comando <code>make</code> admite dos argumentos opcionales útiles.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Compilación Paralela
+</dt>
+<dd>
+<p>
+    <code>make</code> admite un argumento opcional <code>-jN</code> (donde N es un número).
+    Esto permite la compilación paralela con N procesos simultáneos, que
+    puede acelerar significativamente tu construcción.
+</p>
+<div class="paragraph"><p>Un valor útil para N es la cantidad de CPU&#8217;s en su sistema de compilación. Usted puede
+averiguar el número de CPU ejecutando <code>nproc</code>.</p></div>
+</dd>
+<dt class="hdlist1">
+Compilar un solo objetivo específico 
+</dt>
+<dd>
+<p>
+    Si desea compilar solo una parte específica de LinuxCNC, puede nombrar
+    lo que quiere construir en la línea de comando <code>make</code>. Por ejemplo,
+    si está trabajando en un componente llamado <code>froboz</code>, puede construir su
+    ejecutable con los comandos:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; cd linuxcnc-dev/src
+&gt; make ../bin/froboz</code></pre>
+</div></div>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_construyendo_paquetes_debian">3.2. Construyendo paquetes Debian</h3>
+<div class="paragraph"><p>Al crear paquetes Debian, los programas LinuxCNC se compilan a partir de
+fuente y luego se almacenan en un paquete Debian completo, con información
+de dependencias. Esto lleva más tiempo y los programas no se pueden usar hasta
+que el paquete Debian se instala en una máquina de destino.</p></div>
+<div class="paragraph"><p>Este modo de compilación es principalmente útil cuando se empaqueta el software para
+entrega a usuarios finales, o para construir el software para una máquina
+que no tiene instalado el entorno de compilación, o que no tiene acceso a Internet.</p></div>
+<div class="paragraph"><p>La creación de paquetes Debian requiere la herramienta <code>dpkg-buildpackage</code>, del
+paquete <code>dpkg-dev</code>, que puede ser instalado con:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; sudo apt-get install dpkg-dev</code></pre>
+</div></div>
+<div class="paragraph"><p>La creación de paquetes Debian también requiere que todas las dependencias de compilación estén
+instaladas, tal como se describe en la sección <a href="building-linuxcnc_es.html#Satisfying-Build-Dependencies">Satisfacer Dependencias de Construcción</a>.</p></div>
+<div class="paragraph"><p>Una vez que se cumplen esos requisitos previos, la construcción de los paquetes Debian consiste
+en dos pasos.</p></div>
+<div class="paragraph"><p>El primer paso es generar los scripts y metadatos del paquete Debian
+desde su clon del repositorio git ejecutando esto:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; cd linuxcnc-dev/debian
+&gt; ./configure uspace
+&gt; cd ..</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">
+<div class="paragraph"><p>El script <code>debian/configure</code> es diferente del script <code>src/configure</code>!</p></div>
+<div class="paragraph"><p>El script <code>debian/configure</code> necesita diferentes argumentos dependiendo de la
+plataforma en/para la que está compilando; vea la sección <a href="building-linuxcnc_es.html#debian-configure-arguments">argumentos <code>debian/configure</code></a>.</p></div>
+</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Una vez que los scripts del paquete Debian y los metadatos estén configurados, cree el
+paquete ejecutando <code>dpkg-buildpackage</code> (tenga en cuenta que debe ejecutarse desde
+el directorio <code>linuxcnc-dev</code>, <strong>no</strong> desde <code>linuxcnc-dev/debian</code>):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; dpkg-buildpackage -b -uc</code></pre>
+</div></div>
+<div class="sect3">
+<h4 id="debian-configure-arguments">3.2.1. Argumentos <code>debian/configure</code></h4>
+<div class="paragraph"><p>El script <code>debian/configure</code> configura el paquete Debian. Debe
+ejecutarse antes de que se puedan ejecutar <code>dpkg-checkbuilddeps</code> y <code>dpkg-buildpackage</code>.</p></div>
+<div class="paragraph"><p>Admite un solo argumento que especifica la plataforma de tiempo real o no tiempo real.
+Los valores normales para este argumento son:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<code>uspace</code>
+</dt>
+<dd>
+<p>
+    Configura el paquete Debian para Preempt-RT en tiempo real o para
+    no tiempo real (estos dos son compatibles).
+</p>
+</dd>
+<dt class="hdlist1">
+<code>noauto</code>
+</dt>
+<dt class="hdlist1">
+<code>rtai</code>
+</dt>
+<dt class="hdlist1">
+<code>xenomai</code>
+</dt>
+<dd>
+<p>
+    Normalmente, se detectan automáticamente las listas de RTOS para uspace en tiempo real soportados.
+    Sin embargo, si lo desea, puede especificar uno o más de estos RTOS
+    después de <code>uspace</code> para habilitar el soporte para estos RTOS. Para deshabilitar
+    la autodetección, especifique <code>noauto</code>.
+</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>Si solo desea el tradicional "módulo de kernel" RTAI en tiempo real, use
+`-r` o `$KERNEL_VERSION` en su lugar.</code></pre>
+</div></div>
+</dd>
+<dt class="hdlist1">
+<code>rtai=&lt;nombre del paquete&gt;</code>
+</dt>
+<dd>
+<p>
+    Si el paquete de desarrollo para rtai lxrt no comienza con
+    "rtai-modules", o si el primer paquete de este tipo aparece en la búsqueda de apt-cache
+    no es el deseado, especifique explícitamente el nombre del paquete.
+</p>
+</dd>
+<dt class="hdlist1">
+<code>-r</code>
+</dt>
+<dd>
+<p>
+    Configura el paquete Debian para el kernel RTAI actualmente en ejecución.
+    Debe estar ejecutando un kernel RTAI en su máquina de compilación para que esto
+    trabaje!
+</p>
+</dd>
+<dt class="hdlist1">
+<code>$KERNEL_VERSION</code>
+</dt>
+<dd>
+<p>
+    Configura el paquete debian para la versión de kernel RTAI especificada
+    (por ejemplo, "3.4.9-rtai-686-pae"). Los encabezados del kernel
+    del paquete debian coincidente debe estar instalado en su máquina de compilación (por ejemplo
+    "linux-headers-3.4.9-rtai-686-pae"). Tenga en cuenta que puede <em>construir</em>
+    LinuxCNC en esta configuración, pero si no está ejecutando el
+    kernel RTAI coincidente, no podrá ejecutar LinuxCNC, incluyendo
+    el conjunto de pruebas.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Satisfying-Build-Dependencies">4. Satisfacer Dependencias de Construcción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>En las plataformas basadas en Debian, proporcionamos metadatos de empaquetado que saben
+qué paquetes de software externos deben instalarse para construir
+LinuxCNC. Esto se llama dependencias de compilación de LinuxCNC. Usted puede
+usar estos metadatos para enumerar fácilmente los paquetes requeridos que faltan
+en su sistema de construcción.</p></div>
+<div class="paragraph"><p>Los sistemas Debian proporcionan un programa llamado <code>dpkg-checkbuilddeps</code> que
+analiza los metadatos del paquete y compara los paquetes enumerados como dependencias
+de compilación contra la lista de paquetes instalados, y le dice
+lo que falta.</p></div>
+<div class="paragraph"><p>Primero, instale el programa <code>dpkg-checkbuilddeps</code> ejecutando:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; sudo apt-get install dpkg-dev</code></pre>
+</div></div>
+<div class="paragraph"><p>Luego, solicite a su clon git LinuxCNC para la generación de metadatos
+de su paquete Debian:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; cd linuxcnc-dev/debian
+&gt; ./configure uspace
+&gt; cd ..</code></pre>
+</div></div>
+<div class="paragraph"><p>Finalmente, solicite a <code>dpkg-checkbuilddeps</code> que haga su trabajo (tenga en cuenta que necesita
+ejecutarlo desde el directorio <code>linuxcnc-dev</code>, <strong>no</strong> desde <code>linuxcnc-dev/debian</code>):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; dpkg-checkbuilddeps</code></pre>
+</div></div>
+<div class="paragraph"><p>Esto emitirá una lista de paquetes necesarios para construir LinuxCNC
+en su sistema, pero que aún no están instalados. Instalelos todos con
+<code>sudo apt-get install</code>, seguido de los nombres de los paquetes.</p></div>
+<div class="paragraph"><p>Puede volver a ejecutar <code>dpkg-checkbuilddeps</code>, en el momento que desee, para enumerar cualquier
+paquete faltante.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Setting-up-the-environment">5. Configuración del entorno</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Esta sección describe los pasos especiales necesarios para configurar una máquina para
+ejecutar los programas LinuxCNC, incluidas las pruebas.</p></div>
+<div class="sect2">
+<h3 id="_aumentar_el_límite_de_memoria_bloqueada">5.1. Aumentar el límite de memoria bloqueada</h3>
+<div class="paragraph"><p>LinuxCNC intenta mejorar su latencia en tiempo real bloqueando la memoria que
+utiliza en la RAM. Hace esto para evitar que el sistema operativo
+intercambie LinuxCNC al disco, lo que tendría malos efectos sobre la latencia.</p></div>
+<div class="paragraph"><p>Normalmente, el bloqueo de memoria en la RAM está mal visto y el sistema operativo
+establece un límite estricto sobre la cantidad de memoria que un usuario puede tener bloqueada.</p></div>
+<div class="paragraph"><p>Cuando se utiliza la plataforma de tiempo real Preempt-RT, LinuxCNC se ejecuta con suficiente
+privilegio para aumentar su límite de bloqueo de memoria. Cuando use la plataforma RTAI
+en tiempo real, no tiene suficientes privilegios, y el usuario debe
+elevar el límite de bloqueo de memoria.</p></div>
+<div class="paragraph"><p>Si LinuxCNC muestra el siguiente mensaje al inicio, el problema es el
+límite de memoria bloqueada configurado de su sistema:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>RTAPI: ERROR: failed to map shmem
+RTAPI: Locked memory limit is 32KiB, recommended at least 20480KiB.</code></pre>
+</div></div>
+<div class="paragraph"><p>Para solucionar este problema, agregue un archivo llamado
+<code>/etc/security/limits.d/linuxcnc.conf</code> (como root) con su editor
+de texto favorito (por ejemplo, <code>sudo gedit/etc/security/limits.d/linuxcnc.conf</code>).
+El archivo debe contener la siguiente línea:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>* - memlock 20480</code></pre>
+</div></div>
+<div class="paragraph"><p>Cierre la sesión y vuelva a iniciar sesión para que los cambios surtan efecto. Verificar
+que el límite de bloqueo de memoria se aumentó con el siguiente comando:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&gt; ulimit -l</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_opciones_para_ver_el_repositorio_de_git">6. Opciones para ver el repositorio de git</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Las instrucciones <a href="building-linuxcnc_es.html#Quick-Start">Inicio rápido</a> en la parte superior de este
+documento hablan de hacer un clon local anónimo desde nuestro repositorio git en
+<a href="http://github.com/linuxcnc/linuxcnc.git">http://github.com/linuxcnc/linuxcnc.git</a>. Esta es la manera más rápida y fácil
+de empezar. Sin embargo, hay otras opciones a considerar.</p></div>
+<div class="sect2">
+<h3 id="_bifurcación_en_github_fork">6.1. Bifurcación en Github (fork)</h3>
+<div class="paragraph"><p>El repositorio git del proyecto LinuxCNC está en <a href="http://github.com/LinuxCNC/linuxcnc">http://github.com/LinuxCNC/linuxcnc</a>.
+github es un popular servicio de alojamiento git y un sitio web para compartir código.
+Puede crear fácilmente (y sin costo) una bifurcacion de nuestro repositorio de git en github,
+y usarlo para rastrear y publicar sus cambios.</p></div>
+<div class="paragraph"><p>Después de crear su propia bifurcación github de LinuxCNC, clónela en su
+máquina de desarrollo y proceda con sus modificaciones.</p></div>
+<div class="paragraph"><p>Nosotros, el proyecto LinuxCNC, esperamos que comparta sus cambios, para que
+la comunidad pueda beneficiarse de su trabajo. Github hace que
+compartir sea muy fácil; después de pulir sus cambios y añadirlos a su
+bifurcacion github, envíenos una solicitud de extracción.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

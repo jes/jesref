@@ -1,0 +1,131 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:32 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>THREADS</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">THREADS</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+<a href="#ERRORES">ERRORES</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">threads - crea
+hilos HAL en tiempo real</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+threads name1=</b><i>name</i> <b>period1=</b><i>period</i>
+[<b>fp1=</b>&lt;<b>0</b>|<b>1</b>&gt;]
+[&lt;thread-2-info&gt;] [&lt;thread-3-info&gt;]</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>threads</b>
+se utiliza para crear hilos en tiempo real que pueden
+ejecutar funciones HAL a intervalos espec&Atilde;ficos. No
+es un verdadero componente HAL, ya que no exporta ninguna
+funci&Atilde;&sup3;n, pin o par&Atilde;&iexcl;metro propio.
+Una vez que ha creado uno o m&Atilde;&iexcl;s hilos, estos
+son independientes y el componente <b>threads</b> se puede
+descargar sin afectarlos. De hecho, se puede descargar y
+luego volver a cargar para crear hilos adicionales, tantas
+veces como sea necesario.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>threads</b>
+puede crear hasta tres hilos en tiempo real. Los hilos deben
+crearse en orden, del m&Atilde;&iexcl;s r&Atilde;&iexcl;pido
+al m&Atilde;&iexcl;s lento. Cada hilo est&Atilde;&iexcl;
+especificado por tres argumentos. <b>name1</b> se utiliza
+para especificar el nombre del primer hilo (thread-1).
+<b>period1</b> se utiliza para especificar el per&Atilde;odo
+del hilo 1 en nanosegundos. Se requieren <i>name</i> y
+<i>period</i>. El tercer argumento, <b>fp1</b>, es opcional,
+y se usa para especificar si el hilo 1 se
+usar&Atilde;&iexcl; para ejecutar c&Atilde;&sup3;digo de
+punto flotante. Si no se especifica, el valor predeterminado
+es <b>1</b>, lo que significa que el hilo
+admitir&Atilde;&iexcl; punto flotante. Especifique <b>0</b>
+para deshabilitar el soporte de punto flotante, lo que
+ahorra una peque&Atilde;&plusmn;a cantidad de tiempo de
+ejecuci&Atilde;&sup3;n al no guardar el contexto de la FPU.
+Para hilos adicionales, <b>name2</b>, <b>period2</b>,
+<b>fp2</b>, <b>name3</b>, <b>period3</b> y <b>fp3</b>
+funcionan exactamente igual. Si se necesitan
+m&Atilde;&iexcl;s de tres hilos, descargue threads y luego
+vuelva a cargarlo para crear m&Atilde;&iexcl;s hilos.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguna</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguna</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ninguna</p>
+
+<h2>ERRORES
+<a name="ERRORES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">La existencia
+de <b>threads</b> podr&Atilde;a considerarse un error.
+Idealmente, la creaci&Atilde;&sup3;n y
+eliminaci&Atilde;&sup3;n de hilos se realizar&Atilde;a
+directamente con los comandos <b>halcmd</b>, como
+&quot;<b>newthread</b><i>name period</i>&quot;,
+&quot;<b>delthread</b><i>name</i>&quot;, o similar. Sin
+embargo, las limitaciones en la implementaci&Atilde;&sup3;n
+actual de HAL requieren la creaci&Atilde;&sup3;n de hilos en
+el espacio del kernel, y cargar un componente es la forma
+m&Atilde;&iexcl;s sencilla de hacerlo.</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>GUI del Editor de Herramientas</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>GUI del Editor de Herramientas</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:tooledit-gui">1. Descripción general</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/tooledit.png" alt="GUI del Editor de Herramientas - Descripción general" width="640" />
+</div>
+<div class="title">Figura 1. Tabla de herramientas</div>
+</div>
+<div class="paragraph"><p>El programa <em>tooledit</em> puede actualizar el archivo de la tabla de herramientas con
+los cambios editados usando el botón Guardar Archivo. El botón Guardar Archivo
+actualiza el archivo del sistema pero se requiere una acción separada para
+actualizar los datos de la tabla de herramientas utilizados por una instancia de LinuxCNC en ejecución.
+Con la GUI Axis, tanto el archivo como los datos de la tabla de herramientas actuales
+utilizado por LinuxCNC se puede actualizar con el botón ReloadTable.
+Este botón está habilitado solo cuando la máquina está encendida e inactiva.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ordenación_por_columnas">2. Ordenación por columnas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>La visualización de la tabla de herramientas se puede ordenar por cualquier columna en forma ascendente
+haciendo clic en el encabezado de la columna. Un segundo clic hace la clasificacion
+en orden descendente. La clasificación de columnas requiere que la máquina
+se configure con la versión tcl mayor o igual a la 8.5.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/tooledit-sort.png" alt="GUI del Editor de Herramientas - Ordenación por columnas" />
+</div>
+<div class="title">Figura 2. Clasificacion segun DIAM</div>
+</div>
+<div class="paragraph"><p>Dependiendo de otras aplicaciones instaladas en el sistema, puede ser
+necesario habilitar tcl/tk8.5 con los comandos:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>sudo update-alternative --config tclsh # selecciona la opción para tclsh8.5
+sudo update-alternative --config wish  # selecciona la opción para wish8.5</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_selección_de_columnas">3. Selección de columnas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Por defecto, el programa <em>tooledit</em> mostrará todas las posibles
+columnas de parámetros de la tabla de herramientas. Dado que pocas máquinas utilizan todos los
+parámetros, las columnas mostradas pueden ser limitadas con el siguiente ajuste de archivo ini:</p></div>
+<div class="paragraph"><p>Sintaxis en archivo .INI</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[DISPLAY]
+TOOL_EDITOR = tooledit column_name column_name ...</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Ejemplo para columnas Z y DIAM</div>
+<div class="content">
+<pre><code>[DISPLAY]
+TOOL_EDITOR = tooledit Z DIAM</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/tooledit-columns.png" alt="GUI del Editor de Herramientas - Selección de columnas" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_uso_independiente">4. Uso independiente</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El programa <em>tooledit</em> también se puede invocar como un programa independiente.
+Por ejemplo, si el programa está en la ruta de acceso del usuario, escribiendo
+<em>tooledit</em> se mostrará la sintaxis de uso:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>Uso:
+       tooledit nombre de archivo
+       tooledit [column_1 ... column_n] nombre de archivo
+
+Los nombres de columna permitidos son: x y z a b c u v w diam front back orien</code></pre>
+</div></div>
+<div class="paragraph"><p>Para sincronizar <em>tooledit</em> independiente con un LinuxCNC en ejecución,
+el nombre de archivo debe ser el mismo que el especificado en [EMCIO]TOOL_TABLE del archivo ini de LinuxCNC.</p></div>
+<div class="paragraph"><p>Cuando se usa el programa <em>tooledit</em> mientras se está ejecutando LinuxCNC,
+la ejecución de comandos gcode u otros programas pueden alterar el archivo de tabla de herramientas.
+Los cambios de archivos son detectados por <em>tooledit</em> y se muestra un mensaje:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>Advertencia: Archivo modificado por otro proceso</code></pre>
+</div></div>
+<div class="paragraph"><p>La pantalla de la tabla de herramientas <em>tooledit</em> se puede actualizar para leer el
+archivo modificado con el botón Releer.</p></div>
+<div class="paragraph"><p>La tabla de herramientas se especifica en el archivo ini con una entrada:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>[EMCIO]TOOL_TABLE = tool_table_filename</code></pre>
+</div></div>
+<div class="paragraph"><p>El archivo de la tabla de herramientas se puede editar con cualquier editor de texto simple (no
+un procesador de textos).</p></div>
+<div class="paragraph"><p>La gui Axis puede usar opcionalmente una configuración de archivo ini para especificar el programa editor de herramientas</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>[DISPLAY]TOOL_EDITOR = path_to_editor_programa</code></pre>
+</div></div>
+<div class="paragraph"><p>Por defecto, se usa el programa llamado <em>tooledit</em>. Este editor
+es compatible con todos los parámetros de la tabla de herramientas, permite la adición y eliminación
+de entradas de herramientas, y realiza una serie de verificaciones de validez en
+valores paramétricos.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Qtvcp</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Qtvcp</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:qtvcp"><p>Qtvcp is an infrastructure to display a custom CNC screen or control panel in LinuxCNC.<br />
+It displays a UI file built with the QTDesigner screen editor or combines this<br />
+with python programming to create a GUI screen for running a CNC machine.<br />
+Qtvcp is completely customizable - you can add different buttons and status LEDs etc.<br />
+or add python code for even finer grain customization.<br /></p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/silverdragon.png" alt="QTDragon Router" />
+</div>
+<div class="title">Figure 1. qtdragon - 3 or 4 Axis Sample</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/qt_cnc.png" alt="QTscreen Mill" />
+</div>
+<div class="title">Figure 2. qtdefault - 3 Axis Sample</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/qtaxis.png" alt="QTscreen Qtaxis" />
+</div>
+<div class="title">Figure 3. Qtaxis - Self Adjusting Axis Sample</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/blender.png" alt="QTscreen Blender" />
+</div>
+<div class="title">Figure 4. Blender - 4 Axis Sample</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/x1mill.png" alt="QTscreen x1mill" />
+</div>
+<div class="title">Figure 5. X1mill - 4 Axis Sample</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/qtvcp-cam-align.png" alt="QTscreen x1mill" />
+</div>
+<div class="title">Figure 6. cam_align - Camera alignment VCP</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/test_panel.png" alt="Test Panel" />
+</div>
+<div class="title">Figure 7. test panel - Test Panel VCP</div>
+</div>
+<div class="paragraph"><p><a id="sec:qtvcp-overview"></a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overview">1. Overview</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There are two files that can be used, individually or in combination to add<br />
+customization.<br />
+A UI file that is made with QT&#8217;s Designer graphical editor.<br />
+A handler file which is a text file with python code.<br />
+Normally qtvcp uses the stock UI and handler file.<br />
+You can specify qtvcp to use <em>local</em> UI and handler files.<br />
+A <em>local</em> file is one that is in the configuration folder that defines the<br />
+rest of the machine&#8217;s requirements.<br />
+One is not restricted to adding a custom panel on the right or a custom tab.<br />
+qtvcp leverages <em>QT Designer</em> (the editor) and <em>PyQT5</em> (the widget toolkit).<br />
+QTvcp has some special widgets and actions added just for LinuxCNC.<br />
+There are special widgets to bridge third party widgets to HAL pins.<br />
+It&#8217;s possible to create widget responses by connecting signals  to python<br />
+code in the handler file.<br /></p></div>
+<div class="sect2">
+<h3 id="_qtvcp_widgets">1.1. QTvcp Widgets</h3>
+<div class="paragraph"><p>Qtvcp uses the PyQt5 toolkit&#8217;s widgets for linuxcnc integration.<br />
+Widget is the general name for objects such as buttons and labels in PyQT5.<br />
+You are free to use any available widgets in the QTDesigner editor.<br />
+There are also special widgets made for linuxcnc that make integration easier.<br />
+This are split in three heading on the left side of the editor.<br />
+One is for HAL only widgets.<br />
+One is for cnc control widgets.<br />
+One is for dialog widgets.<br />
+you are free to mix them in any way on your panel.<br />
+A very important widget for CNC control is the screenoptions widget.<br />
+It does not add anything visually to the screen.<br />
+But allows important details to be selected rather then be coded in the handler file.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_ini_settings">1.2. INI Settings</h3>
+<div class="paragraph"><p>If you are using this to make a CNC control screen:<br />
+Under the [DISPLAY] heading:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>DISPLAY = qtvcp &lt;screen_name&gt;
+  options:
+    -d debugging on
+    -a set window always on top
+    -c HAL component name. Default is to use the UI file name.
+    -g geometry: WIDTHxHEIGHT+XOFFSET+YOFFSET
+    -m maximise window
+    -f fullscreen the window
+    -t theme. Default is system theme
+    -x embed into a X11 window that doesn't supoort embedding.
+    --push_xid send qtvcp's X11 window id number to standard output; for embedding
+    &lt;screen_name&gt; is the base name of the .ui and _handler.py files.
+    If &lt;screen_name&gt; is missing the default screen will be loaded.</code></pre>
+</div></div>
+<div class="paragraph"><p>Qtvcp assumes the UI file and the handler file use this same base name.<br />
+Qtvcp will search the LinuxCNC configuration file that was launched first for the files, <br />
+then in the system skin folder. the skin folders holds standard screens.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_qtdesigner_ui_file">1.3. QTDesigner UI File</h3>
+<div class="paragraph"><p>A designer file is a text file organized in the XML standard that describes the<br />
+layout and the widgets of the screen. Pyqt5 uses this file to build the display<br />
+and react to those widgets. The QTDesigner editor makes it relatively easy to build<br />
+and edit this file.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_handler_files">1.4. Handler Files</h3>
+<div class="paragraph"><p>A handler file is a file containing python code, which qtvcp adds to it&#8217;s<br />
+default routines. A handler file allows one to modify defaults, or add logic<br />
+to a qtvcp skin without having to modify qtvcp&#8217;s core code.<br />
+In this way you can have custom behaviour.<br />
+If present a handler file will be loaded.<br />
+Only one file is allowed.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_libraries_modules">1.5. Libraries modules</h3>
+<div class="paragraph"><p>Qtvcp as built does little more then display the screen and react to widgets.<br />
+For more prebuilt behaviours there are available libraries.<br />
+(found in lib/python/qtvcp/lib in RIP linuxcnc install)<br />
+libraries are prebuilt python modules that give added features to Qtvcp.<br />
+In this way you can select what features you want - yet don&#8217;t have to build common ones yourself.<br />
+Such libraries include:<br /></p></div>
+<div class="paragraph"><p>audio_player<br />
+aux_program_loader<br />
+keybindings<br />
+message<br />
+preferences<br />
+notify<br />
+virtual_keyboard<br />
+machine_log<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_themes">1.6. Themes</h3>
+<div class="paragraph"><p>Themes are a way to modify the look and feel of the widgets on the screen.<br />
+For instance the color or size of buttons and sliders can be changed using
+themes.<br />
+The Windows theme is default for screens. System theme is default for panels.<br />
+to see available themes load qtvcp with -d -t SHOWTHEMES<br /></p></div>
+<div class="paragraph"><p>qtvcp can also be customized with Qt stylesheets using css.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_local_files">1.7. Local Files</h3>
+<div class="paragraph"><p>If present, local UI files in the configuration folder will be loaded instead<br />
+of the stock UI files. Local UI files allow you to use your customized<br />
+designs rather then the default screens.<br />
+qtvcp will look for MYNAME.ui, MYNAME_handler.py and MYNAME.qss in the launched configuration folder.<br />
+You can put these files in a arbitrary named folder - qtvcp will search all folders in your config folder.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_modifying_stock_screens">1.8. Modifying Stock Screens</h3>
+<div class="paragraph"><p>If you wish to modify a stock screen, copy it&#8217;s UI and handler file to your configuration folder.<br /></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_build_a_simple_clean_sheet_custom_screen">2. Build a simple clean-sheet custom screen</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/qtvcp_tester.png" alt="QTscreen Mill" />
+</div>
+<div class="title">Figure 8. Ugly custom screen</div>
+</div>
+<div class="sect2">
+<h3 id="_overview_2">2.1. Overview</h3>
+<div class="paragraph"><p>To build a panel or screen use QTDesigner to build a design you like.<br />
+Save this design to your configuration folder with a name of your choice, ending with .ui<br />
+modify the configurations INI file to load qtvcp with your new .ui file.<br />
+Then connect any required HAL pins in a HAL file<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_get_designer_to_include_linuxcnc_widgets">2.2. Get Designer to include linuxcnc widgets</h3>
+<div class="paragraph"><p>You must have designer installed; These commands should add it:<br />
+Or use your package manager to install the same:<br />
+<em>sudo apt-get install qttools5-dev-tools</em><br />
+<em>sudo apt-get install qttools5.dev</em><br /></p></div>
+<div class="paragraph"><p>Then you need the python-module loading library added.<br />
+Qtvcp uses QT5 with python2 - this combination is not normally available from<br />
+repositories. You can compile it your self or there are precompiled versions<br />
+available for common systems.<br />
+in <em>lib/python/qtvcp/designer</em> there are folders based on system architectures<br />
+and then QT version.<br />
+You must pick the cpu architecture folder then pick the series; 5.5, 5.7, or 5.9 of Qt.<br />
+currently Debian stretch uses 5.7, Mint 12 uses 5.5, Mint 19 uses 5.9<br />
+if in doubt check the version of QT5 on the system.<br /></p></div>
+<div class="paragraph"><p>You must decompress the file and then copy that proper version of<br />
+<em>libpyqt5_py2.so</em> to this folder:<br />
+<em>/usr/lib/x86_64-linux-gnu/qt5/plugins/designer</em><br />
+(x86_64-linux-gnu might be called something slightly different<br />
+on different systems)<br /></p></div>
+<div class="paragraph"><p>You will require super user privileges to copy the file to the folder.<br /></p></div>
+<div class="paragraph"><p>then you must add a link to the qtvcp_plugin.py to the folder that designer will search.<br /></p></div>
+<div class="paragraph"><p>In a RIP version of linuxcnc qtvcp_plugin.py will be in:<br />
+<em>~/LINUXCNC_PROJECT_NAME/lib/python/qtvcp/plugins/qtvcp_plugin.py</em><br /></p></div>
+<div class="paragraph"><p>installed version should be:<br />
+<em>usr/lib/python2.7/qtvcp/plugins/qtvcp_plugin.py</em><br />
+or
+<em>usr/lib/python2.7/dist-packages/qtvcp/plugins/qtvcp_plugin.py</em><br /></p></div>
+<div class="paragraph"><p>make a link file to the above file and move it to one of the places Designer searches:<br /></p></div>
+<div class="paragraph"><p>Designer searches in these two place for links (pick one):<br />
+This can be:<br />
+<em>/usr/lib/x86_64-linux-gnu/qt5/plugins/designer/python</em><br />
+or<br />
+<em>~/.designer/plugins/python</em><br />
+You may need to add the plugins/python folders<br /></p></div>
+<div class="paragraph"><p>To start Designer:<br /></p></div>
+<div class="paragraph"><p>for a RIP installed:<br />
+open a terminal, set the environment for linuxcnc with the command: <em>. scripts/rip-environment</em><br />
+then load designer with : <em>designer -qt=5</em><br /></p></div>
+<div class="paragraph"><p>otherwise for an installed version, open a terminal and type <em>designer -qt=5</em><br /></p></div>
+<div class="paragraph"><p>If all goes right you will see the selectable linuxcnc widgets on the left hand side<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_build_the_screen_ui_file">2.3. build the screen .ui file</h3>
+<div class="paragraph"><p>When Designer is first started there is a <em>New Form</em> dialog displayed.<br />
+Pick <em>Main Window</em> and press the <em>create</em> button.<br />
+Do not rename this window - Qtvcp requires the name to be <em>MainWindow</em><br />
+<br />
+A MainWindow widget is Displayed. Grab the corner of the window and resize to<br />
+an appropriate size say 1000x600. right click on the window and click<br />
+set minimum size. Do it again and set maximum size.Our sample widget will<br />
+now not be resizable.<br />
+<br />
+Drag and drop the screenoption widget onto the main window (anywhere).<br />
+This widget doesn&#8217;t add anything visually but sets up some common options.<br />
+It&#8217;s recommended to always add this widget before any other.<br />
+Right click on the main window (not the screenoptions widget)<br />
+and set the layout as vertical. The screenoption widget will now be fullsized.<br /></p></div>
+<div class="paragraph"><p>On the right hand side there is a panel with tabs for a Property editor and<br />
+an object inspector. On the Object inspector click on the screenoption. then<br />
+switch to the property Editor. Under the heading <em>ScreenOptions</em> toggle<br />
+<em>filedialog_option</em>.<br /></p></div>
+<div class="paragraph"><p>Drag and drop a GCodeGraphics widget and a GcodeEditor widget.<br />
+Place and resize them as you see fit leaving some room for buttons.<br /></p></div>
+<div class="paragraph"><p>Now we will add action buttons.<br />
+Add 7 action buttons on to the main window. If you double click the button, you<br />
+can add text. Edit the button labels for <em>Estop</em>, <em>Machine On</em>, <em>Home</em>, <em>Load</em>,<br />
+<em>Run</em>, <em>Pause</em> and <em>stop</em>.<br />
+Action buttons default to no action so we must change the properties for defined functions.<br />
+You can edit the properties directly in the property editor on the right side of designer.<br />
+A convenient alternating is left double clicking on the button This will launch a Dialog<br />
+that allows selecting actions while only display relevant data to the action.<br />
+<br />
+We will describe the convenient way first:<br /></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Right click the <em>Machine On</em> button and select <em>Set Actions</em>. When the Dialog displays,<br />
+use the combobox to navigate to <em>MACHINE CONTROLS - Machine On</em>. In this case there there<br />
+is no option for this action so select ok. Now the button will turn the machine on when pressed<br />
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>And now the direct way with Designer&#8217;s property editor<br /></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Select the <em>Machine On</em> button. Now go to the <em>Property Editor</em> on the right<br />
+side of Designer. Scroll down until you find the <em>ActionButton</em> heading.<br />
+You will see a list of properties and values. find the <em>machine on action</em> and<br />
+click the checkbox. the button will now control machine on/off.<br />
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Do the same for all the other button with the addition of:<br /></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+With the <em>Home</em> button we must also change the joint_number property to -1,<br />
+Which tells the controller to home all the axes rather then a specific axis.<br />
+</p>
+</li>
+<li>
+<p>
+With the <em>Pause</em> button under the heading <em>Indicated_PushButton</em> check the<br />
+<em>indicator_option</em> and under the <em>QAbstactButton</em> heading check <em>checkable</em>
+</p>
+</li>
+</ul></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/designer_button_property.png" alt="designer button property" />
+</div>
+<div class="title">Figure 9. Qt Designer - Selecting Pause button&#8217;s properties</div>
+</div>
+<div class="paragraph"><p>We then need to save this design as <em>tester.ui</em> in the sim/qtvcp folder<br />
+We are saving it as tester as that is a file name that qtvcp recognizes and<br />
+will use a built in handler file to display it.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_handler_file">2.4. Handler file</h3>
+<div class="paragraph"><p>a handler file is required. It allows customizations to be written in python.<br />
+For instance keyboard controls are usually written in the handler file.<br />
+<br />
+In this example the built in file <em>tester_handler.py</em> is automatically used.<br />
+It does the minimum required to display the tester.ui defined screen and do<br />
+basic keyboard jogging.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_ini">2.5. INI</h3>
+<div class="paragraph"><p>If you are using qtvcp to make a CNC control screen:<br />
+Under the <em>[DISPLAY]</em> heading:<br />
+<br />
+<em>DISPLAY = qtvcp &lt;screen_name&gt;</em><br />
+<br />
+<em>&lt;screen_name&gt;</em> is the base name of the .ui and _handler.py files.<br /></p></div>
+<div class="paragraph"><p>In our example there is already a sim configuration called tester, that we<br />
+will use to display our test screen.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_hal">2.6. HAL</h3>
+<div class="paragraph"><p>If your screen used widgets with HAL pins the you must connect then in a HAL file.<br />
+qtvcp looks under the heading <em>[HAL]</em> for the entry <em>POSTGUI_HALFILE=&lt;filename&gt;</em><br />
+Typically <em>&lt;filename&gt;</em> would be the screens base name + <em>_postgui</em> + <em>.hal</em><br />
+eg. <em>qtvcp_postgui.hal</em><br />
+These commands are executed after the screen is built, guaranteeing the widget HAL<br />
+pins are available.<br />
+<br />
+In our example there are no HAl pins to connect.<br /></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_handler_file_in_detail">3. Handler file in detail</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>handler files are used to create custom controls using python.<br /></p></div>
+<div class="sect2">
+<h3 id="_overview_3">3.1. Overview</h3>
+<div class="paragraph"><p>Here is a sample handler file.<br />
+It&#8217;s broken up in sections for ease of discussion.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** IMPORT SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">############################</span></span>
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> sys
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> os
+<span style="font-weight: bold"><span style="color: #000080">import</span></span> linuxcnc
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> PyQt5 <span style="font-weight: bold"><span style="color: #000080">import</span></span> QtCore<span style="color: #990000">,</span> QtWidgets
+
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>widgets<span style="color: #990000">.</span>mdi_line <span style="font-weight: bold"><span style="color: #000080">import</span></span> MDILine as MDI_WIDGET
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>widgets<span style="color: #990000">.</span>gcode_editor <span style="font-weight: bold"><span style="color: #000080">import</span></span> GcodeEditor as GCODE
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>lib<span style="color: #990000">.</span>keybindings <span style="font-weight: bold"><span style="color: #000080">import</span></span> Keylookup
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp<span style="color: #990000">.</span>core <span style="font-weight: bold"><span style="color: #000080">import</span></span> Status<span style="color: #990000">,</span> Action
+
+<span style="font-style: italic"><span style="color: #9A1900"># Set up logging</span></span>
+<span style="font-weight: bold"><span style="color: #000080">from</span></span> qtvcp <span style="font-weight: bold"><span style="color: #000080">import</span></span> logger
+LOG <span style="color: #990000">=</span> logger<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">getLogger</span></span><span style="color: #990000">(</span>__name__<span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># Set the log level for this module</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#LOG.setLevel(logger.INFO) # One of DEBUG, INFO, WARNING, ERROR, CRITICAL</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** INSTANTIATE LIBRARIES SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###########################################</span></span>
+
+KEYBIND <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Keylookup</span></span><span style="color: #990000">()</span>
+STATUS <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Status</span></span><span style="color: #990000">()</span>
+ACTION <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">Action</span></span><span style="color: #990000">()</span>
+<span style="font-style: italic"><span style="color: #9A1900">###################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># **** HANDLER CLASS SECTION **** #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">###################################</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">class</span></span> HandlerClass<span style="color: #990000">:</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># **** INITIALIZE **** #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># widgets allows access to  widgets from the qtvcp files</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point the widgets and hal pins are not instantiated</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>hal <span style="color: #990000">=</span> halcomp
+        self<span style="color: #990000">.</span>w <span style="color: #990000">=</span> widgets
+        self<span style="color: #990000">.</span>PATHS <span style="color: #990000">=</span> paths
+
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># SPECIAL FUNCTIONS SECTION              #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##########################################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># at this point:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the widgets are instantiated.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># the HAL pins are built but HAL is not set ready</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># This is where you make HAL pins or initialize state of widgets etc</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">initialized__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">pass</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">processed_key_event__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>receiver<span style="color: #990000">,</span>event<span style="color: #990000">,</span>is_pressed<span style="color: #990000">,</span>key<span style="color: #990000">,</span>code<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># when typing in MDI, we don't want keybinding to call functions</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># so we catch and process the events directly.</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># We do want ESC, F1 and F2 to call keybinding functions though</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> code <span style="font-weight: bold"><span style="color: #0000FF">not</span></span> <span style="font-weight: bold"><span style="color: #0000FF">in</span></span><span style="color: #990000">(</span>QtCore<span style="color: #990000">.</span>Qt<span style="color: #990000">.</span>Key_Escape<span style="color: #990000">,</span>QtCore<span style="color: #990000">.</span>Qt<span style="color: #990000">.</span>Key_F1 <span style="color: #990000">,</span>QtCore<span style="color: #990000">.</span>Qt<span style="color: #990000">.</span>Key_F2<span style="color: #990000">,</span>
+                    QtCore<span style="color: #990000">.</span>Qt<span style="color: #990000">.</span>Key_F3<span style="color: #990000">,</span>QtCore<span style="color: #990000">.</span>Qt<span style="color: #990000">.</span>Key_F5<span style="color: #990000">,</span>QtCore<span style="color: #990000">.</span>Qt<span style="color: #990000">.</span>Key_F5<span style="color: #990000">):</span>
+
+            <span style="font-style: italic"><span style="color: #9A1900"># search for the top widget of whatever widget received the event</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># then check if it's one we want the keypress events to go to</span></span>
+            flag <span style="color: #990000">=</span> False
+            receiver2 <span style="color: #990000">=</span> receiver
+            <span style="font-weight: bold"><span style="color: #0000FF">while</span></span> receiver2 <span style="font-weight: bold"><span style="color: #0000FF">is</span></span> <span style="font-weight: bold"><span style="color: #0000FF">not</span></span> None <span style="font-weight: bold"><span style="color: #0000FF">and</span></span> <span style="font-weight: bold"><span style="color: #0000FF">not</span></span> flag<span style="color: #990000">:</span>
+                <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="font-weight: bold"><span style="color: #000000">isinstance</span></span><span style="color: #990000">(</span>receiver2<span style="color: #990000">,</span> QtWidgets<span style="color: #990000">.</span>QDialog<span style="color: #990000">):</span>
+                    flag <span style="color: #990000">=</span> True
+                    <span style="font-weight: bold"><span style="color: #0000FF">break</span></span>
+                <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="font-weight: bold"><span style="color: #000000">isinstance</span></span><span style="color: #990000">(</span>receiver2<span style="color: #990000">,</span> MDI_WIDGET<span style="color: #990000">):</span>
+                    flag <span style="color: #990000">=</span> True
+                    <span style="font-weight: bold"><span style="color: #0000FF">break</span></span>
+                <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="font-weight: bold"><span style="color: #000000">isinstance</span></span><span style="color: #990000">(</span>receiver2<span style="color: #990000">,</span> GCODE<span style="color: #990000">):</span>
+                    flag <span style="color: #990000">=</span> True
+                    <span style="font-weight: bold"><span style="color: #0000FF">break</span></span>
+                receiver2 <span style="color: #990000">=</span> receiver2<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">parent</span></span><span style="color: #990000">()</span>
+
+            <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> flag<span style="color: #990000">:</span>
+                <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="font-weight: bold"><span style="color: #000000">isinstance</span></span><span style="color: #990000">(</span>receiver2<span style="color: #990000">,</span> GCODE<span style="color: #990000">):</span>
+                    <span style="font-style: italic"><span style="color: #9A1900"># if in manual do our keybindings - otherwise</span></span>
+                    <span style="font-style: italic"><span style="color: #9A1900"># send events to gcode widget</span></span>
+                    <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">is_man_mode</span></span><span style="color: #990000">()</span> <span style="color: #990000">==</span> False<span style="color: #990000">:</span>
+                        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> is_pressed<span style="color: #990000">:</span>
+                            receiver<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">keyPressEvent</span></span><span style="color: #990000">(</span>event<span style="color: #990000">)</span>
+                            event<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">accept</span></span><span style="color: #990000">()</span>
+                        <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> True
+                <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> is_pressed<span style="color: #990000">:</span>
+                    receiver<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">keyPressEvent</span></span><span style="color: #990000">(</span>event<span style="color: #990000">)</span>
+                    event<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">accept</span></span><span style="color: #990000">()</span>
+                    <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> True
+                <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+                    event<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">accept</span></span><span style="color: #990000">()</span>
+                    <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> True
+
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> event<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">isAutoRepeat</span></span><span style="color: #990000">():</span><span style="font-weight: bold"><span style="color: #0000FF">return</span></span> True
+
+        <span style="font-style: italic"><span style="color: #9A1900"># ok if we got here then try keybindings</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">try</span></span><span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> KEYBIND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>is_pressed<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">except</span></span> NameError as e<span style="color: #990000">:</span>
+            LOG<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">debug</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Exception in KEYBINDING: {}'</span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">format</span></span> <span style="color: #990000">(</span>e<span style="color: #990000">))</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">except</span></span> Exception as e<span style="color: #990000">:</span>
+            LOG<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">debug</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'Exception in KEYBINDING:'</span><span style="color: #990000">,</span> exc_info<span style="color: #990000">=</span>e<span style="color: #990000">)</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'Error in, or no function for: %s in handler file for-%s'</span><span style="color: #990000">%(</span>KEYBIND<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">convert</span></span><span style="color: #990000">(</span>event<span style="color: #990000">),</span>key<span style="color: #990000">)</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> False
+
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># CALLBACKS FROM STATUS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">########################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">#######################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># CALLBACKS FROM FORM #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#######################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># GENERAL FUNCTIONS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># keyboard jogging from key binding calls</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># double the rate if fast is true</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> state<span style="color: #990000">,</span> joint<span style="color: #990000">,</span> direction<span style="color: #990000">,</span> fast <span style="color: #990000">=</span> False<span style="color: #990000">,</span> linear <span style="color: #990000">=</span> True<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> <span style="font-weight: bold"><span style="color: #0000FF">not</span></span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">is_man_mode</span></span><span style="color: #990000">()</span> <span style="font-weight: bold"><span style="color: #0000FF">or</span></span> <span style="font-weight: bold"><span style="color: #0000FF">not</span></span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">machine_is_on</span></span><span style="color: #990000">():</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">return</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> linear<span style="color: #990000">:</span>
+            distance <span style="color: #990000">=</span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_jog_increment</span></span><span style="color: #990000">()</span>
+            rate <span style="color: #990000">=</span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_jograte</span></span><span style="color: #990000">()/</span><span style="color: #993399">60</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+            distance <span style="color: #990000">=</span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_jog_increment_angular</span></span><span style="color: #990000">()</span>
+            rate <span style="color: #990000">=</span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">get_jograte_angular</span></span><span style="color: #990000">()/</span><span style="color: #993399">60</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> fast<span style="color: #990000">:</span>
+                rate <span style="color: #990000">=</span> rate <span style="color: #990000">*</span> <span style="color: #993399">2</span>
+            ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">JOG</span></span><span style="color: #990000">(</span>joint<span style="color: #990000">,</span> direction<span style="color: #990000">,</span> rate<span style="color: #990000">,</span> distance<span style="color: #990000">)</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+            ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">JOG</span></span><span style="color: #990000">(</span>joint<span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #990000">)</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># KEY BINDING CALLS #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">#####################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># Machine control</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_ESTOP</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_ESTOP_STATE</span></span><span style="color: #990000">(</span>STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">estop_is_clear</span></span><span style="color: #990000">())</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_POWER</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MACHINE_STATE</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">not</span></span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">machine_is_on</span></span><span style="color: #990000">())</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_HOME</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> STATUS<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">is_all_homed</span></span><span style="color: #990000">():</span>
+                ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MACHINE_UNHOMED</span></span><span style="color: #990000">(-</span><span style="color: #993399">1</span><span style="color: #990000">)</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+                ACTION<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SET_MACHINE_HOMING</span></span><span style="color: #990000">(-</span><span style="color: #993399">1</span><span style="color: #990000">)</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_ABORT</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> STATUS<span style="color: #990000">.</span>stat<span style="color: #990000">.</span>interp_state <span style="color: #990000">==</span> linuxcnc<span style="color: #990000">.</span>INTERP_IDLE<span style="color: #990000">:</span>
+                self<span style="color: #990000">.</span>w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">close</span></span><span style="color: #990000">()</span>
+            <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+                self<span style="color: #990000">.</span>cmnd<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">abort</span></span><span style="color: #990000">()</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># Linear Jogging</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_XPOS</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>state<span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> shift<span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_XNEG</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>state<span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span> shift<span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_YPOS</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>state<span style="color: #990000">,</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> shift<span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_YNEG</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>state<span style="color: #990000">,</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span> shift<span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_ZPOS</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>state<span style="color: #990000">,</span> <span style="color: #993399">2</span><span style="color: #990000">,</span> <span style="color: #993399">1</span><span style="color: #990000">,</span> shift<span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_ZNEG</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">kb_jog</span></span><span style="color: #990000">(</span>state<span style="color: #990000">,</span> <span style="color: #993399">2</span><span style="color: #990000">,</span> <span style="color: #990000">-</span><span style="color: #993399">1</span><span style="color: #990000">,</span> shift<span style="color: #990000">)</span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_APOS</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">pass</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900">#self.kb_jog(state, 3, 1, shift, False)</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_ANEG</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">pass</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900">#self.kb_jog(state, 3, -1, shift, linear=False)</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">###########################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># **** closing event **** #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">###########################</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">##############################</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># required class boiler code #</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">##############################</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__getitem__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="font-weight: bold"><span style="color: #000000">getattr</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">)</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__setitem__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">,</span> value<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="font-weight: bold"><span style="color: #000000">setattr</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">,</span> value<span style="color: #990000">)</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">################################</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># required handler boiler code #</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">################################</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">get_handlers</span></span><span style="color: #990000">(</span>halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">):</span>
+     <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="color: #990000">[</span><span style="font-weight: bold"><span style="color: #000000">HandlerClass</span></span><span style="color: #990000">(</span>halcomp<span style="color: #990000">,</span>widgets<span style="color: #990000">,</span>paths<span style="color: #990000">)]</span>
+</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_import_section">3.2. IMPORT SECTION</h3>
+<div class="paragraph"><p>This section is for importing library modules required for your screen.<br />
+It would be typical to import qtvcp&#8217;s keybinding, Status and action<br />
+libraries.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_instantiate_libraries_section">3.3. INSTANTIATE LIBRARIES SECTION</h3>
+<div class="paragraph"><p>By instantiating the libraries here we create global reference.<br />
+You can note this by the commands that don&#8217;t have <em>self.</em> in front of them.<br />
+By convention we capitalize the names of global referenced libraries.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_handler_class_section">3.4. HANDLER CLASS section</h3>
+<div class="paragraph"><p>The custom code is placed in a class so qtvcp can utilize it.<br />
+This is the definitions on the handler class.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_initialize_section">3.5. INITIALIZE section</h3>
+<div class="paragraph"><p>Like all python libraies the <em>init</em> function is called when the library<br />
+is first instantiated. You can set defaults and reference variables here.<br />
+The widget references are not available at this point.<br />
+The variables halcomp, widgets and paths give access to qtvcp&#8217;s HAL component,<br />
+widgets, and path info respectably.<br />
+This is where you would set up global variables.<br />
+Widgets are not actually accessible at this point.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_special_functions_section">3.6. SPECIAL FUNCTIONS section</h3>
+<div class="paragraph"><p>There are several special functions that qtvcp looks for in the handler file.<br />
+If qtvcp finds these it will call them, if not it will silently ignore them.<br /></p></div>
+<div class="sect3">
+<h4 id="_initialized___self">3.6.1. initialized__(self):</h4>
+<div class="paragraph"><p>This function is called after the widgets and HAL pins are built<br />
+You can manipulate the widgets and HAL pins or add more HAL pins here.<br />
+Typically preferences can be checked and set, styles applied to <br />
+widgets or status of linuxcnc be connected to functions.<br />
+This is also where keybindings would be added.<br /></p></div>
+</div>
+<div class="sect3">
+<h4 id="_class_patch___self">3.6.2. class_patch__(self):</h4>
+<div class="paragraph"><p>Class patching allow you to override function calls in an imported module.<br />
+Class patching must be done before the module is instantiated and it modifies<br />
+all instances made after that.<br />
+An example might be patching button calls from the gcode editor to call functions<br />
+in the handler file instead.<br />
+Class patching is also known as monkey patching.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_processed_key_event___self_receiver_event_is_pressed_key_code_shift_cntrl">3.6.3. processed_key_event__(self, receiver,event,is_pressed,key,code,shift,cntrl):</h4>
+<div class="paragraph"><p>This function is called to facilitate keyboard jogging etc.<br />
+By using the keybindings library this can be used to easily add<br />
+functions bound to keypresses.<br /></p></div>
+</div>
+<div class="sect3">
+<h4 id="_keypress_event___self_receiver_event">3.6.4. keypress_event__(self,receiver, event)):</h4>
+<div class="paragraph"><p>This function gives raw key press events. It takes presidence over<br />
+the processed_key_event.<br /></p></div>
+</div>
+<div class="sect3">
+<h4 id="_keyrelease_event___receiver_event">3.6.5. keyrelease_event__(receiver, event):</h4>
+<div class="paragraph"><p>This function gives raw key release events. It takes presidence over<br />
+the processed_key_event.<br /></p></div>
+</div>
+<div class="sect3">
+<h4 id="_before_loop___self">3.6.6. before_loop__(self):</h4>
+<div class="paragraph"><p>This function is called just before the Qt event loop is entered.<br />
+At the point all widgets/libraries/initialization code has completed and the screen is already displayed.<br /></p></div>
+</div>
+<div class="sect3">
+<h4 id="_system_shutdown_request___self">3.6.7. system_shutdown_request__(self):</h4>
+<div class="paragraph"><p>If present, this function overrides the normal function called when a user selects a total system shutdown.<br />
+It could be used to do pre-shutdown housekeeping. The system will not shutdown if using this function, you will<br />
+have to do that yourself. qtvcp/linuxcnc will shutdown wihtout a prompt after this function returns<br /></p></div>
+</div>
+<div class="sect3">
+<h4 id="_closing_cleanup___self">3.6.8. closing_cleanup__(self):</h4>
+<div class="paragraph"><p>This function is called just before the screen closes. It can be used<br />
+to do cleanup before closing.<br /></p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_status_callbacks_section">3.7. STATUS CALLBACKS section</h3>
+<div class="paragraph"><p>By convention this is where you would put functions that are callbacks<br />
+from STATUS definitions.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_callbacks_from_form_section">3.8. CALLBACKS FROM FORM section</h3>
+<div class="paragraph"><p>By convention this is where you would put functions that are callbacks<br />
+from the widgets that you have connected to the MainWindow with the<br />
+designer editor.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_general_functions_section">3.9. GENERAL FUNCTIONS section</h3>
+<div class="paragraph"><p>By convention this is where you put your general functions<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_key_binding_section">3.10. KEY BINDING section</h3>
+<div class="paragraph"><p>If you are using the keybinding library this is where you place your<br />
+custom key call routines.<br />
+The function signature is:<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">on_keycall_KEY</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span>event<span style="color: #990000">,</span>state<span style="color: #990000">,</span>shift<span style="color: #990000">,</span>cntrl<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> state<span style="color: #990000">:</span>
+            self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">do_something_function</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+<div class="paragraph"><p><em>KEY</em> being the code (from the keybindings library) for the desired key.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_closing_event_section">3.11. CLOSING EVENT section</h3>
+<div class="paragraph"><p>Putting the close event function here will catch closing events.<br />
+This replaces any predefined closeEvent function from qtvcp<br />
+It&#8217;s usally better to use the special closing_cleanup__ function.<br /></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">closeEvent</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> event<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">do_something</span></span><span style="color: #990000">()</span>
+        event<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">accept</span></span><span style="color: #990000">()</span></tt></pre></div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_connecting_widgets_to_python_code">4. Connecting widgets to python code</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>It&#8217;s possible to connect widgets to python code using signals and slots.<br />
+In this way you can give new functions to linuxcnc widgets or utilize<br />
+standard widgets to control linuxcnc.<br /></p></div>
+<div class="sect2">
+<h3 id="_overview_4">4.1. Overview</h3>
+<div class="paragraph"><p>In the Designer editor you would create user function slots and connect<br />
+them to widgets using signals.<br />
+In the handler file you would create the slot&#8217;s functions defined in Designer.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="cha:designer-slots">4.2. Using Designer to add slots</h3>
+<div class="paragraph"><p>When you have loaded your screen into designer add a plain PushButton to the screen.<br />
+You could change the name of the button to something interesting like <em>test_button</em><br />
+There are two ways to edit connections - This is the graphical way<br />
+There is a button in the top tool bar of designer for editing signals.<br />
+After pushing it, if you click-and-hold on the button it will show a arrow<br />
+(looks like a ground signal from electrical schematic)<br />
+Slide this arrow to a part of the main window that does not have widgets on it.<br />
+A <em>Configure Connections</em> dialog will pop up.<br />
+The list on the left are the available signals from the widget.<br />
+The list on the right is the available slots on the main window and you can add to it.<br /></p></div>
+<div class="paragraph"><p>Pick the signal <em>clicked()</em> - this makes the slots side available.<br />
+click <em>edit</em> on the slots list.<br />
+A <em>Slots/Signals of MainWindow</em> dialog will pop up.<br />
+On the slots list at the top there is a plus icon - click it.<br />
+you can now edit a new slot name.<br />
+Erase the default name <em>slot()</em> and change it to test_button()<br />
+press the ok button.<br />
+You&#8217;ll be back to the <em>Configure Connections</em> dialog.<br />
+now you can select your new slot in the slot list.<br />
+then press ok and save the file.<br /></p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/designer_slots.png" alt="QTvcp" />
+</div>
+<div class="title">Figure 10. Designer signal/slot selection</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_handler_file_changes">4.3. Handler file changes</h3>
+<div class="paragraph"><p>Now you must add the function to the handler file.<br />
+The function signature is <em>def slotname(self):</em><br />
+We will add some code to print the widget name.<br /></p></div>
+<div class="paragraph"><p>So for our example:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">test_button</span></span><span style="color: #990000">(</span>self<span style="color: #990000">):</span>
+    name <span style="color: #990000">=</span> self<span style="color: #990000">.</span>w<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">sender</span></span><span style="color: #990000">().</span><span style="font-weight: bold"><span style="color: #000000">text</span></span><span style="color: #990000">()</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> name</tt></pre></div></div>
+<div class="paragraph"><p>Add this code under the section named:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>#######################
+# callbacks from form #
+#######################</code></pre>
+</div></div>
+<div class="paragraph"><p>In fact it doesn&#8217;t matter where in the handler class you put the commands
+but by convention this is where to put it.<br />
+Save the handler file.<br />
+Now when you load your screen and press the button it should print the name<br />
+of the button in the terminal.<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_more_information">4.4. More Information</h3>
+<div class="paragraph"><p><a href="qtvcp_widgets.html#cha:qtvcp-widgets">QtVCP Widgets</a></p></div>
+<div class="paragraph"><p><a href="qtvcp_libraries.html#cha:qtvcp-libraries">QtVCP Libraries</a></p></div>
+<div class="paragraph"><p><a href="qtvcp_code_snippets.html#cha:qtvcp-code">QtVCP Handler File Code Snippets</a></p></div>
+<div class="paragraph"><p><a href="qtvcp_development.html#cha:qtvcp-development">QtVCP Development</a></p></div>
+<div class="paragraph"><p><a href="qtvcp_custom_widgets.html#cha:qtvcp-custom-widgets">QtVCP Custom Designer Widgets</a></p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

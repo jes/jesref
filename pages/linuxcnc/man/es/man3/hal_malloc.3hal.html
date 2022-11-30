@@ -1,0 +1,120 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:19 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hal_malloc</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hal_malloc</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCION">DESCRIPCION</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hal_malloc -
+Asigna espacio en el &Atilde;&iexcl;rea de memoria
+compartida HAL</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<p style="margin-left:22%; margin-top: 1em">void
+*hal_malloc(long int <i>size</i>)</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+<td width="11%"></td>
+<td width="6%"></td>
+<td width="5%"></td>
+<td width="53%">
+</td>
+<td width="25%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="6%">
+
+
+<p><i>size</i></p></td>
+<td width="5%"></td>
+<td width="53%">
+
+
+<p>Da el tama&Atilde;&plusmn;o, en bytes, del bloque</p></td>
+<td width="25%">
+</td></tr>
+</table>
+
+<h2>DESCRIPCION
+<a name="DESCRIPCION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hal_malloc</b>
+asigna un bloque de memoria del &Atilde;&iexcl;rea principal
+de memoria compartida de HAL. Debe ser utilizado por todos
+los componentes para asignar memoria para pines y
+par&Atilde;&iexcl;metros HAL. Asigna &rsquo;size&rsquo;
+bytes y devuelve un puntero al espacio asignado, o NULL (0)
+en caso de error. El puntero devuelto se
+alinear&Atilde;&iexcl; correctamente para cualquier tipo de
+soporte HAL. Un componente debe asignar durante la
+inicializaci&Atilde;&sup3;n toda la memoria que
+necesita.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El asignador es
+muy simple y no hay &quot;free&quot;. Todo el HAL
+compartiendo el &Atilde;&iexcl;rea de memoria se libera
+cuando el &Atilde;&ordm;ltimo componente llama a
+<b>hal_exit</b>. Esto significa que si continuamente instala
+y elimina un componente mientras otros est&Atilde;&iexcl;n
+presentes, eventualmente llenar&Atilde;&iexcl; la memoria
+compartida y la instalaci&Atilde;&sup3;n
+fallar&Atilde;&iexcl;. Eliminar todos los componentes borra
+completamente la memoria y usted puede empezar de nuevo.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Un puntero al
+espacio asignado, que est&Atilde;&iexcl; alineado
+correctamente para cualquier variable HAL. Devuelve NULL en
+caso de error.</p>
+<hr>
+</body>
+</html>

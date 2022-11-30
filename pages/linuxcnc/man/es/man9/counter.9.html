@@ -1,0 +1,163 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:26 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>COUNTER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">COUNTER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">counter -
+cuenta impulsos de entrada <b>(OBSOLETO)</b></p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+counter [num_chan=</b><i>N</i><b>]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>counter</b>
+es un componente HAL en desuso y se eliminar&Atilde;&iexcl;
+en un futuro lanzamiento. Utilice el componente
+<b>encoder</b> con encoder.X.counter-mode establecido en
+TRUE.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>counter</b>
+es un componente HAL que proporciona conteo basado en
+software que es &Atilde;&ordm;til para la
+detecci&Atilde;&sup3;n de posici&Atilde;&sup3;n del husillo
+y tal vez otras cosas. En lugar de usar un encoder real de
+cuadratura, algunos tornos tienen un sensor que genera un
+flujo de pulsos simple a medida que el husillo gira y un
+pulso de &Atilde;ndice una vez por revoluci&Atilde;&sup3;n.
+Este componente simplemente cuenta cuando un pulso &quot;de
+cuenta&quot; (fase-A) se recibe, y si su reset
+est&Atilde;&iexcl; habilitado, se resetea cuando se recibe
+el pulso &quot;&Atilde;ndice&quot; (fase-Z).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Por supuesto,
+esto solo es &Atilde;&ordm;til para un husillo
+unidireccional, ya que No es posible detectar la
+direcci&Atilde;&sup3;n de rotaci&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>counter</b>
+se ajusta a la interfaz &quot;encoder
+can&Atilde;&sup3;nico&quot; descrita en el manual de
+HAL.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>counter.capture-position</b>
+(usa punto flotante)</p>
+
+<p style="margin-left:22%;">Actualiza las salidas de
+conteo, posici&Atilde;&sup3;n y velocidad en base a
+contadores internos.</p>
+
+
+<p style="margin-left:11%;"><b>counter.update-counters</b></p>
+
+<p style="margin-left:22%;">Muestra las entradas de fase-A
+y fase-Z y actualiza los contadores internos.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>counter.</b><i>N</i><b>.phase-A</b>
+bit in</p>
+
+<p style="margin-left:22%;">Se&Atilde;&plusmn;al de entrada
+primaria. El contador interno se incrementa en cada flanco
+ascendente.</p>
+
+
+<p style="margin-left:11%;"><b>counter.</b><i>N</i><b>.phase-Z</b>
+bit in</p>
+
+<p style="margin-left:22%;">Se&Atilde;&plusmn;al de entrada
+de &Atilde;ndice. Cuando el pin <b>index-enable</b> es TRUE
+y se ve un flanco ascendente en <b>phase-Z</b>,
+<b>index-enable</b> se establece en FALSE y el contador
+interno se resetea a cero.</p>
+
+
+<p style="margin-left:11%;"><b>counter.</b><i>N</i><b>.index-enable</b>
+bit io <b><br>
+counter.</b><i>N</i><b>.reset</b> bit io <b><br>
+counter.</b><i>N</i><b>.counts</b> S32 out <b><br>
+counter.</b><i>N</i><b>.position</b> float <b><br>
+counter.</b><i>N</i><b>.velocity</b> float</p>
+
+<p style="margin-left:22%;">Estos pines funcionan de
+acuerdo con la interfaz can&Atilde;&sup3;nica de encoder
+digital.</p>
+
+<p style="margin-left:11%;"><b>counter.</b>
+<i>N</i><b>.position-scale</b> float rw</p>
+
+<p style="margin-left:22%;">Este par&Atilde;&iexcl;metro
+funciona de acuerdo con la interfaz can&Atilde;&sup3;nica de
+encoder digital.</p>
+
+
+<p style="margin-left:11%;"><b>counter.</b><i>N</i><b>.rawcounts</b>
+S32 ro</p>
+
+<p style="margin-left:22%;">El valor de recuento interno,
+actualizado desde <b>update-counters</b> y reflejado en los
+pines de salida en la pr&Atilde;&sup3;xima llamada a
+<b>capture-position</b>.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder
+(9)</b>. en la documentaci&Atilde;&sup3;n de LinuxCNC.</p>
+<hr>
+</body>
+</html>

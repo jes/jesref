@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Ejemplos de código G</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Ejemplos de código G</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:gcode-examples"><p>Después de instalar LinuxCNC, se colocan varios archivos de muestra en la carpeta
+/nc_files. Asegúrese de que el archivo de muestra sea apropiado para su
+máquina antes de correrlo.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ejemplos_de_fresado">1. Ejemplos de fresado</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_fresado_helicoidal">1.1. Fresado helicoidal</h3>
+<div class="paragraph"><p>Nombre de archivo: useful-subroutines.ngc</p></div>
+<div class="paragraph"><p>Descripción: Subrutina para fresar un agujero utilizando parámetros.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_ranurado">1.2. Ranurado</h3>
+<div class="paragraph"><p>Nombre de archivo: useful-subroutines.ngc</p></div>
+<div class="paragraph"><p>Descripción: Subrutina para fresar una ranura usando parámetros.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_sondeo_en_cuadrícula">1.3. Sondeo en cuadrícula</h3>
+<div class="paragraph"><p>Nombre de archivo: gridprobe.ngc</p></div>
+<div class="paragraph"><p>Descripción: sondeo rectangular</p></div>
+<div class="paragraph"><p>Este programa prueba repetidamente en una cuadrícula XY normal y escribe la
+ubicación sondeada al archivo <em>probe-results.txt</em> en el mismo directorio
+que el archivo .ini.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_sonda_inteligente">1.4. Sonda inteligente</h3>
+<div class="paragraph"><p>Nombre de archivo: smartprobe.ngc</p></div>
+<div class="paragraph"><p>Descripción: sondeo rectangular</p></div>
+<div class="paragraph"><p>Este programa prueba repetidamente en una cuadrícula XY normal y escribe la
+ubicación sondeada al archivo <em>probe-results.txt</em> en el mismo directorio
+que el archivo .ini. Es una mejora del archivo de sondeo de cuadrícula.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_sondeo_de_longitud_de_herramienta">1.5. Sondeo de longitud de herramienta</h3>
+<div class="paragraph"><p>Nombre de archivo: tool-length-probe.ngc</p></div>
+<div class="paragraph"><p>Descripción: Sondeo de longitud de herramienta</p></div>
+<div class="paragraph"><p>Este programa muestra un ejemplo de cómo medir longitudes de herramientas
+automáticamente usando un interruptor conectado a la entrada de la sonda. Esto es útil
+para máquinas sin portaherramientas, donde la longitud de una herramienta es
+diferente cada vez que se inserta.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_sonda_de_agujero">1.6. Sonda de agujero</h3>
+<div class="paragraph"><p>Nombre de archivo: probe-hole.ngc</p></div>
+<div class="paragraph"><p>Descripción: Encontrar el centro y el diámetro de un agujero.</p></div>
+<div class="paragraph"><p>El programa muestra cómo encontrar el centro de un agujero, medir el
+diámetro del agujero y registrar los resultados.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_compensación_del_cortador">1.7. Compensación del cortador</h3>
+<div class="paragraph"><p>Para ser agregado</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ejemplos_de_torno">2. Ejemplos de torno</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_roscado">2.1. Roscado</h3>
+<div class="paragraph"><p>Nombre de archivo lathe-g76.ngc</p></div>
+<div class="paragraph"><p>Descripción: Refrentado, roscado y tronzado.</p></div>
+<div class="paragraph"><p>Este archivo muestra un ejemplo de roscado en un torno utilizando parámetros.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:24 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_task_pause</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_task_pause</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#ARGUMENTOS">ARGUMENTOS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_task_pause,
+rtapi_task_resume - pausa y reanuda las tareas en tiempo
+real</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="54%">
+
+
+<p style="margin-top: 1em">void rtapi_task_pause(int
+<i>task_id</i>)</p> </td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="54%">
+
+
+<p style="margin-top: 1em">void rtapi_task_resume(int
+<i>task_id</i>)</p> </td>
+<td width="35%">
+</td></tr>
+</table>
+
+<h2>ARGUMENTOS
+<a name="ARGUMENTOS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>task_id</i></p>
+
+<p style="margin-left:22%;">Un identificador de tarea RTAPI
+devuelto por una llamada anterior a
+<b>rtapi_task_new</b>.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_task_resume</b>
+inicia una tarea en modo de ejecuci&Atilde;&sup3;n libre. La
+tarea debe estar en el estado &quot;en pausa&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Una tarea de
+ejecuci&Atilde;&sup3;n libre se ejecuta continuamente hasta
+que:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p>1)</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Est&Atilde;&iexcl; precedida por una tarea de mayor
+prioridad. Se reanudar&Atilde;&iexcl; tan pronto como la
+tarea prioritaria mas alta libera la CPU.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p>2)</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>Se llama a una funci&Atilde;&sup3;n de bloqueo, como
+<b>rtapi_sem_take</b>. Se reanudar&Atilde;&iexcl; cuando la
+funci&Atilde;&sup3;n desbloquea.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p>3)</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p><b>rtapi_task_pause</b> la devuelve al estado &quot;en
+pausa&quot;. Puede ser llamads desde el c&Atilde;&sup3;digo
+de inicio/limpieza, y desde dentro de las tareas en tiempo
+real.</p> </td></tr>
+</table>
+
+
+<p style="margin-left:22%; margin-top: 1em"><b>rtapi_task_pause</b>
+hace que una tarea detenga la ejecuci&Atilde;&sup3;n y
+cambie al estado &quot;en pausa&quot;. La tarea puede ser de
+ejecuci&Atilde;&sup3;n libre o peri&Atilde;&sup3;dica. Tenga
+en cuenta que <b>rtapi_task_pause</b> se puede llamar desde
+cualquier tarea o desde init o c&Atilde;&sup3;digo de
+limpieza, no solo de la tarea que se va a pausar. La tarea
+reanudar&Atilde;&iexcl; la ejecuci&Atilde;&sup3;n cuando
+<b>rtapi_task_resume</b> o se llama a
+<b>rtapi_task_start</b> (dependiendo de si se trata de una
+tarea de ejecuci&Atilde;&sup3;n libre o
+peri&Atilde;&sup3;dica).</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde el c&Atilde;&sup3;digo de inicio/limpieza y desde
+dentro de las tareas en tiempo real.</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Un
+c&Atilde;&sup3;digo de estado RTAPI.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_task_new(3rtapi)</b>,
+<b>rtapi_task_start(3rtapi)</b></p>
+<hr>
+</body>
+</html>

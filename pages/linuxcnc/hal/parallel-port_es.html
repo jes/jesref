@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Controlador de puerto paralelo</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Controlador de puerto paralelo</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph" id="cha:parport"><p>El componente hal_parport es un controlador para el puerto paralelo PC tradicional.
+El puerto tiene un total de 17 pines físicos. El puerto paralelo original dividia
+esos pines en tres grupos: datos, control y estado. El grupo de datos
+consta de 8 pines de salida, el grupo de control consta de 4 pines, y el
+El grupo de estado consta de 5 pines de entrada.</p></div>
+<div class="paragraph"><p>A principios de la década de 1990, se introdujo el puerto paralelo bidireccional, que
+permite que el grupo de datos se use para salida o entrada. El controlador HAL admite
+el puerto bidireccional, y permite al usuario configurar el grupo de datos como
+entrada o salida. Si se configura como <em>out</em>, un puerto proporciona un total de 12 salidas
+y 5 entradas. Si se configura como <em>in</em>, proporciona 4 salidas y 13 entradas.</p></div>
+<div class="paragraph"><p>En algunos puertos paralelos, los pines del grupo de control son de colector abierto, que pueden
+también ser puestos en BAJO por una puerta externa. En una tarjeta con pines de control de colector abierto,
+si se configura como <em>x</em>, proporciona 8 salidas y 9 entradas.</p></div>
+<div class="paragraph"><p>En otros puertos paralelos, el grupo de control tiene controladores push-pull y no pueden ser
+utilizados como entrada.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">
+<div class="title">HAL y colectores abiertos</div>
+<div class="paragraph"><p>HAL no puede determinar automáticamente si los pines bidireccionales del modo <em>x</em> son
+efectivamente de colector abierto (OC). Si no lo son, no pueden usarse como entradas,
+e intentar conducirlos BAJOS desde una fuente externa puede dañar el
+hardware.</p></div>
+<div class="paragraph"><p>Para determinar si su puerto tiene pines <em>open collector</em>, cargue hal_parport en
+modo <em>x</em> Sin un dispositivo conectado, HAL debería leer el pin como VERDADERO. Despues,
+inserte una resistencia de 470 ohmios desde uno de los pines de control a GND. Si el resultado
+de la tensión en el pin de control está cerca de 0V, y HAL ahora lee el pin como FALSO,
+entonces tienes un puerto OC. Si el voltaje resultante está lejos de 0V, o HAL
+no lee el pin como FALSE, entonces su puerto no puede usarse en el modo <em>x</em>.</p></div>
+<div class="paragraph"><p>El hardware externo que controla los pines de control también debe usar
+puertas de colector abierto (por ejemplo, 74LS05).</p></div>
+<div class="paragraph"><p>En algunas computadoras, la configuración del BIOS puede afectar a si el modo <em>x</em> puede ser
+usado. El modo <em>SPP</em> es el más probable que funcione.</p></div>
+</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>No se admiten otras combinaciones, y no se puede cambiar un puerto de entrada a
+salida una vez que el controlador está instalado.</p></div>
+<div class="paragraph"><p>El controlador parport puede controlar hasta 8 puertos (definido por MAX_PORTS en
+hal_parport.c). Los puertos están numerados comenzando en cero.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_carga">1. Carga</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>El controlador hal_parport es un componente en tiempo real, por lo que debe cargarse en el
+hilo de tiempo real con <em>loadrt</em>. La cadena de configuración describe los puertos paralelo
+que se utilizarán y (opcionalmente) sus tipos. Si la cadena de configuración
+no describe al menos un puerto, es un error.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg="port [type] [port [type] ...]"</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">Especificando el Puerto</div><p>Los números inferiores a 16 se refieren a puertos paralelos detectados por el sistema. Este es
+la forma más simple de configurar el controlador hal_parport, y coopera con el driver Linux
+parport_pc, si está cargado. El puerto 0 es el primer puerto paralelo
+detectado en el sistema, 1 es el siguiente, y así sucesivamente.</p></div>
+<div class="paragraph"><div class="title">Configuracion basica</div><p>Esto usará el primer puerto paralelo que Linux detecta:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg="0"</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">Usando la dirección del puerto</div><p>La dirección del puerto puede especificarse usando la notación hexadecimal <em>0x</em> y luego la dirección.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg="0x378"</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">Tipo</div><p>Para cada puerto paralelo manejado por el controlador hal_parport, se puede
+especificar un <em>tipo</em> opcionalmente. El tipo es uno de <em>in</em>, <em>out</em>, <em>epp</em> o <em>x</em>.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Dirección de Puerto Paralelo
+</p>
+</li>
+</ol></div>
+<div class="tableblock">
+<table rules="all"
+width="50%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="14%" />
+<col width="28%" />
+<col width="28%" />
+<col width="28%" />
+<thead>
+<tr>
+<th align="right" valign="top">Pin</th>
+<th align="center" valign="top">in</th>
+<th align="center" valign="top">out/epp</th>
+<th align="center" valign="top">x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right" valign="top"><p class="table">1</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">2</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">3</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">4</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">5</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">6</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">7</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">8</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">9</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">10</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">11</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">12</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">13</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">14</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">15</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">16</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+<tr>
+<td align="right" valign="top"><p class="table">17</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">out</p></td>
+<td align="center" valign="top"><p class="table">in</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Si el tipo no está especificado, el valor predeterminado es <em>out</em>.</p></div>
+<div class="paragraph"><p>El tipo <em>epp</em> es igual a <em>out</em>, pero el controlador hal_parport pide que
+el puerto cambie al modo EPP. El controlador hal_parport no <strong>usa</strong> el
+protocolo de bus EPP, pero en algunos sistemas el modo EPP cambia las
+características del puerto de una manera que puede hacer que algún hardware marginal funcione
+mejor. Se sabe que la bomba de carga del Gecko G540 requiere esto en un puerto paralelo.</p></div>
+<div class="paragraph"><p>Consulte la Nota anterior sobre el modo <em>x</em>.</p></div>
+<div class="paragraph"><div class="title">Ejemplo con dos puertos paralelos</div><p>Esto habilitará dos puertos paralelos detectados por el sistema, el primero en modo de salida
+y el segundo en modo de entrada:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg = "0 out 1 in"</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">Funciones</div><p>También debe indicar a LinuxCNC que ejecute las funciones <em>read</em> y <em>write</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>addf parport.0.read base-thread
+addf parport.0.write base-thread</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dirección_del_puerto_pci">2. Dirección del puerto PCI</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Entre las buena tarjetas PCI parport estan las que contienen el chipset Netmos 9815.
+Tiene buenas señales de + 5V, y puede venir en puertos únicos o duales.</p></div>
+<div class="paragraph"><p>Para encontrar las direcciones de E/S para tarjetas PCI, abra una ventana de terminal
+y use el comando que lista pci:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>lspci -v</code></pre>
+</div></div>
+<div class="paragraph"><p>Busque la entrada con "Netmos" en ella. Ejemplo de una tarjeta de 2 puertos:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>0000:01:0a.0 Communication controller: \
+      Netmos Technology PCI 9815 Multi-I/O Controller (rev 01)
+Subsystem: LSI Logic / Symbios Logic 2POS (2 port parallel adapter)
+Flags: medium devsel, IRQ 5
+I/O ports at b800 [size=8]
+I/O ports at bc00 [size=8]
+I/O ports at c000 [size=8]
+I/O ports at c400 [size=8]
+I/O ports at c800 [size=8]
+I/O ports at cc00 [size=16]</code></pre>
+</div></div>
+<div class="paragraph"><p>Por experimentación, se ha encontrado que el primer puerto (el puerto en la tarjeta) usa el
+la tercera dirección enumerada (c000) y el segundo puerto (la que se conecta con
+un cable de cinta) utiliza la primera dirección enumerada (b800). El siguiente ejemplo
+muestra el puerto paralelo de la placa madre y un puerto paralelo PCI que usa el valor predeterminado
+fuera de la dirección.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg = "0x378 0xc000"</code></pre>
+</div></div>
+<div class="paragraph"><p>Tenga en cuenta que sus valores pueden ser diferentes. Las tarjetas Netmos son
+Plug-N-Play, y podrían cambiar su configuración dependiendo de qué
+ranura en la que se pongan, así que si le gusta "meterse debajo del capó"
+y reorganizar las cosas, asegúrese de verificar estos valores antes de que usted
+inicie LinuxCNC.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pines">3. Pines</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para cada pin, <em>&lt;p&gt;</em> es el número de puerto, y <em>&lt;n&gt;</em> es el
+número de pin físico en el conector D-shell de 25 pines.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>parport.&lt;p&gt;.pin-&lt;n&gt;-out</em> (bit) Maneja el pin de salida física.
+</p>
+</li>
+<li>
+<p>
+<em>parport.&lt;p&gt;.pin-&lt;n&gt;-in</em> (bit) Realiza el seguimiento de un pin de entrada física.
+</p>
+</li>
+<li>
+<p>
+<em>parport.&lt;p&gt;.pin-&lt;n&gt;-in-not</em> (bit) Realiza el seguimiento de un pin de entrada física, pero invertido.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para cada pin de salida física, el controlador crea un solo pin HAL, por ejemplo:
+<em>parport.0.pin-14-out</em>.</p></div>
+<div class="paragraph"><p>Para cada pin de entrada física, el controlador crea dos pines HAL, por ejemplo:
+<em>parport.0.pin-12-in</em> y <em>parport.0.pin-12-in-not</em>.</p></div>
+<div class="paragraph"><p>El pin HAL <em>-in</em> es VERDADERO si el pin físico es alto, y FALSO si
+el pin físico es bajo. El pin HAL <em>-in-not</em> está invertido y es FALSO si
+el pin físico es alto</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parámetros">4. Parámetros</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>parport.&lt;p&gt;.pin-&lt;n&gt;-out-invert</em> (bit) Invierte un pin de salida.
+</p>
+</li>
+<li>
+<p>
+<em>parport.&lt;p&gt;.pin-&lt;n&gt;-out-reset</em> (bit) (solo para <em>out</em> pins) TRUE si
+el pin debe reiniciarse cuando se ejecuta la función <em>-reset</em>.
+</p>
+</li>
+<li>
+<p>
+<em>parport.&lt;p&gt;.reset-time</em> (u32) El tiempo (en nanosegundos)
+entre que un pin se establece mediante <em>write</em> y se restablece mediante la función <em>reset</em> si
+está habilitado.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El parámetro <em>-invert</em> determina si un pin de salida está activo
+alto o activo bajo. Si <em>-invert</em> es FALSE, establecer el pin HAL <em>-out</em> TRUE lleva al
+pin físico  a alto, y FALSO lo conduce bajo. Si <em>-invert</em> es TRUE, entonces
+al establecer el pin HAL <em>-out</em> TRUE, el pin físico estará bajo.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sub:parport-functions">5. Funciones</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<em>parport.&lt;p&gt;.read</em> (funct) Lee los pines de entrada física del puerto
+   <em>&lt;portnum&gt;</em> y actualiza los pines HAL <em>-in</em> y <em>-in-not</em>.
+</p>
+</li>
+<li>
+<p>
+<em>parport.read-all</em> (funct) Lee los pines de entrada física de todos los puertos
+   y actualiza los pines HAL <em>-in</em> y <em>-in-not</em>.
+</p>
+</li>
+<li>
+<p>
+<em>parport.&lt;p&gt;.write</em> (funct) Lee los pines HAL <em>-out</em> del puerto
+   <em>&lt;p&gt;</em> y actualiza los pines de salida física del puerto.
+</p>
+</li>
+<li>
+<p>
+<em>parport.write-all</em> (funct) Lee los pines HAL <em>-out</em> de todos los puertos
+   y actualiza todos los pines de salida física.
+</p>
+</li>
+<li>
+<p>
+<em>parport.&lt;p&gt;.reset</em> (funct) Espera hasta que <em>reset-time</em> halla
+   transcurrido desde la <em>write</em> asociada, luego restablece los pines a los valores
+   indicados por las configuraciones <em>-out-invert</em> y <em>-out-invert</em>. <em>reset</em> debe ser,
+   en el mismo hilo, posterior a <em>write</em>. Si <em>-reset</em> es TRUE, entonces
+   la función <em>reset</em> configurará el pin al valor de <em>-out-invert</em>. Esta
+   puede usarse junto con <em>doublefreq</em> de stepgen para producir un
+   paso por periodo El <a href="rtcomps_es.html#sub:stepgen-parameters">stepgen steppace</a> para ese pin
+   debe establecerse en 0 para habilitar doublefreq.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Las funciones individuales se proporcionan para situaciones en las que un puerto
+necesita ser actualizado en un hilo muy rápido, pero otros puertos pueden ser
+actualizado en un subproceso más lento para ahorrar tiempo de CPU. Probablemente no sea una buena
+idea utilizar una función <em>-all</em> y una función individual al mismo tiempo.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_problemas_comunes">6. Problemas comunes</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Si cargando el módulo se informa</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>insmod: error inserting '../rtlib/hal_parport.ko':
+-1 Device or resource busy</code></pre>
+</div></div>
+<div class="paragraph"><p>asegúrese de que el módulo kernel estándar <em>parport_pc</em> no este cargado
+<span class="footnote"><br />[En los paquetes de LinuxCNC para Ubuntu, el archivo
+/etc/modprobe.d/emc2
+generalmente evita que <em>parport_pc</em> se cargue automáticamente.]<br /></span>
+y que ningún otro dispositivo en el sistema ha reclamado los puertos de E/S.</p></div>
+<div class="paragraph"><p>Si el módulo se carga pero no parece funcionar, entonces el puerto o
+la dirección puede ser incorrecta</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usando_doublestep">7. Usando DoubleStep</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para configurar DoubleStep en el puerto paralelo, debe agregar la función
+parport.n.reset después de parport.n.write y configurar stepspace en 0 y
+el tiempo de reset deseado. Entonces, ese paso puede verificarse en cada período en
+HAL y luego desactivado por parport después de ser verificado durante el tiempo
+especificado por parport.n.reset-time.</p></div>
+<div class="paragraph"><p>Por ejemplo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadrt hal_parport cfg="0x378 out"
+setp parport.0.reset-time 5000
+loadrt stepgen step_type=0,0,0
+addf parport.0.read base-thread
+addf stepgen.make-pulses base-thread
+addf parport.0.write base-thread
+addf parport.0.reset base-thread
+addf stepgen.capture-position servo-thread
+...
+setp stepgen.0.steplen 1
+setp stepgen.0.stepspace 0</code></pre>
+</div></div>
+<div class="paragraph"><p>Puede encontrar más información sobre DoubleStep en
+<a href="http://wiki.linuxcnc.org/cgi-bin/wiki.pl?TweakingSoftwareStepGeneration">wiki</a>.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:27 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>HM2_RPSPI</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">HM2_RPSPI</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#CONFIGURACI&Atilde;N DE INTERFAZ">CONFIGURACI&Atilde;N DE INTERFAZ</a><br>
+<a href="#RENDIMIENTO EN TIEMPO REAL DEL CONDUCTOR BCM2835-SPI">RENDIMIENTO EN TIEMPO REAL DEL CONDUCTOR BCM2835-SPI</a><br>
+<a href="#TARIFAS DE RELOJ SPI">TARIFAS DE RELOJ SPI</a><br>
+<a href="#VER TAMBI&Atilde;N">VER TAMBI&Atilde;N</a><br>
+<a href="#LICENCIA">LICENCIA</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_rpspi -
+Controlador HAL LinuxCNC para las tarjetas Mesa Electronics
+SPI Anything IO, con firmware HostMot2.</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="24%">
+
+
+<p style="margin-top: 1em"><b>loadrt hm2_rpspi</b></p></td>
+<td width="65%">
+</td></tr>
+</table>
+
+<p style="margin-left:17%;"><b>config</b> [predeterminado:
+&quot;&quot;]</p>
+
+<p style="margin-left:28%;">Cadenas de
+configuraci&Atilde;&sup3;n de HostMot2, descritas en el
+<b>hostmot2</b>(9) p&Atilde;&iexcl;gina de manual.</p>
+
+<p style="margin-left:17%;"><b>spiclk_rate</b>
+[predeterminado: 31250]</p>
+
+<p style="margin-left:28%;">Especifique la frecuencia de
+reloj SPI en kHz. Ver
+<b>SPI&nbsp;</b>RELOJ&nbsp;<b>TARIFAS</b> abajo.</p>
+
+<p style="margin-left:17%;"><b>spiclk_rate_rd</b>
+[predeterminado: -1 (igual que <b>spiclk_rate</b>)]</p>
+
+<p style="margin-left:28%;">Especifique la velocidad del
+reloj de lectura SPI en kHz. Usualmente lees y escribes al
+mismo velocidad. Sin embargo, es posible que desee reducir
+la velocidad de lectura si el viaje de ida y vuelta es
+demasiado largo (ver
+<b>SPI&nbsp;</b>RELOJ&nbsp;<b>TARIFAS</b> abajo).</p>
+
+<p style="margin-left:17%;"><b>spiclk_base</b>
+[predeterminado: 400000000]</p>
+
+<p style="margin-left:28%;">Este es el valor de reserva del
+c&Atilde;&iexcl;lculo del divisor de reloj SPI. Por lo
+general, la base la tasa se lee de <i>/ sys / kernel / debug
+/ clk / vpu / clk_rate</i> y usado en el
+c&Atilde;&iexcl;lculo del divisor (para el Rpi3
+deber&Atilde;a ser 250 &nbsp;MHz). los <b>spiclk_base</b> se
+usa <i>only</i> como reserva si el sistema no puede ser
+leer. Normalmente es seguro (y recomendado) que deje este
+par&Atilde;&iexcl;metro como es. <br>
+Debe configurarlo manualmente en 250000000 si su sistema no
+proporciona acceso a la configuraci&Atilde;&sup3;n del reloj
+del n&Atilde;&ordm;cleo. De lo contrario, su frecuencia de
+reloj SPI sea &acirc;&acirc;solo el 62.5% del valor
+solicitado.</p>
+
+<p style="margin-left:17%;"><b>spi_pull_miso</b>
+[predeterminado: 1 (pull-down)] <b><br>
+spi_pull_mosi</b> [predeterminado: 1 (pull-down)] <b><br>
+spi_pull_sclk</b> [predeterminado: 1 (pull-down)]</p>
+
+<p style="margin-left:28%;">Active o desactive pull-up /
+pull-down en las l&Atilde;neas SPI. Un valor de 0
+deshabilita cualquier pull-up / down en el pin. Un valor de
+1 significa pull-down y 2 significa levantar. Las
+l&Atilde;neas de habilitaci&Atilde;&sup3;n de chip siempre
+est&Atilde;&iexcl;n habilitadas para pull-up.</p>
+
+<p style="margin-left:17%;"><b>spi_probe</b>
+[predeterminado: 1]</p>
+
+<p style="margin-left:28%;">Puerto SPI de sonda y
+l&Atilde;neas CE para una tarjeta. Este es un bit-field que
+indica qu&Atilde;&copy; Se deben probar combinaciones de SPI
+y CE: &Acirc;&nbsp;- 1 = SPI0 / CE0, &Acirc;&nbsp;- 2 = SPI0
+/ CE1, &Acirc;&nbsp;- 4 = SPI1 / CE0, &Acirc;&nbsp;- 8 =
+SPI1 / CE1, &Acirc;&nbsp;- 16 = SPI1 / CE2.</p>
+
+<p style="margin-left:28%; margin-top: 1em">La sonda se
+realiza exactamente en el orden anterior. Cualquier tarjeta
+encontrada ser&Atilde;&iexcl; numerados 0 ... 4 en el orden
+encontrado. Ver tambi&Atilde;&copy;n
+<b>INTERFAZ&nbsp;</b>CONFIGURACI&Atilde;N abajo.</p>
+
+<p style="margin-left:28%; margin-top: 1em">Es un error si
+falla una sonda y el controlador abortar&Atilde;&iexcl;. El
+SPI0 / SPI1 los perif&Atilde;&copy;ricos se encuentran en
+los pines gpio (con un pin de encabezado de E / S de 40
+pines-number en par&Atilde;&copy;ntesis): &Acirc;&nbsp;-
+SPI0: MOSI = 10 (19), MISO = 9 (21), SCLK = 11 (23), CE0 = 8
+(24), CE1 = 7 (26) &Acirc;&nbsp;- SPI1: MOSI = 20 (38), MISO
+= 19 (35), SCLK = 21 (40), CE0 = 18 (12), CE1 = 17 (11), CE2
+= 16 (36)</p>
+
+<p style="margin-left:17%;"><b>spi_debug</b>
+[predeterminado:-1]</p>
+
+<p style="margin-left:28%;">Establecer el nivel de mensaje
+del proceso en ejecuci&Atilde;&sup3;n. El nivel de mensaje
+se establece si <b>spi_debug</b> se establece en un valor
+positivo entre 0 y 5, donde 0 significa que no mensajes en
+absoluto y 5 significa todo. Un valor de-1 no toca el nivel
+de mensaje actual</p>
+
+<p style="margin-left:28%; margin-top: 1em">Advertencia de
+Emptor: cambiar el nivel del mensaje es un proceso completo
+y todos los m&Atilde;&sup3;dulos dentro del proceso
+escupir&Atilde;&iexcl; mensajes en el nivel solicitado. Esto
+puede causar bastante desorden en su terminal.</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_rpspi es un
+controlador de dispositivo para Raspberry Pi 2/3 que
+interact&Atilde;&ordm;a con Mesa tarjetas de E / S Anything
+basadas en SPI (con el firmware HostMot2) al HAL LinuxCNC.
+Este controlador no se basa en el controlador Linux spidev,
+sino en un controlador dedicado BCM2835-SPI controlador.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Es
+<b>strongly</b> recomienda que descargue / deshabilite el
+spidev del kernel conductor deshabilit&Atilde;&iexcl;ndolo
+usando <b>raspi-config.</b> Tenga en cuenta que tener
+instalados los controladores SPI kernel y user-space puede
+resultar en interacciones inesperadas e inestabilidades del
+sistema.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Las tarjetas
+compatibles son: 7I90HD.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La tarjeta debe
+tener un firmware compatible (es decir:
+7i90_spi_svst4_8.bit) cargado en el tablero por el
+<b>mesaflash</b>(1) programa.</p>
+
+<p style="margin-left:11%; margin-top: 1em">hm2_rpspi solo
+est&Atilde;&iexcl; disponible cuando linuxcnc
+est&Atilde;&iexcl; configurado con &quot;uspace&quot; en
+tiempo real. Funciona con el n&Atilde;&ordm;cleo Raspian y
+PREEMPT_RT.</p>
+
+<h2>CONFIGURACI&Atilde;N DE INTERFAZ
+<a name="CONFIGURACI&Atilde;N DE INTERFAZ"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se admiten
+hasta cinco dispositivos (tarjetas 7i90). Dos en SPI0 y tres
+en SPI1. Se recomienda que, como m&Atilde;&iexcl;ximo, use
+dos dispositivos y cada dispositivo conectado a un puerto
+SPI separado. Puede elegir qu&Atilde;&copy; l&Atilde;- neas
+CE prefiere o se ajustan al dise&Atilde;&plusmn;e y
+configure el par&Atilde;&iexcl;metro <b>spi_probe</b> para
+indicar al controlador d&Atilde;&sup3;nde busque el (los)
+tablero (s).</p>
+
+<h2>RENDIMIENTO EN TIEMPO REAL DEL CONDUCTOR BCM2835-SPI
+<a name="RENDIMIENTO EN TIEMPO REAL DEL CONDUCTOR BCM2835-SPI"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">TBD.</p>
+
+<h2>TARIFAS DE RELOJ SPI
+<a name="TARIFAS DE RELOJ SPI"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El reloj SPI
+m&Atilde;&iexcl;ximo del controlador BCM2835-SPI y el 7i90
+se documenta durante 32MHz El controlador SPI puede
+proporcionar frecuencias mucho m&Atilde;&iexcl;s
+all&Atilde;&iexcl; de lo aceptable para el 7i90. Un valor
+seguro para comenzar ser&Atilde;a 12.5 &nbsp;MHz
+(spiclk_rate = 12500) y luego avanza desde all&Atilde;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">El controlador
+SPI genera valores de frecuencia de reloj (muy) discretos,
+especialmente en el rango de MHz debido a una estructura
+divisoria de reloj simple. La frecuencia base es de 250
+&nbsp;MHz y el divisor para las escalas SPI0 / SPI1 usando
+factores discretos. los La siguiente lista especifica la
+configuraci&Atilde;&sup3;n de <b>spiclk_rate</b> y el SPI
+discreto frecuencia de reloj (250 &nbsp;MHz &nbsp;/
+&nbsp;(2n) para n &gt; &nbsp;1): &Acirc;&nbsp;- 62500-
+62.500 &nbsp;MHz, &Acirc;&nbsp;- 41667- 41.667 &nbsp;MHz,
+&Acirc;&nbsp;- 31250- 31.250 &nbsp;MHz, &Acirc;&nbsp;-
+25000- 25.000 &nbsp;MHz, &Acirc;&nbsp;- 20834- 20.833
+&nbsp;MHz, &Acirc;&nbsp;- 17858- 17.857 &nbsp;MHz,
+&Acirc;&nbsp;- 15625- 15.625 &nbsp;MHz, &Acirc;&nbsp;-
+13889- 13.889 &nbsp;MHz, &Acirc;&nbsp;- 12500- 12.500
+&nbsp;MHz, &Acirc;&nbsp;- 11364- 11.364 &nbsp;MHz,
+&Acirc;&nbsp;- 10417- 10.417 &nbsp;MHz, &Acirc;&nbsp;- 9616-
+9.615 &nbsp;MHz, &Acirc;&nbsp;- ....</p>
+
+<p style="margin-left:11%; margin-top: 1em">La frecuencia
+de reloj SPI seleccionable m&Atilde;&iexcl;s baja es 30
+&nbsp;kHz (spiclk_rate = 30) para SPI0 y SPI1.
+Te&Atilde;&sup3;ricamente, el puerto SPI0 podr&Atilde;a ir
+m&Atilde;&iexcl;s lento, pero no tiene sentido al hacerlo.
+No debe esperar ning&Atilde;&ordm;n rendimiento real en
+tiempo real con una velocidad tan lenta
+configuraci&Atilde;&sup3;n, a menos que su
+m&Atilde;&iexcl;quina est&Atilde;&copy; ubicada al lado de
+un agujero negro.</p>
+
+<p style="margin-left:11%; margin-top: 1em">La frecuencia
+de reloj SPI m&Atilde;&iexcl;s alta es,
+te&Atilde;&sup3;ricamente, 125 &nbsp;MHz. Sin embargo, lo
+har&Atilde;&iexcl;s no podr&Atilde;&iexcl; construir ninguna
+interfaz de hardware confiable a esa frecuencia. los El
+controlador limita el reloj a 62.5 &nbsp;MHz (cpiclk_rate =
+62500). Las probabilidades son es bastante delgado que
+consigas que la interfaz funcione de manera confiable a esta
+frecuencia. los La interfaz 7i90 solo admite frecuencias de
+hasta 50 &nbsp;MHz y es perfecta cableado y
+adaptaci&Atilde;&sup3;n de impedancia (solo en
+direcci&Atilde;&sup3;n de escritura).</p>
+
+<p style="margin-left:11%; margin-top: 1em">Escribir en el
+7i90 puede hacerse m&Atilde;&iexcl;s r&Atilde;&iexcl;pido
+que leer. Esto es especialmente importante si tiene cables
+&quot;largos&quot; o cualquier buffer en la ruta SPI-bus.
+Usted puede establezca la frecuencia del reloj de lectura en
+un valor inferior (usando <b>spiclk_rate_rd</b>) en
+contrarrestar los efectos del viaje de ida y vuelta SPI-bus
+necesarios para las acciones de lectura. por ejemplo, puede
+escribir a 41.67 &nbsp;MHz y leer a 25.00 &nbsp;MHz.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Cabe
+se&Atilde;&plusmn;alar que los Rpi3 <b>must</b> tienen una
+fuente de alimentaci&Atilde;&sup3;n adecuada de 5V y la
+alimentaci&Atilde;&sup3;n debe estar correctamente
+desacoplada en el encabezado de 40-pin I/O. A Altas
+velocidades y ruido en el suministro, existe la posibilidad
+de lanzar ruido fuera de los PLL del SoC, lo que resulta en
+un comportamiento extra&Atilde;&plusmn;o.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Para un
+rendimiento &Atilde;&sup3;ptimo en el Rpi3, debe
+deshabilitar la CPU &quot;ondemand&quot; regulador de
+frecuencia Puede agregar lo siguiente a su archivo
+/etc/rc.local: &Acirc;&nbsp;echo -n 1200000&gt; / sys /
+devices / system / cpu / cpufreq / policy0 /
+scaling_min_freq &Acirc;&nbsp;echo -n performance&gt; / sys
+/ devices / system / cpu / cpufreq / policy0 /
+scaling_governor</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">Aseg&Atilde;&ordm;rese
+de tener un disipador t&Atilde;&copy;rmico adecuado montado
+en el SoC o se calentar&Atilde;&iexcl; demasiado y
+chocar.</p>
+
+<h2>VER TAMBI&Atilde;N
+<a name="VER TAMBI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hostmot2</b>(9)</p>
+
+<h2>LICENCIA
+<a name="LICENCIA"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:45 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>GANTRY</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">GANTRY</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">gantry -
+LinuxCNC HAL component for driving multiple joints from a
+single axis</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em"><b>loadrt gantry
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]
+[personality=</b><i>P,P,...</i><b>]</b></p> </td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Drives multiple
+physical motors (joints) from a single axis input</p>
+
+<p style="margin-left:11%; margin-top: 1em">The
+&rsquo;personality&rsquo; value is the number of joints to
+control. Two is typical, but up to seven is supported (a
+three joint setup has been tested with hardware).</p>
+
+<p style="margin-left:11%; margin-top: 1em">All controlled
+joints track the commanded position (with a per-joint
+offset) unless in the process of homing. Homing is when the
+commanded position is moving towards the homing switches (as
+determined by the sign of search-vel) and the joint home
+switches are not all in the same state. When the system is
+homing and a joint home switch activates, the command value
+sent to that joint is &quot;frozen&quot; and the joint
+offset value is updated instead. Once all home switches are
+active, there are no more adjustments made to the offset
+values and all joints run in lock-step once more.</p>
+
+<p style="margin-left:11%; margin-top: 1em">For best
+results, set HOME_SEARCH_VEL and HOME_LATCH_VEL to the same
+direction and as slow as practical. When a joint home switch
+trips, the commanded velocity will drop immediately from
+HOME_SEARCH_VEL to zero, with no limit on acceleration.</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>gantry.</b><i>N</i><b>.read</b>
+(requires a floating-point thread)</p>
+
+<p style="margin-left:22%;">Update position-fb and
+home/limit outputs based on joint values</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.write</b>
+(requires a floating-point thread)</p>
+
+<p style="margin-left:22%;">Update joint pos-cmd outputs
+based on position-cmd in</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>gantry.</b><i>N</i><b>.joint.</b><i>MM</i><b>.pos-cmd</b>
+float out (MM=00..personality)</p>
+
+<p style="margin-left:22%;">Per-joint commanded
+position</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.joint.</b><i>MM</i><b>.pos-fb</b>
+float in (MM=00..personality)</p>
+
+<p style="margin-left:22%;">Per-joint position feedback</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.joint.</b><i>MM</i><b>.home</b>
+bit in (MM=00..personality)</p>
+
+<p style="margin-left:22%;">Per-joint home switch</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.joint.</b><i>MM</i><b>.offset</b>
+float out (MM=00..personality)</p>
+
+<p style="margin-left:22%;">(debugging) Per-joint offset
+value, updated when homing</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.position-cmd</b>
+float in</p>
+
+<p style="margin-left:22%;">Commanded position from
+motion</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.position-fb</b>
+float out</p>
+
+<p style="margin-left:22%;">Position feedback to motion</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.home</b>
+bit out</p>
+
+<p style="margin-left:22%;">Combined home signal, true if
+all joint home inputs are true</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.limit</b>
+bit out</p>
+
+<p style="margin-left:22%;">Combined limit signal, true if
+any joint home input is true</p>
+
+
+<p style="margin-left:11%;"><b>gantry.</b><i>N</i><b>.search-vel</b>
+float in</p>
+
+<p style="margin-left:22%;">HOME_SEARCH_VEL from ini
+file</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

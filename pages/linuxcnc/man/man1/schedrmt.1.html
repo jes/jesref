@@ -1,0 +1,406 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:36 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>SCHEDRMT</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">SCHEDRMT</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#HISTORY">HISTORY</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#REPORTING BUGS">REPORTING BUGS</a><br>
+<a href="#COPYRIGHT">COPYRIGHT</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">schedrmt -
+telnet based scheduler for LinuxCNC</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>schedrmt</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">schedrmt {--
+--port &lt;port number&gt; --name &lt;server name&gt;
+--connectpw &lt;password&gt; <br>
+--enablepw &lt;password&gt; --sessions &lt;max sessions&gt;
+--path &lt;path&gt; <br>
+-ini&lt;inifile&gt;}</p>
+
+<p style="margin-left:11%; margin-top: 1em">With -- --port
+Waits for socket connections (Telnet) on specified socket,
+without port <br>
+uses default port 5007. <br>
+With -- --name &lt;server name&gt; Sets the server name to
+specified name for Hello. <br>
+With -- --connectpw &lt;password&gt; Sets the connection
+password to &rsquo;password&rsquo;. Default EMC <br>
+With -- --enablepw &lt;password&gt; Sets the enable password
+to &rsquo;password&rsquo;. Default EMCTOO <br>
+With -- --sessions &lt;max sessions&gt; Sets the maximum
+number of simultaneous connextions <br>
+to max sessions. Default is no limit (-1). <br>
+With -- --path Sets the base path to program (G-Code) files,
+default is &quot;../../nc_files/&quot;. <br>
+Make sure to include the final slash (/). <br>
+With -- -ini &lt;inifile&gt;, uses inifile instead of
+emc.ini.</p>
+
+<p style="margin-left:11%; margin-top: 1em">There are six
+commands supported, Where the commands set and get contain
+EMC <br>
+specific sub-commands based on the commands supported by
+emcsh, but where the &quot;emc_&quot; <br>
+is omitted. Commands and most parameters are not case
+sensitive. The exceptions are <br>
+passwords, file paths and text strings.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The supported
+commands are as follows:</p>
+
+<p style="margin-left:11%; margin-top: 1em">==&gt; HELLO
+&lt;==</p>
+
+<p style="margin-left:11%; margin-top: 1em">Hello
+&lt;password&gt; &lt;client&gt; &lt;version&gt; <br>
+If a valid password was entered the server will respond
+with</p>
+
+<p style="margin-left:11%; margin-top: 1em">HELLO ACK
+&lt;Server Name&gt; &lt;Server Version&gt;</p>
+
+<p style="margin-left:11%; margin-top: 1em">Where server
+name and server version are looked up from the
+implementation. <br>
+if an invalid password or any other syntax error occurs then
+the server <br>
+responds with:</p>
+
+<p style="margin-left:11%; margin-top: 1em">HELLO NAK</p>
+
+<p style="margin-left:11%; margin-top: 1em">==&gt; Get
+&lt;==</p>
+
+<p style="margin-left:11%; margin-top: 1em">The get command
+includes one of the emc sub-commands, described below and
+<br>
+zero or more additional parameters.</p>
+
+<p style="margin-left:11%; margin-top: 1em">==&gt; Set
+&lt;==</p>
+
+<p style="margin-left:11%; margin-top: 1em">The set command
+inclides one of the emc sub-commands, described below and
+<br>
+one or more additional parameters.</p>
+
+<p style="margin-left:11%; margin-top: 1em">==&gt; Quit
+&lt;==</p>
+
+<p style="margin-left:11%; margin-top: 1em">The quit
+command disconnects the associated socket connection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">==&gt; Shutdown
+&lt;==</p>
+
+<p style="margin-left:11%; margin-top: 1em">The shutdown
+command tells EMC to shutdown before quitting the
+connection. This <br>
+command may only be issued if the Hello has been
+successfully negotiated and the <br>
+connection has control of the CNC (see enable sub-command
+below). This command <br>
+has no parameters.</p>
+
+<p style="margin-left:11%; margin-top: 1em">==&gt; Help
+&lt;==</p>
+
+<p style="margin-left:11%; margin-top: 1em">The help
+command will return help information in text format over the
+telnet <br>
+connection. If no parameters are specified, it will itemize
+the available commands. <br>
+If a command is specified, it will provide usage information
+for the specified <br>
+command. Help will respond regardless of whether a
+&quot;Hello&quot; has been <br>
+successsfully negotiated.</p>
+
+<p style="margin-left:11%; margin-top: 1em">EMC
+sub-commands:</p>
+
+<p style="margin-left:11%; margin-top: 1em">echo on | off
+<br>
+With get will return the current echo state, with set, sets
+the echo <br>
+state. When echo is on, all commands will be echoed upon
+receipt. This <br>
+state is local to each connection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">verbose on |
+off <br>
+With get will return the current verbose state, with set,
+sets the <br>
+verbose state. When in verbose mode is on, all set commands
+return <br>
+positive acknowledgement in the form SET &lt;COMMAND&gt;
+ACK. In addition, <br>
+text error messages will be issued when in verbose mode.
+This state <br>
+is local to each connection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">enable
+&lt;pwd&gt; | off <br>
+With get will return On or Off to indicate whether the
+current connection <br>
+is enabled to perform control functions. With set and a
+valid password, <br>
+the current connection is enabled for control functions.
+&quot;OFF&quot; may not <br>
+be used as a password and disables control functions for
+this connection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">config
+[TBD]</p>
+
+<p style="margin-left:11%; margin-top: 1em">comm_mode ascii
+| binary <br>
+With get, will return the current communications mode. With
+set, will <br>
+set the communications mode to the specified mode. The
+binary protocol <br>
+is TBD.</p>
+
+<p style="margin-left:11%; margin-top: 1em">comm_prot
+&lt;version no&gt; <br>
+With get, returns the current protocol version used by the
+server, <br>
+with set, sets the server to use the specified protocol
+version, <br>
+provided it is lower than or equal to the highest version
+number <br>
+supported by the server implementation.</p>
+
+<p style="margin-left:11%; margin-top: 1em">INIFILE <br>
+Returns the path and file name of the current configuration
+inifile.</p>
+
+<p style="margin-left:11%; margin-top: 1em">plat <br>
+Returns the platform for which this was compiled, e.g.,
+linux_2_0_36</p>
+
+<p style="margin-left:11%; margin-top: 1em">ini &lt;var&gt;
+&lt;section&gt; <br>
+Returns the string value of &lt;var&gt; in section
+&lt;section&gt;, in EMC_INIFILE</p>
+
+<p style="margin-left:11%; margin-top: 1em">debug {&lt;new
+value&gt;} <br>
+With get, returns the integer value of EMC_DEBUG, in the
+EMC. Note that <br>
+it may not be true that the local EMC_DEBUG variable here
+(in emcsh and <br>
+the GUIs that use it) is the same as the EMC_DEBUG value in
+the EMC. This <br>
+can happen if the EMC is started from one .ini file, and the
+GUI is started <br>
+with another that has a different value for DEBUG. <br>
+With set, sends a command to the EMC to set the new debug
+level, <br>
+and sets the EMC_DEBUG global here to the same value. This
+will make <br>
+the two values the same, since they really ought to be the
+same.</p>
+
+<p style="margin-left:11%; margin-top: 1em">QMode
+&lt;mode&gt; <br>
+stop | run | pause | resume (Set only) | error (Get only)
+<br>
+With no arg, returns the program queue status as
+&quot;stop&quot;, &quot;run&quot;, &quot;pause&quot; or
+&quot;error&quot;. Otherwise, <br>
+sends a command to set the current mode to &quot;stop&quot;,
+&quot;run&quot; or &quot;pause&quot;.</p>
+
+<p style="margin-left:11%; margin-top: 1em">QStatus
+&lt;Queue Size&gt; &lt;First Tag Id&gt; &lt;Last Tag Id&gt;
+&lt;Queue CRC&gt; <br>
+Get only, returns then number of programs in queue (Queue
+Size), the Tag id of the first <br>
+program in the queue, the Tag id of the last program in the
+queue, and the CRC of all <br>
+of the Tag Ids in the queue. The actual calculation of the
+CRC is not important, the <br>
+purpose is to be able to compare the current CRC with the
+previous CRC. If they <br>
+differ, then there has been a change to the size or order of
+the programs in queue.</p>
+
+<p style="margin-left:11%; margin-top: 1em">AutoTagId
+&lt;Start Id&gt; <br>
+With get, returns the next autoincremented unique tag id to
+associate with a queue record. <br>
+With set, resets auto tag generation to begin at the
+specified value.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PgmAdd
+&lt;priority&gt; &lt;tag id&gt; &lt;x&gt; &lt;y&gt;
+&lt;z&gt; &lt;zone&gt; &lt;file name&gt; &lt;feed
+override&gt; &lt;spindle override&gt; &lt;tool&gt; <br>
+With set, adds a program to the queue with priority of the
+program, a unique tag identifying the <br>
+program, the x, y and z offsets or zone for the origin of
+the program, the path + file name, the <br>
+feed and spindle overrides to apply, and the default tool to
+use. If tag id is zero, the tag id <br>
+will be generated automatically. If zone is zero, then the
+x, y, and z offsets will be used, <br>
+otherwise zones 1 to 9 correspond to G54 to G59.3
+respectively.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PgmById &lt;tag
+id&gt; <br>
+[priority] [tag id] [x] [y] [z] [zone] [file name] [feed
+override] [spindle override] [tool] <br>
+With get, returns the queue entry matching the specified tag
+id, including the priority, <br>
+tag id, x, y, and z coordinates, the zone, file name, feed
+and spindle overrides and the default <br>
+tool.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PgmByIndex
+&lt;index&gt; <br>
+[priority] [tag id] [x] [y] [z] [zone] [file name] [feed
+override] [spindle override] [tool] <br>
+With get, returns the queue entry matching the specified
+index into the queue, including the priority, <br>
+tag id, x, y, and z coordinates, the zone, file name, feed
+and spindle overrides and the default <br>
+tool.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PgmAll <br>
+With get, performs effectively a PgmByIndex for every entry
+in the queue. Each result will be <br>
+returned in the form: &quot;PGMBYINDEX ...&quot; with cr lf
+at the end of each record.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PriorityById
+&lt;tag id&gt; &lt;priority&gt; <br>
+With get, returns the priority of the queue entry matching
+the specified tag. With set, changes the <br>
+priority of the queue entry to the specified priority.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em">PriorityByIndex
+&lt;tag id&gt; &lt;priority&gt; <br>
+With get, returns the priority of the queue entry matching
+the specified index into the queue. With <br>
+set, changes the priority of the queue entry to the
+specified priority.</p>
+
+<p style="margin-left:11%; margin-top: 1em">DeleteById
+&lt;tag id&gt; <br>
+With set, deletes the queue entry matching the specified tag
+id.</p>
+
+<p style="margin-left:11%; margin-top: 1em">DeleteByIndex
+&lt;index&gt; <br>
+With set, deletes the queue entry matching the specified
+index into the queue.</p>
+
+<p style="margin-left:11%; margin-top: 1em">PollRate
+&lt;rate&gt; <br>
+With set, sets the rate at which the scheduler polls for
+information. The default is 1.0 or one <br>
+second. With get, returns the current poll rate.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>LinuxCNC(1)</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">Much more
+information about LinuxCNC and HAL is available in the
+LinuxCNC and HAL User Manuals, found at
+/usr/share/doc/LinuxCNC/.</p>
+
+<h2>HISTORY
+<a name="HISTORY"></a>
+</h2>
+
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">None known at
+this time.</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This man page
+written by andypugh, as part of the LinuxCNC project.</p>
+
+<h2>REPORTING BUGS
+<a name="REPORTING BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Report bugs at
+https://github.com/LinuxCNC/linuxcnc/issues</p>
+
+<h2>COPYRIGHT
+<a name="COPYRIGHT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Copyright
+&copy; 2020 andypugh. <br>
+This is free software; see the source for copying
+conditions. There is NO warranty; not even for
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<hr>
+</body>
+</html>

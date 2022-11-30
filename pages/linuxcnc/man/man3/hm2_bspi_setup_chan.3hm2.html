@@ -1,0 +1,228 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:40 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hm2_bspi_setup_chan</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hm2_bspi_setup_chan</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNTAX">SYNTAX</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#REALTIME CONSIDERATIONS">REALTIME CONSIDERATIONS</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em">hm2_bspi_setup_chan
+- setup a Hostmot2 bspi channel</p>
+
+<h2>SYNTAX
+<a name="SYNTAX"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>#include
+&lt;hostmot2-serial.h&gt;</b></p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="89%">
+
+
+<p style="margin-top: 1em">int hm2_bspi_setup_chan(char
+*name, int chan, int cs, int bits, float mhz,</p></td></tr>
+</table>
+
+<p style="margin-left:22%;">int delay, int cpol, int cpha,
+int noclear, int noecho)</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_bspi_setup_chan</b>
+allows a realtime component to claim and configure a BSPI
+channel on a previously configured hostmot2 board.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>name</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>A unique string given to the BSPI channel during
+hostmot2 setup. The names of the available channels are
+printed to standard output during the driver loading process
+and take the form
+<b>hm2_</b><i>board-name</i><b>.</b><i>board-index</i><b>.bspi.</b><i>bspi-index</i>.
+For example, the first index on the first hm2_5i23 board
+would be called hm2_5i23.0.bspi.0.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>chan</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Channels are numbered 0 to 15. The value on the
+chip-select lines is set by cs and need not match the
+channel number.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>cs</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>The chip select line(s) to assert when accessing this
+channel. BSPI supports 4 chip select lines, so the valid
+range for cs is 0-15.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>bits</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>sets the bit-length of the SPI packet. The maximum
+supported length is 64 bits but this will span two read FIFO
+entries and will need special handling. (values 32 and below
+require no special handling)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>mhz</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>sets the chip communication rate. The maximum value for
+this is half the FPGA base frequency, so for example with a
+48MHz 5i23 the max SPI frequency is 24Mhz. Values in excess
+of the max supported will be silently rounded down.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>delay</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>sets the chip select valid delay (in nS)</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">cpha&nbsp;and&nbsp;cpol</p>
+
+<p style="margin-left:22%;">Set the clock phase and
+polarity (according to the device datasheet).</p>
+
+<p style="margin-left:11%;">noclear</p>
+
+<p style="margin-left:22%;">controls whether the frame
+clear bit is set after the 32 bit buffer transfer. This
+parameter should be set to 1 when the frame length is
+greater than 32 bits and the next data in the FIFO contains
+the other bits.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>noecho</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>Set to 1 for devices which do not return data (such as
+DACs).</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;">samplelate</p>
+
+<p style="margin-left:22%;">Set to 1 to sample the received
+SPI data 1/2 SPI clock later than normal. This is useful
+when high clock rates or isolation cause significant delays
+from clock to received data.</p>
+
+<h2>REALTIME CONSIDERATIONS
+<a name="REALTIME CONSIDERATIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Call only from
+within user or init/cleanup code, not from relatime
+tasks.</p>
+
+<h2>RETURN VALUE
+<a name="RETURN VALUE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Returns 0 on
+success and -1 on failure.</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hm2_allocate_bspi_tram(3hm2)</b>,
+<b>hm2_bspi_set_read_function(3hm2)</b>,
+<b>hm2_bspi_set_write_function(3hm2)</b>,
+<b>hm2_bspi_write_chan(3hm2)</b>,
+<b>hm2_tram_add_bspi_frame(3hm2)</b>, See src/hal/drivers
+mesa_7i65.comp for an example usage.</p>
+<hr>
+</body>
+</html>

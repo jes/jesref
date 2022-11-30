@@ -1,0 +1,168 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:22 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>rtapi_get_time</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">rtapi_get_time</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINTAXIS">SINTAXIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#VALOR DEVUELTO">VALOR DEVUELTO</a><br>
+<a href="#NOTAS">NOTAS</a><br>
+<a href="#CONSIDERACIONES EN TIEMPO REAL">CONSIDERACIONES EN TIEMPO REAL</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">rtapi_get_time
+- obtiene la hora actual</p>
+
+<h2>SINTAXIS
+<a name="SINTAXIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="43%">
+
+
+<p style="margin-top: 1em">long long rtapi_get_time()</p></td>
+<td width="46%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="43%">
+
+
+<p style="margin-top: 1em">long long rtapi_get_clocks()</p></td>
+<td width="46%">
+</td></tr>
+</table>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_get_time</b>
+devuelve la hora actual en nanosegundos. Dependiendo del
+RTOS, este puede ser el tiempo desde el arranque, o el
+tiempo desde que se estableci&Atilde;&sup3; el
+per&Atilde;odo de reloj, u otro momento. Su valor absoluto
+no significa nada, pero aumenta monot&Atilde;&sup3;nicamente
+y se puede usar para programar eventos futuros o para
+cronometrar la duraci&Atilde;&sup3;n de alguna actividad.
+Devuelve un valor de 64 bits. La resoluci&Atilde;&sup3;n de
+la devoluci&Atilde;&sup3;n puede ser tan buena como un
+nano-segundo, o tan pobre como varios microsegundos. Se
+puede llamar desde el c&Atilde;&sup3;digo de inicio/limpieza
+y desde dentro de las tareas en tiempo real.</p>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>rtapi_get_clocks</b>
+devuelve la hora actual en clocks de CPU. Esto es
+r&Atilde;&iexcl;pido, ya que solo lee el TSC en la CPU en
+lugar de llamar al kernel o a una funci&Atilde;&sup3;n RTOS.
+Por supuesto, los tiempos medidos en clocks de CPU no son
+tan convenientes, pero para mediciones relativas esto
+funciona bien. Su valor absoluto no significa nada, pero
+aumenta monot&Atilde;&sup3;nicamente y se puede utilizar
+para programar eventos futuros o para programar la
+duraci&Atilde;&sup3;n de alguna actividad (en
+m&Atilde;&iexcl;quinas SMP, dos TSC pueden no estar
+sincronizados, por lo que si una tarea lee el TSC, se cambia
+a la otra CPU, y lee de nuevo, el valor puede disminuir.
+RTAPI intenta forzar todas las tareas de RT para que se
+ejecuten en una sola CPU). Devuelve un valor de 64 bits. La
+resoluci&Atilde;&sup3;n del valor devuelto es un clock de
+CPU, que suele ser desde unos pocos nanosegundos a una
+fracci&Atilde;&sup3;n de nanosegundo.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Tenga en cuenta
+que las matem&Atilde;&iexcl;ticas <i>long long</i> pueden
+ser poco compatibles en algunas plataformas, especialmente
+en el espacio del kernel. Tambi&Atilde;&copy;n tenga en
+cuenta que rtapi_print() NO imprime <b>Long long</b>s. La
+mayor&Atilde;a de las mediciones de tiempo son relativas, y
+deber&Atilde;an hacerse as&Atilde;:</p>
+
+<p style="margin-left:22%;">deltat = (long int)(end_time -
+start_time);</p>
+
+<p style="margin-left:11%;">donde end_time y start_time son
+valores long devueltos por rtapi_get_time, y deltat es un
+int long ordinario (32 bits). Esto funcionar&Atilde;&iexcl;
+para tiempos de hasta un segundo m&Atilde;&iexcl;s o menos,
+dependiendo de la frecuencia del reloj de la CPU. Sin
+embargo, se usa mejor para las mediciones en escala de
+milisegundos y microsegundos</p>
+
+<h2>VALOR DEVUELTO
+<a name="VALOR DEVUELTO"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Devuelve la
+hora actual en nanosegundos o clocks de CPU.</p>
+
+<h2>NOTAS
+<a name="NOTAS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Ciertas
+versiones del kernel de Linux proporcionan una variable
+global <b>cpu_khz</b>. El c&Atilde;&iexcl;lculo</p>
+
+<p style="margin-left:22%;">deltat = (end_clocks -
+start_clocks) / cpu_khz:</p>
+
+<p style="margin-left:11%;">da la duraci&Atilde;&sup3;n
+medida en milisegundos. Con el c&Atilde;&iexcl;lculo</p>
+
+<p style="margin-left:22%;">deltat = (end_clocks -
+start_clocks) * 1000000 / cpu_khz:</p>
+
+<p style="margin-left:11%;">se obtiene la
+duraci&Atilde;&sup3;n medida en nanosegundos para deltas
+inferiores a aproximadamente 9 billones de clocks (por
+ejemplo, 3000 segundos a 3GHz).</p>
+
+<h2>CONSIDERACIONES EN TIEMPO REAL
+<a name="CONSIDERACIONES EN TIEMPO REAL"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Se puede llamar
+desde el c&Atilde;&sup3;digo de inicio/limpieza y desde las
+tareas en tiempo real. No disponible en componentes de
+espacio de usuario.</p>
+<hr>
+</body>
+</html>

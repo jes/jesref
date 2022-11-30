@@ -1,0 +1,325 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:26 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>ENCODER</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">ENCODER</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#NOMBRES">NOMBRES</a><br>
+<a href="#PINES">PINES</a><br>
+<a href="#PAR&Atilde;METROS">PAR&Atilde;METROS</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">encoder -
+conteo por software de se&Atilde;&plusmn;ales de encoder en
+cuadratura</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+encoder [num_chan=</b><i>num</i> <b>|
+names=</b><i>name1</i><b>[,</b><i>name2</i><b>...]]</b></p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder</b>
+se usa para medir la posici&Atilde;&sup3;n contando los
+pulsos generados por un encoder de cuadratura. Como
+implementaci&Atilde;&sup3;n basada en software, es mucho
+menos costosa que una en hardware, pero tiene un tasa
+m&Atilde;&iexcl;xima de conteo limitada. El l&Atilde;mite
+est&Atilde;&iexcl; en el rango de 10KHz a 50KHz, dependiendo
+de la velocidad de la computadora y otros factores. Si es
+necesario mejor el rendimiento, un contador de encoder
+hardware es una opci&Atilde;&sup3;n mejor. Algunos sistemas
+basados en hardware pueden contar a velocidades de MHz.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder</b>
+admite un m&Atilde;&iexcl;ximo de ocho canales. El
+n&Atilde;&ordm;mero de los canales realmente cargados se
+configuran mediante el argumento <b>num_chan</b> cuando se
+carga el m&Atilde;&sup3;dulo. Alternativamente, especifique
+names= y nombres &Atilde;&ordm;nicos separado por comas para
+cada canal.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Los
+especificadores <b>num_chan=</b> y <b>names=</b> son
+mutuamente excluyentes. Si no se especifica <b>num_chan=</b>
+ni <b>names=</b>, o si <b>num_chan=0</b>, el valor
+predeterminado es <i>tres</i><b>.</b></p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder</b>
+tiene un modo unidireccional mono-f&Atilde;&iexcl;se llamado
+<i>counter</i>. En este modo, se ignora la entrada
+<b>phase-B</b>; los recuentos aumentan en cada flanco
+ascendente de <b>phase-A</b>. Este modo puede ser
+&Atilde;&ordm;til para contar un husillo unidireccional con
+una sola l&Atilde;nea de entrada, aunque se pierden las
+caracter&Atilde;sticas de resistencia al ruido de la
+cuadratura.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder.update-counters</b>
+(no punto flotante)</p>
+
+<p style="margin-left:22%;">Hace el conteo real,
+muestreando las se&Atilde;&plusmn;ales del encoder y
+decodificando las formas de onda en cuadratura. Debe
+llamarse con la mayor frecuencia posible, preferiblemente el
+doble de r&Atilde;&iexcl;pido que la tasa de conteo
+m&Atilde;&iexcl;xima deseada. Opera en todos los canales a
+la vez.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.capture-position</b>
+(usa punto flotante)</p>
+
+<p style="margin-left:22%;">Captura los recuentos sin
+procesar de <b>update-counters</b> y realiza el escalado y
+otras conversiones necesarias, maneja el rollover del
+contador, etc. Puede (y debe) llamarse con menos frecuencia
+que <b>update-counters</b>. Funciona en todos los canales a
+la vez.</p>
+
+<h2>NOMBRES
+<a name="NOMBRES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Los nombres de
+pines y par&Atilde;&iexcl;metros tienen el prefijo: <b><br>
+encoder.N.</b> para N=0,1,...,num-1 con <b>num_chan=num <br>
+nameN.</b> para nameN=name1,name2,... con
+<b>names=name1,name2,...</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">En las
+siguientes descripciones se muestra el formato
+<b>encoder.N.</b>.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>encoder.</b><i>N</i><b>.counter-mode</b>
+bit I/O</p>
+
+<p style="margin-left:22%;">Habilita el modo contador.
+Cuando es verdadero, el contador cuenta cada flanco
+ascendente de la entrada fase-A, ignorando el valor en
+fase-B. Esto es &Atilde;&ordm;til para contar la salida de
+un sensor de canal &Atilde;&ordm;nico (no en cuadratura).
+Cuando es falso (predeterminado), cuenta en modo de
+cuadratura.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.counts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n en
+cuentas de encoder.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.index-enable</b>
+bit I/O</p>
+
+<p style="margin-left:22%;">Cuando es verdadero,
+<b>counts</b> y <b>position</b> se resetean a cero en el
+siguiente flanco ascendente de <b>Phase-Z</b>. Al mismo
+tiempo, <b>index-enable</b> se resetea a cero para indicar
+que se ha producido el flanco ascendente.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.min-speed-estimate</b>
+float in (predeterminado: 1.0)</p>
+
+<p style="margin-left:22%;">Determina la velocidad
+m&Atilde;nima a la que <b>velocity</b> ser&Atilde;&iexcl;
+estimado como distinto de cero y
+<b>postition-interpolated</b> se interpolar&Atilde;&iexcl;.
+Las unidades de <b>min-speed-estimate</b> son las mismas que
+las unidades de <b>velocity</b>. Establecer este
+par&Atilde;&iexcl;metro demasiado bajo har&Atilde;&iexcl;
+que se tarde mucho tiempo para que <b>velocity</b> llegue a
+0 despu&Atilde;&copy;s de que los pulsos del encoder hayan
+dejado de llegar.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.phase-A</b>
+bit in</p>
+
+<p style="margin-left:22%;">Entrada de cuadratura para el
+canal A del encoder <i>N</i>.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.phase-B</b>
+bit in</p>
+
+<p style="margin-left:22%;">Entrada de cuadratura para el
+canal B del encoder <i>N</i>.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.phase-Z</b>
+bit in</p>
+
+<p style="margin-left:22%;">Entrada de pulso de
+&Atilde;ndice.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.position</b>
+float</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n en
+unidades escaladas (ver <b>position-scale</b>)</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.position-interpolated</b>
+float</p>
+
+<p style="margin-left:22%;">Posici&Atilde;&sup3;n en
+unidades escaladas, interpoladas entre recuentos de encoder.
+Solo v&Atilde;&iexcl;lido cuando la velocidad es
+aproximadamente constante y superior a
+<b>min-speed-estimate</b>. No utilizar para el control de
+posici&Atilde;&sup3;n.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.position-scale</b>
+float I/O</p>
+
+<p style="margin-left:22%;">Factor de escala, en recuentos
+por unidad de longitud. Por ejemplo, si
+<b>position-scale</b> es 500, entonces 1000 recuentos del
+encoder se informar&Atilde;&iexcl;n como una
+posici&Atilde;&sup3;n de 2.0 unidades.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.rawcounts</b>
+s32 out</p>
+
+<p style="margin-left:22%;">Recuento sin procesar,
+seg&Atilde;&ordm;n lo determinado por
+<b>update-counters</b>. Este valor se actualiza con
+m&Atilde;&iexcl;s frecuencia que <b>counts</b> y
+<b>position</b>. Tampoco se ve afectado por <b>reset</b> o
+el pulso de &Atilde;ndice.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.reset</b>
+bit in</p>
+
+<p style="margin-left:22%;">Cuando es verdadero,
+<b>counts</b> y <b>position</b> se resetean a cero
+inmediatamente.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.velocity</b>
+float</p>
+
+<p style="margin-left:22%;">Velocidad en unidades escaladas
+por segundo. <b>encoder</b> usa un algoritmo que reduce en
+gran medida el ruido de cuantizaci&Atilde;&sup3;n en
+comparaci&Atilde;&sup3;n con una simple
+diferenciaci&Atilde;&sup3;n de la salida <b>position</b>.
+Cuando la magnitud de la velocidad real es inferior que
+min-speed-estimate, la salida velocity es 0.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.velocity-rpm</b>
+float out</p>
+
+<p style="margin-left:22%;">Velocidad en unidades escaladas
+por minuto. Simplemente <b>encoder.</b><i>N</i>
+<b>.velocity</b> escalado por un factor de 60 para mayor
+comodidad.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.x4-mode</b>
+bit I/O</p>
+
+<p style="margin-left:22%;">Habilita el modo X-4. Cuando es
+verdadero (valor predeterminado), el contador cuenta cada
+borde de la forma de onda en cuadratura (cuatro conteos por
+ciclo completo). Cuando es falso, solo cuenta una vez por
+ciclo completo. En <b>counter-mode</b>, este
+par&Atilde;&iexcl;metro se ignora.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.latch-input</b>
+bit in <b><br>
+encoder.</b><i>N</i><b>.latch-falling</b> bit in
+(predeterminado: <b>TRUE</b>) <b><br>
+encoder.</b><i>N</i><b>.latch-rising</b> bit in
+(predeterminado: <b>TRUE</b>) <b><br>
+encoder.</b><i>N</i><b>.counts-latched</b> s32 out <b><br>
+encoder.</b><i>N</i><b>.position-latched</b> float out</p>
+
+<p style="margin-left:22%;">Actualiza <b>counts-latched</b>
+y <b>position-latched</b> al flanco ascendente y/o
+descendente de <b>latch-input</b> como se indique mediante
+<b>latch-rising</b> y <b>latch-falling</b>.</p>
+
+
+<p style="margin-left:11%;"><b>encoder.</b><i>N</i><b>.counter-mode</b>
+bit rw</p>
+
+<p style="margin-left:22%;">Habilita el modo contador.
+Cuando es verdadero, el contador cuenta cada flanco
+ascendente de la entrada de fase-A, ignorando el valor en la
+fase-B. Esto es &Atilde;&ordm;til para contar la salida de
+un sensor de canal &Atilde;&ordm;nico (no en cuadratura).
+Cuando es falso (predeterminado), cuenta en modo de
+cuadratura.
+<b>encoder.</b><i>N</i><b>.capture-position.tmax</b> s32 rw
+N&Atilde;&ordm;mero m&Atilde;&iexcl;ximo de ciclos de CPU
+necesarios para ejecutar esta funci&Atilde;&sup3;n.</p>
+
+<h2>PAR&Atilde;METROS
+<a name="PAR&Atilde;METROS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">El componente
+encoder no tiene par&Atilde;&iexcl;metros HAL.</p>
+<hr>
+</body>
+</html>

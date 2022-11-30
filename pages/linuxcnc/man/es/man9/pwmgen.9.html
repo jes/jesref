@@ -1,0 +1,259 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:30 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>PWMGEN</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">PWMGEN</h1>
+
+<a href="#NOMBRE">NOMBRE</a><br>
+<a href="#SINOPSIS">SINOPSIS</a><br>
+<a href="#DESCRIPCI&Atilde;N">DESCRIPCI&Atilde;N</a><br>
+<a href="#FUNCIONES">FUNCIONES</a><br>
+<a href="#PINES">PINES</a><br>
+
+<hr>
+
+
+<h2>NOMBRE
+<a name="NOMBRE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">pwmgen -
+generaci&Atilde;&sup3;n PWM/PDM por software</p>
+
+<h2>SINOPSIS
+<a name="SINOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>loadrt
+pwmgen output_type=</b><i>type0</i>[,<i>type1</i> ...]</p>
+
+<h2>DESCRIPCI&Atilde;N
+<a name="DESCRIPCI&Atilde;N"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pwmgen</b>
+se utiliza para generar se&Atilde;&plusmn;ales PWM
+(modulaci&Atilde;&sup3;n de ancho de pulso) o PDM
+(modulaci&Atilde;&sup3;n de densidad de pulso). La
+frecuencia m&Atilde;&iexcl;xima de PWM y la
+resoluci&Atilde;&sup3;n es bastante limitada en
+comparaci&Atilde;&sup3;n con los enfoques basados en
+hardware, pero en muchos casos el software PWM puede ser muy
+&Atilde;&ordm;til. Si se necesita un mejor rendimiento, un
+generador de PWM hardware es una mejor
+opci&Atilde;&sup3;n.</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>pwmgen</b>
+admite un m&Atilde;&iexcl;ximo de ocho canales. El
+n&Atilde;&ordm;mero de canales realmente cargados depende
+del n&Atilde;&ordm;mero de valores <i>type</i> dados. El
+valor de cada <i>type</i> determina las salidas para ese
+canal. <br>
+tipo 0: salida &Atilde;&ordm;nica</p>
+
+<p style="margin-left:22%;">Un pin de salida
+&Atilde;&ordm;nico, <b>pwm</b>, cuyo ciclo de trabajo
+est&Atilde;&iexcl; determinado por el valor de entrada para
+entradas positivas, y que est&Atilde;&iexcl; apagado (o en
+<b>min-dc</b>) para entradas negativas. Adecuado para
+circuitos &acirc;single ended&acirc;.</p>
+
+<p style="margin-left:11%;">tipo 1:
+pwm/direcci&Atilde;&sup3;n</p>
+
+<p style="margin-left:22%;">Dos pines de salida, <b>pwm</b>
+y <b>dir</b>. El ciclo de trabajo en <b>pwm</b> var&Atilde;a
+en funci&Atilde;&sup3;n del valor de entrada. <b>dir</b> es
+bajo para entradas positivas y alto para entradas
+negativas.</p>
+
+<p style="margin-left:11%;">tipo 2: arriba/abajo</p>
+
+<p style="margin-left:22%;">Dos pines de salida, <b>up</b>
+y <b>down</b>. Para entradas positivas, la forma de onda
+PWM/PDM aparece en <b>up</b>, mientras que <b>down</b> es
+baja. Para entradas negativas, la forma de onda aparece en
+<b>down</b>, mientras que <b>up</b> es baja. Adecuado para
+manejar los dos lados de un puente H para generar una salida
+bipolar.</p>
+
+<h2>FUNCIONES
+<a name="FUNCIONES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pwmgen.make-pulses</b>
+(no de punto flotante)</p>
+
+<p style="margin-left:22%;">Genera las formas de onda PWM
+reales, utilizando informaci&Atilde;&sup3;n calculada por
+<b>update</b>. Debe llamarse con la mayor frecuencia
+posible, para maximizar la frecuencia y
+resoluci&Atilde;&sup3;n PWM alcanzables y minimizar la
+fluctuaci&Atilde;&sup3;n de fase. Funciona en todos los
+canales a la vez.</p>
+
+<p style="margin-left:11%;"><b>pwmgen.update</b> (usa punto
+flotante)</p>
+
+<p style="margin-left:22%;">Acepta un valor de entrada,
+realiza comprobaciones de escalado y l&Atilde;mite, y lo
+convierte en una forma utilizable por <b>make-pulses</b>
+para la generaci&Atilde;&sup3;n PWM/PDM. Se puede (y se
+debe) llamar con menos frecuencia que <b>make-pulses</b>.
+Funciona en todos los canales a la vez.</p>
+
+<h2>PINES
+<a name="PINES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>pwmgen.</b><i>N</i><b>.enable</b>
+bit in</p>
+
+<p style="margin-left:22%;">Habilita el generador
+PWM<i>N</i>: cuando es FALSE, todas los pines de salidas
+<b>pwmgen.</b><i>N</i> son bajos.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.value</b>
+float in</p>
+
+<p style="margin-left:22%;">Valor ordenado. Cuando
+<b>value</b> = 0.0, el ciclo de trabajo es 0%, y cuando
+<b>value</b> = &plusmn;<b>scale</b>, el ciclo de trabajo es
+&plusmn; 100%. (Sujeto a las limitaciones<b>min-dc</b> y
+<b>max-dc</b>.)</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.pwm</b>
+bit out (solo tipos de salida 0 y 1)</p>
+
+<p style="margin-left:22%;">Forma de onda PWM/PDM.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.dir</b>
+bit out (solo salida tipo 1)</p>
+
+<p style="margin-left:22%;">Salida de
+direcci&Atilde;&sup3;n: baja para avance, alta para
+retroceso.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.up</b>
+bit out (solo salida tipo 2)</p>
+
+<p style="margin-left:22%;">Forma de onda PWM/PDM para
+valores de entrada positivos, bajo para entradas
+negativas.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.down</b>
+bit out (solo salida tipo 2)</p>
+
+<p style="margin-left:22%;">Forma de onda PWM/PDM para
+valores de entrada negativos, bajo para entradas
+positivas.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.curr-dc</b>
+float out</p>
+
+<p style="margin-left:22%;">El ciclo de trabajo actual,
+despu&Atilde;&copy;s de que se hayan aplicado todos los
+escalados y l&Atilde;mites. El rango es de-1.0 a +1.0.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.max-dc</b>
+float io</p>
+
+<p style="margin-left:22%;">El ciclo de trabajo
+m&Atilde;&iexcl;ximo. Un valor de 1.0 corresponde al 100%.
+Esto puede ser &Atilde;&ordm;til cuando se utilizan
+controladores de transistores con fuentes de
+alimentaci&Atilde;&sup3;n con bootstrapp, ya que el
+suministro requiere algun tiempo para recargarse.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.min-dc</b>
+float io</p>
+
+<p style="margin-left:22%;">El ciclo de trabajo
+m&Atilde;nimo. Un valor de 1.0 corresponde al 100%. Tenga en
+cuenta que cuando el generador pwm est&Atilde;&iexcl;
+desactivado, las salidas son constantemente bajas,
+independientemente de la configuraci&Atilde;&sup3;n de
+<b>min-dc</b>.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.scale</b>
+float io <b><br>
+pwmgen.</b><i>N</i><b>.offset</b> float io</p>
+
+<p style="margin-left:22%;">Estos par&Atilde;&iexcl;metros
+proporcionan una escala y un offset desde el pin
+<b>value</b> al ciclo de trabajo real. El ciclo de trabajo
+se calcula de acuerdo con <i>dc = (valor / escala) +
+offset</i>, donde 1.0 significa 100%.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.pwm-freq</b>
+float io</p>
+
+<p style="margin-left:22%;">Frecuencia PWM en Hz. El
+l&Atilde;mite superior es la mitad de la frecuencia a la que
+se invoca<b>make-pulses</b>, y los valores por encima de ese
+l&Atilde;mite se bajaran al l&Atilde;mite. Si
+<b>dither-pwm</b> es FALSE, el valor se
+cambiar&Atilde;&iexcl; al subm&Atilde;&ordm;ltiplo entero
+m&Atilde;&iexcl;s cercano de la frecuencia
+<b>make-pulses</b>. Un valor de cero produce
+modulaci&Atilde;&sup3;n de densidad de pulso en lugar de
+modulaci&Atilde;&sup3;n de ancho de pulso.</p>
+
+
+<p style="margin-left:11%;"><b>pwmgen.</b><i>N</i><b>.dither-pwm</b>
+bit io</p>
+
+<p style="margin-left:22%;">Debido a que el PWM generado
+por software utiliza una base de tiempo bastante lenta (de
+varios a muchos microsegundos), tiene una
+resoluci&Atilde;&sup3;n limitada. Por ejemplo, si se llama
+<b>make-pulses</b> a una velocidad de 20KHz y
+<b>pwm-freq</b> es de 2KHz, solo hay 10 ciclos de trabajo
+posibles. Si <b>dither-pwm</b> es FALSE, el ciclo de trabajo
+ordenado se redondear&Atilde;&iexcl; al m&Atilde;&iexcl;s
+cercano de esos valores. Asumiendo que <b>value</b>
+permanece constante, la misma salida repetir&Atilde;&iexcl;
+cada ciclo PWM. Si <b>dither-pwm</b> es TRUE, el ciclo de
+trabajo de salida se dividir&Atilde;&iexcl; entre los dos
+valores m&Atilde;&iexcl;s cercanos, de modo que el promedio
+a largo plazo est&Atilde;&copy; m&Atilde;&iexcl;s cerca del
+nivel deseado. <b>dither-pwm</b> no tiene efecto si
+<b>pwm-freq</b> es cero (modo PDM), ya que PDM es un proceso
+inherentemente dithered.</p>
+<hr>
+</body>
+</html>

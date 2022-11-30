@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title></title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="paragraph"><p><a id="cha:Panelui"></a></p></div>
+<h1 id="_panelui">Panelui</h1>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Panelui is a userspace component to interface buttons to linuxcnc or HAL.<br />
+It decodes MESA 7I73 style key-scan codes and calls the appropriate routine.<br />
+It gets input from a realtime component - sampler.<br />
+Sampler gets it&#8217;s input from either the MESA 7i73 or sim_matrix_kb component.<br />
+Panelui is configurable using an INI style text file to define button
+types, HAL pin types, and/or commands.</p></div>
+<div class="paragraph"><p>It can be extended using a Python based <em>handler</em> file to add functions.<br />
+While actual input buttons are required to be momentary, Panelui will use this
+input to make toggle, radio, or momentary button output.<br /></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_loading_commands">2. Loading Commands</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The command used to load panelui (with optional -d debug switch):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadusr -W panelui -d</code></pre>
+</div></div>
+<div class="paragraph"><p>This will initialize panelui, which will look for the INI file panelui.ini in
+the config folder or user folder.</p></div>
+<div class="paragraph"><p>One can validate the INI file with this command:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>loadusr pyui</code></pre>
+</div></div>
+<div class="paragraph"><p>This will read, try to correct, then save the panelui.ini file.
+It will print errors to the terminal if found.</p></div>
+<div class="paragraph"><p>A typical HAL file will have these commands added:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># commands needed for panelui loading</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># sampler is needed for panelui</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># cfg= must always be u for panelui. depth sets the available buffer</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">loadrt</span></span> <span style="font-weight: bold"><span style="color: #000000">sampler</span></span> <span style="font-weight: bold"><span style="color: #000000">cfg</span></span><span style="color: #990000">=</span><span style="font-weight: bold"><span style="color: #000000">u</span></span> <span style="font-weight: bold"><span style="color: #000000">depth</span></span><span style="color: #990000">=</span><span style="color: #993399">1025</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">#uncomment to validate the panelui INI file</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">#loadusr pyui</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># -d = debug, -v = verbose debug</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># -d will show you keypress identification and commands called</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># -v is for develeper info</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">loadusr</span></span> -<span style="font-weight: bold"><span style="color: #000000">W</span></span> <span style="font-weight: bold"><span style="color: #000000">panelui</span></span> -<span style="font-weight: bold"><span style="color: #000000">d</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># using simulated buttons instead of the MESA 7I73 card</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># so we load the sim_matrix_kb component to convert HAL pins to keyscan codes</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">loadrt</span></span> <span style="font-weight: bold"><span style="color: #000000">sim_matrix_kb</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># connect the compnents together.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"># sampler talks to panelui internally</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">key-scan</span></span>    <span style="font-weight: bold"><span style="color: #000000">sim-matrix-kb</span></span>.<span style="color: #993399">0</span>.<span style="font-weight: bold"><span style="color: #000000">out</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">net</span></span> <span style="font-weight: bold"><span style="color: #000000">key-scan</span></span>    <span style="color: #009900">sampler.0.pin.0</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># add panelui components to a thread</span></span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">addf</span></span> <span style="font-weight: bold"><span style="color: #000000">sim-matrix-kb</span></span>.<span style="color: #993399">0</span>    <span style="font-weight: bold"><span style="color: #000000">servo-thread</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">addf</span></span> <span style="color: #009900">sampler.0</span>          <span style="font-weight: bold"><span style="color: #000000">servo-thread</span></span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_panelui_ini_file_reference">3. panelui.ini file reference</h2>
+<div class="sectionbody">
+<div class="ulist"><div class="title"><strong>Key words</strong></div><ul>
+<li>
+<p>
+KEY= This is used to designate the key that the button responds to. It can be NONE or
+ROW number and column number eg R1C2. A row and column can only be used once.
+</p>
+</li>
+<li>
+<p>
+OUTPUT= This sets the Button&#8217;s output type, eg S32, U32, FLOAT, BIT, NONE, COMMAND
+</p>
+</li>
+<li>
+<p>
+DEFAULT= This sets the starting output of the group or button.
+</p>
+</li>
+<li>
+<p>
+GROUP= In radiobuttons, designates the group the button interacts with.
+</p>
+</li>
+<li>
+<p>
+GROUP_OUTPUT= sets the output the group pin will be, if this button is active.
+</p>
+</li>
+<li>
+<p>
+STATUS_PIN= If TRUE, a HAL pin will be added that reflects the current state of button.
+</p>
+</li>
+<li>
+<p>
+TRUE_STATE= sets the output the HAL pin will be, if button is TRUE
+</p>
+</li>
+<li>
+<p>
+FALSE_STATE= sets the OUTPUT the HAL pin will be, if the button is FALSE
+</p>
+</li>
+<li>
+<p>
+TRUE_COMMAND= sets the command and arguments to be called when the button is TRUE
+</p>
+</li>
+<li>
+<p>
+FALSE_COMMAND= sets the command and arguments to be called when the button is FALSE.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title"><strong>HAL Prefix</strong></div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[HAL_PREFIX]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">    NAME</span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> Yourname</span></tt></pre></div></div>
+<div class="paragraph"><p>This allows one to change the prefix of the HAL pins from <em>panelui</em> to an arbritary name.</p></div>
+<div class="paragraph"><div class="title"><strong>Radio Buttons</strong></div><p>Radiobutons allow only one button in the group to be active at a time.<br />
+Each group has its own output pin, separate from each button in the group.<br />
+Radio button definitions start with the text <em>RADIO_BUTTON</em> inside single brackets.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[RADIO_BUTTONS]</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># The double bracket section(s) define the group(s) of radio buttons.</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># The group name must be unique and is case sensitive.</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># Groups output is controlled by what button is active not directly by keycode.</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># DEFAULT references a button in the group by name and is case sensitive.</span></span>
+        <span style="font-weight: bold"><span style="color: #000000">[[group1_name]]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">            KEY </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">            OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> FLOAT</span>
+<span style="font-weight: bold"><span style="color: #0000FF">            DEFAULT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> small</span>
+            <span style="font-style: italic"><span style="color: #9A1900"># The triple bracket sections define the buttons in this group.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># button names must be unique and are case sensitive.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># There must be at least two buttons in a group.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900">#</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># This button, named 'small'is controller by the row 0 column 1 key.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># It will cause the group output to be .0001 when it is pressed.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># It has no output of it's own, but has a status</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># pin which will follow it's current state.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># since this button is in a group, DEFAULT has no bearing.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># since OUTPUT in not 'COMMAND' _COMMAND entries are ignored.</span></span>
+            <span style="font-weight: bold"><span style="color: #000000">[[[small]]]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">                KEY </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> R0C1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                GROUP </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> group1_name</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                GROUP_OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> .0001</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                STATUS_PIN </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> True</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                TRUE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> TRUE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                FALSE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> FALSE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                TRUE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                FALSE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                DEFAULT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> false</span>
+            <span style="font-style: italic"><span style="color: #9A1900"># This button, named 'large' is controller by the row 0 column 2 key.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># It will cause the group output to be 1000 when it is pressed.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># It has a S32 output of it's own, will be 20 on true and 0 on false.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># It also has a status pin which will follow it's current state.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># since this button is in a group, DEFAULT has no bearing.</span></span>
+            <span style="font-style: italic"><span style="color: #9A1900"># since OUTPUT in not 'COMMAND' _COMMAND entries are ignored.</span></span>
+            <span style="font-weight: bold"><span style="color: #000000">[[[large]]]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">                KEY </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> R0C2</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                GROUP </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> group1_name</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                GROUP_OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 1000</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> S32</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                STATUS_PIN </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> True</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                TRUE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 20</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                TRUE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                FALSE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                FALSE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 0</span>
+<span style="font-weight: bold"><span style="color: #0000FF">                DEFAULT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> false</span></tt></pre></div></div>
+<div class="paragraph"><div class="title"><strong>Toggle Buttons</strong></div><p>Togglebuttons only change state on each press of the button.
+Toggle button definitions start with the text <em>TOGGLE_BUTTON</em> inside single brackets.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[TOGGLE_BUTTONS]</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Each button name inside double brackets, must be unique and is case sensitive.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># This button, named 'tool_change'is controller by the row 2 column 5 key.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># It has a BIT output, will output 1 on true state and 0 on false state.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># It also has a status pin which will follow it's current state.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># DEFAULT sets this to true when first initialized.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># The _COMMAND are not used since OUTPUT is not set to COMMAND but validation will</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># add the lines regardless</span></span>
+    <span style="font-weight: bold"><span style="color: #000000">[[tool_change]]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">        KEY </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> R2C5</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> BIT</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        TRUE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        FALSE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> NONE, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        STATUS_PIN </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> True</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        DEFAULT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> TRUE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        TRUE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        FALSE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 0</span></tt></pre></div></div>
+<div class="paragraph"><div class="title"><strong>Momentary Buttons</strong></div><p>Momentary buttons are true when pressed and false when released.
+Momentary button definitions start with the text <em>MOMENTARY_BUTTON</em> inside single brackets.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #000000">[MOMENTARY_BUTTONS]</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># Each button name inside double brackets, must be unique and is case sensitive.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># This button, named 'spindle_rev'is controller by the row 2 column 3 key.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># It has a COMMAND output, so will use TRUE_COMMAND and FALSE_COMMAND.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># It also has a status pin which will follow it's current state.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># COMMANDs will have a command name and then any required arguments</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># This TRUE_COMMAND calls an internal command to start the spindle in reverse at 200 rpm</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># If the spindle is already started, it will increase the rpm.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># DEFAULT is not used with Momentary buttons.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># The _STATE are not used since OUTPUT is set to COMMAND but validation will</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># add the lines regardless</span></span>
+    <span style="font-weight: bold"><span style="color: #000000">[[spindle_rev]]</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">        KEY </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> R2C3</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        OUTPUT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> COMMAND</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        TRUE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> SPINDLE_REVERSE_INCREASE, 200</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        FALSE_COMMAND </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> None, NONE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        STATUS_PIN </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> True</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        DEFAULT </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> FALSE</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        TRUE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 1</span>
+<span style="font-weight: bold"><span style="color: #0000FF">        FALSE_STATE </span></span><span style="font-weight: bold"><span style="color: #000000">=</span></span><span style="color: #009900"> 0</span></tt></pre></div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_internal_command_reference">4. Internal Command reference</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>There are a number of internal commands you may use.<br /></p></div>
+<div class="paragraph"><p><strong>mist_on</strong></p></div>
+<div class="paragraph"><p><strong>mist_off</strong></p></div>
+<div class="paragraph"><p><strong>flood_on</strong></p></div>
+<div class="paragraph"><p><strong>flood_off</strong></p></div>
+<div class="paragraph"><p><strong>estop</strong></p></div>
+<div class="paragraph"><p><strong>estop_reset</strong></p></div>
+<div class="paragraph"><p><strong>machine_off</strong></p></div>
+<div class="paragraph"><p><strong>machine_on</strong></p></div>
+<div class="paragraph"><p><strong>home_all</strong></p></div>
+<div class="paragraph"><p><strong>unhome_all</strong></p></div>
+<div class="ulist"><div class="title"><strong>home_selected</strong></div><ul>
+<li>
+<p>
+required argument: axis number (int)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>unhome_selected</strong></div><ul>
+<li>
+<p>
+required argument: axis number (int)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>spindle_forward_adjust</strong></div><ul>
+<li>
+<p>
+optional argument: starting RPM (int) - default 100
+</p>
+</li>
+<li>
+<p>
+Description: If the spindle is stopped it will start in the forward direction.
+If it is already running it will increase or decrease the rpm depending on what direction
+the spindle is running in.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>spindle_forward</strong></div><ul>
+<li>
+<p>
+optional argument: starting RPM (int) - default 100
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><strong>spindle_stop</strong></p></div>
+<div class="ulist"><div class="title"><strong>spindle_reverse</strong></div><ul>
+<li>
+<p>
+optional argument: starting RPM (int) - default 100
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>spindle_reverse_adjust</strong></div><ul>
+<li>
+<p>
+optional argument: starting RPM (int) - default 100
+</p>
+</li>
+<li>
+<p>
+Description: If the spindle is stopped it will start in the reverse direction.
+If it is already running it will increase or decrease the rpm depending on what direction
+the spindle is running in.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>spindle_faster</strong></div><ul>
+<li>
+<p>
+Description: increases spindle speed by 100 RPM
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>spindle_slower</strong></div><ul>
+<li>
+<p>
+Description: decreases spindle speed  by 100 RPM, until RPM is 100
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>set_linear_jog_velocity</strong></div><ul>
+<li>
+<p>
+required argument: velocity in inches per minute (float)
+</p>
+</li>
+<li>
+<p>
+description: sets the jog velocity on axis 0,1,2,6,7,8 (X,Y,Z,U,V,W)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>set_angular_jog_velocity</strong></div><ul>
+<li>
+<p>
+required argument: velocity in degrees per minute (float)
+</p>
+</li>
+<li>
+<p>
+description: sets the jog velocity on axis 3,4,5 (A.B.C)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>continuous_jog</strong></div><ul>
+<li>
+<p>
+required arguments: axis number (int), direction (int)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>incremental_jog</strong></div><ul>
+<li>
+<p>
+required arguments: axis number (int), direction (int), distance (float)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>quill_up</strong></div><ul>
+<li>
+<p>
+optional arguments: machine Z axis absolute position (float)
+</p>
+</li>
+<li>
+<p>
+Description: Move Z axis to the given machine position
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>feed_hold</strong></div><ul>
+<li>
+<p>
+required argument: state (bool 0 or 1)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>feed_override</strong></div><ul>
+<li>
+<p>
+required argument: rate (float)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>rapid_override</strong></div><ul>
+<li>
+<p>
+required argument: rate (float 0-1)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>spindle_override</strong></div><ul>
+<li>
+<p>
+required argument: rate (float)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>max_velocity</strong></div><ul>
+<li>
+<p>
+required argument: rate (float)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><strong>reload_tooltable</strong></p></div>
+<div class="ulist"><div class="title"><strong>optional_stop</strong></div><ul>
+<li>
+<p>
+required argument: state (bool 0 or 1)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>block_delete</strong></div><ul>
+<li>
+<p>
+required argument: state (bool 0 or 1)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><strong>abort</strong></p></div>
+<div class="paragraph"><p><strong>pause</strong></p></div>
+<div class="paragraph"><p><strong>resume</strong></p></div>
+<div class="ulist"><div class="title"><strong>single_block</strong></div><ul>
+<li>
+<p>
+required argument: state (bool 0 or 1)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>smart_cycle_start</strong></div><ul>
+<li>
+<p>
+Description: If idle, starts gcode program, if paused runs one line.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>re_start line</strong></div><ul>
+<li>
+<p>
+required argument: line number (int)
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>mdi_and_return</strong></div><ul>
+<li>
+<p>
+required argument: Gcode command(s)
+</p>
+</li>
+<li>
+<p>
+Description: records the current mode, calls commands and then returns to mode.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title"><strong>mdi</strong></div><ul>
+<li>
+<p>
+required argument: Gcode command(s)
+</p>
+</li>
+<li>
+<p>
+Description: sets mode to MDI, calls commands.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_handler_file_extension">5. Handler File Extension</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A special file can be used to add custom python code that will be available as commands.
+panelui_handler.py must be written in python and be placed in the configuration folder.
+If panelui finds a file there it will add it&#8217;s function calls to the available commands.
+Here is an example of a handler file that adds two functions - hello_world and cycle_mode:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># standard handler call - This will always be required</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">get_handlers</span></span><span style="color: #990000">(</span>linuxcnc_stat<span style="color: #990000">,</span> linucnc_cmd<span style="color: #990000">,</span> commands<span style="color: #990000">,</span> master<span style="color: #990000">):</span>
+     <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="color: #990000">[</span><span style="font-weight: bold"><span style="color: #000000">HandlerClass</span></span><span style="color: #990000">(</span>linuxcnc_stat<span style="color: #990000">,</span> linucnc_cmd<span style="color: #990000">,</span> commands<span style="color: #990000">,</span> master<span style="color: #990000">)]</span>
+
+<span style="font-style: italic"><span style="color: #9A1900"># Also required - handler class</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">class</span></span> HandlerClass<span style="color: #990000">:</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># This will be pretty standard to gain access to everything</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># linuxcnc_stat: is the python status instance of linuxcnc</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># linuxcnc_cmd: is the python command instance of linuxcnc</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># commands: is the command instance so one can call the internal routines</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># master: give access to the master functions/data</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__init__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> linuxcnc_stat<span style="color: #990000">,</span> linuxcnc_cmd<span style="color: #990000">,</span> commands<span style="color: #990000">,</span> master<span style="color: #990000">):</span>
+        self<span style="color: #990000">.</span>parent <span style="color: #990000">=</span> commands
+        self<span style="color: #990000">.</span>current_mode <span style="color: #990000">=</span> <span style="color: #993399">0</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># command functions are expected to have this layout:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># def some_name(self, widget_instance, arguments from widget):</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># widget_instance gives access to the calling widget's function/data</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># arguments can be a list of arguments, a single argument, or None</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># depending on what was given in panelui's INI file.</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">hello_world</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> wname<span style="color: #990000">,</span> m<span style="color: #990000">):</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># print to terminal so we know it worked</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> <span style="color: #FF0000">'\nHello world\n'</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> m     <span style="font-style: italic"><span style="color: #9A1900"># print the argument(s)</span></span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> wname<span style="color: #990000">.</span>metadata    <span style="font-style: italic"><span style="color: #9A1900"># Print the calling widgets internal metadata (from config file)</span></span>
+
+        <span style="font-style: italic"><span style="color: #9A1900"># call a mdi command to print a msg in linuxcnc</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># This requires linuxcnc to be homed, but does not check for that.</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># parent commands expect a widget_instance - None is substituted</span></span>
+        self<span style="color: #990000">.</span>parent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">mdi</span></span><span style="color: #990000">(</span>None<span style="color: #990000">,</span><span style="color: #FF0000">'(MSG, Hello Linuxcnc World!)'</span><span style="color: #990000">)</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900"># Each call to this function will cycle the mode of linuxcnc</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">cycle_mode</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> wname<span style="color: #990000">,</span> m<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">if</span></span> self<span style="color: #990000">.</span>current_mode <span style="color: #990000">==</span> <span style="color: #993399">0</span><span style="color: #990000">:</span>
+            self<span style="color: #990000">.</span>current_mode <span style="color: #990000">=</span> <span style="color: #993399">1</span>
+            self<span style="color: #990000">.</span>parent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">set_mdi_mode</span></span><span style="color: #990000">()</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">elif</span></span> self<span style="color: #990000">.</span>current_mode <span style="color: #990000">==</span> <span style="color: #993399">1</span><span style="color: #990000">:</span>
+            self<span style="color: #990000">.</span>current_mode <span style="color: #990000">=</span> <span style="color: #993399">2</span>
+            self<span style="color: #990000">.</span>parent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">set_auto_mode</span></span><span style="color: #990000">()</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">else</span></span><span style="color: #990000">:</span>
+            self<span style="color: #990000">.</span>current_mode <span style="color: #990000">=</span> <span style="color: #993399">0</span>
+            self<span style="color: #990000">.</span>parent<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">set_manual_mode</span></span><span style="color: #990000">()</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">print</span></span> self<span style="color: #990000">.</span>current_mode
+
+    <span style="font-style: italic"><span style="color: #9A1900"># Boiler code, often required</span></span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__getitem__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="font-weight: bold"><span style="color: #000000">getattr</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">)</span>
+    <span style="font-weight: bold"><span style="color: #0000FF">def</span></span> <span style="font-weight: bold"><span style="color: #000000">__setitem__</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">,</span> value<span style="color: #990000">):</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">return</span></span> <span style="font-weight: bold"><span style="color: #000000">setattr</span></span><span style="color: #990000">(</span>self<span style="color: #990000">,</span> item<span style="color: #990000">,</span> value<span style="color: #990000">)</span></tt></pre></div></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

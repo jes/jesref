@@ -1,0 +1,566 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:34 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>hy_vfd</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">hy_vfd</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#PARAMETERS">PARAMETERS</a><br>
+<a href="#AUTHOR">AUTHOR</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_vfd</b> -
+HAL userspace component for Huanyang VFDs</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>hy_vfd</b>
+[OPTIONS]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">This component
+connects the Huanyang VFD to the LinuxCNC HAL via a serial
+(RS-485) connection.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The Huanyang
+VFD must be configured via the face plate user interface to
+accept serial communications: <b><br>
+PD001&nbsp;=&nbsp;2</b></p>
+
+<p style="margin-left:22%;">Set register PD001 (source of
+run commands) to 2 (communication port).</p>
+
+<p style="margin-left:11%;"><b>PD002&nbsp;=&nbsp;2</b></p>
+
+<p style="margin-left:22%;">Set register PD002 (source of
+operating frequency) to 2 (communication port).</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD004</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD004 (Base Frequency) according to motor
+specs. This is the rated frequency of the motor from the
+motor&rsquo;s name plate, in Hz.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD005</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD005 (max frequency) according to motor
+specs. This is the maximum frequency of the motor&rsquo;s
+power supply, in Hz.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD011</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD011 (min frequency) according to motor
+specs. This is the minimum frequency of the motor&rsquo;s
+power supply, in Hz.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD141</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD141 (rated motor voltage) according to
+motor name plate. This is the motor&rsquo;s maximum voltage,
+in Volts.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD142</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD142 (rated motor current) according to
+motor name plate. This is the motor&rsquo;s maximum current,
+in Amps.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD143</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD143 (Number of Motor Poles) according to
+motor name plate.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p><b>PD144</b></p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>Set register PD144 (rated motor revolutions) according
+to motor name plate. This is the motor&rsquo;s speed in RPM
+at 50 Hz. Note: This is not the motor&rsquo;s max speed
+(unless the max motor frequency happens to be 50 Hz)!</p></td></tr>
+</table>
+
+<p style="margin-left:11%;"><b>PD163&nbsp;=&nbsp;1</b></p>
+
+<p style="margin-left:22%;">Set register PD163
+(communication address) to 1. This matches the default in
+the hy_vfd driver, change this if your setup has special
+needs.</p>
+
+<p style="margin-left:11%;"><b>PD164&nbsp;=&nbsp;2</b></p>
+
+<p style="margin-left:22%;">Set register PD164 (baud rate)
+to 2 (19200 bps). This matches the default in the hy_vfd
+driver, change this if your setup has special needs.</p>
+
+<p style="margin-left:11%;"><b>PD165&nbsp;=&nbsp;3</b></p>
+
+<p style="margin-left:22%;">Set register PD165
+(communication data method) to 3 (8n1 RTU). This matches the
+default in the hy_vfd driver, change this if your setup has
+special needs. Note that the hy_vfd driver only supports RTU
+communication, not ASCII.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Consult the
+Huanyang instruction manual for details on using the face
+plate to program the VFDs registers, and alternative values
+for the above registers.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Access to
+devices such as /dev/ttyUSB0 is restricted to members of the
+&quot;dialout&quot; group. If you see error messages such as
+<b><br>
+open: Permission denied <br>
+ERROR Can&rsquo;t open the device /dev/ttyUSB0 (errno
+13)</b> <br>
+Check your groups membership with the command <b><br>
+groups</b> <br>
+Then add your user to the dialout group with <b><br>
+sudo addgroup your-username dialout</b> <br>
+You will need to log out and back in again for this to take
+effect.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>-d,&nbsp;--device&nbsp;&lt;path&gt;</b></p>
+
+<p style="margin-left:22%;">(default /dev/ttyS0) Set the
+name of the serial device node to use.</p>
+
+<p style="margin-left:11%;"><b>-g,&nbsp;--debug</b></p>
+
+<p style="margin-left:22%;">Turn on debug messages. Note
+that if there are serial errors, this may become annoying.
+Debug mode will cause all serial communication messages to
+be printed in hex on the terminal.</p>
+
+<p style="margin-left:11%;"><b>-y,&nbsp;--regdump</b></p>
+
+<p style="margin-left:22%;">Print the current value of all
+registers as soon as the VFD is enabled.</p>
+
+
+<p style="margin-left:11%;"><b>-n,&nbsp;--name&nbsp;&lt;string&gt;</b></p>
+
+<p style="margin-left:22%;">(default hy_vfd) Set the name
+of the HAL module. The HAL comp name will be set to
+&lt;string&gt;, and all pin and parameter names will begin
+with &lt;string&gt;.</p>
+
+
+<p style="margin-left:11%;"><b>-b,&nbsp;--bits&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default 8) Set number of data
+bits to &lt;n&gt;, where n must be from 5 to 8 inclusive.
+This must match the setting in register PD165 of the
+Huanyang VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-p,&nbsp;--parity&nbsp;[even,odd,none]</b></p>
+
+<p style="margin-left:22%;">(default odd) Set serial parity
+to even, odd, or none. This must match the setting in
+register PD165 of the Huanyang VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-r,&nbsp;--rate&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default 38400) Set baud rate
+to &lt;n&gt;. It is an error if the rate is not one of the
+following: 110, 300, 600, 1200, 2400, 4800, 9600, 19200,
+38400, 57600, 115200. This must match the setting in
+register PD164 of the Huanyang VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-s,&nbsp;--stopbits&nbsp;[1,2]</b></p>
+
+<p style="margin-left:22%;">(default 1) Set serial stop
+bits to 1 or 2. This must match the setting in register
+PD165 of the HuanyangVFD.</p>
+
+
+<p style="margin-left:11%;"><b>-t,&nbsp;--target&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default 1) Set HYCOMM target
+(slave) number. This must match the device number you set on
+the Hyanyang VFD in register PD163.</p>
+
+
+<p style="margin-left:11%;"><b>-F,&nbsp;--max-frequency&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default: read from VFD) If
+specified, program register PD005 of the VFD with the
+specified max frequency of &lt;n&gt; Hz (and use the same
+max frequency in the hy_vfd driver). If not specified, read
+the max frequency to use from register PD005 of the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-f,&nbsp;--min-frequency&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default: read from VFD) If
+specified, program register PD011 of the VFD with the
+specified minimum frequency of &lt;n&gt; Hz (and use the
+same minimum frequency in the hy_vfd driver). If not
+specified, read the minimum frequency to use from register
+PD011 of the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-V,&nbsp;--motor-voltage&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default: read from VFD) If
+specified, program register PD141 of the VFD with the
+specified max motor voltage of &lt;n&gt; Volts. If not
+specified, read the max motor voltage from register PD141 of
+the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-I,&nbsp;--motor-current&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default: read from VFD) If
+specified, program register PD142 of the VFD with the
+specified max motor current of &lt;n&gt; Amps. If not
+specified, read the max motor current from register PD142 of
+the VFD.</p>
+
+
+<p style="margin-left:11%;"><b>-S,&nbsp;--motor-speed&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default: compute from value
+read from VFD P144) This command-line argument is the
+motor&rsquo;s max speed. If specified, compute the
+motor&rsquo;s speed at 50 Hz from this argument and from the
+motor&rsquo;s max frequency (from the --max-frequency
+argument or from P011 if --max-frequency is not specified)
+and program register PD144 of the VFD. If not specified,
+read the motor&rsquo;s speed at 50 Hz from register P144 of
+the VFD, and use that and the max frequency to compute the
+motor&rsquo;s max speed.</p>
+
+
+<p style="margin-left:11%;"><b>-P,&nbsp;--motor-poles&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">(default: read value from VFD
+P143) This command-line argument is the number of poles in
+the motor. If specified, this value is sent to the
+VFD&rsquo;s register PD143. If not specified, the value is
+read from PD143 and reported on the corresponding HAL
+pin.</p>
+
+
+<p style="margin-left:11%;"><b>-x,&nbsp;--register&nbsp;PDnnn=mmm&nbsp;&lt;n&gt;</b></p>
+
+<p style="margin-left:22%;">Set a specific register to a
+new value. Can be used to set up to 10 registers. Parameters
+will &quot;stick&quot; (but only after hy_vfd.enable has
+been set true) so to set more than ten parameters it is
+possible to repeatedly load the driver with a set of
+registers to set then enable (setp hy_vfd.enable 1) and
+unload (unload hy_vfd) the driver at a halrun(1) prompt. For
+example: <b><br>
+loadusr -W hy_vfd -d /ttyUSB0 --register PD014=30 --register
+PD015=30</b> <br>
+Will set both ramp1 times to 3 seconds. The values should be
+scaled according to the manual data. The example above uses
+values with a resolution of 0.1 seconds, so the numbers are
+10x larger than the required value.</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;name&gt;.enable</b></p>
+
+<p style="margin-left:22%;">(bit, in) Enable communication
+from the hy_vfd driver to the VFD.</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.SetF</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.OutF</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.OutA</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.Rott</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.DCV</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.ACV</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.Cont</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.Tmp</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-forward</b></p>
+
+<p style="margin-left:22%;">(bit, in)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-reverse</b></p>
+
+<p style="margin-left:22%;">(bin, in)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-on</b></p>
+
+<p style="margin-left:22%;">(bin, in)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNTR</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-run</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-jog</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-command-rf</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-running</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-jogging</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-running-rf</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-bracking</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.CNST-track-start</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.speed-command</b></p>
+
+<p style="margin-left:22%;">(float, in)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-speed-fb</b></p>
+
+<p style="margin-left:22%;">(float, out) Current spindle
+speed as reported by Huanyang VFD.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-at-speed-tolerance</b></p>
+
+<p style="margin-left:22%;">(float, in) Spindle speed error
+tolerance. If the actual spindle speed is within
+.spindle-at-speed-tolerance of the commanded speed, then the
+.spindle-at-speed pin will go True. The default
+.spindle-at-speed-tolerance is 0.02, which means the actual
+speed must be within 2% of the commanded spindle speed.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.spindle-at-speed</b></p>
+
+<p style="margin-left:22%;">(bit, out) True when the
+current spindle speed is within .spindle-at-speed-tolerance
+of the commanded speed.</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.frequency-command</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.max-freq</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.base-freq</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.freq-lower-limit</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.rated-motor-voltage</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.rated-motor-current</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.rated-motor-rev</b></p>
+
+<p style="margin-left:22%;">(float, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.motor-poles</b></p>
+
+<p style="margin-left:22%;">(u32, out)</p>
+
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.hycomm-ok</b></p>
+
+<p style="margin-left:22%;">(bit, out)</p>
+
+<h2>PARAMETERS
+<a name="PARAMETERS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>&lt;name&gt;.error-count</b></p>
+
+<p style="margin-left:22%;">(s32, RW)</p>
+
+<p style="margin-left:11%;"><b>&lt;name&gt;.retval</b></p>
+
+<p style="margin-left:22%;">(float, RW)</p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Sebastian
+Kuzminsky</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>

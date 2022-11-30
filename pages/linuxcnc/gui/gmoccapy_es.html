@@ -1,0 +1,3065 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>GMOCCAPY</title>
+<link rel="stylesheet" href="..//asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="..//linuxcnc.css" type="text/css" />
+<script type="text/javascript" src="..//asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>GMOCCAPY</h1>
+<div id="toc">
+  <div id="toctitle">Tabla de contenidos</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="cha:gmoccapy">1. Introducción</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><em>GMOCCAPY</em> es una GUI para LinuxCNC, diseñada para ser utilizada con una pantalla táctil,
+pero también se puede usar en pantallas normales con un mouse o botones de hardware y
+volantes MPG, ya que presenta pines HAL para las necesidades más comunes. Por favor, vea mas
+información a continuación.</p></div>
+<div class="paragraph"><p>Ofrece la posibilidad de mostrar hasta 4 ejes, admite un modo de torno para
+herramienta normal y posterior, que puede adaptarse a casi cualquier necesidad, ya que
+gmoccapy soporta pestañas y paneles laterales incrustados.
+Como un buen ejemplo de esto, puede verse.
+<a href="http://wiki.linuxcnc.org/cgi-bin/wiki.pl?Gmoccapy_plasma">gmoccapy_plasma</a></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy 3 soporta hasta 9 ejes y 9 articulaciones. Como el código ha cambiado en gmoccapy 3
+para admitir los cambios articulaciones/ejes en LinuxCNC, ¡NO trabaja en versiones 2.7 o 2.6!
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Tiene soporte para teclado virtual (onboard o matchbox),
+por lo que no hay necesidad de un teclado o mouse de hardware, pero también se puede usar
+con ese hardware. Gmoccapy ofrece una página de configuración separada para configurar
+la GUI sin editar archivos.</p></div>
+<div class="paragraph"><p><em>GMOCCAPY</em> se puede localizar (usar idioma local) muy fácilmente, porque los archivos correspondientes estan
+separados de los archivos .po de linuxcnc, por lo que no hay necesidad de traducir cosas innecesarias.
+Los archivos se colocan en <strong>/src/po/gmoccapy</strong>. Simplemente copiar el archivo gmoccapy.pot
+a algo como fr.po, pl.po, es.po, etc. y traducir ese archivo con gtranslator o poedit.
+Después de la recompilacion, tendra la GUI en su idioma preferido. Por favor, publique
+su traducción para que pueda ser incluido en los paquetes oficiales y ser
+publicado para otros usuarios. En el momento está disponible en inglés, alemán,
+español, polaco, serbio y húngaro. Siéntete libre de ayudarme a introducir más
+idiomas, <strong>nieson@web.de</strong>. Si necesita ayuda, no dude en preguntar.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_5_axis.png" alt="images/gmoccapy_5_axis.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_requisitos">2. Requisitos</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Gmoccapy 3 se ha probado en Debian Jessie, Debian Stretch y MINT 18
+con la rama master y la 2.8 de LinuxCNC. Es totalmente compatible con los cambios articulaciones/ejes de LinuxCNC, haciendolo
+adecuado como GUI para Scara, Robots o cualquier otra configuración con más articulaciones que
+ejes. También soporta configuraciones de pórtico. Si usas otras versiones, por favor,
+informar sobre problemas y/o soluciones en
+<a href="http://www.linuxcnc.org/index.php/english/forum/41-guis/26314-gmoccapy-a-new-screen-for-linuxcnc">LinuxCNC forum</a> o en
+<a href="http://www.cncecke.de/forum/showthread.php?t=78549">German CNC Ecke Forum</a> o en
+<a href="https://lists.sourceforge.net/lists/listinfo/emc-users">LinuxCNC lista de correo de usuarios</a></p></div>
+<div class="paragraph"><p>La resolución de pantalla mínima para gmoccapy, usándola sin paneles laterales, es
+<strong>979 x 750 píxeles</strong>, por lo que debe ajustarse a todas las pantallas estándar.
+Se recomienda una resolucion de 1024x748.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cómo_obtener_gmoccapy">3. Cómo obtener gmoccapy</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A partir de LinuxCNC 2.8 gmoccapy se incluye en la instalación estándar.
+Así que la forma más fácil de obtener gmoccapy en su PC de control, es simplemente obtener
+<a href="http://www.linuxcnc.org/index.php/english/download">ISO</a> e instalar
+desde el DVD/Stick-USB.</p></div>
+<div class="paragraph"><p>Usted recibirá actualizaciones con los paquetes deb regulares.</p></div>
+<div class="paragraph"><p>Gmoccapy 3 solo se incluye en la versión master y en la 2.8.</p></div>
+<div class="paragraph"><p>Obtendrá una pantalla similar a la siguiente:
+(el diseño puede variar dependiendo de su configuración.)</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_3_axis.png" alt="images/gmoccapy_3_axis.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuración_básica">4. Configuración básica</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Realmente no hay mucho que configurar para ejecutar gmoccapy, pero hay algunos puntos
+con los que debe tener cuidado si desea utilizar todas las funciones de la GUI.</p></div>
+<div class="paragraph"><p>Encontrará los siguientes archivos INI incluidos, solo para mostrar lo básico:<br />
+<br />
+ * gmoccapy.ini<br />
+ * gmoccapy_4_axis.ini<br />
+ * lathe_configs/gmoccapy_lathe.ini<br />
+ * lathe_configs/gmoccapy_lathe_imperial.ini<br />
+ * gmoccapy_left_panel.ini<br />
+ * gmoccapy_right_panel.ini<br />
+ * gmoccapy_messages.ini<br />
+ * gmoccapy_pendant.ini<br />
+ * gmoccapy_sim_hardware_button.ini<br />
+ * gmoccapy_tool_sensor.ini<br />
+ * gmoccapy_with_user_tabs.ini<br />
+ * gmoccapy_XYZAB.ini<br />
+ * gmoccapy_XYZAC.ini<br />
+ * gmoccapy_XYZCW.ini<br />
+ * gmoccapy-JA/Gantry/gantry_mm.ini<br />
+ * gmoccapy-JA/scara/scara.ini<br />
+ * gmoccapy-JA/table-rotary-tilting/xyzac-trt.ini<br />
+ * y algunos mas&#8230;<br />
+<br />
+Los nombres deben explicar la intención principal de los diferentes archivos INI.<br /></p></div>
+<div class="paragraph"><p>Si utiliza una configuración existente en su máquina, simplemente edite su INI de acuerdo con este documento.<br /></p></div>
+<div class="paragraph"><p>IMPORTANTE: si desea utilizar <a href="gmoccapy_es.html#gmoccapy:macros">MACROS</a>, no olvide configurar la ruta a sus macros o
+carpeta de subrutinas como se describe a continuación.</p></div>
+<div class="paragraph"><p>Echemos un vistazo más de cerca al archivo INI y lo que necesita incluir
+para usar gmoccapy en su máquina:<br /></p></div>
+<div class="sect2">
+<h3 id="gmoccapy:display-section">4.1. La sección DISPLAY</h3>
+<div class="literalblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = gmoccapy
+PREFERENCE_FILE_PATH = gmoccapy_preferences
+MAX_FEED_OVERRIDE = 1.5
+MAX_SPINDLE_OVERRIDE = 1.2
+MIN_SPINDLE_OVERRIDE = 0.5
+LATHE = 1
+BACK_TOOL_LATHE = 1
+PROGRAM_PREFIX = ../../nc_files/</code></pre>
+</div></div>
+<hr />
+<div class="paragraph"><p>La parte más importante es decirle a LinuxCNC que use gmoccapy, editando la sección [DISPLAY].</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>[DISPLAY]
+DISPLAY = gmoccapy</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>PREFERENCE_FILE_PATH = gmoccapy_preferences</code></pre>
+</div></div>
+<div class="paragraph"><p>gmoccapy 3 admite las siguientes opciones de línea de comando:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+-user_mode: si está configurado, el botón de configuración se deshabilitará, por lo que los operadores normales de la máquina no podrán editar la configuración *
+</p>
+</li>
+<li>
+<p>
+-logo &lt;ruta de acceso al archivo de logotipo&gt;: si se proporciona, el logotipo ocultará la pestaña del botón de jog en modo manual, esto solo es útil para máquinas con botón de hardware para jogging y selección de incrementos<br />
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>La línea PREFERENCE_FILE_PATH proporciona la ubicación y el nombre del archivo de preferencias que se utilizará.
+En la mayoría de los casos, esta línea no será necesaria; es utilizada por gmoccapy para almacenar su configuración de la GUI, como temas, unidades DRO, colores y configuraciones de teclado, etc., vea la <a href="gmoccapy_es.html#gmoccapy:settings-page">página de configuración</a> para más detalles.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si no se proporciona una ruta o archivo, gmoccapy usará como predeterminado
+&lt;your_machinename&gt;.pref. Si no se da un nombre de máquina en el archivo INI, usara
+gmoccapy.pref El archivo se almacenará en su directorio de configuración, por lo que
+la configuración no se mezclará si utiliza varias configuraciones. Si solo quiere usar
+un archivo para varias máquinas, debe incluir PREFERENCE_FILE_PATH en su
+INI.</td>
+</tr></table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>MAX_FEED_OVERRIDE = 1.5</code></pre>
+</div></div>
+<div class="paragraph"><p>Establece el porcentaje de alimentación máxima. En el ejemplo dado, se le permitirá
+variar la alimentación hasta en un 150%.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si no se da ningún valor, se establecerá en 1.0</td>
+</tr></table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>MAX_SPINDLE_OVERRIDE = 1.2
+MIN_SPINDLE_OVERRIDE = 0.5</code></pre>
+</div></div>
+<div class="paragraph"><p>Le permitirá cambiar porcentajes del husillo dentro de un límite de 50% a 120%.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si no se dan valores, MAX se establecerá en 1.0 y MIN en 0.1</td>
+</tr></table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>LATHE = 1
+BACK_TOOL_LATHE = 1</code></pre>
+</div></div>
+<div class="paragraph"><p>La primera línea establece la pantalla con el diseño para controlar un torno.</p></div>
+<div class="paragraph"><p>La segunda línea es opcional y cambiará el eje X de la manera que se necesita para un
+torno con herramienta posterior. También los atajos de teclado reaccionarán de una manera diferente.
+Con gmoccapy se permite configurar un torno también con eje adicional, por lo que también puede usar una configuración XCW para un torno.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Sugerencia</div>
+</td>
+<td class="content">Consulte también la <a href="gmoccapy_es.html#gmoccapy:lathe-section">sección específica del torno</a></td>
+</tr></table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+PROGRAM_PREFIX = ../../nc_files/
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Es la entrada para indicar a linuxcnc/gmoccapy dónde buscar los archivos ngc.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si no se especifica, Gmoccapy buscará en el siguiente orden los archivos ngc:
+linuxcnc/nc_files y luego el directorio home de los usuarios.</td>
+</tr></table>
+</div>
+<div class="paragraph" id="gmoccapy:configuration-of-tabs-and-side-panels"><div class="title">Configuración de pestañas y paneles laterales.</div><p>Puede agregar programas integrados a gmoccapy como lo puede hacer en axis, touchy y gscreen. Todo se hace automáticamente por gmoccapy si incluye algunas líneas en su archivo INI en la sección DISPLAY.</p></div>
+<div class="paragraph"><p>Si nunca usó un panel glade, se recomienda leer la excelente documentación.
+<a href="http://www.linuxcnc.org/docs/html/gui/gladevcp.html">Glade VCP</a></p></div>
+<div class="listingblock">
+<div class="title">Ejemplo</div>
+<div class="content">
+<pre><code> EMBED_TAB_NAME = DRO
+ EMBED_TAB_LOCATION = ntb_user_tabs
+ EMBED_TAB_COMMAND = gladevcp -x {XID} dro.glade
+
+ EMBED_TAB_NAME = Segunda pestaña de usuario
+ EMBED_TAB_LOCATION = ntb_preview
+ EMBED_TAB_COMMAND = gladevcp -x {XID} vcp_box.glade</code></pre>
+</div></div>
+<div class="paragraph"><p>Todo lo que debe tener en cuenta es incluir para cada pestaña o panel lateral
+las tres líneas mencionadas,</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+EMBED_TAB_NAME = Representa el nombre de la pestaña o el panel lateral. Depende de usted
+  qué nombre usar, pero debe estar presente.
+</p>
+</li>
+<li>
+<p>
+EMBED_TAB_LOCATION = Es el lugar donde se colocará su programa en la GUI.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title">Los valores válidos son:</div><ul>
+<li>
+<p>
+ntb_user_tabs           (como pestaña principal, que cubre la pantalla completa)
+</p>
+</li>
+<li>
+<p>
+ntb_preview             (como pestaña en el lado de vista previa)
+</p>
+</li>
+<li>
+<p>
+box_left                (a la izquierda, arriba de la pantalla)
+</p>
+</li>
+<li>
+<p>
+box_right               (a la derecha, entre la pantalla normal y la lista de botones)
+</p>
+</li>
+<li>
+<p>
+box_coolant_and_spindle (ocultará los marcos del refrigerante y del husillo e introducirá aqui su archivo glade)
+</p>
+</li>
+<li>
+<p>
+box_cooling             (ocultará el cuadro de refrigerante e introducirá su archivo glade)
+</p>
+</li>
+<li>
+<p>
+box_spindle             (ocultará el marco del husillo e introducirá su archivo glade)
+</p>
+</li>
+<li>
+<p>
+box_vel_info            (ocultará los cuadros de velocidad e introducirá tu archivo glade)
+</p>
+</li>
+<li>
+<p>
+box_custom_1            (presentará tu archivo glade a la izquierda de vel_frame)
+</p>
+</li>
+<li>
+<p>
+box_custom_2            (presentará tu archivo glade a la izquierda de cooling_frame)
+</p>
+</li>
+<li>
+<p>
+box_custom_3            (presentará tu archivo glade a la izquierda de spindle_frame)
+</p>
+</li>
+<li>
+<p>
+box_custom_4            (presentará su archivo glade a la derecha de spindle_frame)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Vea los diferentes archivos INI incluidos para ver las diferencias.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+EMBED_TAB_COMMAND = el comando a ejecutar, por ejemplo,
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>gladevcp -x {XID} dro.glade</code></pre>
+</div></div>
+<div class="paragraph"><p>Incluye un archivo glade personalizado llamado dro.glade en la ubicación mencionada
+El archivo se debe colocar en la carpeta de configuración de su máquina.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>gladevcp h_buttonlist.glade</code></pre>
+</div></div>
+<div class="paragraph"><p>Solo abrirá una nueva ventana de usuario llamada h_buttonlist.glade. Note la diferencia;
+esta es independiente y puede moverse independientemente de la ventana gmoccapy.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>gladevcp -c gladevcp -u hitcounter.py -H manual-example.hal manual-example.ui</code></pre>
+</div></div>
+<div class="paragraph"><p>Agregará el panel manual-example.ui, incluirá un controlador personalizado de python,
+hitcounter.py y realizará todas las conexiones después de realizar el panel de acuerdo con manual-example.hal.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si realiza alguna conexión hal al panel de glade personalizado, debe hacerlo en el archivo hal especificado
+en la línea EMBEDDED_TAB_COMMAND; de lo contrario, puede obtener un error de que el pin hal no existe.
+Esto se debe a las condiciones de carga de los archivos hal . Las conexiones a pines gmoccapy hal  deben
+realizarse en el archivo hal postgui especificado en su archivo INI, porque este pin no existe antes de realizar la GUI</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Aquí hay unos ejemplos:</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_ntb_preview_maximized_2.png" alt="images/gmoccapy_ntb_preview_maximized_2.png" />
+</div>
+<div class="title">Figura 1. ntb_preview - como versión maximizada</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_ntb_preview.png" alt="images/gmoccapy_ntb_preview.png" />
+</div>
+<div class="title">Figura 2. ntb_preview</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_with_left_box_in_edit_mode.png" alt="images/gmoccapy_with_left_box_in_edit_mode.png" />
+</div>
+<div class="title">Figura 3. box_left - mostrando gmoccapy en modo de edición</div>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_with_right_panel_in_MDI_mode.png" alt="images/gmoccapy_with_right_panel_in_MDI_mode.png" />
+</div>
+<div class="title">Figura 4. box_right - y gmoccapy en modo MDI</div>
+</div>
+<div class="paragraph"><div class="title">Configuración de mensajes creados por el usuario</div><p>Gmoccapy tiene la capacidad de crear mensajes de usuario desde hal. Para usarlos
+es necesario introducir algunas líneas en la sección [DISPLAY] del archivo INI.</p></div>
+<div class="paragraph"><p>Aquí se muestra cómo configurar 3 cuadros de diálogo de mensaje emergente de usuario.
+Los mensajes admiten el lenguaje de marcado pango. Puede encontrar información detallada sobre el lenguaje de marcado en
+<a href="https://developer.gnome.org/pango/stable/PangoMarkupFormat.html">Pango Markup</a></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>MESSAGE_TEXT = El texto a mostrar, puede tener formato pango
+MESSAGE_TYPE = "status", "okdialog", "yesnodialog"
+MESSAGE_PINNAME = es el nombre del grupo de pines hal que se creará</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>status</em> : solo mostrará un mensaje como ventana emergente, usando el
+   sistema de mensajes de gmoccapy
+</p>
+</li>
+<li>
+<p>
+<em>okdialog</em> : mantendrá el foco en el cuadro de diálogo del mensaje y activará un Hal_Pin OUT
+  "-waiting". Cerrar el mensaje restablecerá el pin de espera
+</p>
+</li>
+<li>
+<p>
+<em>yesnodialog</em> : mantendrá el foco en el cuadro de diálogo del mensaje y lo activará
+   un bit Hal_Pin OUT "-waiting" y también dará acceso a un bit Hal_Pin Out "-response".
+   Este pin mantendrá 1 si el usuario hace clic en Aceptar, y en todos
+   los otros estados será 0. Al cerrar el mensaje se restablecerá el pin de espera.
+   El pin hal de respuesta permanecerá a 1 hasta que se vuelva a llamar al diálogo.
+</p>
+</li>
+</ul></div>
+<div class="listingblock">
+<div class="title">Ejemplo</div>
+<div class="content">
+<pre><code>MESSAGE_TEXT = Este es un &lt;span background="#ff0000" foreground="#ffffff"&gt;
+mensaje-info&lt;/span&gt;  de prueba
+MESSAGE_TYPE = status
+MESSAGE_PINNAME = statustest
+
+MESSAGE_TEXT = Esta es una prueba de diálogo sí/no
+MESSAGE_TYPE = yesnodialog
+MESSAGE_PINNAME = yesnodialog
+
+MESSAGE_TEXT = El texto puede ser &lt;small&gt;small&lt;/small&gt;, &lt;big&gt;big&lt;/big&gt;, &lt;b&gt;bold&lt;/ b&lt;i&gt;italic&lt;/i&gt;, e incluso
+puede ser &lt;span color="red"&gt;coloreado&lt;/span&gt;.
+MESSAGE_TYPE = okdialog
+MESSAGE_PINNAME = okdialog</code></pre>
+</div></div>
+<div class="paragraph"><p>Las convenciones específicas de pines hal para esto se pueden encontrar en la seccion
+<a href="gmoccapy_es.html#gmoccapy:user-created-message">mensajes de usuario</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="gmocappy:rs274ngc">4.2. La sección RS274NGC</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>[RS274NGC]
+SUBROUTINE_PATH = macros</code></pre>
+</div></div>
+<div class="paragraph"><p>Establece la ruta para buscar macros y otras subrutinas. Si quiere usar
+varias rutas de subrutinas, simplemente sepárelas con ":"</p></div>
+</div>
+<div class="sect2">
+<h3 id="gmoccapy:macros">4.3. La sección MACRO</h3>
+<div class="paragraph"><p>Puede agregar macros a gmoccapy, de manera parecida a Touchy. Una macro no es nada
+más que un archivo ngc. Asi se pueden ejecutar programas completos de CNC en modo MDI,
+simplemente pulsando un botón. Para hacerlo, tiene que agregar una sección parecida a:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[MACROS]
+MACRO = i_am_lost
+MACRO = hello_world
+MACRO = jog_around
+MACRO = increment xinc yinc
+MACRO = go_to_position X-pos Y-pos Z-pos</code></pre>
+</div></div>
+<div class="paragraph"><p>Esto agregará 5 macros a la lista de botones MDI.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Como aparecerán un máximo de 16 macros en la GUI, debido a razones de espacio, es posible que deba hacer
+clic en una flecha para cambiar de página y mostrar el botón de macro oculto.
+No es un error colocar más en su archivo INI. El botón de macro se mostrará en el orden de las entradas INI.</td>
+</tr></table>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_mdi_hidden_keyboard.png" alt="images/gmoccapy_mdi_hidden_keyboard.png" />
+</div>
+</div>
+<div class="paragraph"><p>El nombre del archivo debe ser <strong>exactamente el mismo</strong> que el nombre dado en la linea MACRO.
+Así, la macro <em><strong>i_am_lost</strong></em> llamará al archivo <em><strong>i_am_lost.ngc</strong></em>.</p></div>
+<div class="paragraph"><p>Los archivos de macros deben seguir algunas reglas:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+el nombre del archivo debe ser el mismo que el nombre mencionado en la linea MACRO,
+  con la extensión ngc
+</p>
+</li>
+<li>
+<p>
+El archivo debe contener una subrutina como: <em><strong>O&lt;i_am_lost&gt; sub</strong></em>; el nombre
+  de la subrutina debe coincidir exactamente (<strong>distingue entre mayúsculas y minúsculas</strong>)con el nombre de la macro
+</p>
+</li>
+<li>
+<p>
+el archivo debe terminar con un endsub <em><strong>O&lt;i_am_lost&gt; endsub</strong></em> seguido de un
+  comando <em><strong>M2</strong></em>
+</p>
+</li>
+<li>
+<p>
+los archivos deben colocarse en una carpeta especificada en su archivo INI en la
+  sección [RS274NGC] (ver <a href="gmoccapy_es.html#gmocappy:rs274ngc">RS274NGC</a>)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El código entre sub y endsub se ejecutará presionando el
+botón de macro correspondiente.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Encontrará macros de muestra en la carpeta de macros colocadas en la carpeta sim de gmoccapy.
+Si ha dado varias rutas de subrutinas, se buscarán
+en el orden de los caminos dados. Se utilizará el primer archivo encontrado.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Gmoccapy también aceptará macros que soliciten parámetros como:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>go_to_position X-pos Y-pos Z-pos</code></pre>
+</div></div>
+<div class="paragraph"><p>Los parámetros deben estar separados por espacios. Esto llama a un archivo
+<em>go_to_position.ngc</em> con el siguiente contenido:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>; Archivo de prueba ir a la posición
+; moverá la máquina a una posición dada
+
+O&lt;go_to_position&gt; sub
+
+G17
+G21
+G54
+G61
+G40
+G49
+G80
+G90
+
+;#1 = &lt;X-Pos&gt;
+;#2 = &lt;Y-Pos&gt;
+;#3 = &lt;Z-Pos&gt;
+
+(DBG, Ahora moverá la máquina a X = #1, Y = #2, Z = #3)
+G0 X #1 Y #2 Z #3
+
+O&lt;go_to_position&gt; endsub
+M2</code></pre>
+</div></div>
+<div class="paragraph"><p>Después de presionar el botón <em><strong>ejecutar macro</strong></em>, se le pedirá que ingrese
+valores para <em><strong>X-pos Y-pos Z-pos</strong></em> y la macro solo se ejecutará si todos los valores
+han sido dados.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si desea usar una macro sin ningún movimiento, vea también las notas en <a href="gmoccapy_es.html#sub:NOT_ENDING_MACROS">problemas conocidos</a></td>
+</tr></table>
+</div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_getting_macro_info.png" alt="images/gmoccapy_getting_macro_info.png" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="gmoccapy:traj-section">4.4. La sección TRAJ</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>DEFAULT_LINEAR_VELOCITY = 85.0
+MAX_VELOCITY = 230.000</code></pre>
+</div></div>
+<div class="paragraph"><p>Establece la velocidad máxima y la velocidad de jog predeterminada de la máquina.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si no se proporciona DEFAULT_LINEAR_VELOCITY, se utilizará la mitad de MAX_VELOCITY.
+Si ese valor tampoco se da, se establecerá de forma predeterminada en 180
+Si no se da MAX_VELOCITY, se establecerá por defecto en 600</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pines_hal">5. Pines HAL</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>gmoccapy exporta varios pines hal para poder reaccionar a dispositivos de hardware.
+El objetivo es obtener una GUI que pueda operarse completamente o en su mayor parte
+sin ratón ni teclado.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Tendrá que hacer todas las conexiones a los pines gmoccapy en su archivo postgui.hal,
+porque no están disponibles antes de cargar la GUI completamente. Es posible
+llamar a varios archivos postgui hal, facilitando la depuración de la configuración. Para ello, use
+un archivo postgui_call_list.hal. Las conexiones al panel de usuario deben hacerse en un
+archivo hal separado, ya que los paneles se cargan después de la GUI.
+Ver <a href="#gmoccapy:configuration-of-tabs-and-side-panels">pestañas y paneles laterales</a>
+para detalles.</td>
+</tr></table>
+</div>
+<div class="sect2">
+<h3 id="_listas_de_botones_derecha_e_inferior">5.1. Listas de botones derecha e inferior</h3>
+<div class="paragraph"><p>La pantalla tiene dos listas de botones principales, una en el lado derecho y otra en la
+parte inferior. Los botones de la derecha no cambiarán durante la operación, pero
+la lista de botones inferior cambiará muy a menudo. Los botones se numeran de arriba hacia
+abajo y de izquierda a derecha comenzando con "0".</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">los nombres de pin para <strong>Gmoccapy 3</strong> ha cambiado para ordenarlos mejor:</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>En hal_show verá que los botones derechos (verticales) son:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.v-button.button-0
+</p>
+</li>
+<li>
+<p>
+gmoccapy.v-button.button-1
+</p>
+</li>
+<li>
+<p>
+gmoccapy.v-button.button-2
+</p>
+</li>
+<li>
+<p>
+gmoccapy.v-button.button-3
+</p>
+</li>
+<li>
+<p>
+gmoccapy.v-button.button-4
+</p>
+</li>
+<li>
+<p>
+gmoccapy.v-button.button-5
+</p>
+</li>
+<li>
+<p>
+gmoccapy.v-button.button-6
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>y los botones inferiores (horizontales) son:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>A medida que los botones en la lista inferior cambien de acuerdo con el modo y otras
+consideraciones, los botones de hardware activarán diferentes funciones, y usted
+no tendra que cuidar de cambiar las funciones en hal, porque eso
+se hace completamente dentro de gmoccapy!</p></div>
+<div class="paragraph"><p>for a 3 axis XYZ machine the hal pin will react as follows:</p></div>
+<div class="paragraph"><p>in manual mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == open homing button
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == open touch off stuff
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == open tool dialogs
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == full-size preview
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == exit if machine is off, otherwise no reaction
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in mdi mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == macro_0 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == macro_1 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 == macro_2 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == macro_3 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 == macro_4 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 == macro_5 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 == macro_6 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 == macro_7 or nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == macro_8 or switch page to additional macros
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == open keyboard or abort if macro is running
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in auto mode</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == open file
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == reload program
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 == run
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == stop
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 == pause
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 == step by step
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 == run from line if enabled in settings, otherwise Nothing
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 == optional blocks
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == full-size preview
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == edit code
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in settings mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == delete MDI history
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 == open classic ladder
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 == open hal scope
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 == open hal status
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 == open hal meter
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == open hal calibration
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == open hal show
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in homing mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == home all
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == home x
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 == home y
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 == home z
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == unhome all
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == back
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in touch off mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == edit offsets
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == touch X
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 == touch Y
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == touch Z
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 == zero G92
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == set selected
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == back
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in tool mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == delete tool(s)
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == new tool
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 == reload tool table
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == apply changes
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 == change tool by number T? M6
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 == set tool by number without change M61 Q?
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 == change tool to the selected one
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == touch of tool in Z
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == back
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in edit mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == reload file
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 == save
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == save as
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 == new file
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 == show keyboard
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == back
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>in select file mode:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.h-button.button-0 == go to home directory
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-1 == one directory level up
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-2 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-3 == move selection left
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-4 == move selection right
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-5 == jump to directory as set in settings
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-6 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-7 == select / ENTER
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-8 ==
+</p>
+</li>
+<li>
+<p>
+gmoccapy.h-button.button-9 == back
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><strong>So we have 67 reactions with only 10 hal pin!</strong></p></div>
+<div class="paragraph"><p>Estos pines están disponibles para poder utilizar la pantalla sin un
+panel tactil, o protégerlos del uso excesivo colocando botones de hardware alrededor
+el panel.</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_0_9_7_sim_hardware_button.png" alt="images/gmoccapy_0_9_7_sim_hardware_button.png" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_velocidades_y_porcentajes">5.2. Velocidades y porcentajes</h3>
+<div class="paragraph"><p>Todos los controles deslizantes de gmoccapy se pueden conectar a encoders o potenciómetros hardware.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">para Gmoccapy 3 los nombres de pines hal han cambiado, a medida que se implementaron nuevos controles.
+La velocidad máxima ya no existe, ya que se ha implementado el porcentaje de rapidos.
+Este cambio se ha hecho ya que lo pidieron muchos usuarios.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Para conectar los <em>encoders</em> se exportan los siguientes pines:</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="center" valign="top">                   PIN                         </th>
+<th align="left" valign="top">  TIPO   </th>
+<th align="center" valign="top">  FUNCION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.jog.jog-velocity.counts</p></td>
+<td align="left" valign="top"><p class="table">HAL_S32</p></td>
+<td align="center" valign="top"><p class="table">velocidad Jog</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.jog.jog-velocity.count-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita conteos</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.feed.feed-override.counts</p></td>
+<td align="left" valign="top"><p class="table">HAL_S32</p></td>
+<td align="center" valign="top"><p class="table">porcentaje de alimentacion</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.feed.feed-override.count-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita conteos</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.feed.reset-feed-override</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">restablece alimentación al 100%</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spindle.spindle-override.counts</p></td>
+<td align="left" valign="top"><p class="table">HAL_S32</p></td>
+<td align="center" valign="top"><p class="table">porcentaje del husillo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spindle.spindle-override.count-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita conteos</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spindle.reset-spindle-override</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">restablece husillo al 100%</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.rapid.rapid_override.counts</p></td>
+<td align="left" valign="top"><p class="table">HAL_S32</p></td>
+<td align="center" valign="top"><p class="table">Velocidad máxima de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.rapid.rapid_override.count-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita conteos</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Para conectar <em>potenciómetros</em>, use los siguientes pines hal:</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="center" valign="top">                   PIN                          </th>
+<th align="left" valign="top">  TIPO     </th>
+<th align="center" valign="top">  FUNCION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.jog.jog-velocity.direct-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT</p></td>
+<td align="center" valign="top"><p class="table">velocidad Jog</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.jog.jog-velocity.analog-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita analogico</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.feed.feed-override.direct-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT</p></td>
+<td align="center" valign="top"><p class="table">porcentaje de alimentacion</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.feed.feed-override.analog-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita analogico</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spindle.spindle-override.direct-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT</p></td>
+<td align="center" valign="top"><p class="table">porcentaje del husillo</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spindle.spindle-override.analog-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita analogico</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.rapid.rapid_override.direct-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT</p></td>
+<td align="center" valign="top"><p class="table">Velocidad máxima de la máquina</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.rapid.rapid_override.analog-enable</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT</p></td>
+<td align="center" valign="top"><p class="table">verdadero habilita analogico</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Además gmoccapy 3 ofrece pines hal adicionales para controlar
+los nuevos widgets deslizantes con pulsadores. Los valores qué daran la rapidez del aumento
+o disminución deben establecerse en el archivo glade. En un lanzamiento futuro esto
+estara integrado en la página de configuración.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="center" valign="top"> PIN                              </th>
+<th align="left" valign="top"> TIPO          </th>
+<th align="center" valign="top"> FUNCION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table"></p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">VELOCIDAD</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_jog_vel.increase</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante aumentará</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_jog_vel.decrease</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante disminuira</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_jog_vel.scale</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT IN</p></td>
+<td align="center" valign="top"><p class="table">Escalado del valor de salida (util en udes/min a udes/seg.)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_jog_vel.value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_jog_vel.scaled-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor escalado del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">ALIMENTACION</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_feed.increase</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante aumentará</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_feed.decrease</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante disminuira</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_feed.scale</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT IN</p></td>
+<td align="center" valign="top"><p class="table">Escalado del valor de salida (util en udes/min a udes/seg.)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_feed.value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_feed.scaled-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor escalado del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">HUSILLO</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_spindle.increase</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante aumentará</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_spindle.decrease</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante disminuira</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_spindle.scale</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT IN</p></td>
+<td align="center" valign="top"><p class="table">Escalado del valor de salida (util en udes/min a udes/seg.)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_spindle.value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_spindle.scaled-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor escalado del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">RAPIDOS</p></td>
+<td align="left" valign="top"><p class="table"></p></td>
+<td align="center" valign="top"><p class="table"></p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_rapid.increase</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante aumentará</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_rapid.decrease</p></td>
+<td align="left" valign="top"><p class="table">HAL_BIT IN</p></td>
+<td align="center" valign="top"><p class="table">Si True, el valor del control deslizante disminuira</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_rapid.scale</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT IN</p></td>
+<td align="center" valign="top"><p class="table">Escalado del valor de salida (util en udes/min a udes/seg.)</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_rapid.value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor del widget</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">gmoccapy.spc_rapid.scaled-value</p></td>
+<td align="left" valign="top"><p class="table">HAL_FLOAT OUT</p></td>
+<td align="center" valign="top"><p class="table">valor escalado del widget</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>Los pines float aceptan valores de 0.0 a 1.0, siendo el valor de porcentaje que
+desea establecer como valor del control deslizante</p></div>
+<div class="paragraph"><p>[AVISO] Si usa ambos tipos de conexión, no conecte el mismo control deslizante a
+ambos pines, ya que las influencias entre los dos no han sido probadas. Diferentes
+deslizadores pueden estar conectados a uno u otro tipo de conexión hal.</p></div>
+<div class="paragraph"><p>[IMPORTANT] Tenga en cuenta que la velocidad de jog depende del estado del botón tortuga,
+con diferentes escalas deslizantes dependiendo del modo (tortuga o conejo).
+Por favor, eche un vistazo también a <a href="gmoccapy_es.html#gmoccapy:jog-velocity">velocidades jog y pin hal jog-tortuga</a> para más
+detalles</p></div>
+<div class="listingblock">
+<div class="title">Ejemplo</div>
+<div class="content">
+<pre><code>Spindle Override Min Value =  20 %
+Spindle Override Max Value = 120 %
+gmoccapy.analog-enable = 1
+gmoccapy.spindle-override-value = 0.25
+
+value to set = Min Value + (Max Value - Min Value) * gmoccapy.spindle-override-value
+value to set = 20 + (120 - 20) * 0.25
+value to set = 45 %</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_jog_hal">5.3. Pines Jog Hal</h3>
+<div class="paragraph"><p>Todos los ejes dados en el archivo INI tienen un pin jog-plus y un jog-minus, por lo que
+se pueden utilizar interruptores momentáneos de hardware para mover el eje.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">el nombre de este pin ha cambiado para Gmoccapy 3</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Para la configuración estándar de XYZ, los siguientes pines estarán disponibles:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.jog.axis.jog-x-plus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.axis.jog-x-minus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.axis.jog-y-plus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.axis.jog-y-minus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.axis.jog-z-plus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.axis.jog-z-minus
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si usa un archivo INI de 4 ejes, habrá dos pines adicionales</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.jog.&lt;cuarta letra de eje&gt;-plus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.&lt; cuarta letra de eje&gt;-minus
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para un eje "C" se veria:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.jog.axis.jog-c-plus
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.axis.jog-c-minus
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="gmoccapy:jog-velocity">5.4. Velocidades Jog y pin hal jog-tortuga</h3>
+<div class="paragraph"><p>La velocidad de jog se puede seleccionar con el control deslizante correspondiente. La escala
+del control deslizante se modificará si el botón tortuga (el que muestra un conejo o una
+tortuga) ha sido pulsado. Si el botón no es visible, podría haber sido
+desactivado en la <a href="#gmoccapy:turtle-jog">página de configuración</a>. Si el botón muestra el
+icono de conejo, la escala de velocidad de la máquina es de min. a máx. . Si muestra una
+tortuga, la escala alcanzará solo 1/20 de velocidad máxima por defecto.
+La fraccion se puede configurar en la <a href="#gmoccapy:turtle-jog">página de configuración</a>.</p></div>
+<div class="paragraph"><p>Con ello, el usar una pantalla táctil es mucho más fácil al seleccionar velocidades más pequeñas.</p></div>
+<div class="paragraph"><p>gmoccapy ofrece un pin hal para alternar entre jogs tortugas y conejos</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.jog.turtle-jog (Hal Bit In)
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_hal_de_incremento_de_jog">5.5. Pines hal de incremento de jog</h3>
+<div class="paragraph"><p>Los incrementos de jog se pueden seleccionar a través de pines hal, por lo que un interruptor hardware de selección
+se puede usar para seleccionar el incremento a usar. Habrá un máximo
+de 10 pines hal para los incrementos dados en el archivo INI; si da más
+incrementos en su archivo INI, no serán accesibles desde la GUI ya que
+no se mostrarán.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Gmoccapy 3 utiliza diferentes nombres de pin hal</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Si tiene 6 incrementos en su hal, obtendrá * 7 * pines:
+jog-inc-0 no se puede cambiar y representará jogging continuo.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.jog.jog-inc-0
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.jog-inc-1
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.jog-inc-2
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.jog-inc-3
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.jog-inc-4
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.jog-inc-5
+</p>
+</li>
+<li>
+<p>
+gmoccapy.jog.jog-inc-6
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="gmoccapy:hardware-unlock">5.6. Pin de desbloqueo hardware</h3>
+<div class="paragraph"><p>Para poder usar un interruptor de llave para desbloquear la página de configuración,
+se exporta siguiente pin:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.unlock-settings
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>La página de configuración está desbloqueada si el pin está alto.
+Para usar este pin, debes activarlo en la página de configuración.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_de_error">5.7. Pines de error</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.error
+</p>
+</li>
+<li>
+<p>
+gmoccapy.delete-message
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>gmoccapy.error es un pin de salida, para indicar un error, por lo que una luz puede encenderse o incluso la máquina puede
+ser detenida. Se resetea con el pin gmoccapy.delete-message, que
+elimina el primer error y restablece el pin gmoccapy.error en False una vez que se haya borrado el último error.</p></div>
+<div class="paragraph"><p>NOTA: Los mensajes o las informaciones de usuario no afectarán el pin gmoccapy.error, pero el mensaje gmoccapy.delete
+pin borrará el último mensaje si no se muestra ningún error!</p></div>
+</div>
+<div class="sect2">
+<h3 id="gmoccapy:user-created-message">5.8. Pines HAL de Mensajes creados por el usuario</h3>
+<div class="paragraph"><p>gmoccapy puede reaccionar a errores externos, utilizando 3 mensajes de usuario diferentes (todos son HAL_BIT):</p></div>
+<div class="paragraph"><p><em>Estado</em></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.messages.statustest
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><em>dialogo-YesNo</em></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.messages.yesnodialog
+</p>
+</li>
+<li>
+<p>
+gmoccapy.messages.yesnodialog-waiting
+</p>
+</li>
+<li>
+<p>
+gmoccapy.messages.yesnodialog-responce
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><em>dialogo-Ok</em></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.messages.okdialog
+</p>
+</li>
+<li>
+<p>
+gmoccapy.messages.okdialog-waiting
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Para agregar un mensaje creado por el usuario, debe agregar el mensaje al archivo INI en el
+Sección [DISPLAY]. Aquí hay un par de ejemplos.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>MESSAGE_BOLDTEXT = FALLO EN SISTEMA DE LUBRICACION
+MESSAGE_TEXT = Fallo de lubricación
+MESSAGE_TYPE = okdialog
+MESSAGE_PINNAME = lube-fault
+
+MESSAGE_BOLDTEXT = NONE
+MESSAGE_TEXT = X SHEAR PIN BROKEN
+MESSAGE_TYPE = status
+MESSAGE_PINNAME = pin</code></pre>
+</div></div>
+<div class="paragraph"><p>Para <em>conectar</em> los nuevos pines debe hacerlo en el archivo HAL Postgui.
+Aquí hay algunos ejemplos de conexiones que tienen la señal conectada a una entrada en
+algún otro lugar en el archivo HAL.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net gmoccapy-lube-fault gmoccapy.messages.lube-fault
+net gmoccapy-lube-fault-waiting gmoccapy.messages.lube-fault-waiting
+red gmoccapy-pin gmoccapy.messages.pin</code></pre>
+</div></div>
+<div class="paragraph"><p>Para obtener más información sobre los archivos HAL y el comando net, consulte la
+<a href="../hal/basic-hal_es.html#cha:basic-hal-reference">referencia HAL básica</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_de_realimentación_del_husillo">5.9. Pines de realimentación del husillo</h3>
+<div class="paragraph"><p>Hay dos pines para la retroalimentación del husillo.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.spindle_feedback_bar
+</p>
+</li>
+<li>
+<p>
+gmoccapy.spindle_at_speed_led
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><em>gmoccapy.spindle_feedback_bar</em> aceptará una entrada float para mostrar la velocidad del husillo.
+<em>gmoccapy.spindle_at_speed_led</em> es un pin de bit para encender el led GUI si el husillo está
+a su velocidad.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_para_indicar_información_sobre_el_progreso_del_programa">5.10. Pines para indicar información sobre el progreso del programa</h3>
+<div class="paragraph"><p>Hay tres pines que dan información sobre el progreso del programa:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.program.length, HAL_S32, que muestra el número total de líneas de programa
+</p>
+</li>
+<li>
+<p>
+gmoccapy.program.current-line, HAL_S32, que indica la línea de trabajo actual del programa
+</p>
+</li>
+<li>
+<p>
+gmoccapy.program.progress, HAL_FLOAT, que da el progreso del programa en porcentaje
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Los valores pueden no ser muy precisos, si está trabajando con subrutinas o
+procedimientos de remapeo grandes; también los bucles causarán diferentes valores.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_pines_relacionado_con_la_herramienta">5.11. Pines relacionado con la herramienta</h3>
+<div class="paragraph"><div class="title">Pin de cambio de herramienta</div><p>Este pin se proporciona para usar el diálogo de cambio de herramienta interno de gmoccapy, similar
+al conocido de AXIS, pero con varias modificaciones. No solo le mostrara
+el mensaje para cambiar <em>número de herramienta 3</em>, sino también la descripción de esa
+herramienta, como <em>Fresa 7,5 mm 3 filos</em>. La información se toma de la tabla de herramientas,
+por lo que depende de usted lo qué se muestre.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/manual_toolchange.png" alt="images/manual_toolchange.png" />
+</div>
+<div class="title">Figura 5. Cambio manual de herramienta</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.toolchange-number, HAL_S32, El número de la herramienta que se va a cambiar
+</p>
+</li>
+<li>
+<p>
+gmoccapy.toolchange-change, HAL_BIT, Indica que se debe cambiar una herramienta
+</p>
+</li>
+<li>
+<p>
+gmoccapy.toolchange-modified, HAL_BIT, Indica que la herramienta ha cambiado
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Por lo general, se conectan así para un cambio de herramienta manual:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net tool-change gmoccapy.toolchange-change &lt;= iocontrol.0.tool-change
+net tool-changed gmoccapy.toolchange-changed &lt;= iocontrol.0.tool-changed
+net tool-prep-number gmoccapy.toolchange-number &lt;= iocontrol.0.tool-prep-number
+net tool-prep-loop iocontrol.0.tool-prepare &lt;= iocontrol.0.tool-prepared</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">Pines de offsets de herramientas</div><p>Estos pines le permiten mostrar los valores de offset de la herramienta activa para X y Z en el
+cuadro de información de la herramienta. Solo están activos después de G43.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_0_9_7_tool_info.png" alt="images/gmoccapy_0_9_7_tool_info.png" />
+</div>
+<div class="title">Figura 6. Informacion de herramienta</div>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.tooloffset-x
+</p>
+</li>
+<li>
+<p>
+gmoccapy.tooloffset-z
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Conéctelos en su postgui hal.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">la línea tooloffset-x no es necesaria en una fresadora, y no se mostrará en una
+fresadora con cinemática trivial.</td>
+</tr></table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code> net tooloffset-x gmoccapy.tooloffset-x &lt;= motion.tooloffset.x
+ net tooloffset-z gmoccapy.tooloffset-z &lt;= motion.tooloffset.z</code></pre>
+</div></div>
+<div class="paragraph"><p>Tenga en cuenta que gmoccapy se encarga de actualizar los offsets,
+enviando un G43 después de cualquier cambio de herramienta, <strong>pero no en modo automático!</strong></p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Importante</div>
+</td>
+<td class="content">Al escribir un programa, usted es responsable de incluir un G43 después
+cada cambio de herramienta!</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gmoccapy:auto-tool-measurement">6. Medición automática de herramientas</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Gmoccapy ofrece una medición automática integrada de herramientas. Para usar esta característica, usted
+tendrá que hacer algunos ajustes adicionales y es posible que desee utilizar el
+pin hal que se ofrece para obtener valores en su propio procedimiento ngc de remapeo.</p></div>
+<div class="paragraph"><p>[IMPORTANT] Antes de comenzar la primera prueba, no olvide ingresar
+altura y velocidades de la sonda en la página de configuración! Ver
+<a href="#gmoccapy:tool-measurement">página de configuración de medición de Herramienta</a></p></div>
+<div class="paragraph"><p>También podría ser una buena idea echar un vistazo a la herramienta de medición en video:
+ver <a href="gmoccapy_es.html#gmoccapy:tool-measurement-videos">videos relacionados con la medición de herramientas</a></p></div>
+<div class="paragraph"><p>La medición de herramientas en gmoccapy se realiza de forma un poco diferente a muchas otras GUI.
+Debe seguir estos pasos:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+toque de su pieza en X e Y
+</p>
+</li>
+<li>
+<p>
+mida la altura de su bloque desde la base donde está ubicado su interruptor de herramienta
+  a la cara superior del bloque (incluida mordaza, etc.)
+</p>
+</li>
+<li>
+<p>
+Presione el botón de altura del bloque e ingrese el valor medido
+</p>
+</li>
+<li>
+<p>
+Ir al modo automático y comenzar su programa
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Aquí hay un pequeño boceto:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/sketch_auto_tool_measurement.png" alt="images/sketch_auto_tool_measurement.png" />
+</div>
+<div class="title">Figura 7. Datos para medicion de herramientas</div>
+</div>
+<div class="paragraph"><p>Con el primer cambio de herramienta, la herramienta se medirá y el offset
+se configura automáticamente para adaptarse a la altura del bloque. La ventaja de gmoccapy
+es que no se necesita una herramienta de referencia.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">¡Su programa debe contener un cambio de herramienta al principio! La herramienta será
+medida, incluso se ha utilizado antes, por lo que no hay peligro si
+la altura del bloque ha cambiado. Hay varios videos que muestran la manera de hacerlo en
+Youtube.</td>
+</tr></table>
+</div>
+<div class="sect2">
+<h3 id="_pines_de_medición_de_herramientas">6.1. Pines de medición de herramientas</h3>
+<div class="paragraph"><p>Gmoccapy ofrece 5 pines para fines de medición de herramientas. Los pines se utilizan principalmente
+para leer desde una subrutina de gcode, para que el código pueda reaccionar a diferentes valores.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+gmoccapy.toolmeasurement, HAL_BIT, permitir o no medición de herramientas
+</p>
+</li>
+<li>
+<p>
+gmoccapy.blockheight, HAL_FLOAT, el valor medido de la cara superior de la pieza de trabajo
+</p>
+</li>
+<li>
+<p>
+gmoccapy.probeheight, HAL_FLOAT, la altura del interruptor de la sonda
+</p>
+</li>
+<li>
+<p>
+gmoccapy.searchvel, HAL_FLOAT, la velocidad para buscar el interruptor de la sonda de herramienta
+</p>
+</li>
+<li>
+<p>
+gmoccapy.probevel, HAL_FLOAT, la velocidad para sondear la longitud de la herramienta
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_modificaciones_de_archivos_ini_en_medición_de_herramienta">6.2. Modificaciones de archivos INI en medición de herramienta</h3>
+<div class="paragraph"><p>Modifique su archivo INI para incluir lo siguiente:</p></div>
+<div class="paragraph"><p>En la sección [RS274NGC]</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[RS274NGC]
+# Habilita lectura de valores INI y HAL desde gcode
+FEATURES=12
+
+# sub que se llama cuando ocurre un error durante el cambio de herramienta
+ON_ABORT_COMMAND=O &lt;on_abort&gt; call
+
+# El código de remapeo
+REMAP=M6  modalgroup=6 prolog=change_prolog ngc=change epilog=change_epilog</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">La seccion del sensor de herramienta</div><p>Todos los valores de la posición del sensor de la herramienta y la posición inicial del movimiento de sondeo
+son coordenadas absolutas, excepto MAXPROBE, que debe darse en movimiento relativo.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[TOOLSENSOR]
+X = 10
+Y = 10
+Z = -20
+MAXPROBE = -20</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">La sección de cambio de posición</div><p>Esto no se ha llamado TOOL_CHANGE_POSITION a propósito - <strong>canon usa ese nombre e
+interferiria.</strong>. Es la posición a donde mover la máquina antes de dar el comando
+para cambiar la herramienta. Todos los valores están en coordenadas absolutas.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[CHANGE_POSITION]
+X = 10
+Y = 10
+Z = -2</code></pre>
+</div></div>
+<div class="paragraph"><div class="title">La Sección de Python.</div><p>Los complementos de Python sirven como intérprete y tarea.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>[PYTHON]
+# La ruta para iniciar una búsqueda de módulos de usuario.
+PATH_PREPEND = python
+# El punto de inicio para todos.
+TOPLEVEL = python/toplevel.py</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_archivos_necesarios">6.3. Archivos Necesarios</h3>
+<div class="paragraph"><p>Debe copiar los siguientes archivos a su directorio de configuración</p></div>
+<div class="paragraph"><p>Primero cree un directorio <em>python</em> en su carpeta de configuración. Desde
+<em>su_directorio_linuxcnc-dev/configs/sim/gmoccapy/python</em> copie:
+<em>toplevel.py</em>,
+<em>remap.py</em> y
+<em>stdglue.py</em>
+a su carpeta <em>config_dir / python</em>.</p></div>
+<div class="paragraph"><p>Desde <em>su_directorio_linuxcnc-dev/configs/sim/gmoccapy/macros</em> copie:
+<em>on_abort.ngc</em> y
+<em>change.ngc</em>
+al directorio especificado como SUBROUTINE_PATH.
+Vea <a href="gmoccapy_es.html#gmocappy:rs274ngc">Seccion RS274NGC</a>.</p></div>
+<div class="paragraph"><p>Abra <em>change.ngc</em> con un editor y descomente las siguientes líneas
+(49 y 50):</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>F #&lt;_ hal [gmoccapy.probevel]&gt;
+G38.2 Z-4</code></pre>
+</div></div>
+<div class="paragraph"><p>Es posible que desee modificar este archivo para que se ajuste más a sus necesidades.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_conexiones_hal_necesarias">6.4. Conexiones Hal necesarias</h3>
+<div class="paragraph"><p>Conecte la sonda de la herramienta en su archivo hal así:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>net probe  motion.probe-input &lt;= &lt;your_input_pin&gt;</code></pre>
+</div></div>
+<div class="paragraph"><p>La línea podría verse así:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> net probe  motion.probe-input &lt;= parport.0.pin-15-in</code></pre>
+</div></div>
+<div class="paragraph"><p>En su archivo postgui.hal agregue:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Las siguientes líneas solo son necesarias si los pines se habían conectado antes
+unlinkp iocontrol.0.tool-change
+unlinkp iocontrol.0.tool-changed
+unlinkp iocontrol.0.tool-prep-number
+unlinkp iocontrol.0.tool-prepared
+
+# enlace a gmoccapy toolchange, para obtener la ventaja de la descripción en el cuadro de diálogo de cambio de herramienta
+net tool-change gmoccapy.toolchange-change &lt;= iocontrol.0.tool-change
+net tool-changed gmoccapy.toolchange-changed &lt;= iocontrol.0.tool-changed
+net tool-prep-number gmoccapy.toolchange-number &lt;= iocontrol.0.tool-prep-number
+net tool-prep-loop iocontrol.0.tool-prepare &lt;= iocontrol.0.tool-prepared</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gmoccapy:settings-page">7. La página de configuración</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Para ingresar a la página deberás hacer click en
+<span class="image">
+<img src="images/gmoccapy_settings_button.png" alt="images/gmoccapy_settings_button.png" />
+</span>
+y dar un código de desbloqueo, que es * 123 * por defecto. Si quieres cambiarlo
+en este momento tendrá que editar el archivo de preferencias oculto. Vea
+<a href="gmoccapy_es.html#gmoccapy:display-section">la sección de pantalla</a> para más detalles.</p></div>
+<div class="paragraph"><p>La página se ve así:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_settings_appearance.png" alt="images/gmoccapy_settings_appearance.png" />
+</div>
+<div class="title">Figura 8. Pagina de configuracion</div>
+</div>
+<div class="paragraph"><p>La página está separada en tres pestañas principales:</p></div>
+<div class="sect2">
+<h3 id="_apariencia">7.1. Apariencia</h3>
+<div class="paragraph"><p>En esta pestaña encontrará las siguientes opciones:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Ventana principal
+</dt>
+<dd>
+<p>
+    Aquí puede seleccionar cómo desea que comience la GUI. La razón principal de esto fue el deseo de obtener una forma<br />
+    facil para el usuario de configurar las opciones de inicio sin la necesidad de tocar código.<br />
+   <br />
+    Tienes tres opciones:<br />
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+iniciar como pantalla completa
+</p>
+</li>
+<li>
+<p>
+iniciar maximizado
+</p>
+</li>
+<li>
+<p>
+iniciar como ventana
+   <br />
+    Si selecciona Iniciar como ventana, se activarán los cuadros para establecer la posición y el tamaño.<br />
+    Una vez establecidos, la GUI se iniciará cada vez en el lugar y con el tamaño seleccionado.<br />
+    Sin embargo, el usuario puede cambiar el tamaño y la posición con el mouse, pero eso<br />
+    no tiene ninguna influencia en la configuración.<br />
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p><em>* Ocultar cursor *</em> permite ocultar el cursor, lo que es muy útil si utilizar una pantalla táctil.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Teclado
+</dt>
+<dd>
+<p>
+    Las casillas de verificación permiten al usuario seleccionar si desea que el teclado integrado se muestre de inmediato,<br />
+    al ingresar al modo MDI, al ingresar a la página de offsets, al widget tooledit o al abrir un programa<br />
+    en el modo EDITAR. El botón del teclado en la lista de botones inferior no se verá afectado por esta configuración,<br />
+    para que pueda mostrar u ocultar el teclado presionando el botón. El comportamiento por defecto será establecido por<br />
+    las casillas de verificación.<br />
+   <br />
+    Los valores predeterminados son:<br />
+</p>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si esta sección no es confidencial, no se ha instalado un teclado virtual;
++ los admitidos son <em>onboard</em> y <em>matchbox-keyboard</em>.</td>
+</tr></table>
+</div>
+<div class="ulist"><ul>
+<li>
+<p>
+Mostrar teclado en offset = Verdadero
+</p>
+</li>
+<li>
+<p>
+Mostrar teclado en tooledit = False
+</p>
+</li>
+<li>
+<p>
+Mostrar teclado en MDI = Verdadero
+</p>
+</li>
+<li>
+<p>
+Mostrar teclado en EDITAR = Verdadero
+</p>
+</li>
+<li>
+<p>
+Mostrar teclado en carga de = Falso
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Si la distribución del teclado no es correcta, es decir, al hacer clic en X se obtiene Z,
+el diseño no se ha establecido correctamente, en relacion con la configuración regional. Para
+<em>onboard</em> se puede resolver con un pequeño archivo por lotes con el siguiente contenido:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> #!/bin/bash
+ setxkbmap -model pc105 -layout XX -variant basic</code></pre>
+</div></div>
+<div class="paragraph"><p>Las letras XX se tendrán que configurar de acuerdo con su
+configuración regional (para español de España, <strong>es</strong>). Simplemente ejecute este archivo antes de iniciar LinuxCNC. Tambien puede
+agregar un starter a su carpeta local</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>./config/autostart</code></pre>
+</div></div>
+<div class="paragraph"><p>para que el diseño se establezca automáticamente en el inicio.</p></div>
+<div class="paragraph"><p>Para matchbox-keyboard tendrá que hacer su propio diseño.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+On Touch Off
+</dt>
+<dd>
+<p>
+    da la opción de mostrar la pestaña de vista previa o de la página de offsets si ingresa en el modo touch off haciendo clic en
+    botón inferior correspondiente.
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Mostrar vista previa
+</p>
+</li>
+<li>
+<p>
+Mostrar offsets
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="paragraph"><p>A medida que se muestran las pestañas, puede cambiar entre ambas vistas en
+cualquier caso.</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Mostrar pantalla auxiliar
+</dt>
+<dd>
+<p>
+    Al hacer clic en este botón se abrirá una ventana adicional. Este botón solo es sensible si un archivo llamado <em>Gmoccapy 3.glade</em>
+    se encuentra en su carpeta de configuración. Puedes construir la pantalla Aux usando Glade.
+</p>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Aviso</div>
+</td>
+<td class="content"><em>La ventana principal de la pantalla auxiliar debe llamarse window2</em></td>
+</tr></table>
+</div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Opciones de DRO
+</dt>
+<dd>
+<p>
+Tiene la opción de seleccionar los colores de fondo de los diferentes estados del DRO.
+Por lo tanto, los usuarios que sufren de protanopia (debilidad roja/verde) pueden seleccionar los colores adecuados
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Por defecto los fondos son:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Modo relativo = negro
+</p>
+</li>
+<li>
+<p>
+Modo absoluto = azul
+</p>
+</li>
+<li>
+<p>
+Distancia a recorrer = amarillo
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El color de primer plano del DRO se puede seleccionar con:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+homed color = verde
+</p>
+</li>
+<li>
+<p>
+unhomed color = rojo
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p><em>mostrar DRO en vista previa</em><br />
+el DRO se mostrará en la ventana de vista previa +<br /></p></div>
+<div class="paragraph"><p><em>mostrar los offsets</em><br />
+Los offsets se mostrarán en la ventana de vista previa +<br /></p></div>
+<div class="paragraph"><p><em>mostrar DTG</em><br />
+La distancia a recorrer se mostrará en la ventana de vista previa +<br />
+<br />
+<em>mostrar boton DRO</em><br />
+le permitirá mostrar botones adicionales en el lado izquierdo del DRO.<br /></p></div>
+<div class="paragraph"><p>Se mostrará:<br />
+* Un botón para cambiar de coordenadas relativas a absolutas,<br />
+* un botón para alternar entre la distancia a recorrer y los otros estados<br />
+* y un botón para alternar las unidades de métricas a imperiales y viceversa.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Aviso</div>
+</td>
+<td class="content">No se recomienda usar esta opción, porque el usuario
+puede perder la opción de unidad automática, que alternará las unidades según el
+gcode activo G20/G21.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Puede cambiar a través de los modos DRO (absoluto, relativo, distancia
+a recorrer) haciendo clic en el DRO!</td>
+</tr></table>
+</div>
+<div class="paragraph"><p><em>Usar unidades automáticas</em><br />
+permite deshabilitar la opción de unidades automáticas de la pantalla, para que pueda ejecutar un programa en pulgadas y ver el DRO en mm. +<br /></p></div>
+<div class="paragraph"><p><em>tamaño</em><br />
+permite configurar el tamaño de la fuente DRO; el valor predeterminado es 28; si usa una pantalla más grande, es posible que desee aumentar el tamaño hasta 56.
+    Si utiliza 4 ejes, el tamaño de fuente DRO será 3/4 del valor, debido a razones de espacio. +<br /></p></div>
+<div class="paragraph"><p><em>dígitos</em><br />
+establece el número de dígitos del DRO de 1 a 5.<br /></p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Imperial mostrará un dígito más que métrico; si está en unidades de máquinas imperiales y establece el valor de dígito en 1, no obtendrá ningún dígito en métrico.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p><em>cambiar modo DRO</em><br />
+Si no está activo, un clic del ratón en el DRO no realizará ninguna acción.<br />
+De forma predeterminada, esta casilla de verificación está activa, por lo que cada clic en cualquier DRO cambiará la lectura DRO de real a relativa a DTG (distancia a recorrer). +<br /></p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Vista previa
+</dt>
+<dd>
+<p>
+<em>Tamaño de cuadrícula</em> Establece el tamaño de cuadrícula de la ventana de vista previa. Desafortunadamente, el tamaño
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+debe establecerse en pulgadas *, incluso si las unidades de su máquina son métricas. Esperamos
+arreglar eso en un futuro lanzamiento.
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">La cuadrícula no se mostrará en la vista en perspectiva.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p><em>Mostrar DRO</em><br />
+Mostrará el DRO también en la ventana de vista previa. Se mostrará automáticamente en vista previa a tamaño completo</p></div>
+<div class="paragraph"><p><em>Mostrar DTG</em> mostrará también la DTG (distancia al punto final) en la
+vista previa, solo si <em>Mostrar DRO</em> está activo y no es vista previa a tamaño completo.</p></div>
+<div class="paragraph"><p><em>Mostrar offsets</em> mostrará los offsets en la ventana de vista previa.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Si solo marca esta opción y deja las otras sin marcar,
+obtendra una vista previa a tamaño completo de la página de offsets</td>
+</tr></table>
+</div>
+<div class="paragraph"><p><em>Modo de botón del ratón</em> este cuadro combinado puede seleccionar el comportamiento del botón de
+ratón para girar, mover o hacer zoom dentro de la vista previa. Las combinaciones posibles,
+con el orden de botones izquierdo-medio-derecho son:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+girar, mover, zoom
+</p>
+</li>
+<li>
+<p>
+zoom,  mover, girar
+</p>
+</li>
+<li>
+<p>
+mover, girar, zoom
+</p>
+</li>
+<li>
+<p>
+zoom,  girar, mover
+</p>
+</li>
+<li>
+<p>
+mover, zoom,  girar
+</p>
+</li>
+<li>
+<p>
+girar, zoom,  mover
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El valor predeterminado es mover, zoom , girar.</p></div>
+<div class="paragraph"><p>La rueda del ratón seguirá ampliando la vista previa en todos los modos.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Sugerencia</div>
+</td>
+<td class="content">Si selecciona un elemento en la vista previa, el elemento seleccionado será
+tomado como punto central de rotación.</td>
+</tr></table>
+</div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Archivo para cargar en el inicio
+</dt>
+<dd>
+<p>
+Seleccione el archivo que desea cargar en el inicio.
+En otras GUI, cambiar esto es muy engorroso, porque los usuarios se ven obligados a editar el archivo INI.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Seleccione el archivo que desea cargar en el inicio. Si se carga un archivo,
+esto puede configurarse presionando el botón actual para evitar que cualquier programa se cargue en
+Inicia, solo presiona el botón Ninguno.</p></div>
+<div class="paragraph"><p>La pantalla de selección de archivos utilizará los filtros que haya configurado en el archivo INI.
+Si no hay filtros, solo verá los archivos <strong>ngc</strong>. El camino
+se establecerá de acuerdo con la configuración de INI en [DISPLAY]PROGRAM_PREFIX</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Saltar a dir
+</dt>
+<dd>
+<p>
+Puede configurar aquí el directorio a donde saltar si presiona el botón correspondiente
+en el cuadro de diálogo de selección de archivos.
+</p>
+</dd>
+</dl></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_file_selection_dialog_with_keyboard.png" alt="images/gmoccapy_file_selection_dialog_with_keyboard.png" />
+</div>
+<div class="title">Figura 9. Seleccion de directorio</div>
+</div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Temas y sonidos 
+</dt>
+<dd>
+<p>
+    Esto le permite al usuario seleccionar qué tema de escritorio aplicar y qué sonidos de error y mensajes deben reproducirse.
+    Por defecto está establecido "Seguir tema del sistema".
+</p>
+</dd>
+</dl></div>
+</div>
+<div class="sect2">
+<h3 id="_hardware">7.2. Hardware</h3>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="images/gmoccapy_settings_hardware.png" alt="images/gmoccapy_settings_hardware.png" />
+</div>
+</div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Escalas de hardware MPG
+</dt>
+<dd>
+<p>
+Para los diferentes pines Hal se conectan a los volantes MPG, puede seleccionar escalas individuales.
+La razón principal de esto fue mi propia prueba para resolver esto a través de conexiones hal, resultando en un
+archivo hal muy complejo. Imagine a un usuario que tiene un volante MPG con 100 ipr y quiere reducir la velocidad máxima
+de 14000 a 2000 mm/min; necesita 12000 impulsos!, lo que da como resultado 120 giros del volante!
+O a otro usuario que tiene un volante MPG con 500 ipr y quiere configurar el porcentaje del husillo, que tiene
+limites de 50 a 120%; de mín a máx solo van 70 impulsos, lo que significa que no llega ni a 1/4 de vuelta.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Por defecto, todas las escalas se establecen utilizando el cálculo:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>(MAX - MIN)/100</code></pre>
+</div></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Atajos de teclado
+</dt>
+<dd>
+<p>
+Algunos usuarios desean hacer jog usando los botones del teclado y hay otros que nunca lo permitirán.
+Así que todos pueden elegir si usarlos o no.
+</p>
+</dd>
+</dl></div>
+<div class="paragraph"><p>Por defecto, se usan los atajos de teclado.</p></div>
+<div class="paragraph"><p>Por favor, tenga cuidado si usa un torno, ya que los atajos serán diferentes.
+Ver <a href="gmoccapy_es.html#gmoccapy:lathe-section">la sección de Torno</a></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Flecha izquierda o NumPad_Left = X menos
+</p>
+</li>
+<li>
+<p>
+Flecha derecha o NumPad_Right = X más
+</p>
+</li>
+<li>
+<p>
+Flecha arriba o NumPad_Up = Y más
+</p>
+</li>
+<li>
+<p>
+Flecha abajo o NumPad_Down = Y menos
+</p>
+</li>
+<li>
+<p>
+Page Up o NumPad_Page_Up = Z mas
+</p>
+</li>
+<li>
+<p>
+Page Down o NumPad_Page_Down = Z menos
+</p>
+</li>
+<li>
+<p>
+F1 = Estop (funcionará incluso si los atajos de teclado están desactivados)
+</p>
+</li>
+<li>
+<p>
+F2 = Máquina encendida
+</p>
+</li>
+<li>
+<p>
+F3 = Modo manual
+</p>
+</li>
+<li>
+<p>
+F5 = Modo MDI
+</p>
+</li>
+<li>
+<p>
+ESC = Abortar
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Hay teclas adicionales para el manejo de mensajes, ver
+<a href="#gmoccapy:message-behavior">comportamiento y apariencia del mensaje</a></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+WINDOWS = Borrar el último mensaje
+</p>
+</li>
+<li>
+<p>
+&lt;CTRL&gt;&lt;SPACE&gt; = Borrar todos los mensajes
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Desbloquear opciones
+</dt>
+<dd>
+<p>
+Hay tres opciones para desbloquear la página de configuración:
+</p>
+</dd>
+</dl></div>
+</li>
+<li>
+<p>
+usar un código de desbloqueo (el usuario debe dar un código para entrar)
+</p>
+</li>
+<li>
+<p>
+No usar código de desbloqueo (no habrá verificación de seguridad)
+</p>
+</li>
+<li>
+<p>
+Usar un pin para desbloquear (el pin de hardware debe estar alto para desbloquear la configuración,
+  ver <a href="gmoccapy_es.html#gmoccapy:hardware-unlock">pin de desbloqueo hardware</a> )
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El valor predeterminado es usar el código de desbloqueo (predeterminado = * 123 *)</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+Husillo
+</dt>
+<dd>
+<p>
+RPM establece las rpm que se utilizarán si el husillo se inicia y no se ha establecido ningún valor de S.
+</p>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Este valor será predefinido de acuerdo con su configuración en
+[DISPLAY]DEFAULT_SPINDLE_SPEED de su INI. Si cambia la configuración en la
+página de configuración, ese valor será el predeterminado desde ese momento; su archivo INI
+no sera modificado</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>Con los ajustes MÍN y MÁX, usted establece los límites de la barra de husillo mostrada en
+el cuadro de información en la pantalla principal. No es un error dar valores erróneos. Si
+da un máximo de 2000 y su eje llega a 4000 rpm, solo el nivel de barra
+estara equivocado en velocidades superiores a 2000 rpm.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>los valores por defecto son
+MIN = 0
+MAX = 6000</code></pre>
+</div></div>
+<div class="dlist" id="gmoccapy:turtle-jog"><dl>
+<dt class="hdlist1">
+Turtle Jog
+</dt>
+<dd>
+<p>
+<a id="sub:turtle_jog"></a>
+Esta configuración tendrá influencia en las velocidades de jog.
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>Ocultar boton jog tortuga</em> ocultará el botón a la derecha del control deslizante de velocidad de jog.
+Si oculta este botón, tenga cuidado de que se muestre el icono conejo,
+de lo contrario no podrá hacer jog más rápido que la velocidad de tortuga,
+que se calcula utilizando el factor jog de tortuga.
+</p>
+</li>
+<li>
+<p>
+<em>factor de jog de tortuga</em> establece la escala para el modo jog tortuga. Si le pone
+un factor de 20, la velocidad máxima de jog será 1/20 de la velocidad máxima de la máquina
+si está en modo tortuga (botón presionado, mostrando la tortuga)
+</p>
+</li>
+</ul></div>
+</dd>
+</dl></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Nota</div>
+</td>
+<td class="content">Este botón se puede activar usando el pin hal <a href="gmoccapy_es.html#gmoccapy:jog-velocity">turtle-jog</a>.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuración_avanzada">7.3. Configuración avanzada</h3>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_settings_advanced.png" alt="images/gmoccapy_settings_advanced.png" />
+</div>
+<div class="title">Figura 10. Configuracion avanzada</div>
+</div>
+<div class="paragraph" id="gmoccapy:tool-measurement"><div class="title">Medición de herramientas</div><p>Si esta parte no es sensible, no tiene una configuración de archivo INI válida
+para utilizar la medición de herramienta.</p></div>
+<div class="paragraph"><p>Verifique <a href="gmoccapy_es.html#gmoccapy:auto-tool-measurement">medición automática de herramientas</a></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Usar la medición automática de herramientas: si se marca, después de cada cambio de herramienta
+se realizará la medición. El resultado se almacenará en la tabla de herramientas y se ejecutará un
+G43 después del cambio.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><div class="title">Información de sonda</div><p>Las siguientes informaciones se tomaran de las de su archivo INI y se deben proporcionar
+en coordenadas absolutas</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+X Pos. = La posición X del interruptor de herramienta
+</p>
+</li>
+<li>
+<p>
+Y Pos. = La posición Y del interruptor de herramienta
+</p>
+</li>
+<li>
+<p>
+Z Pos. = La posición Z del interruptor de la herramienta, iremos como movimiento rápido a
+ esta coordenada
+</p>
+</li>
+<li>
+<p>
+Max. Sonda = es la distancia para buscar contacto. Un error será
+ lanzado si no se da contacto dentro de ella. La distancia tiene que ser dada en coordenadas relativas,
+ comenzando el movimiento desde Z Pos., por lo que tiene que dar un valor negativo
+ para bajar!
+</p>
+</li>
+<li>
+<p>
+Altura sonda = es la altura de su interruptor de sonda; puede medirlo.
+ Solo toque la base donde se encuentra el interruptor de la sonda y ajústelo a
+ cero. Luego haga un cambio de herramienta y observe el valor de tool_offset_z, que es el
+ valor que debe entrar aquí.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><div class="title">Las velocidades de la sonda</div><ul>
+<li>
+<p>
+Vel. Búsqueda = La velocidad para buscar el interruptor. Después del contacto,
+ la herramienta volverá a subir y luego volverá hacia la sonda con la velocidad de sonda,
+ por lo que obtendrá mejores resultados.
+</p>
+</li>
+<li>
+<p>
+Vel. Sonda = Es la velocidad para el segundo movimiento hacia el interruptor, que
+ debe ser más lento para obtener mejores resultados. (En modo sim, esto es
+ comentado en macros/change.ngc, de lo contrario el usuario tendría que hacer clic
+ dos veces en el botón de la sonda)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><div class="title">Cambiador de herramientas</div><p>Si su cuarto eje 'se utiliza en un cambiador de herramientas, es posible que desee ocultar el DRO
+y todos los demás botones relacionados con ese eje.</p></div>
+<div class="paragraph"><p>Puedes hacerlo marcando la casilla de verificación, que ocultará:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+4º eje DRO
+</p>
+</li>
+<li>
+<p>
+4º eje boton Jog
+</p>
+</li>
+<li>
+<p>
+4º eje botón de referencia (home)
+</p>
+</li>
+<li>
+<p>
+Columna del 4º eje en la página offset.
+</p>
+</li>
+<li>
+<p>
+Columna del 4º eje en el editor de herramientas.
+</p>
+</li>
+</ul></div>
+<div class="paragraph" id="gmoccapy:reload-tool-on-start"><p>Si se marca, la herramienta en el husillo se guardará en cada cambio en el archivo de preferencias,
+lo que hace posible volver a cargar la última herramienta montada en nuevo arranque.
+La herramienta se cargará después de que todos los ejes estén conectados, porque antes no está
+permitido ejecutar comandos MDI. Si usa NO_FORCE_HOMING no puedes usar
+esta característica, porque nunca se emitirá la señal <em>all_homed</em> necesaria.</p></div>
+<div class="paragraph" id="gmoccapy:message-behavior"><div class="title">Comportamiento y apariencia de mensajes.</div><p>Esto mostrará pequeñas ventanas emergentes que muestran el mensaje o el texto de error.
+El comportamiento es muy similar al que utiliza AXIS. Puede eliminar un determinado
+mensaje haciendo clic en el botón Cerrar. Si desea eliminar el último,
+simplemente presione la tecla WINDOWS en su teclado o borre todos los mensajes
+con &lt;CTRL&gt;&lt;SPACE&gt;.</p></div>
+<div class="paragraph"><p>Puedes configurar algunas opciones:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+X Pos = La posición X de la esquina superior izquierda del mensaje
+ en pixels desde la esquina superior izquierda de la pantalla.
+</p>
+</li>
+<li>
+<p>
+Y Pos = La posición Y de la esquina superior izquierda del mensaje
+ en pixels desde la esquina superior izquierda de la pantalla.
+</p>
+</li>
+<li>
+<p>
+Ancho = El ancho del cuadro de mensaje
+</p>
+</li>
+<li>
+<p>
+max = el máximo de mensajes que desea ver. Si establece esto en 10,
+ el mensaje número 11 eliminará el primero, por lo que solo verá los últimos 10.
+</p>
+</li>
+<li>
+<p>
+Fuente = la fuente y el tamaño que desea utilizar para mostrar los mensajes
+</p>
+</li>
+<li>
+<p>
+usar marcos = Si activa la casilla de verificación, se mostrará cada mensaje
+ en un marco, por lo que es mucho más fácil distinguir los mensajes, pero
+ se necesitara un poco más de espacio.
+</p>
+</li>
+<li>
+<p>
+Lanzamiento de mensaje de prueba solo hará lo que se supone que debe hacer,
+ mostrar un mensaje, para que pueda ver los cambios de su configuración sin la necesidad
+ para generar un error.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><div class="title">La opción Ejecutar desde línea</div><p>Puede permitir o rechazar la ejecución desde línea. Esto pondra al correspondiente
+botón insensible (en gris), por lo que el usuario no podrá utilizar esta
+opción. El valor predeterminado es deshabilitar la ejecución desde la línea.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Aviso</div>
+</td>
+<td class="content">No se recomienda usar <em>Ejecutar desde línea</em>, ya que LinuxCNC no comprobara
+ninguna línea anterior en el código antes de la línea de inicio. Así, errores o choques
+son mas que probables</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gmoccapy:lathe-section">8. Sección específica del torno</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Si en el archivo INI se da LATHE = 1, la GUI cambiará su apariencia
+a las necesidades especiales de un torno. Principalmente se ocultará el eje Y y
+Los botones de jog se ordenarán en un orden diferente.</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_lathe.png" alt="images/gmoccapy_lathe.png" />
+</div>
+<div class="title">Figura 11. Torno normal (herramienta delantera)</div>
+</div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_back_tool_lathe.png" alt="images/gmoccapy_back_tool_lathe.png" />
+</div>
+<div class="title">Figura 12. Torno con herramienta trasera</div>
+</div>
+<div class="paragraph"><p>Como ve, el R DRO tiene un fondo negro y el de D DRO es gris. Esto puede
+cambiar de acuerdo con el código G7 o G8 activo. El modo activo es visible por
+el fondo negro, es decir, en las imágenes mostradas G8 está activo.</p></div>
+<div class="paragraph"><p>La siguiente diferencia a la pantalla estándar es la ubicación del botón Jog.
+X y Z han cambiado de lugar e Y ha desaparecido. Notese que los botones X+ y X-
+cambian de lugar según sea torno normal o trasero.</p></div>
+<div class="paragraph"><p>También cambiará el comportamiento del teclado:</p></div>
+<div class="paragraph"><p>Torno normal:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Flecha izquierda o NumPad_Left = Z menos
+</p>
+</li>
+<li>
+<p>
+Flecha derecha o NumPad_Right = Z más
+</p>
+</li>
+<li>
+<p>
+Flecha arriba o NumPad_Up = X menos
+</p>
+</li>
+<li>
+<p>
+Flecha abajo o NumPad_Down = X más
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Torno de herramienta trasera:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Flecha izquierda o NumPad_Left = Z menos
+</p>
+</li>
+<li>
+<p>
+Flecha derecha o NumPad_Right = Z más
+</p>
+</li>
+<li>
+<p>
+Flecha arriba o NumPad_Up = X más
+</p>
+</li>
+<li>
+<p>
+Flecha abajo o NumPad_Down = X menos
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>El cuadro de información de la herramienta mostrará no solo el desplazamiento Z, sino también el
+offset X y la tabla de herramientas muestra toda la información relevante del torno.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sección_específica_de_plasma">9. Sección específica de plasma</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/gmoccapy_plasma.png" alt="images/gmoccapy_plasma.png" />
+</div>
+<div class="title">Figura 13. GUI plasma</div>
+</div>
+<div class="paragraph"><p>Hay un muy buen WIKI, que en realidad está creciendo, mantenido por Marius.
+vea <a href="http://wiki.linuxcnc.org/cgi-bin/wiki.pl?Gmoccapy_plasma">página de la wiki</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_video_en_you_tube">10. Video en You Tube</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Estos videos muestran gmoccapy en acción. Desafortunadamente los videos no
+muestra la última versión de gmoccapy, pero la forma de usarlo no cambiará
+mucho en el futuro. Intentaré actualizar los videos lo antes posible.</p></div>
+<div class="sect2">
+<h3 id="_uso_básico">10.1. Uso básico</h3>
+<div class="paragraph"><p><a href="https://www.youtube.com/watch?v=O5B-s3uiI6g">https://www.youtube.com/watch?v=O5B-s3uiI6g</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_volantes_jog_simulados">10.2. Volantes Jog simulados</h3>
+<div class="paragraph"><p><a href="http://youtu.be/ag34SGxt97o">http://youtu.be/ag34SGxt97o</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_página_de_configuración">10.3. Página de configuración</h3>
+<div class="paragraph"><p><a href="https://www.youtube.com/watch?v=AuwhSHRJoiI">https://www.youtube.com/watch?v=AuwhSHRJoiI</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_botón_de_hardware_simulado">10.4. Botón de hardware simulado</h3>
+<div class="paragraph"><p>Aleman = <a href="http://www.youtube.com/watch?v=DTqhY-MfzDE">http://www.youtube.com/watch?v=DTqhY-MfzDE</a></p></div>
+<div class="paragraph"><p>Inglés = <a href="http://www.youtube.com/watch?v=ItVWJBK9WFA">http://www.youtube.com/watch?v=ItVWJBK9WFA</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="_pestañas_de_usuario">10.5. Pestañas de usuario</h3>
+<div class="paragraph"><p><a href="http://www.youtube.com/watch?v=rG1zmeqXyZI">http://www.youtube.com/watch?v=rG1zmeqXyZI</a></p></div>
+</div>
+<div class="sect2">
+<h3 id="gmoccapy:tool-measurement-videos">10.6. Videos de Medicion de Herramientas</h3>
+<div class="paragraph"><p>Simulacion de medicion Auto = <a href="http://youtu.be/rrkMw6rUFdk">http://youtu.be/rrkMw6rUFdk</a></p></div>
+<div class="paragraph"><p>Pantalla de medición automática de herramienta = <a href="http://youtu.be/Z2ULDj9dzvk">http://youtu.be/Z2ULDj9dzvk</a></p></div>
+<div class="paragraph"><p>Máquina de medición automática de herramientas = <a href="http://youtu.be/1arucCaDdX4">http://youtu.be/1arucCaDdX4</a></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_problemas_conocidos">11. Problemas conocidos</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_números_extraños_en_el_área_de_información">11.1. Números extraños en el área de información</h3>
+<div class="paragraph"><p>Si obtienes números extraños en el área de información de gmoccapy como:</p></div>
+<div class="imageblock" style="text-align:center;">
+<div class="content">
+<img src="images/strange_numbers.png" alt="images/strange_numbers.png" />
+</div>
+<div class="title">Figura 14. Numeros extraños</div>
+</div>
+<div class="paragraph"><p>ha creado su archivo de configuración con una versión anterior de StepConfWizard.
+Este ha hecho una entrada incorrecta en el archivo INI bajo [TRAJ]MAX_LINEAR_VELOCITY = xxx.
+Cambia esa entrada a MAX_VELOCITY = xxx</p></div>
+</div>
+<div class="sect2">
+<h3 id="_macro_no_finalizada_a_id_sub_not_ending_macros_a">11.2. Macro no finalizada <a id="sub:NOT_ENDING_MACROS"></a></h3>
+<div class="paragraph"><p>Si usas una macro sin movimiento, como esta:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> o&lt;zeroxy&gt; sub
+
+G92.1
+G92.2
+G40
+
+G10 L20 P0 X0 Y0
+
+o&lt;zeroxy&gt; endsub
+m2</code></pre>
+</div></div>
+<div class="paragraph"><p>gmoccapy no verá el final de la macro, porque el intérprete necesita
+cambie su estado a IDLE, pero la macro ni siquiera configura el intérprete a
+un nuevo estado. Para evitar eso, simplemente agregue una línea G4 P0.1 para obtener la señal necesaria.
+La macro correcta sería:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code> o&lt;zeroxy&gt; sub
+
+G92.1
+G92.2
+G40
+
+G10 L20 P0 X0 Y0
+
+G4 P0.1
+
+o&lt;zeroxy&gt; endsub
+m2</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2022-11-24 07:38:35 MST
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Thu Nov 24 19:23:52 2022 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>XHC_HB04_UTIL</title>
+
+ <link rel="stylesheet" href="../../asciidoc.css" type="text/css" /> <link rel="stylesheet" href="../../linuxcnc.css" type="text/css" />
+</head>
+<body>
+
+<h1 align="center">XHC_HB04_UTIL</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#FUNCTIONS">FUNCTIONS</a><br>
+<a href="#PINS">PINS</a><br>
+<a href="#LICENSE">LICENSE</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xhc_hb04_util -
+xhc-hb04 convenience utility</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="81%">
+
+
+<p style="margin-top: 1em"><b>loadrt xhc_hb04_util
+[count=</b><i>N</i><b>|names=</b><i>name1</i><b>[,</b><i>name2...</i><b>]]</b></p> </td>
+<td width="8%">
+</td></tr>
+</table>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Provides logic
+for a start/pause button and an interface to
+<b>halui.program.is_paused</b>, <b>is_idle</b>,
+<b>is_running</b> to generate outputs for
+<b>halui.program.pause</b>, <b>resume</b>, <b>run</b>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Includes 4
+simple lowpass filters with <b>coef</b> and <b>scale</b>
+pins. The coef value should be 0 &lt;= coef &lt;=1, smaller
+coef values slow response. See the lowpass manpage for
+calculating the filter time constant ($ man lowpass).</p>
+
+<h2>FUNCTIONS
+<a name="FUNCTIONS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xhc-hb04-util.</b><i>N</i>
+(requires a floating-point thread)</p>
+
+<h2>PINS
+<a name="PINS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xhc-hb04-util.</b><i>N</i><b>.start-or-pause</b>
+bit in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.is-paused</b> bit in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.is-idle</b> bit in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.is-running</b> bit in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.pause</b> bit out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.resume</b> bit out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.run</b> bit out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.in0</b> s32 in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.in1</b> s32 in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.in2</b> s32 in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.in3</b> s32 in <b><br>
+xhc-hb04-util.</b><i>N</i><b>.out0</b> s32 out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.out1</b> s32 out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.out2</b> s32 out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.out3</b> s32 out <b><br>
+xhc-hb04-util.</b><i>N</i><b>.scale0</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.scale1</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.scale2</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.scale3</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.coef0</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.coef1</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.coef2</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.coef3</b> float in (default:
+<i>1.0</i>) <b><br>
+xhc-hb04-util.</b><i>N</i><b>.divide-by-k-in</b> float in
+<b><br>
+xhc-hb04-util.</b><i>N</i><b>.divide-by-k-out</b> float out
+<b><br>
+xhc-hb04-util.</b><i>N</i><b>.k</b> float in (default:
+<i>1.0</i>)</p>
+
+<h2>LICENSE
+<a name="LICENSE"></a>
+</h2>
+
+ 
+<p style="margin-left:11%; margin-top: 1em">GPL</p>
+<hr>
+</body>
+</html>
