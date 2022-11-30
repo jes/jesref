@@ -12,6 +12,7 @@ Workshop & LinuxCNC reference.
  - (TODO) Common belt/pulley size reference
  - (TODO) Belt length calculator
  - Feeds & speeds calculator by [Brian Turner](https://github.com/brturn/feeds-and-speeds), distributed under GPLv3
+ - LinuxCNC documentation scraped from http://linuxcnc.org/docs/html/gcode/ , distributed under the GNU Free Documentation License
 
 ## Install
 
