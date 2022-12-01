@@ -2,17 +2,18 @@
 
 Workshop & LinuxCNC reference.
 
+Start at `pages/index.html`.
+
 ## What's included?
 
  - Tap drill size chart
+ - Feeds & speeds calculator by [Brian Turner](https://github.com/brturn/feeds-and-speeds), distributed under GPLv3
+ - LinuxCNC documentation scraped from http://linuxcnc.org/docs/html/ , distributed under the GNU Free Documentation License
  - (TODO) Visual thread pitch checker
- - (TODO) Simple G-code reference
  - (TODO) Simple G-code generator (circles, rectangles, straight lines, peck drilling)
  - (TODO) Involute gear reference & formulae
  - (TODO) Common belt/pulley size reference
  - (TODO) Belt length calculator
- - Feeds & speeds calculator by [Brian Turner](https://github.com/brturn/feeds-and-speeds), distributed under GPLv3
- - LinuxCNC documentation scraped from http://linuxcnc.org/docs/html/gcode/ , distributed under the GNU Free Documentation License
 
 ## Install
 
