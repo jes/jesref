@@ -183,27 +183,5 @@ for(var i=0; i<rows.snapshotLength; i++) {
         j = !j;
     }
 }
-
-function fixup_urls() {
-var links=document.evaluate('//a[@href]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-    for(var i=0; i<links.snapshotLength; i++) {
-        var it = links.snapshotItem(i);
-        it.setAttribute('href',
-            "http://linuxcnc.org/docs/devel/html/" + it.getAttribute('href'));
-    }
-}
-
-// In the LinuxCNC package, gcode/g-code.html is (probably) not included.  In this
-// case, fix up the links to point at the online version instead of a local
-// version
-if(document.location.protocol == "file:") {
-    try {
-        var x = document.implementation.createDocument("", "", null);
-        x.load("gcode/g-code.html");
-        x.onerror = fixup_urls;
-    } catch(err) {
-        fixup_urls();
-    }
-}
 // --></SCRIPT>
 </BODY>
