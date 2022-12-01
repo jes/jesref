@@ -1,3 +1,5 @@
 #!/bin/sh
 
-echo "Sorry, this doesn't work yet. Eventually it will put a link to the index page on the desktop."
+JESREF_PATH=`pwd`
+
+sed -e "s!JESREF_PATH!$JESREF_PATH!g" jesref.desktop > ~/Desktop/jesref.desktop
