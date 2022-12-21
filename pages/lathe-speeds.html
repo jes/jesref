@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Lathe speeds</title>
+        <style type="text/css">
+            .speeds-table tr, .speeds-table td, .speeds-table th, .speeds-table {
+                padding: 5px;
+                border: solid 1px black;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="index.html">jesref</a>
+        <h1>Lathe speeds</h1>
+
+        <p>To find the required RPM, look up the material, operation, and tool type in the table under "RPM for 20mm diameter" and scale
+        RPM inversely with diameter. For example, if the work piece is only 10mm diameter, RPM needs to be doubled; if it is 40mm diameter, RPM needs to be halved.</p>
+
+        <table class="speeds-table">
+            <tr><th rowspan="3"></th><th colspan="3">Cutting speed (m/min)</th><th colspan="3">RPM for 20mm diameter</th></tr>
+            <tr><th colspan="2">Turning</th><th>Drilling</th><th colspan="2">Turning</th><th>Drilling</th></tr>
+            <tr><th>HSS</th><th>Carbide</th><th>HSS</th><th>HSS</th><th>Carbide</th><th>HSS</th></tr>
+            <tr><td>Unhardened stainless steel</td><td>20-35</td><td>70-120</td><td>15-25</td>   <td>320-560</td><td>1100-1900</td><td>240-400</td></tr>
+            <tr><td>Mild steel</td><td>20-35</td><td>90-135</td><td>20-30</td>   <td>320-560</td><td>1400-2150</td><td>320-480</td></tr>
+            <tr><td>Copper &amp; phosphor bronze</td><td>30-35</td><td>60-65</td><td>20</td>   <td>480-560</td><td>960-1000</td><td>320</td></tr>
+            <tr><td>Class 20 cast iron</td><td>35</td><td>135</td><td>30</td>   <td>560</td><td>2150</td><td>480</td></tr>
+            <tr><td>Other brass &amp; bronze</td><td>60-75</td><td>150-165</td><td>35-40</td>   <td>960-1200</td><td>2400-2600</td><td>560-640</td></tr>
+            <tr><td>Wood &amp; plastic</td><td>60-150</td><td>150-450</td><td>20-90</td>   <td>960-2400</td><td>2400-7200</td><td>320-1400</td></tr>
+            <tr><td>Free-machining brass</td><td>90-105</td><td>180-200</td><td>50-55</td>   <td>1400-1650</td><td>2900-3200</td><td>800-875</td></tr>
+            <tr><td>Aluminium</td><td>150-180</td><td>335-365</td><td>30-120</td>   <td>2400-2900</td><td>5300-5800</td><td>480-1900</td></tr>
+        </table>
+
+        <p>Source: <a href="https://www.chegg.com/homework-help/questions-and-answers/following-speeds-available-lathe-machine-300-500-700-900-1000-1100-1200-1300-1400-1500-rpm-q33118750">Chegg.com</a></p>
+    </body>
+</html>
