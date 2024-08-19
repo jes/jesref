@@ -116,16 +116,16 @@
             <input type="checkbox" id="in_METRIC" onclick="convertAll()" checked><label for="in_METRIC">Metric?</label><br/>
         </div>
         <div class="input-div">
-            RPM <small>(min, max)</small>  <input id="min_RPM" value="100"> <input id="max_RPM" value="2100">
+            RPM <small>(min, max)</small>  <input id="min_RPM" value="3000"> <input id="max_RPM" value="24000">
         </div>
         <div class="input-div">
-            RPM at peak torque <input id="in_PEAK_TORQUE_RPM" value="2100">
+            RPM at peak torque <input id="in_PEAK_TORQUE_RPM" value="24000">
         </div>
         <div class="input-div">
-            Feed rate <small class="imperial">in/min</small><small class="metric">mm/min</small> <small>(min, max)</small> <input id="min_IPM" value="1"> <input id="max_IPM" value="480">
+            Feed rate <small class="imperial">in/min</small><small class="metric">mm/min</small> <small>(min, max)</small> <input id="min_IPM" value="1"> <input id="max_IPM" value="3000">
         </div>
         <div class="input-div">
-            Spindle power <small class="imperial">HP</small> <small class="metric">KW</small> <input id="max_HP" value="0.1">
+            Spindle power <small class="imperial">HP</small> <small class="metric">KW</small> <input id="max_HP" value="0.5">
         </div>
 
     <div class="header"><b class="header">Tool</b></div>
@@ -139,8 +139,8 @@
         <div class="input-div">
         Modulus of elasticity               <input id="in_E" value="27"> <small>(10^6 psi)</small>
         </div>
-        <div class="input-div">Diameter    <small class="imperial">inch</small><small class="metric">mm</small><input id="in_DIAMETER" value="5"></div>
-        <div class="input-div">Flutes                              <input id="in_TEETH" value="4"></div>
+        <div class="input-div">Diameter    <small class="imperial">inch</small><small class="metric">mm</small><input id="in_DIAMETER" value="6"></div>
+        <div class="input-div">Flutes                              <input id="in_TEETH" value="1"></div>
         <div class="input-div"><input type="checkbox" id="in_BALLNOSE" onclick="inputChanged()"><label for="in_BALLNOSE">Ball-nose?</label></div>
         <div class="input-div">Total stickout  <small class="imperial">inch</small><small class="metric">mm</small><input id="in_L" value="20"></div>
         <div class="input-div">Helix angle                         <input id="in_HELIX" value="30"></div>
@@ -165,7 +165,7 @@
 
     <div class="header"><b class="header">Cut</b></div>
         <div class="input-div">DOC   <small class="imperial">inch</small><small class="metric">mm</small>      <small>(min, max)</small>              <input id="min_DOC" value="0.1"> <input id="max_DOC" value="1.0"></div>
-        <div class="input-div">WOC   <small class="imperial">inch</small><small class="metric">mm</small>      <small>(min, max)</small> <input id="min_WOC" value="0.25">  <input id="max_WOC" value="5">          </div>
+        <div class="input-div">WOC   <small class="imperial">inch</small><small class="metric">mm</small>      <small>(min, max)</small> <input id="min_WOC" value="6">  <input id="max_WOC" value="6">          </div>
         <div class="input-div">Deflection  <small class="imperial">inch</small><small class="metric">mm</small> <small>(max)</small>        <input id="max_DEFLECTION" value="0.01"></div>
         <div class="input-div"><input type="checkbox" id="in_ADAPTIVE" onclick="inputChanged()"><small><label for="in_ADAPTIVE">HSM / Adaptive / Constant TEA</label></small></div>
 
