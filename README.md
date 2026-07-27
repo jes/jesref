@@ -7,6 +7,7 @@ Start at `pages/index.html`.
 ## What's included?
 
  - Tap drill size chart
+ - Material density chart
  - Feeds & speeds calculator by [Brian Turner](https://github.com/brturn/feeds-and-speeds), distributed under GPLv3
  - LinuxCNC documentation scraped from http://linuxcnc.org/docs/html/ , distributed under the GNU Free Documentation License
  - (TODO) Visual thread pitch checker
